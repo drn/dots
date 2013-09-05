@@ -1,0 +1,15 @@
+syntax on
+set tabstop=2
+set shiftwidth=2
+set expandtab
+set number
+set vb
+set clipboard=unnamed
+au BufEnter Makefile set noexpandtab sts=0
+au BufEnter makefile set noexpandtab sts=0
+filetype plugin indent on
+autocmd BufWritePre * :%s/\s\+$//e
+let mapleader = ","
+set cursorline
+set hlsearch
+call pathogen#infect()

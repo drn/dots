@@ -1,0 +1,58 @@
+set background=dark
+colorscheme jellybeans
+set transparency=3
+set cc=80
+hi ColorColumn ctermbg=Black guibg=Black
+
+
+nnoremap <silent> <D-r> :CommandTFlush<cr>
+nnoremap <silent> <leader><space> :e `pwd`<cr>
+nnoremap <silent> <leader>c :Ex<cr>
+nnoremap <silent> <leader>s :FSHere<cr>
+noremap <silent> <D-k> :noh<cr>
+
+" NERDTree
+"map <leader>n :NERDTreeToggle<cr>
+"map <leader>l :NERDTreeFind<cr>
+" grep
+nnoremap <D-F> :grep -irn<Space>
+nmap <silent> <C-N> :cn<CR>z.
+nmap <silent> <C-P> :cp<CR>z.
+" reindent current file and return to previous location
+map <D-i> mzgg=G`z<CR>
+
+" Easy Motion
+hi EasyMotionTarget ctermbg=DarkMagenta guibg=DarkMagenta ctermfg=white guifg=white
+"hi EasyMotionShade  ctermbg=none ctermfg=blue
+"
+highlight clear SignColumn
+
+sign define dummy
+execute 'sign place 9999 line=1 name=dummy buffer=' . bufnr('')
+
+" Open NerdTree Automatically
+"autocmd vimenter * NERDTree | wincmd l
+" Close vim if NerdTree is the only one left
+"autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif
+
+" YouCompleteMe
+"   configure autocompletion keys
+let g:ycm_key_list_select_completion = ['<D-]>']
+let g:ycm_key_list_previous_completion = ['<D-[>']
+
+" Vim Airline Support
+let g:airline_powerline_fonts = 1
+set laststatus=2
+set noshowmode
+" set font
+set guifont=Menlo\ for\ Powerline:h13
+let g:Powerline_symbols = 'fancy'
+" vim-powerline symbols
+let g:airline_symbols = {}
+let g:airline_left_sep = '⮀'
+let g:airline_left_alt_sep = '⮁'
+let g:airline_right_sep = '⮂'
+let g:airline_right_alt_sep = '⮃'
+let g:airline_symbols.branch = '⭠'
+let g:airline_symbols.readonly = '⭤'
+let g:airline_symbols.linenr = '⭡'
