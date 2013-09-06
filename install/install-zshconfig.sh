@@ -18,6 +18,7 @@ source "$dotfiles/install/install.cfg"
 sudo rm -rf $ohmyzsh
 git clone git://github.com/robbyrussell/oh-my-zsh.git $ohmyzsh
 
+# install custom oh-my-zsh config files
 for location in $dotfiles/zsh-custom/*; do
   file="${location##*/}"
   link "$location" "$ohmyzsh/custom/$file"

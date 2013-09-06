@@ -19,3 +19,5 @@ sudo bash $dotfiles/install/install-gitconfig.sh
 sudo bash $dotfiles/install/install-vimconfig.sh
 # install zsh configuration
 sudo bash $dotfiles/install/install-zshconfig.sh
+# install fonts
+sudo bash $dotfiles/install/install-fonts.sh
