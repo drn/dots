@@ -13,6 +13,8 @@ rm -rf $dotfiles
 git clone git@github.com:darrenli/dotfiles.git $dotfiles
 # install dotfiles
 sudo bash $dotfiles/install/install-dotfiles.sh
+# install gitconfig
+sudo bash $dotfiles/install/install-gitconfig.sh
 # install vim configuration
 sudo bash $dotfiles/install/install-vimconfig.sh
 # install zsh configuration
