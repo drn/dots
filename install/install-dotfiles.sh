@@ -24,6 +24,5 @@ done
 # bin files
 for location in $dotfiles/bin/*; do
   file="${location##*/}"
-  file="${file%.*}"
   link "$location" "$bin/$file"
 done

@@ -75,13 +75,11 @@ mkdir -p $colors $ftplugin
 # install vim colors files
 for location in $dotfiles/vim/colors/*; do
   file="${location##*/}"
-  file="${file%.*}"
   link "$location" "$colors/$file"
 done
 
 # install vim ftplugin files
 for location in $dotfiles/vim/ftplugin/*; do
   file="${location##*/}"
-  file="${file%.*}"
   link "$location" "$ftplugin/$file"
 done

@@ -20,7 +20,6 @@ git clone git://github.com/robbyrussell/oh-my-zsh.git $ohmyzsh
 
 for location in $dotfiles/zsh-custom/*; do
   file="${location##*/}"
-  file="${file%.*}"
   link "$location" "$ohmyzsh/custom/$file"
 done
 
