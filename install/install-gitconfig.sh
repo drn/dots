@@ -2,7 +2,6 @@
 
 dev="$HOME/Development"
 bin="/usr/local/bin"
-="$HOME/.oh-my-zsh"
 
 # install hub
 gem install hub
