@@ -1,3 +1,4 @@
+" Default VIM configuration
 syntax on
 set tabstop=2
 set shiftwidth=2
@@ -13,3 +14,65 @@ let mapleader = ","
 set cursorline
 set hlsearch
 call pathogen#infect()
+
+" Configure UI
+set background=dark
+colorscheme jellybeans
+set transparency=3
+set cc=80
+hi ColorColumn ctermbg=Black guibg=Black
+
+" Default mappings
+nnoremap <silent> <leader><space> :e `pwd`<cr>
+nnoremap <silent> <leader>c :Ex<cr>
+nnoremap <silent> <leader>s :FSHere<cr>
+noremap <silent> <D-k> :noh<cr>
+noremap <silent> <leader>l /\.\.<cr>
+
+" Grep configuration
+nnoremap <D-F> :grep -irn<Space>
+nmap <silent> <C-N> :cn<CR>z.
+nmap <silent> <C-P> :cp<CR>z.
+
+" reindent current file and return to previous location
+map <D-i> mzgg=G`z<CR>
+
+" Easy Motion
+hi EasyMotionTarget ctermbg=DarkMagenta guibg=DarkMagenta ctermfg=white guifg=white
+
+" configure sign column
+highlight clear SignColumn
+sign define dummy
+execute 'sign place 9999 line=1 name=dummy buffer=' . bufnr('')
+
+" YouCompleteMe
+"   configure autocompletion keys
+let g:ycm_key_list_select_completion = ['<D-]>']
+let g:ycm_key_list_previous_completion = ['<D-[>']
+
+" Vim Airline Support
+set laststatus=2
+set noshowmode
+set guifont=Menlo\ for\ Powerline:h13
+let g:Powerline_symbols = 'fancy'
+let g:airline_symbols = {}
+let g:airline_left_sep = '⮀'
+let g:airline_left_alt_sep = '⮁'
+let g:airline_right_sep = '⮂'
+let g:airline_right_alt_sep = '⮃'
+let g:airline_symbols.branch = '⭠'
+let g:airline_symbols.readonly = '⭤'
+let g:airline_symbols.linenr = '⭡'
+
+" CtrlP Options
+let g:ctrlp_show_hidden = 1
+noremap <silent> <leader>t :CtrlP<cr>
+let g:ctrlp_user_command = 'find %s -type f'
+noremap <silent> <leader>1 :let g:ctrlp_working_path_mode = 'ra'<cr>
+noremap <silent> <leader>2 :let g:ctrlp_working_path_mode = 'ca'<cr>
+
+" Rainbow Parentheses
+au VimEnter * RainbowParenthesesToggle
+au Syntax * RainbowParenthesesLoadRound
+au Syntax * RainbowParenthesesLoadSquare
+au Syntax * RainbowParenthesesLoadBraces
