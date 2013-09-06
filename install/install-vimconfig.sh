@@ -66,8 +66,12 @@ clone git://github.com/derekwyatt/vim-fswitch.git
 # install YouCompleteMe
 clone git://github.com/Valloric/YouCompleteMe.git
 cd YouCompleteMe
-echo "Compiling YouCompleteMe binaries"
-./install.sh > /dev/null
+echo "Compiling YouCompleteMe binaries... This will take a while."
+./install.sh >/dev/null 2>/dev/null
+success=$?
+if [[ $success -eq 0 ]]; then
+  echo "YouCompleteMe binaries successfully compiled."
+fi
 cd $bundle
 
 colors="$vim/colors"
