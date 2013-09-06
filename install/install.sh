@@ -6,8 +6,8 @@ dotfiles="$dev/dotfiles"
 
 # set zsh as default shell
 chsh -s /bin/zsh
-# create default directory
-mkdir -p $dev
+# create default directory structure
+mkdir -p $dev $dev/personal $dev/work $dev/opensource
 # ensure dotfiles is up to date
 rm -rf $dotfiles
 git clone git@github.com:darrenli/dotfiles.git $dotfiles
