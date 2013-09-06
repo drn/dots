@@ -59,11 +59,14 @@ clone git://github.com/derekwyatt/vim-fswitch.git
 # install YouCompleteMe
 clone git://github.com/Valloric/YouCompleteMe.git
 cd YouCompleteMe
-echo "Compiling YouCompleteMe binaries... This will take a while."
-./install.sh >/dev/null 2>/dev/null
+echo "Compiling YouCompleteMe binaries... This may take a while."
+./install.sh >/dev/null 2>$dotfiles/install.log
 success=$?
 if [[ $success -eq 0 ]]; then
   echo "YouCompleteMe binaries successfully compiled."
+  rm -f $dotfiles/install.log
+else
+  echo "YouCompleteMe binaries failed to compile. Please see $dotfiles/install.log for additional info."
 fi
 cd $bundle
 
