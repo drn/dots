@@ -82,6 +82,11 @@
   bro = !"hub browse -- commit/`git rev-parse HEAD`"
   # better blame
   changes = !"git log --follow -p "
+[user]
+  name = darrenli
+  email = darren@thanx.com
+[github]
+  user = darrenli
 [credential]
   helper = osxkeychain
 [heroku]

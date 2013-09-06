@@ -22,7 +22,7 @@ cd $dotfiles
 for location in $dotfiles/zsh-custom/*.*; do
   file="${location##*/}"
   file="${file%.*}"
-  link "$location" "$ohmyzsh/custom"
+  link "$location" "$ohmyzsh/custom/$file"
 done
 
 # install zsh-syntax-highlighting

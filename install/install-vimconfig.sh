@@ -60,7 +60,7 @@ git clone git@github.com:kien/rainbow_parentheses.vim.git
 git clone git@github.com:kshenoy/vim-signature.git
 
 # install YouCompleteMe
-git cline git@github.com:Valloric/YouCompleteMe.git
+git clone git@github.com:Valloric/YouCompleteMe.git
 cd YouCompleteMe
 ./install.sh
 cd $bundle
