@@ -5,13 +5,6 @@ dotfiles="$dev/dotfiles"
 vim="$HOME/.vim"
 bundle="$HOME/.vim/bundle"
 
-if [[ -d "$dotfiles" ]]; then
-  echo "Symlinking dotfiles from $dotfiles"
-else
-  echo "$dotfiles does not exist"
-  exit 1
-fi
-
 # include install functions
 source "$dotfiles/install/install.cfg"
 

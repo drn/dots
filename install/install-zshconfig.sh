@@ -4,13 +4,6 @@ dev="$HOME/Development"
 dotfiles="$dev/dotfiles"
 ohmyzsh="$HOME/.oh-my-zsh"
 
-if [[ -d "$dotfiles" ]]; then
-  echo "Symlinking dotfiles from $dotfiles"
-else
-  echo "$dotfiles does not exist"
-  exit 1
-fi
-
 # include install functions
 source "$dotfiles/install/install.cfg"
 
