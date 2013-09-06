@@ -15,7 +15,7 @@ ZSH_HIGHLIGHT_STYLES[unknown-token]=fg=red,bold
 ZSH_HIGHLIGHT_STYLES[reserved-word]=fg=green
 ZSH_HIGHLIGHT_STYLES[alias]=fg=magenta,bold
 ZSH_HIGHLIGHT_STYLES[builtin]=fg=magenta,bold
-ZSH_HIGHLIGHT_STYLES[function]=gf=magenta,bold
+ZSH_HIGHLIGHT_STYLES[function]=fg=magenta,bold
 ZSH_HIGHLIGHT_STYLES[command]=fg=magenta,bold
 ZSH_HIGHLIGHT_STYLES[precommand]=none
 ZSH_HIGHLIGHT_STYLES[commandseparator]=none
