@@ -4,12 +4,12 @@ set transparency=3
 set cc=80
 hi ColorColumn ctermbg=Black guibg=Black
 
-
-nnoremap <silent> <D-r> :CommandTFlush<cr>
+"nnoremap <silent> <D-r> :CommandTFlush<cr>
 nnoremap <silent> <leader><space> :e `pwd`<cr>
 nnoremap <silent> <leader>c :Ex<cr>
 nnoremap <silent> <leader>s :FSHere<cr>
 noremap <silent> <D-k> :noh<cr>
+noremap <silent> <leader>l /\.\.<cr>
 
 " NERDTree
 "map <leader>n :NERDTreeToggle<cr>
@@ -56,3 +56,17 @@ let g:airline_right_alt_sep = '⮃'
 let g:airline_symbols.branch = '⭠'
 let g:airline_symbols.readonly = '⭤'
 let g:airline_symbols.linenr = '⭡'
+
+" CtrlP Options
+let g:ctrlp_show_hidden = 1
+noremap <silent> <leader>t :CtrlP<cr>
+let g:ctrlp_user_command = 'find %s -type f'
+noremap <silent> <leader>1 :let g:ctrlp_working_path_mode = 'ra'<cr>
+noremap <silent> <leader>2 :let g:ctrlp_working_path_mode = 'ca'<cr>
+
+" Rainbow Parentheses
+au VimEnter * RainbowParenthesesToggle
+au Syntax * RainbowParenthesesLoadRound
+au Syntax * RainbowParenthesesLoadSquare
+au Syntax * RainbowParenthesesLoadBraces
+

@@ -19,12 +19,12 @@ rm -rf $ohmyzsh
 git clone git://github.com/robbyrussell/oh-my-zsh.git $ohmyzsh
 
 cd $dotfiles
-for location in zsh-custom/*.*; do
+for location in $dotfiles/zsh-custom/*.*; do
   file="${location##*/}"
   file="${file%.*}"
-  link "$dotfiles/$location" "$ohmyzsh/custom"
+  link "$location" "$ohmyzsh/custom"
 done
 
 # install zsh-syntax-highlighting
-mkdir "$ohmyzsh/custom/plugins"
+mkdir -p "$ohmyzsh/custom/plugins"
 git clone git://github.com/zsh-users/zsh-syntax-highlighting.git "$ohmyzsh/custom/plugins/zsh-syntax-highlighting"

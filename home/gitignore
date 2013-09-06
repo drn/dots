@@ -1,0 +1,24 @@
+#rails specific
+*.sqlite3
+config/database.yml
+log/*
+tmp/*
+
+#xcode specific
+build/*
+*.pbxuser
+*.mode2v3
+*.mode1v3
+*.perspective
+*.perspectivev3
+*~.nib
+#ignore private workspace stuff added by Xcode4
+xcuserdata
+project.xcworkspace
+
+#generic files to ignore
+*~
+*.DS_Store
+*.swp
+*.out
+

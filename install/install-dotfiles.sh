@@ -15,15 +15,15 @@ fi
 source "$dotfiles/install/install.cfg"
 
 # ~ files
-for location in home/*; do
+for location in $dotfiles/home/*; do
   file="${location##*/}"
   file="${file%.*}"
-  link "$dotfiles/$location" "$HOME/.$file"
+  link "$location" "$HOME/.$file"
 done
 
 # bin files
-for location in bin/*; do
+for location in $dotfiles/bin/*; do
   file="${location##*/}"
   file="${file%.*}"
-  link "$dotfiles/$location" "$bin/$file"
+  link "$location" "$bin/$file"
 done

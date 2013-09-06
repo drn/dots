@@ -82,5 +82,8 @@
   bro = !"hub browse -- commit/`git rev-parse HEAD`"
   # better blame
   changes = !"git log --follow -p "
+[credential]
+  helper = osxkeychain
+[heroku]
 [color]
   ui = auto
