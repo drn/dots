@@ -23,6 +23,7 @@ Installed bundles:
   * [cocoa.vim](https://github.commsanders/cocoa.vim)
   * [rainbow_parentheses.vim](https://github.com/kien/rainbow_parentheses.vim)
   * [vim-signature](https://github.comkshenoy/vim-signature)
+  * [vim-fswitch](https://github.com/derekwyatt/vim-fswitch)
   * [YouCompleteMe](https://github.comValloric/YouCompleteMe)
 
 ## ZSH

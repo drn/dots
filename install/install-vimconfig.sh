@@ -59,8 +59,29 @@ git clone git://github.com/kien/rainbow_parentheses.vim.git
 # install vim-signature
 git clone git://github.com/kshenoy/vim-signature.git
 
+# install vim-fswitch
+git clone git://github.com/derekwyatt/vim-fswitch.git
+
 # install YouCompleteMe
 git clone git://github.com/Valloric/YouCompleteMe.git
 cd YouCompleteMe
 ./install.sh
 cd $bundle
+
+colors="$vim/colors"
+ftplugin="$vim/ftplugin"
+mkdir -p $colors $ftplugin
+
+# install vim colors files
+for location in $dotfiles/vim/colors/*; do
+  file="${location##*/}"
+  file="${file%.*}"
+  link "$location" "$colors/$file"
+done
+
+# install vim ftplugin files
+for location in $dotfiles/vim/ftplugin/*; do
+  file="${location##*/}"
+  file="${file%.*}"
+  link "$location" "$ftplugin/$file"
+done
