@@ -15,10 +15,9 @@ fi
 source "$dotfiles/install/install.cfg"
 
 # install oh-my-zsh
-rm -rf $ohmyzsh
+sudo rm -rf $ohmyzsh
 git clone git://github.com/robbyrussell/oh-my-zsh.git $ohmyzsh
 
-cd $dotfiles
 for location in $dotfiles/zsh-custom/*.*; do
   file="${location##*/}"
   file="${file%.*}"
