@@ -20,6 +20,7 @@ rm -rf $vim
 mkdir -p "$vim/autoload" "$vim/bundle"
 
 # install pathogen
+echo "Installing Pathogen"
 curl -Sso ~/.vim/autoload/pathogen.vim https://raw.github.com/tpope/vim-pathogen/master/autoload/pathogen.vim
 
 # install bundles
@@ -65,7 +66,8 @@ clone git://github.com/derekwyatt/vim-fswitch.git
 # install YouCompleteMe
 clone git://github.com/Valloric/YouCompleteMe.git
 cd YouCompleteMe
-./install.sh
+echo "Compiling YouCompleteMe binaries"
+./install.sh > /dev/null
 cd $bundle
 
 colors="$vim/colors"

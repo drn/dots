@@ -10,7 +10,8 @@ chsh -s /bin/zsh
 mkdir -p $dev $dev/personal $dev/work $dev/opensource
 # ensure dotfiles is up to date
 rm -rf $dotfiles
-git clone git@github.com:darrenli/dotfiles.git $dotfiles
+echo "Cloning darrenli/dotfiles to $dotfiles"
+git clone git@github.com:darrenli/dotfiles.git $dotfiles --quiet
 # install dotfiles
 sudo bash $dotfiles/install/install-dotfiles.sh
 # install gitconfig
