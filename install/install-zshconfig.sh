@@ -16,7 +16,7 @@ source "$dotfiles/install/install.cfg"
 
 # install oh-my-zsh
 sudo rm -rf $ohmyzsh
-git clone git://github.com/robbyrussell/oh-my-zsh.git $ohmyzsh
+clone git://github.com/robbyrussell/oh-my-zsh.git $ohmyzsh
 
 # install custom oh-my-zsh config files
 for location in $dotfiles/zsh-custom/*; do
@@ -26,4 +26,4 @@ done
 
 # install zsh-syntax-highlighting
 mkdir -p "$ohmyzsh/custom/plugins"
-git clone git://github.com/zsh-users/zsh-syntax-highlighting.git "$ohmyzsh/custom/plugins/zsh-syntax-highlighting"
+clone git://github.com/zsh-users/zsh-syntax-highlighting.git "$ohmyzsh/custom/plugins/zsh-syntax-highlighting"

@@ -18,5 +18,5 @@ source "$dotfiles/install/install.cfg"
 for location in $dotfiles/fonts/*; do
   file="${location##*/}"
   echo "Copying $location to $font/$file"
-  cp "$location" "$fonts/$file"
+  cp -f "$location" "$fonts/$file"
 done
