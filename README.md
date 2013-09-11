@@ -32,6 +32,7 @@ Pathogen and the following bundles are installed to ~/.vim.
   * [rainbow_parentheses.vim](https://github.com/kien/rainbow_parentheses.vim) - better parentheses syntax highlighting
   * [vim-signature](https://github.comkshenoy/vim-signature) - extended vim marks support
   * [vim-fswitch](https://github.com/derekwyatt/vim-fswitch) - easy companion file switching
+  * [vim-vroom](https://github.com/skalnik/vim-vroom) - run ruby tests
   * [YouCompleteMe](https://github.comValloric/YouCompleteMe) - code-completion engine
 
 ### ZSH

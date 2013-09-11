@@ -56,6 +56,9 @@ clone git://github.com/kshenoy/vim-signature.git
 # install vim-fswitch
 clone git://github.com/derekwyatt/vim-fswitch.git
 
+# install vim-room
+clone git://github.com/skalnik/vim-vroom.git
+
 # install YouCompleteMe
 clone git://github.com/Valloric/YouCompleteMe.git
 cd YouCompleteMe
