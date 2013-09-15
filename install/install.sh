@@ -22,3 +22,5 @@ sudo bash $dotfiles/install/install-vimconfig.sh
 sudo bash $dotfiles/install/install-zshconfig.sh
 # install fonts
 sudo bash $dotfiles/install/install-fonts.sh
+# install basic configuration
+sudo bash $dotfiles/install/install-config.sh
