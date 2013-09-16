@@ -67,7 +67,7 @@ echo "Compiling YouCompleteMe binaries... This may take a while."
 success=$?
 if [[ $success -eq 0 ]]; then
   echo "YouCompleteMe binaries successfully compiled."
-  rm -f $dotfiles/install.log
+  sudo rm -f $dotfiles/install.log
 else
   echo "YouCompleteMe binaries failed to compile. Please see $dotfiles/install.log for additional info."
 fi
