@@ -27,7 +27,7 @@ nnoremap <silent> <leader><space> :e `pwd`<cr>
 nnoremap <silent> <leader>c :Ex<cr>
 nnoremap <silent> <leader>s :FSHere<cr>
 noremap <silent> <D-k> :noh<cr>
-noremap <silent> <leader>l /\.\.<cr>
+noremap <silent>  /\.\.<cr>
 
 " Grep configuration
 nnoremap <D-F> :grep -irn<Space>
