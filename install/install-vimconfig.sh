@@ -9,7 +9,7 @@ bundle="$HOME/.vim/bundle"
 source "$dotfiles/install/install.cfg"
 
 # recreate vim config hierarchy
-rm -rf $vim
+sudo rm -rf $vim
 mkdir -p "$vim/autoload" "$vim/bundle"
 
 # install pathogen
