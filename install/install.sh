@@ -8,7 +8,35 @@ echo "Running script as $(whoami)"
 
 # set zsh as default shell
 echo "Setting ZSH as default shell"
-chsh -s /bin/zsh
+if [ -z "$(grep -irn /usr/local/bin/zsh /etc/shells)" ]; then
+  # if homebrew install zsh is not yet whitelisted
+
+  if hash brew 2>/dev/null; then
+    # if homebrew is installed
+
+    # install zsh if not already installed
+    if [ -z "$(brew list | grep zsh)" ]; then
+      echo "Installing ZSH via homebrew."
+      brew install zsh
+    fi
+
+    # include homebrew zsh path in /etc/shells
+    sudo -s 'echo "/usr/local/bin/zsh" >> /etc/shells'
+
+    # change shell to homebrew zsh
+    echo "Changing shell to homebrew installed zsh"
+    chsh -s /usr/local/bin/zsh
+  else
+    # fallback to system zsh and display warning
+    echo "Warning: Homebrew not found. Cannot install updated zsh version. Falling back to system zsh."
+    chsh -s /bin/zsh
+  fi
+else
+  # if already whitelisted in shell list, use brew installed zsh
+  echo "Changing shell to homebrew installed zsh"
+  chsh -s /usr/local/bin/zsh
+fi
+
 # create default directory structure
 echo "Ensuring expected directory hierarchy is in place."
 mkdir -p $dev $dev/personal $dev/work $dev/opensource
