@@ -68,8 +68,10 @@ let g:airline_symbols.linenr = '⭡'
 let g:ctrlp_show_hidden = 1
 noremap <silent> <leader>t :CtrlP<cr>
 let g:ctrlp_user_command = 'find %s -type f'
-noremap <silent> <leader>1 :let g:ctrlp_working_path_mode = 'ra'<cr>
-noremap <silent> <leader>2 :let g:ctrlp_working_path_mode = 'ca'<cr>
+noremap <silent> <D-1> :let g:ctrlp_working_path_mode = 'ra'<cr>
+noremap <silent> <D-2> :let g:ctrlp_working_path_mode = 'ca'<cr>
+noremap <silent> <D-r> :CtrlPClearCache<cr>
+
 
 " Rainbow Parentheses
 au VimEnter * RainbowParenthesesToggle
