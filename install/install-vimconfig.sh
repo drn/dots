@@ -77,6 +77,9 @@ clone git://github.com/skalnik/vim-vroom.git
 # install NERD Commenter
 clone git://github.com/scrooloose/nerdcommenter.git
 
+# install vim-multiple-cursors
+clone git://github.com/terryma/vim-multiple-cursors.git
+
 # install YouCompleteMe
 clone git://github.com/Valloric/YouCompleteMe.git
 cd YouCompleteMe
