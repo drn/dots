@@ -24,7 +24,7 @@ hi ColorColumn ctermbg=Black guibg=Black
 
 " Default mappings
 nnoremap <silent> <leader><space> :e `pwd`<cr>
-nnoremap <silent> <leader>c :Ex<cr>
+nnoremap <silent> <D-d> :Ex<cr>
 nnoremap <silent> <leader>s :FSHere<cr>
 noremap <silent> <D-k> :noh<cr>
 noremap <silent>  /\.\.<cr>
