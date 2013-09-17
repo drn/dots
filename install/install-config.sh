@@ -16,3 +16,9 @@ sudo launchctl unload -w /System/Library/LaunchDaemons/com.apple.metadata.mds.pl
 sudo chmod 600 /System/Library/CoreServices/Search.bundle/Contents/MacOS/Search
 killall SystemUIServer
 
+echo "Configuring system key press speeds"
+# disable key hold popup menu
+defaults write -g ApplePressAndHoldEnabled -bool false
+# set key repeat rates
+defaults write -g InitialKeyRepeat -int 10
+defaults write -g KeyRepeat -int 1
