@@ -29,3 +29,6 @@ setopt NO_NOMATCH
 
 # Set history size to 5k
 HISTSIZE=5000
+
+# Initialize Z
+. /usr/local/bin/z.sh
