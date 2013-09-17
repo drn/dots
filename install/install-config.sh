@@ -1,4 +1,4 @@
-echo "Ensure no sleepimage files are generated"
+echo "Ensuring no sleepimage files are generated"
 # set hibernate mode to desktop
 sudo pmset -a hibernatemode 0
 # remove sleepimage
