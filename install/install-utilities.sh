@@ -15,5 +15,5 @@ curl http://hub.github.com/standalone -sLo $bin/hub && chmod +x $bin/hub
 sudo rm -rf $opensource/z
 clone git://github.com/rupa/z.git $opensource/z
 link $opensource/z/z.sh $bin/z.sh
-link $opensource/z/z.1 /usr/local/share/man/man1
+link $opensource/z/z.1 /usr/local/share/man/man1/z.1
 touch ~/.z
