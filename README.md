@@ -28,6 +28,7 @@ Pathogen and the following bundles are installed to ~/.vim.
   * [vim-signature](https://github.comkshenoy/vim-signature) - extended vim marks support
   * [vim-fswitch](https://github.com/derekwyatt/vim-fswitch) - easy companion file switching
   * [vim-vroom](https://github.com/skalnik/vim-vroom) - run ruby tests
+  * [nerdcommenter](https://github.com/scrooloose/nerdcommenter) - commenting support
   * [YouCompleteMe](https://github.comValloric/YouCompleteMe) - code-completion engine
 
 ### Terminal
