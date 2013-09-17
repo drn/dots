@@ -20,8 +20,8 @@ echo "Configuring system key press speeds"
 # disable key hold popup menu
 defaults write -g ApplePressAndHoldEnabled -bool false
 # set key repeat rates
-defaults write -g InitialKeyRepeat -int 10
-defaults write -g KeyRepeat -int 1
+defaults write -g InitialKeyRepeat -int 12
+defaults write -g KeyRepeat -int 3
 
 echo "Disabling notification center"
 launchctl unload -w /System/Library/LaunchAgents/com.apple.notificationcenterui.plist
