@@ -24,7 +24,7 @@ defaults write -g InitialKeyRepeat -int 12
 defaults write -g KeyRepeat -int 3
 
 echo "Disabling notification center"
-launchctl unload -w /System/Library/LaunchAgents/com.apple.notificationcenterui.plist
+launchctl unload -w /System/Library/LaunchAgents/com.apple.notificationcenterui.plist 2>/dev/null
 
 echo "Disabling natural scrolling"
 defaults write NSGlobalDomain com.apple.swipescrolldirection -bool false
