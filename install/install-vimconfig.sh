@@ -3,14 +3,29 @@
 dev="$HOME/Development"
 dotfiles="$dev/dotfiles"
 vim="$HOME/.vim"
-bundle="$HOME/.vim/bundle"
+load="$vim/autoload"
+bundle="$vim/bundle"
+colors="$vim/colors"
+ftplugin="$vim/ftplugin"
 
 # include install functions
 source "$dotfiles/install/install.cfg"
 
 # recreate vim config hierarchy
 sudo rm -rf $vim
-mkdir -p "$vim/autoload" "$vim/bundle"
+mkdir -p $load $bundle $colors $ftplugin
+
+# install vim colors files
+for location in $dotfiles/vim/colors/*; do
+  file="${location##*/}"
+  link "$location" "$colors/$file"
+done
+
+# install vim ftplugin files
+for location in $dotfiles/vim/ftplugin/*; do
+  file="${location##*/}"
+  link "$location" "$ftplugin/$file"
+done
 
 # install pathogen
 echo "Installing Pathogen"
@@ -72,19 +87,3 @@ else
   echo "YouCompleteMe binaries failed to compile. Please see $dotfiles/install.log for additional info."
 fi
 cd $bundle
-
-colors="$vim/colors"
-ftplugin="$vim/ftplugin"
-mkdir -p $colors $ftplugin
-
-# install vim colors files
-for location in $dotfiles/vim/colors/*; do
-  file="${location##*/}"
-  link "$location" "$colors/$file"
-done
-
-# install vim ftplugin files
-for location in $dotfiles/vim/ftplugin/*; do
-  file="${location##*/}"
-  link "$location" "$ftplugin/$file"
-done
