@@ -63,4 +63,4 @@ bash $dotfiles/install/install-zshconfig.sh
 # install fonts
 bash $dotfiles/install/install-fonts.sh
 # install basic configuration
-bash $dotfiles/install/install-config.sh
+bash $dotfiles/install/install-osxconfig.sh
