@@ -82,6 +82,8 @@
   bro = !"hub browse -- commit/`git rev-parse HEAD`"
   # better blame
   changes = !"git log --follow -p "
+  # rebase on origin/master
+  rbm = !"git rb origin/master"
 [user]
   name = darrenli
   email = darren@thanx.com
