@@ -22,3 +22,15 @@ defaults write -g ApplePressAndHoldEnabled -bool false
 # set key repeat rates
 defaults write -g InitialKeyRepeat -int 10
 defaults write -g KeyRepeat -int 1
+
+echo "Disabling notification center"
+launchctl unload -w /System/Library/LaunchAgents/com.apple.notificationcenterui.plist
+
+echo "Disabling natural scrolling"
+defaults write NSGlobalDomain com.apple.swipescrolldirection -bool false
+
+echo "Enabling Finder status bar"
+defaults write com.apple.finder ShowStatusBar -bool true
+
+echo "Setting hidden dock applications as translucent"
+defaults write com.apple.dock showhidden -bool true
