@@ -9,11 +9,6 @@ Single line installation:
 
     curl --silent https://raw.github.com/darrenli/dotfiles/master/install/install.sh | sh
 
-### Screenshots
-
-![](http://cl.ly/image/1G062B2l1E1B/Screen%20Shot%202013-09-06%20at%201.02.20%20AM.png)
-![](http://cl.ly/image/051P2z0V0q0K/Screen%20Shot%202013-09-06%20at%201.09.01%20AM.png)
-
 ### VIM
 
 Vim configuration files (`.vimrc`, `.gvimrc`) files are installed.
