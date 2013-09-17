@@ -12,7 +12,7 @@ sudo rm -rf $ohmyzsh
 clone git://github.com/robbyrussell/oh-my-zsh.git $ohmyzsh
 
 # install custom oh-my-zsh config files
-for location in $dotfiles/zsh-custom/*; do
+for location in $dotfiles/zsh/*; do
   file="${location##*/}"
   link "$location" "$ohmyzsh/custom/$file"
 done

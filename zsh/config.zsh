@@ -1,11 +1,3 @@
-# Set up console prompt
-PROMPT='[%{$fg_bold[cyan]%}%n%{$reset_color%}:%{$fg_bold[red]%}%c%{$reset_color%}]$(git_prompt_info) %{$fg_bold[blue]%}➜%{$reset_color%}  '
-
-ZSH_THEME_GIT_PROMPT_PREFIX=" %{$fg[blue]%}(%{$fg[red]%}"
-ZSH_THEME_GIT_PROMPT_DIRTY="%{$reset_color%}:%{$fg[yellow]%}✗%{$fg[blue]%})"
-ZSH_THEME_GIT_PROMPT_CLEAN="%{$fg[blue]%})"
-ZSH_THEME_GIT_PROMPT_SUFFIX="%{$reset_color%}"
-
 # Enable highlighters
 ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets)
 
@@ -32,7 +24,7 @@ ZSH_HIGHLIGHT_STYLES[dollar-double-quoted-argument]=fg=cyan
 ZSH_HIGHLIGHT_STYLES[back-double-quoted-argument]=fg=cyan
 ZSH_HIGHLIGHT_STYLES[assign]=none
 
-# Disable need to esacpe ^ characters
+# Disable need to escape ^ characters
 setopt NO_NOMATCH
 
 # Set history size to 5k
