@@ -54,8 +54,8 @@ cd ~
 
 # install dotfiles
 bash $dotfiles/install/install-dotfiles.sh
-# install gitconfig
-bash $dotfiles/install/install-gitconfig.sh
+# install terminal utilites
+bash $dotfiles/install/install-utilities.sh
 # install vim configuration
 bash $dotfiles/install/install-vimconfig.sh
 # install zsh configuration

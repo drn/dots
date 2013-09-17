@@ -35,13 +35,14 @@ Pathogen and the following bundles are installed to ~/.vim.
   * [vim-vroom](https://github.com/skalnik/vim-vroom) - run ruby tests
   * [YouCompleteMe](https://github.comValloric/YouCompleteMe) - code-completion engine
 
-### ZSH
+### Terminal
 
-Zshell is set as the default shell. The following zsh config management
-framework and plugins are also installed.
+ZSH is set as the default shell. The following zsh config management
+framework, oh-my-zsh plugins, and terminal utilities are also installed.
 
   * [oh-my-zsh](https://github.com/robbyrussell/oh-my-zsh) - zsh configuration management framework
   * [zsh-syntax-highlighting](https://github.com/zsh-users/zsh-syntax-highlighting) - additional shell syntax highlighting
+  * [z](https://github.com/rupa/z) - weighted directory navigation
 
 ### Fonts
 
