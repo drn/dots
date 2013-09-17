@@ -12,7 +12,7 @@ echo "Disabling OS X programs"
 defaults write com.apple.dashboard mcx-disabled -boolean YES
 killall Dock
 # disable spotlight and its menu bar icon
-sudo launchctl unload -w /System/Library/LaunchDaemons/com.apple.metadata.mds.plist
+sudo launchctl unload -w /System/Library/LaunchDaemons/com.apple.metadata.mds.plist 2>/dev/null
 sudo chmod 600 /System/Library/CoreServices/Search.bundle/Contents/MacOS/Search
 killall SystemUIServer
 
