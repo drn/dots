@@ -4,7 +4,10 @@
 dev="$HOME/Development"
 dotfiles="$dev/dotfiles"
 
-echo "Running script as $(whoami)"
+echo "Installing SanguineRane configuration for $(whoami)"
+
+# change directory to home, in order to avoid directory conflicts
+cd ~
 
 # set zsh as default shell
 echo "Setting ZSH as default shell"
