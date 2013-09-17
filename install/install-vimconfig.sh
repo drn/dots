@@ -80,6 +80,9 @@ clone git://github.com/scrooloose/nerdcommenter.git
 # install vim-multiple-cursors
 clone git://github.com/terryma/vim-multiple-cursors.git
 
+# install vim-easy-align
+clone git://github.com/junegunn/vim-easy-align.git
+
 # install YouCompleteMe
 clone git://github.com/Valloric/YouCompleteMe.git
 cd YouCompleteMe
