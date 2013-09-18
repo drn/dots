@@ -47,20 +47,18 @@ mkdir -p $dev $dev/personal $dev/work $dev/opensource
 sudo rm -rf $dotfiles
 echo "Cloning darrenli/dotfiles to $dotfiles"
 git clone git@github.com:darrenli/dotfiles.git $dotfiles --quiet
-# ensure dotfiles has a fork remote
-cd $dotfiles
-git remote add fork git@github.com:darrenli/dotfiles.git
-cd ~
 
 # install dotfiles
 bash $dotfiles/install/install-dotfiles.sh
 # install terminal utilites
 bash $dotfiles/install/install-utilities.sh
-# install vim configuration
-bash $dotfiles/install/install-vimconfig.sh
 # install zsh configuration
 bash $dotfiles/install/install-zshconfig.sh
+# install git configuration
+bash $dotfiles/install/install-gitconfig.sh
 # install fonts
 bash $dotfiles/install/install-fonts.sh
-# install basic configuration
+# install vim configuration
+bash $dotfiles/install/install-vimconfig.sh
+# install os x configuration
 bash $dotfiles/install/install-osxconfig.sh

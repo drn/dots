@@ -2,6 +2,8 @@
 export PATH=~/bin:$PATH
 # Include Homebrew in PATH
 export PATH=/usr/local/bin:$PATH
+# Include git extensions in PATH
+export PATH=$HOME/.git-extensions:$PATH
 # Include MySQL in PATH
 export PATH=/usr/local/mysql/bin:$PATH
 # Include Android tools in PATH

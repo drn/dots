@@ -1,0 +1,19 @@
+#!/bin/bash
+
+#
+# Pushes the current branch to:
+#   * a specified branch
+#   * fork if that remote exists
+#   * origin otherwise
+#
+
+branch="$(git rev-parse --abbrev-ref HEAD)"
+remote="$1"
+if [ -z "$remote" ]; then
+  remote="$(git remote | grep 'fork')"
+  if [ -z "$remote" ]; then
+    remote="origin"
+  fi
+fi
+echo "Pushing $branch to $remote..."
+git push $remote $branch -f

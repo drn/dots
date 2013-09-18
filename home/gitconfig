@@ -50,7 +50,6 @@
   # returns the current branch name
   me = rev-parse --abbrev-ref HEAD
   # pushes current branch to the specified remote, defaults to fork
-  pushme = !sh -c 'git me | xargs git push ${1:-fork} -f' -
   pm = !"git pushme"
   # pushes current branch to origin/master
   masterme = !sh -c 'git me | xargs git push origin $1:master' -
