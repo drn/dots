@@ -84,6 +84,8 @@
   changes = !"git log --follow -p "
   # rebase on origin/master
   rbm = !"git rb origin/master"
+  # hard reset to master
+  resetm = !"git reset --hard origin/master"
 [user]
   name = darrenli
   email = darren@thanx.com
