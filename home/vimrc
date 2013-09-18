@@ -31,8 +31,8 @@ noremap <silent>  /\.\.<cr>
 
 " Grep configuration
 nnoremap <D-F> :grep -irn<Space>
-nmap <silent> <C-N> :cn<CR>z.
-nmap <silent> <C-P> :cp<CR>z.
+nmap <silent> <C-]> :cn<CR>z.
+nmap <silent> <C-[> :cp<CR>z.
 
 " reindent current file and return to previous location
 map <D-i> mzgg=G`z<CR>
