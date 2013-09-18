@@ -4,7 +4,7 @@
 [core]
   # default ignored files for OSX; see below
   excludesfile = /Users/darrencheng/.gitignore
-  editor = /Applications/MacVim.app/Contents/MacOS/Vim
+  editor = mvim -f
 [alias]
   # git fetch shortcut
   f = fetch
