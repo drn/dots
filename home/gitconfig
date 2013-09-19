@@ -53,7 +53,6 @@
   # pushes current branch to the specified remote, defaults to fork
   pm = !"git pushme"
   # pushes current branch to origin/master
-  masterme = !sh -c 'git me | xargs git push origin $1:master' -
   mm = !"git masterme"
   # delete specified branch from the specified remote
   delete = !sh -c 'git push $1 :$2' -

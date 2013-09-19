@@ -1,0 +1,6 @@
+#!/bin/bash
+
+branch="$(git rev-parse --abbrev-ref HEAD)"
+
+echo "Attempting to push local $branch to origin/master..."
+git push origin $branch:master
