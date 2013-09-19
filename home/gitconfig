@@ -56,9 +56,9 @@
   mm = !"git masterme"
   # delete specified branch from the specified remote
   delete = !sh -c 'git push $1 :$2' -
-  # delete current branch from the specified remote, defaults to fork
-  killme = !sh -c 'git me | xargs git delete ${1:-fork}' -
+  # delete current branch from origin, fork, and locally
   km = !"git killme"
+  kmf = !"git killme --force"
   # updates fork/master to origin/master
   upfork = push fork origin/master:master --force
   # updates origin/master and syncs fork master to origin
