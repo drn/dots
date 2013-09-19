@@ -28,6 +28,7 @@ nnoremap <silent> <D-d> :Ex<cr>
 nnoremap <silent> <leader>s :FSHere<cr>
 noremap <silent> <D-k> :noh<cr>
 noremap <silent>  /\.\.<cr>
+noremap <silent> <leader>? :Copen!<cr>
 
 " Grep configuration
 nnoremap <D-F> :grep -irn<Space>
@@ -91,3 +92,20 @@ let g:gitgutter_eager = 0
 let g:no_turbux_mappings = 1
 nmap <leader>r <Plug>SendTestToTmux
 nmap <leader>R <Plug>SendFocusedTestToTmux
+
+" Automatically adjust quickfix window height
+au FileType qf call AdjustWindowHeight(3, 20)
+function! AdjustWindowHeight(minheight, maxheight)
+  let l = 1
+  let n_lines = 0
+  let w_width = winwidth(0)
+  while l <= line('$')
+    " number to float for division
+    let l_len = strlen(getline(l)) + 0.0
+    let line_width = l_len/w_width
+    let n_lines += float2nr(ceil(line_width))
+    let l += 1
+  endw
+  exe max([min([n_lines, a:maxheight]), a:minheight]) . "wincmd _"
+endfunction
+ " https://gist.github.com/juanpabloaj/5845848
