@@ -31,6 +31,8 @@ Pathogen and the following bundles are installed to ~/.vim.
   * [nerdcommenter](https://github.com/scrooloose/nerdcommenter) - commenting support
   * [vim-multiple-cursors](https://github.com/terryma/vim-multiple-cursors) - multiple cursor selections
   * [vim-easy-align](https://github.com/junegunn/vim-easy-align) - vim alignment support
+  * [vim-turbux](https://github.com/jgdavey/vim-turbux) - vim ruby testing via tmux
+  * [vim-dispatch](https://github.com/tpope/vim-dispatch) - asynchronous build and test dispatcher
   * [YouCompleteMe](https://github.comValloric/YouCompleteMe) - code-completion engine
 
 ### Terminal

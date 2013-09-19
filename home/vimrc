@@ -86,3 +86,8 @@ vnoremap <silent> <Enter> :EasyAlign<cr>
 
 " vim-gitgutter options
 let g:gitgutter_eager = 0
+
+" vim-turbox
+let g:no_turbux_mappings = 1
+nmap <leader>r <Plug>SendTestToTmux
+nmap <leader>R <Plug>SendFocusedTestToTmux
