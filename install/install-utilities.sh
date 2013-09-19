@@ -17,3 +17,15 @@ clone git://github.com/rupa/z.git $opensource/z
 link $opensource/z/z.sh $bin/z.sh
 link $opensource/z/z.1 /usr/local/share/man/man1/z.1
 touch ~/.z
+
+# if homebrew is installed
+if hash brew 2>/dev/null; then
+
+  # ensure tmux is install
+  if [ -z "$(brew list | grep tmux)" ]; then
+    echo "Installing tmux via homebrew."
+    brew install tmux
+  fi
+
+fi
+
