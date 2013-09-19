@@ -88,6 +88,10 @@ vnoremap <silent> <Enter> :EasyAlign<cr>
 
 " vim-gitgutter options
 let g:gitgutter_eager = 0
+let g:gitgutter_enabled = 0
+let g:gitgutter_sign_column_always = 1
+noremap <silent> <leader>g :GitGutterToggle<cr>
+
 
 " vim-turbox
 let g:no_turbux_mappings = 1
