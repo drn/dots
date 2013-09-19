@@ -71,8 +71,6 @@
   impact = !"ruby ~/bin/gitimpact.rb"
   # remote details
   remote-details = !"git remote -v | grep 'fork' | awk '{print $2}' | uniq | sed 's#.*:##g' | sed 's#.git$##g'"
-  # browse the branch
-  showme = !hub browse `git remote-details` tree/`git rev-parse --abbrev-ref HEAD`
   # pull request
   pullme = !hub browse `git remote-details` pull/new/`git me`
   # pushes to origin/master

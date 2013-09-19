@@ -1,0 +1,30 @@
+#!/bin/bash
+
+#
+# Displays the current branch in github if it exists on origin or fork.
+#
+
+branch="$(git rev-parse --abbrev-ref HEAD)"
+remote=""
+
+# if the current branch exists on origin, show that branch
+if [ "$(git branch --remote | grep origin/$branch)" ]; then
+  remote="origin"
+fi
+
+# if current branch is not on origin
+if [ -z "$remote" ]; then
+  # if the current branch exists on fork, show that branch
+  if [ "$(git branch --remote | grep "fork/$branch")" ]; then
+    remote="fork"
+  fi
+fi
+
+# either display an error message or display the branch in github
+if [ -z "$remote" ]; then
+  echo "Sorry, your current branch doesn't exist on origin or fork."
+else
+  # determine full remote path
+  remote="$(git remote -v | grep $remote | awk '{print $2}' | uniq | sed 's#.*:##g' | sed 's#.git$##g')"
+  hub browse $remote tree/$branch
+fi
