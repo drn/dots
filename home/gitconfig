@@ -5,6 +5,7 @@
   # default ignored files for OSX; see below
   excludesfile = /Users/darrencheng/.gitignore
   editor = mvim -f
+  preloadindex = true
 [alias]
   # git fetch shortcut
   f = fetch
