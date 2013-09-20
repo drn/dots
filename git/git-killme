@@ -9,6 +9,12 @@ if [ $branch == "master" ]; then
   exit 1
 fi
 
+# prevent destruction of uncommitted data
+if [ "$1" != "--force" ] && [ -z "$(git st | grep 'nothing to commit')" ]; then
+  echo "Aborting deletion of branch '$branch'... uncommitted data."
+  exit 1
+fi
+
 # remove branch from fork
 if [ "$(git branch --remote | grep fork/$branch)" ]; then
   echo "Deleting $branch from fork..."
@@ -24,22 +30,43 @@ fi
 # check out fallback branch
 if [ $branch != $fallback ]; then
 
+  # deletion should occur if:
+  #   * --force is set (handled below)
+  #   * the branch exists locally
+  #   * the branch exists remotely
+  deletion="$(git branch --contains $branch | sed /$fallback/d | sed /$branch/d)"
+  deletion+="$(git branch --remote --contains $branch)"
+
   # if fallback branch already exists:
   #   * check it out
+  #   * reset fallback branch to origin/master if
+  #     * fallback branch is contained locally
+  #     * fallback branch is contained remotely
   #   * destroy local branch
   # otherwise:
   #   * create the fallback branch
-  #   * reset the branch to origin/master
+  #   * reset fallback branch to origin/master
   #   * destroy local branch
   if [ "$(git branch | grep $fallback)" ]; then
     git checkout $fallback
-    if [ "$1" == "--force" ]; then
+
+    # if fallback branch is contained locally
+    if [ "$(git branch --contains $fallback | sed /$fallback/d | sed /$branch/d)" ]; then
+      git reset --hard origin/master
+    fi
+
+    # if fallback branch is contained remotely
+    if [ "$(git branch --remote --contains $fallback | sed /$fallback/d)" ]; then
+      git reset --hard origin/master
+    fi
+
+    if [ "$1" == "--force" ] || [ "$deletion" ]; then
       git branch -D $branch
     fi
   else
     git checkout -b $fallback
     git reset --hard origin/master
-    if [ "$1" == "--force" ]; then
+    if [ "$1" == "--force" ] || [ "$deletion" ]; then
       git branch -D $branch
     fi
   fi
