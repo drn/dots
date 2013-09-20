@@ -8,12 +8,29 @@
 #
 
 branch="$(git rev-parse --abbrev-ref HEAD)"
-remote="$1"
+remote=""
+if [ "$1" != "--force" ]; then
+  remote="$1"
+fi
+
+# abort script if input remote doesn't exist
+if [ "$remote" ] && [ -z "$(git remote | grep $remote)"]; then
+  echo "Aborting... no remote $remote exists."
+  exit 0
+fi
+
+# set remote to fork or origin if no input remote
 if [ -z "$remote" ]; then
   remote="$(git remote | grep 'fork')"
   if [ -z "$remote" ]; then
     remote="origin"
   fi
 fi
+
+# push or force push depending on remote and flags
 echo "Pushing $branch to $remote..."
-git push $remote $branch -f
+if [ $remote == "origin" ] && [ "$1" != "--force" ]; then
+  git push $remote $branch
+else
+  git push $remote $branch -f
+fi

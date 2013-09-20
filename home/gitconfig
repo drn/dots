@@ -52,6 +52,7 @@
   me = rev-parse --abbrev-ref HEAD
   # pushes current branch to the specified remote, defaults to fork
   pm = !"git pushme"
+  pmf = !"git pushme --force"
   # pushes current branch to origin/master
   mm = !"git masterme"
   # delete specified branch from the specified remote
