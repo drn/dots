@@ -41,3 +41,6 @@ HISTSIZE=5000
 
 # Initialize Z
 . /usr/local/bin/z.sh
+
+# Disable tab completion
+compdef -d rake
