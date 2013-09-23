@@ -33,6 +33,7 @@ Pathogen and the following bundles are installed to ~/.vim.
   * [vim-easy-align](https://github.com/junegunn/vim-easy-align) - vim alignment support
   * [vim-turbux](https://github.com/jgdavey/vim-turbux) - vim ruby testing via tmux
   * [vim-dispatch](https://github.com/tpope/vim-dispatch) - asynchronous build and test dispatcher
+  * [vim-togglelist](https://github.com/milkypostman/vim-togglelist) - easy toggling of quickfix menu
   * [YouCompleteMe](https://github.comValloric/YouCompleteMe) - code-completion engine
 
 ### Terminal

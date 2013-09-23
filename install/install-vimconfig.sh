@@ -89,6 +89,9 @@ clone git://github.com/tpope/vim-dispatch.git
 # install vim-turbox
 clone git://github.com/jgdavey/vim-turbux.git
 
+# install vim-togglelist
+clone git://github.com/milkypostman/vim-togglelist.git
+
 # install YouCompleteMe
 clone git://github.com/Valloric/YouCompleteMe.git
 cd YouCompleteMe
