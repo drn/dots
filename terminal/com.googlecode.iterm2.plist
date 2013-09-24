@@ -443,13 +443,13 @@
 	<key>MaxVertically</key>
 	<false/>
 	<key>NSColorPanelMode</key>
-	<string>6</string>
+	<string>1</string>
 	<key>NSColorPanelVisibleSwatchRows</key>
 	<integer>3</integer>
 	<key>NSColorPickerSlidersDefaults</key>
 	<string>1</string>
 	<key>NSNavLastRootDirectory</key>
-	<string>~/Development/dotfiles/terminal</string>
+	<string>~/Documents</string>
 	<key>NSQuotedKeystrokeBinding</key>
 	<string></string>
 	<key>NSRepeatCountBinding</key>
@@ -474,17 +474,29 @@
 	<key>NSTableView Sort Ordering KeyBingingTable</key>
 	<array/>
 	<key>NSWindow Frame NSColorPanel</key>
-	<string>307 274 266 309 0 0 1440 878 </string>
+	<string>307 274 266 310 0 0 1440 878 </string>
 	<key>NSWindow Frame Preferences</key>
-	<string>93 101 924 485 0 0 1440 878 </string>
+	<string>453 224 924 485 0 0 1440 878 </string>
 	<key>NSWindow Frame iTerm Window 0</key>
-	<string>0 28 1440 847 0 0 1440 878 </string>
+	<string>-1080 -533 1080 1898 -1080 -555 1080 1920 </string>
 	<key>NSWindow Frame iTerm Window 1</key>
-	<string>0 409 570 451 0 0 1440 878 </string>
+	<string>-1080 -533 1080 1898 -1080 -555 1080 1920 </string>
 	<key>NSWindow Frame iTerm Window 2</key>
-	<string>1 404 570 451 0 0 1440 878 </string>
+	<string>0 26 1440 852 0 0 1440 878 </string>
 	<key>NSWindow Frame iTerm Window 3</key>
-	<string>225 22 570 451 0 0 1440 878 </string>
+	<string>0 26 1440 852 0 0 1440 878 </string>
+	<key>NSWindow Frame iTerm Window 4</key>
+	<string>0 26 1440 852 0 0 1440 878 </string>
+	<key>NSWindow Frame iTerm Window 5</key>
+	<string>1 413 570 451 0 0 1440 878 </string>
+	<key>NSWindow Frame iTerm Window 6</key>
+	<string>288 427 570 451 0 0 1440 878 </string>
+	<key>NSWindow Frame iTerm Window 7</key>
+	<string>0 26 1440 852 0 0 1440 878 </string>
+	<key>NSWindow Frame iTerm Window 8</key>
+	<string>1 11 1438 859 0 0 1440 878 </string>
+	<key>NSWindow Frame iTerm Window 9</key>
+	<string>1 11 1438 859 0 0 1440 878 </string>
 	<key>New Bookmarks</key>
 	<array>
 		<dict>
@@ -685,11 +697,11 @@
 			<key>Cursor Color</key>
 			<dict>
 				<key>Blue Component</key>
-				<real>0.41979926824569702</real>
+				<real>0.39610162377357483</real>
 				<key>Green Component</key>
-				<real>0.086704909801483154</real>
+				<real>0.15484139323234558</real>
 				<key>Red Component</key>
-				<real>0.76668554544448853</real>
+				<real>0.78694331645965576</real>
 			</dict>
 			<key>Cursor Text Color</key>
 			<dict>
@@ -1992,7 +2004,7 @@
 	<key>SUHasLaunchedBefore</key>
 	<true/>
 	<key>SULastCheckTime</key>
-	<date>2013-09-05T20:56:59Z</date>
+	<date>2013-09-23T07:20:31Z</date>
 	<key>SavePasteHistory</key>
 	<false/>
 	<key>ShowBookmarkName</key>
