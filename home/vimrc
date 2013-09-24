@@ -126,3 +126,7 @@ let g:syntastic_style_warning_symbol='⚠'
 let g:toggle_list_no_mappings = 1
 nmap <script> <silent> <leader>? :call ToggleQuickfixList()<CR>
 let g:toggle_list_copen_command="Copen!"
+
+" Turbox configuration
+let g:turbux_command_prefix = 'spring'
+let g:turbux_command_test_unit = 'testunit'
