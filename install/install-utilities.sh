@@ -21,10 +21,16 @@ touch ~/.z
 # if homebrew is installed
 if hash brew 2>/dev/null; then
 
-  # ensure tmux is install
+  # ensure tmux is installed
   if [ -z "$(brew list | grep tmux)" ]; then
     echo "Installing tmux via homebrew."
     brew install tmux
+  fi
+
+  # ensure the_silver_searcher (ag) is installed
+  if [ -z "$(brew list | grep the_silver_searcher)" ]; then
+    echo "Installing the_silver_searcher via homebrew."
+    brew install the_silver_searcher
   fi
 
 fi
