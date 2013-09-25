@@ -41,9 +41,9 @@ set guicursor=n-v-c:blinkwait500-blinkoff500-blinkon500
 """ Mappings """
 
 " Open current file's directory listing
-nnoremap <silent> <D-e> :e `pwd`<cr>
+nnoremap <silent> <D-e> :e `pwd`<cr>zz
 " Open working directory listning
-nnoremap <silent> <D-d> :Ex<cr>
+nnoremap <silent> <D-d> :Ex<cr>zz
 " Switch between header and source files
 nnoremap <silent> <leader>s :FSHere<cr>
 " Clear search highlighs
