@@ -54,6 +54,7 @@ plugins=(
   puppetlabs/puppet-syntax-vim
   Valloric/YouCompleteMe
   nanotech/jellybeans.vim
+  vim-ruby/vim-ruby
 )
 
 # clone all plugins in plugin list

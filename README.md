@@ -20,6 +20,7 @@ Pathogen and the following bundles are installed to ~/.vim.
   * [vim-fugitive](https://github.com/tpope/vim-fugitive) - git wrapper
   * [vim-gitgutter](https://github.com/airblade/vim-gitgutter) - git gutter
   * [vim-rails](https://github.com/tpope/vim-rails) - vim rails support
+  * [vim-ruby](https://github.com/vim-ruby/vim-ruby) - vim ruby support
   * [vim-bundler](https://github.com/tpope/vim-bundler) - vim bundler support
   * [syntastic](https://github.com/scrooloose/syntastic) - syntax checking
   * [vim-yardoc](https://github.com/noprompt/vim-yardoc) - YARD syntax highlighting
