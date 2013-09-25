@@ -59,9 +59,9 @@ nnoremap <D-i> mzgg=G`z<CR>
 " Mapping to easily search via Ag
 nnoremap <D-F> :Ag<Space>
 " Jump to next item in search
-nnoremap <silent> <C-]> :cn<CR>z.
+nnoremap <silent> <D-]> :cn<CR>z.
 " Jump to next item in search
-nnoremap <silent> <C-[> :cp<CR>z.
+nnoremap <silent> <D-[> :cp<CR>z.
 
 " Easy Motion
 hi EasyMotionTarget ctermbg=DarkMagenta guibg=DarkMagenta ctermfg=white guifg=white
