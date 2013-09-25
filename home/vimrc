@@ -41,7 +41,7 @@ set guicursor=n-v-c:blinkwait500-blinkoff500-blinkon500
 """ Mappings """
 
 " Open current file's directory listing
-nnoremap <silent> <D-Space> :e `pwd`<cr>
+nnoremap <silent> <D-e> :e `pwd`<cr>
 " Open working directory listning
 nnoremap <silent> <D-d> :Ex<cr>
 " Switch between header and source files
