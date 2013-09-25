@@ -24,20 +24,31 @@ hi ColorColumn ctermbg=Black guibg=Black
 highlight Cursor guibg=#C92765
 set guicursor=n-v-c:blinkwait500-blinkoff500-blinkon500
 
-" Default mappings
-nnoremap <silent> <leader><space> :e `pwd`<cr>
+
+""" Mappings """
+
+" Open current file's directory listing
+nnoremap <silent> <D-Space> :e `pwd`<cr>
+" Open working directory listning
 nnoremap <silent> <D-d> :Ex<cr>
+" Switch between header and source files
 nnoremap <silent> <leader>s :FSHere<cr>
-noremap <silent> <D-k> :noh<cr>
-noremap <silent>  /\.\.<cr>
+" Clear search highlighs
+nnoremap <silent> <D-k> :noh<cr>
+" Highlight .. patterns to easily navigate in directory listnings
+nnoremap <silent>  /\.\.<cr>
+" Reindent current file and return to previous location
+nnoremap <D-i> mzgg=G`z<CR>
 
-" Grep configuration
+
+""" Ag Configuration """
+
+" Mapping to easily search via Ag
 nnoremap <D-F> :Ag<Space>
-nmap <silent> <C-]> :cn<CR>z.
-nmap <silent> <C-[> :cp<CR>z.
-
-" reindent current file and return to previous location
-map <D-i> mzgg=G`z<CR>
+" Jump to next item in search
+nnoremap <silent> <C-]> :cn<CR>z.
+" Jump to next item in search
+nnoremap <silent> <C-[> :cp<CR>z.
 
 " Easy Motion
 hi EasyMotionTarget ctermbg=DarkMagenta guibg=DarkMagenta ctermfg=white guifg=white
@@ -93,13 +104,13 @@ let g:gitgutter_enabled = 0
 let g:gitgutter_sign_column_always = 1
 noremap <silent> <leader>g :GitGutterToggle<cr>
 
-
 " vim-turbox
 let g:no_turbux_mappings = 1
 nmap <leader>r <Plug>SendTestToTmux
 nmap <leader>R <Plug>SendFocusedTestToTmux
 
 " Automatically adjust quickfix window height
+"   https://gist.github.com/juanpabloaj/5845848
 au FileType qf call AdjustWindowHeight(3, 18)
 function! AdjustWindowHeight(minheight, maxheight)
   let l = 1
@@ -114,7 +125,6 @@ function! AdjustWindowHeight(minheight, maxheight)
   endw
   exe max([min([n_lines, a:maxheight]), a:minheight]) . "wincmd _"
 endfunction
- " https://gist.github.com/juanpabloaj/5845848
 
 " Syntastic
 let g:syntastic_error_symbol='✗'
@@ -124,8 +134,7 @@ let g:syntastic_style_warning_symbol='⚠'
 
 " togglelist.vim
 let g:toggle_list_no_mappings = 1
-nmap <script> <silent> <leader>? :call ToggleQuickfixList()<CR>
-let g:toggle_list_copen_command="Copen!"
+nnoremap <script> <silent> <leader>/ :call ToggleQuickfixList()<CR>
 
 " Turbox configuration
 let g:turbux_command_prefix = 'spring'
