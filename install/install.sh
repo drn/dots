@@ -12,37 +12,33 @@ cd ~
 # ensure updated zsh is the default shell
 echo "Ensuring ZSH is the default shell"
 
-if [ "$SHELL" != "/usr/local/bin/zsh" ]; then
-  # if homebrew installed zsh isn't the default shell
+# if homebrew is installed
+if hash brew 2>/dev/null; then
 
-  if [ -z "$(grep -irn /usr/local/bin/zsh /etc/shells)" ]; then
-    # if homebrew install zsh is not yet whitelisted
+  # if homebrew zsh is not the current shell
+  brewpath="$(which brew | sed 's/\/brew//')"
+  if [ "$SHELL" != "$brewpath/zsh" ]; then
 
-    if hash brew 2>/dev/null; then
-      # if homebrew is installed
-
-      # install zsh if not already installed
-      if [ -z "$(brew list | grep zsh)" ]; then
-        echo "Installing ZSH via homebrew."
-        brew install zsh
-      fi
-
-      # include homebrew zsh path in /etc/shells
-      sudo -s 'echo "/usr/local/bin/zsh" >> /etc/shells'
-
-      # change shell to homebrew zsh
-      echo "Changing shell to homebrew installed zsh"
-      chsh -s /usr/local/bin/zsh
-    else
-      # fallback to system zsh and display warning
-      echo "Warning: Homebrew not found. Cannot install updated zsh version. Falling back to system zsh."
-      chsh -s /bin/zsh
+    # install zsh if not already installed
+    if [ -z "$(brew list | grep zsh)" ]; then
+      echo "Installing ZSH via Homebrew"
+      brew install zsh
     fi
-  else
-    # if already whitelisted in shell list, use brew installed zsh
+
+    # include homebrew zsh path in /etc/shells
+    if [ -z "$(grep -irn "$brewpath/zsh" /etc/shells)" ]; then
+      echo "Whitelisting Homebrew installed ZSH"
+      sudo -s "echo '$brewpath/zsh' >> /etc/shells"
+    fi
+
+    # change shell to homebrew zsh
     echo "Changing shell to homebrew installed zsh"
-    chsh -s /usr/local/bin/zsh
+    chsh -s $brewpath/zsh
   fi
+else
+  # fallback to system zsh and display warning
+  echo "Warning: Homebrew not found. Cannot install updated zsh version. Falling back to system zsh."
+  chsh -s /bin/zsh
 fi
 
 # create default directory structure
