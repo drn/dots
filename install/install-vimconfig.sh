@@ -49,7 +49,7 @@ plugins=(
   tpope/vim-dispatch
   jgdavey/vim-turbux
   milkypostman/vim-togglelist
-  rking/ag
+  rking/ag.vim
   mhinz/vim-startify
   puppetlabs/puppet-syntax-vim
   Valloric/YouCompleteMe
