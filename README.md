@@ -34,6 +34,7 @@ Pathogen and the following bundles are installed to ~/.vim.
   * [vim-turbux](https://github.com/jgdavey/vim-turbux) - vim ruby testing via tmux
   * [vim-dispatch](https://github.com/tpope/vim-dispatch) - asynchronous build and test dispatcher
   * [vim-togglelist](https://github.com/milkypostman/vim-togglelist) - easy toggling of quickfix menu
+  * [ag.vim](https://github.com/rking/ag) - the silver searching vim integration
   * [YouCompleteMe](https://github.comValloric/YouCompleteMe) - code-completion engine
 
 ### Terminal

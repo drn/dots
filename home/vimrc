@@ -32,7 +32,7 @@ noremap <silent> <D-k> :noh<cr>
 noremap <silent>  /\.\.<cr>
 
 " Grep configuration
-nnoremap <D-F> :grep -irn<Space>
+nnoremap <D-F> :Ag<Space>
 nmap <silent> <C-]> :cn<CR>z.
 nmap <silent> <C-[> :cp<CR>z.
 
@@ -100,7 +100,7 @@ nmap <leader>r <Plug>SendTestToTmux
 nmap <leader>R <Plug>SendFocusedTestToTmux
 
 " Automatically adjust quickfix window height
-au FileType qf call AdjustWindowHeight(3, 30)
+au FileType qf call AdjustWindowHeight(3, 18)
 function! AdjustWindowHeight(minheight, maxheight)
   let l = 1
   let n_lines = 0
