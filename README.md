@@ -35,6 +35,8 @@ Pathogen and the following bundles are installed to ~/.vim.
   * [vim-dispatch](https://github.com/tpope/vim-dispatch) - asynchronous build and test dispatcher
   * [vim-togglelist](https://github.com/milkypostman/vim-togglelist) - easy toggling of quickfix menu
   * [ag.vim](https://github.com/rking/ag) - the silver searching vim integration
+  * [vim-startify](https://github.com/mhinz/vim-startify) - fancy vim start screen
+  * [puppet-syntax-vim](https://github.com/puppetlabs/puppet-syntax-vim) - puppet syntax highlighting for vim
   * [YouCompleteMe](https://github.comValloric/YouCompleteMe) - code-completion engine
 
 ### Terminal

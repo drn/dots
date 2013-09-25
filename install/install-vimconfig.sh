@@ -95,6 +95,12 @@ clone git://github.com/milkypostman/vim-togglelist.git
 # install ag.vim
 clone git://github.com/rking/ag.git
 
+# install vim-startify
+clone git://github.com/mhinz/vim-startify.git
+
+# install puppet-syntax-vim
+clone git://github.com/puppetlabs/puppet-syntax-vim.git
+
 # install YouCompleteMe
 clone git://github.com/Valloric/YouCompleteMe.git
 cd YouCompleteMe
