@@ -52,6 +52,11 @@ nnoremap <silent> <D-k> :noh<cr>
 nnoremap <silent>  /\.\.<cr>
 " Reindent current file and return to previous location
 nnoremap <D-i> mzgg=G`z<CR>
+" Open vertical split window easily
+nnoremap <silent> <D-Bar> :wincmd v<cr>
+" Navigate split windows easily
+nnoremap <silent> <D-S-Left> :wincmd h<cr>
+nnoremap <silent> <D-S-Right> :wincmd l<cr>
 
 
 """ Ag Configuration """
