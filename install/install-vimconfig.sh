@@ -34,75 +34,40 @@ curl -Sso ~/.vim/autoload/pathogen.vim https://raw.github.com/tpope/vim-pathogen
 # install bundles
 cd $bundle
 
-# install ctrlp.vim
-clone git://github.com/kien/ctrlp.vim.git
+# list of vim plugins to install
+plugins=(
+  kien/ctrlp.vim
+  bling/vim-airline
+  Lokaltog/vim-easymotion
+  tpope/vim-fugitive
+  airblade/vim-gitgutter
+  tpope/vim-rails
+  tpope/vim-bundler
+  scrooloose/syntastic
+  noprompt/vim-yardoc
+  msanders/cocoa.vim
+  kien/rainbow_parentheses.vim
+  kshenoy/vim-signature
+  derekwyatt/vim-fswitch
+  skalnik/vim-vroom
+  scrooloose/nerdcommenter
+  terryma/vim-multiple-cursors
+  junegunn/vim-easy-align
+  tpope/vim-dispatch
+  jgdavey/vim-turbux
+  milkypostman/vim-togglelist
+  rking/ag
+  mhinz/vim-startify
+  puppetlabs/puppet-syntax-vim
+  Valloric/YouCompleteMe
+)
 
-# install vim-airline
-clone git://github.com/bling/vim-airline.git
+# clone all plugins in plugin list
+for plugin in "${plugins[@]}"; do
+  clone "$plugin"
+done
 
-# install vim-easymotion
-clone git://github.com/Lokaltog/vim-easymotion.git
-
-# install vim-fugitive
-clone git://github.com/tpope/vim-fugitive.git
-
-# install vim-gitgutter
-clone git://github.com/airblade/vim-gitgutter.git
-
-# install vim-rails
-clone git://github.com/tpope/vim-rails.git
-clone git://github.com/tpope/vim-bundler.git
-
-# install syntastic
-clone git://github.com/scrooloose/syntastic.git
-
-# install vim-yardoc
-clone git://github.com/noprompt/vim-yardoc.git
-
-# install cocoa.vim
-clone git://github.com/msanders/cocoa.vim.git
-
-# install rainbow_parentheses
-clone git://github.com/kien/rainbow_parentheses.vim.git
-
-# install vim-signature
-clone git://github.com/kshenoy/vim-signature.git
-
-# install vim-fswitch
-clone git://github.com/derekwyatt/vim-fswitch.git
-
-# install vim-room
-clone git://github.com/skalnik/vim-vroom.git
-
-# install NERD Commenter
-clone git://github.com/scrooloose/nerdcommenter.git
-
-# install vim-multiple-cursors
-clone git://github.com/terryma/vim-multiple-cursors.git
-
-# install vim-easy-align
-clone git://github.com/junegunn/vim-easy-align.git
-
-# install vim-dispatch
-clone git://github.com/tpope/vim-dispatch.git
-
-# install vim-turbox
-clone git://github.com/jgdavey/vim-turbux.git
-
-# install vim-togglelist
-clone git://github.com/milkypostman/vim-togglelist.git
-
-# install ag.vim
-clone git://github.com/rking/ag.git
-
-# install vim-startify
-clone git://github.com/mhinz/vim-startify.git
-
-# install puppet-syntax-vim
-clone git://github.com/puppetlabs/puppet-syntax-vim.git
-
-# install YouCompleteMe
-clone git://github.com/Valloric/YouCompleteMe.git
+# install YouCompleteMe binaries
 cd YouCompleteMe
 echo "Compiling YouCompleteMe binaries... This may take a while."
 ./install.sh >/dev/null 2>$dotfiles/install.log
