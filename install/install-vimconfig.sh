@@ -5,7 +5,6 @@ dotfiles="$dev/dotfiles"
 vim="$HOME/.vim"
 load="$vim/autoload"
 bundle="$vim/bundle"
-colors="$vim/colors"
 ftplugin="$vim/ftplugin"
 
 # include install functions
@@ -14,12 +13,6 @@ source "$dotfiles/install/install.cfg"
 # recreate vim config hierarchy
 sudo rm -rf $vim
 mkdir -p $load $bundle $colors $ftplugin
-
-# install vim colors files
-for location in $dotfiles/vim/colors/*; do
-  file="${location##*/}"
-  link "$location" "$colors/$file"
-done
 
 # install vim ftplugin files
 for location in $dotfiles/vim/ftplugin/*; do
@@ -60,6 +53,7 @@ plugins=(
   mhinz/vim-startify
   puppetlabs/puppet-syntax-vim
   Valloric/YouCompleteMe
+  nanotech/jellybeans.vim
 )
 
 # clone all plugins in plugin list

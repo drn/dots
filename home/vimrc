@@ -15,9 +15,22 @@ set cursorline
 set hlsearch
 call pathogen#infect()
 
+" Jellybeans.vim Colorscheme
+colorscheme jellybeans
+let g:jellybeans_background_color = "151535"
+let g:jellybeans_overrides = {
+\  'Todo': {
+\    'guifg':    'DF4085',
+\    'guibg':    '',
+\    'ctermfg':  'Red',
+\    'ctermbg':  '',
+\    'attr':     'bold'
+\  },
+\}
+color jellybeans
+
 " Configure UI
 set background=dark
-colorscheme jellybeans
 set transparency=3
 set cc=80
 hi ColorColumn ctermbg=Black guibg=Black
