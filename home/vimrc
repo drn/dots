@@ -157,3 +157,6 @@ nnoremap <script> <silent> <leader>/ :call ToggleQuickfixList()<CR>
 " Turbox configuration
 let g:turbux_command_prefix = 'spring'
 let g:turbux_command_test_unit = 'testunit'
+
+" vim-numbertoggle
+let g:NumberToggleTrigger="<leader>c"

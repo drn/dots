@@ -39,6 +39,7 @@ Pathogen and the following bundles are installed to ~/.vim.
   * [vim-startify](https://github.com/mhinz/vim-startify) - fancy vim start screen
   * [puppet-syntax-vim](https://github.com/puppetlabs/puppet-syntax-vim) - puppet syntax highlighting for vim
   * [YouCompleteMe](https://github.comValloric/YouCompleteMe) - code-completion engine
+  * [vim-numbertoggle](https://github.com/jeffkreeftmeijer/vim-numbertoggle) - easily toggle between relative and absolute line numbers
   * [jellybeans.vim](https://github.com/nanotech/jellybeans.vim) - my favorite color scheme with some modifications
 
 ### Terminal

@@ -54,6 +54,7 @@ plugins=(
   puppetlabs/puppet-syntax-vim
   Valloric/YouCompleteMe
   nanotech/jellybeans.vim
+  jeffkreeftmeijer/vim-numbertoggle
   vim-ruby/vim-ruby
 )
 
