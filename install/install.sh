@@ -6,6 +6,9 @@ dotfiles="$dev/dotfiles"
 
 echo "Installing SanguineRane configuration for $(whoami)"
 
+# ensure sudo access
+sudo -p "Password for sudo: " echo "We're good to go!"
+
 # change directory to home, in order to avoid directory conflicts
 cd ~
 
