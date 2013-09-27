@@ -11,7 +11,6 @@ ftplugin="$vim/ftplugin"
 source "$dotfiles/install/install.cfg"
 
 # recreate vim config hierarchy
-sudo rm -rf $vim
 mkdir -p $load $bundle $colors $ftplugin
 
 # install vim ftplugin files
@@ -57,9 +56,30 @@ plugins=(
   vim-ruby/vim-ruby
 )
 
-# clone all plugins in plugin list
+# prune existing directories not in plugin whitelist
+existing=$bundle/*
+for file in $existing; do
+  base_file="$(echo "$file" | sed 's/.*\///')"
+
+  # determine if file in ~/.vim/bundle is whitelisted
+  should_delete=true
+  for plugin in "${plugins[@]}"; do
+    base_plugin="$(echo "$plugin" | sed 's/.*\///')"
+    if [ "$base_plugin" == "$base_file" ]; then
+      should_delete=false
+    fi
+  done
+
+  # remove file if not whitelisted
+  if $should_delete ; then
+    echo "Removing $base_file from ~/.vim/bundle"
+    rm -rf $file
+  fi
+done
+
+# ensure all plugins in plugin list are up to date
 for plugin in "${plugins[@]}"; do
-  clone "$plugin"
+  gitsync "$plugin"
 done
 
 # install YouCompleteMe binaries
