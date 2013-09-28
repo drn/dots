@@ -1,21 +1,37 @@
-" Default VIM configuration
+""" Default VIM configuration """
+
+" load pathogen
+call pathogen#infect()
+
+" enable syntax highlighting
 syntax on
 set tabstop=2
 set shiftwidth=2
+" insert spaces instead of tabs
 set expandtab
+" show line numbers
 set number
-set vb
+" disable error bell
+set visualbell
+" share vim clipboard with system
 set clipboard=unnamed
+" use tabs instead of spaces in makefiles
 au BufEnter Makefile set noexpandtab sts=0
 au BufEnter makefile set noexpandtab sts=0
+" use auto-indentation
 filetype plugin indent on
+" trim all whitespace on save
 autocmd BufWritePre * :%s/\s\+$//e
+" set leader to ,
 let mapleader = ","
+" highlight the line the cursor is currently on
 set cursorline
+" highlight search matches
 set hlsearch
-call pathogen#infect()
 
-" Jellybeans.vim Colorscheme
+
+""" Jellybeans.vim Colorscheme """
+
 colorscheme jellybeans
 let g:jellybeans_background_color = "151535"
 let g:jellybeans_overrides = {
@@ -29,12 +45,14 @@ let g:jellybeans_overrides = {
 \}
 color jellybeans
 
-" Configure UI
+
+""" Configure UI """
 set background=dark
 set transparency=3
-set cc=80
-hi ColorColumn ctermbg=Black guibg=Black
+set colorcolumn=80
+hi ColorColumn guibg=#444444
 highlight Cursor guibg=#C92765
+highlight CursorLine guibg=#000070
 set guicursor=n-v-c:blinkwait500-blinkoff500-blinkon500
 
 
