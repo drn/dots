@@ -160,3 +160,6 @@ let g:turbux_command_test_unit = 'testunit'
 
 " vim-numbertoggle
 let g:NumberToggleTrigger="<leader>c"
+
+" vim-markdown
+let g:vim_markdown_folding_disabled=1

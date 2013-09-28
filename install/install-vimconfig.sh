@@ -54,6 +54,7 @@ plugins=(
   nanotech/jellybeans.vim
   jeffkreeftmeijer/vim-numbertoggle
   vim-ruby/vim-ruby
+  plasticboy/vim-markdown
 )
 
 # prune existing directories not in plugin whitelist
