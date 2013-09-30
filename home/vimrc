@@ -28,7 +28,15 @@ let mapleader = ","
 set cursorline
 " highlight search matches
 set hlsearch
-
+" set minimum number of lines above and below cursor
+set scrolloff=5
+" turn on incremental searching
+set incsearch
+" speed up mappings
+set ttimeout
+set ttimeoutlen=50
+" round >> shifting
+set shiftround
 
 """ Jellybeans.vim Colorscheme """
 
