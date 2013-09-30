@@ -40,7 +40,8 @@ Pathogen and the following bundles are installed to ~/.vim.
   * [YouCompleteMe](https://github.comValloric/YouCompleteMe) - code-completion engine
   * [vim-numbertoggle](https://github.com/jeffkreeftmeijer/vim-numbertoggle) - easily toggle between relative and absolute line numbers
   * [jellybeans.vim](https://github.com/nanotech/jellybeans.vim) - my favorite color scheme with some modifications
-  * [vim-markdown](https://github.com/plasticboy/vim-markdown) - markdown syntax highlighting
+  * [vim-markdown](https://github.com/plasticboy/vim-markdown) - markdown syntax
+  * [vim-less](https://github.com/groenewege/vim-less) - less syntax
 
 ### Terminal
 

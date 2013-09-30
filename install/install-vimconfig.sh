@@ -55,6 +55,7 @@ plugins=(
   jeffkreeftmeijer/vim-numbertoggle
   vim-ruby/vim-ruby
   plasticboy/vim-markdown
+  groenewege/vim-less
 )
 
 # prune existing directories not in plugin whitelist
