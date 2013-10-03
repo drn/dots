@@ -190,3 +190,7 @@ let g:NumberToggleTrigger="<leader>c"
 
 " vim-markdown
 let g:vim_markdown_folding_disabled=1
+
+" vim-commentary
+xmap // <Plug>Commentary
+nmap // <Plug>CommentaryLine

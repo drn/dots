@@ -42,6 +42,7 @@ Pathogen and the following bundles are installed to ~/.vim.
   * [vim-markdown](https://github.com/plasticboy/vim-markdown) - markdown syntax
   * [vim-less](https://github.com/groenewege/vim-less) - less syntax
   * [vim-endwise](https://github.com/tpope/vim-endwise) - automatically append end in ruby / vimscript
+  * [vim-commentary](https://github.com/tpope/vim-commentary) - easy comment toggling
 
 
 ### Terminal
