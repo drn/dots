@@ -41,7 +41,6 @@ plugins=(
   kien/rainbow_parentheses.vim
   kshenoy/vim-signature
   derekwyatt/vim-fswitch
-  scrooloose/nerdcommenter
   terryma/vim-multiple-cursors
   junegunn/vim-easy-align
   tpope/vim-dispatch
