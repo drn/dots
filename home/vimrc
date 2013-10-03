@@ -38,6 +38,9 @@ set ttimeout
 set ttimeoutlen=50
 " round >> shifting
 set shiftround
+" display tabs and trailing spaces visually
+set list listchars=tab:ˍˍ,trail:ˍ
+
 
 """ Jellybeans.vim Colorscheme """
 
