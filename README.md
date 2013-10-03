@@ -42,6 +42,8 @@ Pathogen and the following bundles are installed to ~/.vim.
   * [jellybeans.vim](https://github.com/nanotech/jellybeans.vim) - my favorite color scheme with some modifications
   * [vim-markdown](https://github.com/plasticboy/vim-markdown) - markdown syntax
   * [vim-less](https://github.com/groenewege/vim-less) - less syntax
+  * [vim-endwise](https://github.com/tpope/vim-endwise) - automatically append end in ruby / vimscript
+
 
 ### Terminal
 

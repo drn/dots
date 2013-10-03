@@ -56,6 +56,7 @@ plugins=(
   vim-ruby/vim-ruby
   plasticboy/vim-markdown
   groenewege/vim-less
+  tpope/vim-endwise
 )
 
 # prune existing directories not in plugin whitelist
