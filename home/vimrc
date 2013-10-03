@@ -2,6 +2,7 @@
 
 " load pathogen
 call pathogen#infect()
+call pathogen#helptags()
 
 " enable syntax highlighting
 syntax on
