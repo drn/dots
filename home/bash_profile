@@ -1,0 +1,9 @@
+# set history size to 5000
+HISTFILESIZE=5000
+
+# enable terminal colors
+export CLICOLOR=1
+
+# setup prompt
+export PS1="[\[\e[36;1m\]\u\[\e[0m\]:\[\e[31;1m\]\W\[\e[0m\]] \[\e[32;1m\]\#\[\e[0m\]) "
+
