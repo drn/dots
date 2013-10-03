@@ -1,5 +1,8 @@
 """ Default VIM configuration """
 
+" use VIM settings, not vi settings
+set nocompatible
+
 " load pathogen
 call pathogen#infect()
 call pathogen#helptags()
@@ -41,7 +44,6 @@ set shiftround
 " display tabs and trailing spaces visually
 set list listchars=tab:ˍˍ,trail:ˍ
 
-
 """ Jellybeans.vim Colorscheme """
 
 colorscheme jellybeans
@@ -67,6 +69,15 @@ highlight Cursor guibg=#C92765
 highlight CursorLine guibg=#000070
 set guicursor=n-v-c:blinkwait500-blinkoff500-blinkon500
 
+""" Turn Off Swap Files """
+set noswapfile
+set nobackup
+set nowb
+
+""" Persistent Undo """
+silent !mkdir ~/.vim/backups > /dev/null 2>&1
+set undodir=~/.vim/backups
+set undofile
 
 """ Mappings """
 
