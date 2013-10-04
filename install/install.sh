@@ -55,14 +55,14 @@ git clone git@github.com:darrenli/dotfiles.git $dotfiles --quiet
 # install dotfiles
 bash $dotfiles/install/install-dotfiles.sh
 # install terminal utilites
-bash $dotfiles/install/install-utilities.sh
+bash $dotfiles/install/install-utils.sh
 # install zsh configuration
-bash $dotfiles/install/install-zshconfig.sh
+bash $dotfiles/install/install-zsh.sh
 # install git configuration
-bash $dotfiles/install/install-gitconfig.sh
+bash $dotfiles/install/install-git.sh
 # install fonts
 bash $dotfiles/install/install-fonts.sh
 # install vim configuration
-bash $dotfiles/install/install-vimconfig.sh
+bash $dotfiles/install/install-vim.sh
 # install os x configuration
-bash $dotfiles/install/install-osxconfig.sh
+bash $dotfiles/install/install-osx.sh
