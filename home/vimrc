@@ -85,8 +85,6 @@ set undofile
 nnoremap <silent> <D-e> :e `pwd`<cr>zz
 " Open working directory listning
 nnoremap <silent> <D-d> :Ex<cr>zz
-" Switch between header and source files
-nnoremap <silent> <leader>s :FSHere<cr>
 " Clear search highlighs
 nnoremap <silent> <D-k> :noh<cr>
 " Highlight .. patterns to easily navigate in directory listnings
@@ -99,74 +97,10 @@ nnoremap <silent> <D-Bar> :wincmd v<cr>
 nnoremap <silent> <D-S-Left> :wincmd h<cr>
 nnoremap <silent> <D-S-Right> :wincmd l<cr>
 
-
-""" Ag Configuration """
-
-" Mapping to easily search via Ag
-nnoremap <D-F> :Ag<Space>
-" Jump to next item in search
-nnoremap <silent> <D-]> :cn<CR>z.
-" Jump to next item in search
-nnoremap <silent> <D-[> :cp<CR>z.
-
-" Easy Motion
-hi EasyMotionTarget ctermbg=DarkMagenta guibg=DarkMagenta ctermfg=white guifg=white
-
 " configure sign column
 highlight clear SignColumn
 sign define dummy
 execute 'sign place 9999 line=1 name=dummy buffer=' . bufnr('')
-
-" YouCompleteMe
-"   configure autocompletion keys
-let g:ycm_key_list_select_completion = ['<D-]>']
-let g:ycm_key_list_previous_completion = ['<D-[>']
-
-" Vim Airline Support
-set laststatus=2
-set noshowmode
-set guifont=Menlo\ for\ Powerline:h13
-let g:Powerline_symbols = 'fancy'
-let g:airline_symbols = {}
-let g:airline_left_sep = '⮀'
-let g:airline_left_alt_sep = '⮁'
-let g:airline_right_sep = '⮂'
-let g:airline_right_alt_sep = '⮃'
-let g:airline_symbols.branch = '⭠'
-let g:airline_symbols.readonly = '⭤'
-let g:airline_symbols.linenr = '⭡'
-
-" CtrlP Options
-let g:ctrlp_show_hidden = 1
-noremap <silent> <leader>t :CtrlP<cr>
-noremap <silent> <D-1> :let g:ctrlp_working_path_mode = 'ra'<cr>
-noremap <silent> <D-2> :let g:ctrlp_working_path_mode = 'ca'<cr>
-noremap <silent> <D-r> :CtrlPClearCache<cr>
-let g:ctrlp_custom_ignore = {
-  \ 'dir':  '\v[\/]((\.(git|hg|svn))|(coverage))$',
-  \ 'file': '\v\.(swp|zip|DS_Store|jira-url)$'
-  \ }
-let g:ctrlp_max_height = 20
-
-" Rainbow Parentheses
-au VimEnter * RainbowParenthesesToggle
-au Syntax * RainbowParenthesesLoadRound
-au Syntax * RainbowParenthesesLoadSquare
-au Syntax * RainbowParenthesesLoadBraces
-
-" vim-easy-align mapping
-vnoremap <silent> <Enter> :EasyAlign<cr>
-
-" vim-gitgutter options
-let g:gitgutter_eager = 0
-let g:gitgutter_enabled = 0
-let g:gitgutter_sign_column_always = 1
-noremap <silent> <leader>g :GitGutterToggle<cr>
-
-" vim-turbox
-let g:no_turbux_mappings = 1
-nmap <leader>r <Plug>SendTestToTmux
-nmap <leader>R <Plug>SendFocusedTestToTmux
 
 " Automatically adjust quickfix window height
 "   https://gist.github.com/juanpabloaj/5845848
@@ -184,27 +118,3 @@ function! AdjustWindowHeight(minheight, maxheight)
   endw
   exe max([min([n_lines, a:maxheight]), a:minheight]) . "wincmd _"
 endfunction
-
-" Syntastic
-let g:syntastic_error_symbol='✗'
-let g:syntastic_style_error_symbol='✗'
-let g:syntastic_warning_symbol='⚠'
-let g:syntastic_style_warning_symbol='⚠'
-
-" togglelist.vim
-let g:toggle_list_no_mappings = 1
-nnoremap <script> <silent> <leader>/ :call ToggleQuickfixList()<CR>
-
-" Turbox configuration
-let g:turbux_command_prefix = 'spring'
-let g:turbux_command_test_unit = 'testunit'
-
-" vim-numbertoggle
-let g:NumberToggleTrigger="<leader>c"
-
-" vim-markdown
-let g:vim_markdown_folding_disabled=1
-
-" vim-commentary
-xmap // <Plug>Commentary
-nmap // <Plug>CommentaryLine

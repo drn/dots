@@ -1,0 +1,10 @@
+let g:ctrlp_show_hidden = 1
+noremap <silent> <leader>t :CtrlP<cr>
+noremap <silent> <D-1> :let g:ctrlp_working_path_mode = 'ra'<cr>
+noremap <silent> <D-2> :let g:ctrlp_working_path_mode = 'ca'<cr>
+noremap <silent> <D-r> :CtrlPClearCache<cr>
+let g:ctrlp_custom_ignore = {
+  \ 'dir':  '\v[\/]((\.(git|hg|svn))|(coverage))$',
+  \ 'file': '\v\.(swp|zip|DS_Store|jira-url)$'
+  \ }
+let g:ctrlp_max_height = 20
