@@ -28,10 +28,6 @@ filetype plugin indent on
 autocmd BufWritePre * :%s/\s\+$//e
 " set leader to ,
 let mapleader = ","
-" highlight the line the cursor is currently on
-set cursorline
-" highlight search matches
-set hlsearch
 " set minimum number of lines above and below cursor
 set scrolloff=5
 " turn on incremental searching
@@ -43,6 +39,17 @@ set ttimeoutlen=50
 set shiftround
 " display tabs and trailing spaces visually
 set list listchars=tab:ˍˍ,trail:ˍ
+" always display sign column
+autocmd BufEnter * sign define dummy
+autocmd BufEnter * execute 'sign place 9999 line=1 name=dummy buffer=' . bufnr('')
+" turn off .swp files
+set noswapfile
+set nobackup
+set nowb
+" persistent file undo
+silent !mkdir ~/.vim/backups > /dev/null 2>&1
+set undodir=~/.vim/backups
+set undofile
 
 """ Jellybeans.vim Colorscheme """
 
@@ -61,29 +68,43 @@ color jellybeans
 
 
 """ Configure UI """
+
+" set background defaults
 set background=dark
 set transparency=3
-set colorcolumn=80
-hi ColorColumn guibg=#444444
-highlight Cursor guibg=#C92765
+
+" configure and color the color column
+if exists('+colorcolumn')
+  set colorcolumn=80
+  hi ColorColumn guibg=#444444
+else
+  au BufWinEnter * let w:m2=matchadd('ErrorMsg', '\%>80v.\+', -1)
+endif
+
+" configure and highlight over length
+highlight OverLength ctermbg=red ctermfg=white guibg=#592929
+match OverLength /\%>80v.\+/
+
+" highlight and color the current line
+set cursorline
 highlight CursorLine guibg=#000070
+
+" configure and color the cursor
 set guicursor=n-v-c:blinkwait500-blinkoff500-blinkon500
+highlight Cursor guibg=#C92765
 
-""" Turn Off Swap Files """
-set noswapfile
-set nobackup
-set nowb
+" sign column highlight should be clear
+highlight clear SignColumn
 
-""" Persistent Undo """
-silent !mkdir ~/.vim/backups > /dev/null 2>&1
-set undodir=~/.vim/backups
-set undofile
+" highlight search matches
+set hlsearch
+
 
 """ Mappings """
 
 " Open current file's directory listing
 nnoremap <silent> <D-e> :e `pwd`<cr>zz
-" Open working directory listning
+" Open working directory listing
 nnoremap <silent> <D-d> :Ex<cr>zz
 " Clear search highlighs
 nnoremap <silent> <D-k> :noh<cr>
@@ -96,11 +117,6 @@ nnoremap <silent> <D-Bar> :wincmd v<cr>
 " Navigate split windows easily
 nnoremap <silent> <D-S-Left> :wincmd h<cr>
 nnoremap <silent> <D-S-Right> :wincmd l<cr>
-
-" configure sign column
-highlight clear SignColumn
-sign define dummy
-execute 'sign place 9999 line=1 name=dummy buffer=' . bufnr('')
 
 " Automatically adjust quickfix window height
 "   https://gist.github.com/juanpabloaj/5845848
