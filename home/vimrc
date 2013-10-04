@@ -117,6 +117,8 @@ nnoremap <silent> <D-Bar> :wincmd v<cr>
 " Navigate split windows easily
 nnoremap <silent> <D-S-Left> :wincmd h<cr>
 nnoremap <silent> <D-S-Right> :wincmd l<cr>
+" Save file as root
+noremap <leader>W :w !sudo tee % > /dev/null<CR>
 
 " Automatically adjust quickfix window height
 "   https://gist.github.com/juanpabloaj/5845848
