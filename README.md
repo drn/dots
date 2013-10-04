@@ -44,6 +44,7 @@ Pathogen and the following bundles are installed to ~/.vim.
   * [vim-endwise](https://github.com/tpope/vim-endwise) - automatically append end in ruby / vimscript
   * [vim-commentary](https://github.com/tpope/vim-commentary) - easy comment toggling
   * [delimitMate](https://github.com/Raimondi/delimitMate) - insert mode autocompletions
+  * [nerdtree](https://github.com/scrooloose/nerdtree) - tree file hierarchy explorer
 
 
 ### Terminal
