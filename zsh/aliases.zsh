@@ -40,7 +40,8 @@ alias theme="vi ~/.oh-my-zsh/custom/darrenli.zsh-theme"
 alias custom="cd ~/.oh-my-zsh/custom"
 alias dots="cd ~/Development/dotfiles"
 alias space="sudo du -kx / | sort -nr | less"
-alias springup="spring testunit; spring status;"
+alias springup="rake db:test:prepare; spring testunit; spring status;"
+alias sup="springup"
 
 # System Maintenance Commands
 update() {
