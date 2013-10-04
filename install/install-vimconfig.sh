@@ -2,29 +2,25 @@
 
 dev="$HOME/Development"
 dotfiles="$dev/dotfiles"
+vimsource="$dotfiles/vim"
 vim="$HOME/.vim"
-load="$vim/autoload"
-bundle="$vim/bundle"
-ftplugin="$vim/ftplugin"
 
 # include install functions
 source "$dotfiles/install/install.cfg"
 
-# recreate vim config hierarchy
-mkdir -p $load $bundle $colors $ftplugin
+# recreate non-bundle ~/.vim hierarchy
+rm -rf $vim/ftplugin $vim/plugin $vim/autoload
+mkdir -p $vim/autoload $vim/bundle $vim/ftplugin $vim/plugin/settings
 
-# install vim ftplugin files
-for location in $dotfiles/vim/ftplugin/*; do
-  file="${location##*/}"
-  link "$location" "$ftplugin/$file"
-done
+# recursively link all vim configuration files
+rlink $vimsource $vim
 
 # install pathogen
 echo "Installing Pathogen"
-curl -Sso ~/.vim/autoload/pathogen.vim https://raw.github.com/tpope/vim-pathogen/master/autoload/pathogen.vim
+curl -Sso $vim/autoload/pathogen.vim https://raw.github.com/tpope/vim-pathogen/master/autoload/pathogen.vim
 
 # install bundles
-cd $bundle
+cd $vim/bundle
 
 # list of vim plugins to install
 plugins=(
@@ -61,7 +57,7 @@ plugins=(
 )
 
 # prune existing directories not in plugin whitelist
-existing=$bundle/*
+existing=$vim/bundle/*
 for file in $existing; do
   base_file="$(echo "$file" | sed 's/.*\///')"
 
@@ -97,4 +93,4 @@ if [[ $success -eq 0 ]]; then
 else
   echo "YouCompleteMe binaries failed to compile. Please see $dotfiles/install.log for additional info."
 fi
-cd $bundle
+cd $vim/bundle
