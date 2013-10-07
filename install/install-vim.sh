@@ -56,6 +56,7 @@ plugins=(
   Raimondi/delimitMate
   scrooloose/nerdtree
   tpope/vim-surround
+  nathanaelkane/vim-indent-guides
 )
 
 # prune existing directories not in plugin whitelist
