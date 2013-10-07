@@ -55,6 +55,7 @@ plugins=(
   tpope/vim-commentary
   Raimondi/delimitMate
   scrooloose/nerdtree
+  tpope/vim-surround
 )
 
 # prune existing directories not in plugin whitelist
