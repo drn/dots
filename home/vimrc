@@ -111,7 +111,7 @@ nnoremap <silent> <D-k> :noh<cr>
 " Highlight .. patterns to easily navigate in directory listnings
 nnoremap <silent>  /\.\.<cr>
 " Reindent current file and return to previous location
-nnoremap <D-i> mzgg=G`z<CR>
+nnoremap <leader>I mzgg=G`z<CR>
 " Open vertical split window easily
 nnoremap <silent> <D-Bar> :wincmd v<cr>
 " Navigate split windows easily
