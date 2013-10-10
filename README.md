@@ -47,7 +47,7 @@ Pathogen and the following bundles are installed to ~/.vim.
   * [nerdtree](https://github.com/scrooloose/nerdtree) - tree file hierarchy explorer
   * [vim-surround](https://github.com/tpope/vim-surround) - quoting and parantheses mappings
   * [vim-indent-guides](https://github.com/nathanaelkane/vim-indent-guides) - visual indent levels
-
+  * [ultisnips](https://github.com/SirVer/ultisnips) - vim snippets
 
 ### Terminal
 
