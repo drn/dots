@@ -49,4 +49,6 @@ update() {
   brew update
   echo '\n\nUpdating RVM...'
   rvm get stable
+  echo "\n\nUpdating vim..."
+  bash $HOME/Development/dotfiles/install/install-vim.sh --update-only
 }

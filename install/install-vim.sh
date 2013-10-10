@@ -4,20 +4,28 @@ dev="$HOME/Development"
 dotfiles="$dev/dotfiles"
 vimsource="$dotfiles/vim"
 vim="$HOME/.vim"
+updateonly=false;
+[ "$1" == "--update-only" ] && updateonly=true
 
 # include install functions
 source "$dotfiles/install/install.cfg"
 
-# recreate non-bundle ~/.vim hierarchy
-rm -rf $vim/ftplugin $vim/plugin $vim/autoload
+# if not updateonly, destroy old non-bundle ~/.vim hierarchy
+if ! $updateonly; then
+  rm -rf $vim/ftplugin $vim/plugin $vim/autoload
+fi
+
+# ensure non-bundle ~/.vim hierarchy
 mkdir -p $vim/autoload $vim/bundle $vim/ftplugin $vim/plugin/settings
 
 # recursively link all vim configuration files
 rlink $vimsource $vim
 
 # install pathogen
-echo "Installing Pathogen"
-curl -Sso $vim/autoload/pathogen.vim https://raw.github.com/tpope/vim-pathogen/master/autoload/pathogen.vim
+if ! $updateonly; then
+  echo "Installing Pathogen"
+  curl -Sso $vim/autoload/pathogen.vim https://raw.github.com/tpope/vim-pathogen/master/autoload/pathogen.vim
+fi
 
 # install bundles
 cd $vim/bundle
@@ -85,15 +93,17 @@ for plugin in "${plugins[@]}"; do
   gitsync "$plugin"
 done
 
-# install YouCompleteMe binaries
-cd YouCompleteMe
-echo "Compiling YouCompleteMe binaries... This may take a while."
-./install.sh >/dev/null 2>$dotfiles/install.log
-success=$?
-if [[ $success -eq 0 ]]; then
-  echo "YouCompleteMe binaries successfully compiled."
-  sudo rm -f $dotfiles/install.log
-else
-  echo "YouCompleteMe binaries failed to compile. Please see $dotfiles/install.log for additional info."
+# install YouCompleteMe binaries if not --update-only
+if ! $updateonly; then
+  cd YouCompleteMe
+  echo "Compiling YouCompleteMe binaries... This may take a while."
+  ./install.sh >/dev/null 2>$dotfiles/install.log
+  success=$?
+  if [[ $success -eq 0 ]]; then
+    echo "YouCompleteMe binaries successfully compiled."
+    sudo rm -f $dotfiles/install.log
+  else
+    echo "YouCompleteMe binaries failed to compile. Please see $dotfiles/install.log for additional info."
+  fi
+  cd $vim/bundle
 fi
-cd $vim/bundle
