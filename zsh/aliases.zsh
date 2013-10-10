@@ -45,10 +45,11 @@ alias sup="springup"
 
 # System Maintenance Commands
 update() {
-  echo 'Updating Brew...'
+  sudo -p "Enter your password: " echo "We're good to go!"
+  echo '\nUpdating Brew...'
   brew update
-  echo '\n\nUpdating RVM...'
+  echo '\nUpdating RVM...'
   rvm get stable
-  echo "\n\nUpdating vim..."
+  echo "\nUpdating vim plugins..."
   bash $HOME/Development/dotfiles/install/install-vim.sh --update-only
 }
