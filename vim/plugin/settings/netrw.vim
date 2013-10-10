@@ -6,4 +6,7 @@
 let g:netrw_liststyle = 1
 
 " file exclusion list:
-let g:netrw_list_hide= '^\..*\.swp$,\.DS_Store'
+let g:netrw_list_hide = '^\..*\.swp$,\.DS_Store'
+
+" syntax highlight special files
+let g:netrw_special_syntax = 1
