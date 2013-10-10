@@ -113,7 +113,9 @@ nnoremap <silent>  /\.\.<cr>
 " Reindent current file and return to previous location
 nnoremap <leader>I mzgg=G`z<CR>
 " Open vertical split window easily
-nnoremap <silent> <D-Bar> :wincmd v<cr>
+nnoremap <silent> <D-S-Up> :wincmd v<cr>
+" Rotate split windows easily
+nnoremap <silent> <D-S-Down> :wincmd r<cr>
 " Navigate split windows easily
 nnoremap <silent> <D-S-Left> :wincmd h<cr>
 nnoremap <silent> <D-S-Right> :wincmd l<cr>
