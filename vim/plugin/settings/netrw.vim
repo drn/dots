@@ -4,3 +4,6 @@
 " 2: wide listing (multiple files in columns)
 " 3: tree style listing
 let g:netrw_liststyle = 1
+
+" file exclusion list:
+let g:netrw_list_hide= '^\..*\.swp$,\.DS_Store'
