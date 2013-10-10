@@ -48,6 +48,7 @@ Pathogen and the following bundles are installed to ~/.vim.
   * [vim-surround](https://github.com/tpope/vim-surround) - quoting and parantheses mappings
   * [vim-indent-guides](https://github.com/nathanaelkane/vim-indent-guides) - visual indent levels
   * [ultisnips](https://github.com/SirVer/ultisnips) - vim snippets
+  * [netrw](https://github.com/eiginn/netrw) - ensure netrw is up to date
 
 ### Terminal
 

@@ -66,6 +66,7 @@ plugins=(
   tpope/vim-surround
   nathanaelkane/vim-indent-guides
   SirVer/ultisnips
+  eiginn/netrw
 )
 
 # prune existing directories not in plugin whitelist
