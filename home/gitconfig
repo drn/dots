@@ -85,6 +85,8 @@
   rbm = !"git rb origin/master"
   # hard reset to master
   resetm = !"git reset --hard origin/master"
+  # git showme
+  sm = showme
 [user]
   name = darrenli
   email = darren@thanx.com
