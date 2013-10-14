@@ -42,6 +42,7 @@ alias dots="cd ~/Development/dotfiles"
 alias space="sudo du -kx / | sort -nr | less"
 alias springup="rake db:test:prepare; spring testunit; spring status;"
 alias sup="springup"
+alias vimsync="bash $HOME/Development/dotfiles/install/install-vim.sh --update-only"
 
 # System Maintenance Commands
 update() {
@@ -51,5 +52,5 @@ update() {
   echo '\nUpdating RVM...'
   rvm get stable
   echo "\nUpdating vim plugins..."
-  bash $HOME/Development/dotfiles/install/install-vim.sh --update-only
+  vimsync
 }
