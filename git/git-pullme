@@ -1,0 +1,28 @@
+#!/bin/bash
+
+#
+# Dynamically determines and creates a pull request for the current commit
+# against the nearest ancestor branch that is not the currently pushed branch.
+#
+
+# determine ancestor
+ancestor="$(git ancestor | sed 's/\//:/')"
+# determine remote of ancestor
+ancestor_remote="$(echo $ancestor | sed 's/:.*//')"
+# determine branch of ancestor
+ancestor_branch="$(echo $ancestor | sed 's/.*://')"
+
+# path of ancestor's remote
+path="$(git path $ancestor_remote)"
+
+# get current branch
+current_branch="$(git me)"
+# determine the remote that contains the current branch
+current_remote="$(git remote-contains $current_branch)"
+
+# open with remote prefixes if applicable
+if [ "$ancestor_remote" == "$current_remote" ]; then
+  open https://github.com/$path/compare/$ancestor_branch...$current_branch
+else
+  open https://github.com/$path/compare/$ancestor...$current_remote:$current_branch
+fi

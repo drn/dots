@@ -4,7 +4,7 @@
 # Displays the current branch in github if it exists on origin or fork.
 #
 
-branch="$(git rev-parse --abbrev-ref HEAD)"
+branch="$(git me)"
 remote=""
 
 # if the current branch exists on origin, show that branch

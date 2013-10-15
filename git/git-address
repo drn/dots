@@ -1,0 +1,15 @@
+#!/bin/bash
+
+#
+# Prints the address (git@github.com:author/repo.git) of the input remote.
+# Remote defaults to origin if no remote is input.
+#
+
+# determine which remote to determine address for
+remote="$1"
+if [ -z "$remote" ]; then
+  remote="origin"
+fi
+
+# determine remote address
+git remote -v | grep $remote | awk '{print $2}' | uniq

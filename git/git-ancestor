@@ -1,0 +1,29 @@
+#!/bin/bash
+
+#
+# Returns the path of the most recent ancestor branch that isn't fork/me
+#
+
+# TODO - make exclusion list dynamic
+exclusion="fork\/$(git me)"
+
+# limit backtrack to 100 commits
+index=1
+while [ $index -lt 100 ]; do
+  ticks="$(printf '^%.0s' $(seq 1 $index))"
+  # determine if the current ancestor commit belongs to a qualified
+  # remote branch
+  path="$(
+    git branch --remote --contains HEAD$ticks |
+    sed /$exclusion/d |
+    sed /HEAD/d |
+    head -n 1 |
+    sed 's/[ ]*//'
+  )"
+  if [ "$path" ]; then
+    break
+  fi
+  let index+=1
+done
+
+echo $path

@@ -7,7 +7,7 @@
 #   * origin otherwise
 #
 
-branch="$(git rev-parse --abbrev-ref HEAD)"
+branch="$(git me)"
 remote=""
 if [ "$1" != "--force" ]; then
   remote="$1"

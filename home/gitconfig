@@ -73,7 +73,6 @@
   # remote details
   remote-details = !"git remote -v | grep 'fork' | awk '{print $2}' | uniq | sed 's#.*:##g' | sed 's#.git$##g'"
   # pull request
-  pullme = !hub browse `git remote-details` pull/new/`git me`
   pum = !"git pullme"
   # pushes to origin/master
   publish = push origin HEAD:master
