@@ -39,6 +39,7 @@
   tra = log --graph --decorate --oneline --all
   treesingle = log --graph --decorate --oneline
   trs = log --graph --decorate --oneline
+  trak = !"clear; git tra"
   # The wip allows for a quick way to add all new and modified files to the index, while cleaning the index from the files removed from the working tree.
   wip = !"git add -A; git ls-files --deleted -z | xargs -0 git rm; git commit -m \"wip\""
   # The unwip will restore the deleted files to the working tree!
