@@ -1,7 +1,7 @@
 # Include ~/bin in PATH
 export PATH=~/bin:$PATH
 # Include Homebrew in PATH
-export PATH=/usr/local/bin:$PATH
+export PATH=/usr/local/bin:/usr/local/sbin:$PATH
 # Include git extensions in PATH
 export PATH=$HOME/.git-extensions:$PATH
 # Include MySQL in PATH
