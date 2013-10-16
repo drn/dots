@@ -1,2 +1,2 @@
 " Switch between header and source files
-nnoremap <silent> <leader>s :FSHere<cr>
+nnoremap <silent> <leader>h :FSHere<cr>
