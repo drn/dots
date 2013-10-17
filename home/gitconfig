@@ -87,6 +87,8 @@
   resetm = !"git reset --hard origin/master"
   # git showme
   sm = showme
+  # git branches
+  brs = branches
 [user]
   name = darrenli
   email = darren@thanx.com

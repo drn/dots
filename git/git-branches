@@ -1,0 +1,19 @@
+#!/bin/bash
+
+#
+# Outputs the last commit message of all the local branches with an optional
+# filter parameter that scopes the branches by the filter.
+#
+
+git for-each-ref --shell --format='%(refname)' refs/heads |
+while read entry
+do
+  branch=`echo $entry | sed 's/.*\///' | sed "s/'//"`
+  if [[ "$branch" == *"$1"* ]]; then
+    response=`git top $branch`
+    len=${#branch}
+    spaces=`expr 10 - $len`
+    indent=`printf %$(echo $spaces)s`
+    echo -e "\033[00;31m$branch\033[0m$indent$response"
+  fi
+done

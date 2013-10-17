@@ -1,0 +1,14 @@
+#!/bin/bash
+
+#
+# Prints all the available git log colors.
+#
+
+red="%Credred%Creset"
+green="%Cgreengreen%Creset"
+yellow="%C(Yellow)yellow%Creset"
+blue="%Cblueblue%Creset"
+magenta="%C(magenta)magenta%Creset"
+cyan="%C(cyan)cyan%Creset"
+white="%C(white)white%Creset"
+echo "$(git log --pretty=format:"$red $green $yellow $blue $magenta $cyan $white" -n 1)"
