@@ -5,24 +5,29 @@
 # against the nearest ancestor branch that is not the currently pushed branch.
 #
 
-# determine ancestor
-ancestor="$(git ancestor | sed 's/\//:/')"
-# determine remote of ancestor
-ancestor_remote="$(echo $ancestor | sed 's/:.*//')"
-# determine branch of ancestor
-ancestor_branch="$(echo $ancestor | sed 's/.*://')"
+# specify the root url
+source="https://github.com"
 
 # path of ancestor's remote
-path="$(git path $ancestor_remote)"
+path="$(git path)"
 
 # get current branch
 current_branch="$(git me)"
 # determine the remote that contains the current branch
 current_remote="$(git remote-contains $current_branch)"
+# determine the author of the current remote
+current_author="$(git author $current_remote)"
+# set current (remote/branch) variable
+current="$current_remote/$current_branch"
 
-# open with remote prefixes if applicable
-if [ "$ancestor_remote" == "$current_remote" ]; then
-  open https://github.com/$path/compare/$ancestor_branch...$current_branch
-else
-  open https://github.com/$path/compare/$ancestor...$current_remote:$current_branch
-fi
+# determine ancestor (remote:branch), excluding the current (remote/branch)
+ancestor="$(git ancestor $current | sed 's/\//:/')"
+# determine remote of ancestor
+ancestor_remote="$(echo $ancestor | sed 's/:.*//')"
+# determine branch of ancestor
+ancestor_branch="$(echo $ancestor | sed 's/.*://')"
+# determine the author of the ancestor remote
+ancestor_author="$(git author $ancestor_remote)"
+
+# open the web browser at the computed pull request endpoint
+open $source/$path/compare/$ancestor_author:$ancestor_branch...$current_author:$current_branch

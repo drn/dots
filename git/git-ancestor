@@ -1,29 +1,44 @@
 #!/bin/bash
 
 #
-# Returns the path of the most recent ancestor branch that isn't fork/me
+# Returns the path of the most recent ancestor branch on origin that
 #
 
-# TODO - make exclusion list dynamic
-exclusion="fork\/$(git me)"
+# only exclude input regex from matches
+exclusion="$1"
+if [ -z "$exclusion" ]; then
+  exclusion="*"
+fi
 
-# limit backtrack to 100 commits
+# backtrack at most 500 commits looking for the most recent ancestor branch
+# on origin
 index=1
-while [ $index -lt 100 ]; do
+while [ $index -lt 500 ]; do
   ticks="$(printf '^%.0s' $(seq 1 $index))"
   # determine if the current ancestor commit belongs to a qualified
   # remote branch
+  #   * search remote branches containing the current ancestor commit
+  #   * potentially exclude input regex from matches
+  #   * filter by commits on origin
+  #   * filter out origin/HEAD branch
+  #   * select the first match
   path="$(
     git branch --remote --contains HEAD$ticks |
-    sed /$exclusion/d |
+    grep -v "$exclusion" |
+    grep origin |
     sed /HEAD/d |
     head -n 1 |
     sed 's/[ ]*//'
   )"
+
+  # break out of the loop if any matches are found
   if [ "$path" ]; then
     break
   fi
+
+  # iterate back one commit
   let index+=1
 done
 
+# return the description (remote/branch) of the most recent ancestor on origin
 echo $path

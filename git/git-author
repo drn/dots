@@ -1,0 +1,8 @@
+#!/bin/bash
+
+#
+# Prints the author of the input remote. Remote defaults to origin if no
+# remote is input.
+#
+
+git path $1 | sed 's/\/.*//'

@@ -9,7 +9,14 @@ if [ -z "$branch" ]; then
   branch="$(git me)"
 fi
 
-remote="$(git branch --remote --contains $branch | grep $branch | head -n 1)"
+# determine remote branch that contains the specified branch
+remote="$(
+  git branch --remote --contains $branch |
+  grep $branch |
+  head -n 1
+)"
+
+# echo the remote or nothing
 if [ "$remote" ]; then
   echo $remote | sed 's/[ ]*//' | sed 's/\/.*//'
 fi

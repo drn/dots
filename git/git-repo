@@ -1,0 +1,9 @@
+#!/bin/bash
+
+#
+# Prints the repo of the input remote. Remote defaults to origin if no
+# remote is input.
+#
+
+git path $1 | sed 's/.*\///'
+
