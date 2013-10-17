@@ -2,15 +2,17 @@
 
 #
 # Pushes the current branch to:
-#   * a specified branch
-#   * fork if that remote exists
-#   * origin otherwise
+#   * specified or current branch
+#   * fork if it exists, origin otherwise
+# Optional set --force to force push commit
 #
 
 branch="$(git me)"
-remote=""
-if [ "$1" != "--force" ]; then
-  remote="$1"
+
+# determine destination branch
+dest="$(git me)"
+if [ "$1" ] && [ "$1" != "--force" ]; then
+  dest="$1"
 fi
 
 # abort script if input remote doesn't exist
@@ -19,17 +21,25 @@ if [ "$remote" ] && [ -z "$(git remote | grep $remote)"]; then
   exit 0
 fi
 
-# set remote to fork or origin if no input remote
+# set remote to fork or origin
+remote="$(git remote | grep 'fork')"
 if [ -z "$remote" ]; then
-  remote="$(git remote | grep 'fork')"
-  if [ -z "$remote" ]; then
-    remote="origin"
-  fi
+  remote="origin"
+fi
+
+# output description of actions
+prefix="Pushing"
+if [ "$1" == "--force" ] || [ "$2" == "--force" ]; then
+  prefix="Force pushing"
+fi
+if [ $branch == $dest ]; then
+  echo "$prefix $branch to $remote..."
+else
+  echo "$prefix $branch to $remote/$dest..."
 fi
 
 # push or force push depending on remote and flags
-echo "Pushing $branch to $remote..."
-if [ $remote == "origin" ] && [ "$1" != "--force" ]; then
+if [ $remote == "origin" ] && [ "$1" != "--force" ] && [ "$2" != "--force" ]; then
   git push $remote $branch
 else
   git push $remote $branch -f
