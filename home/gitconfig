@@ -14,7 +14,7 @@
   # git checkout shortcut
   co = checkout
   # git rebase shortcut
-  rb = rebase
+  rb = rebase-iterm
   # git cherry-pick shortcut
   cp = cherry-pick
   # git commit shortcut
