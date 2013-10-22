@@ -1,0 +1,9 @@
+#!/bin/bash
+
+#
+# Rebase the current branch on the most recent branch on origin.
+#
+
+ancestor="$(git ancestor)"
+echo "Rebasing $(git me) onto $ancestor"
+git rebase $ancestor $1

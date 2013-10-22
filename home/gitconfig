@@ -83,6 +83,8 @@
   changes = !"git log --follow -p "
   # rebase on origin/master
   rbm = !"git rb origin/master"
+  # rebase on most recent ancestor
+  rbr = rebase-relevant
   # hard reset to master
   resetm = !"git reset --hard origin/master"
   # git showme
