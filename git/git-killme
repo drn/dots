@@ -39,25 +39,25 @@ if [ $branch != $fallback ]; then
 
   # if fallback branch already exists:
   #   * check it out
-  #   * reset fallback branch to origin/master if
+  #   * reset fallback branch to ancestor if:
   #     * fallback branch is contained locally
   #     * fallback branch is contained remotely
   #   * destroy local branch
   # otherwise:
   #   * create the fallback branch
-  #   * reset fallback branch to origin/master
+  #   * reset fallback branch to ancestor
   #   * destroy local branch
   if [ "$(git branch | grep $fallback)" ]; then
     git checkout $fallback
 
     # if fallback branch is contained locally
     if [ "$(git branch --contains $fallback | sed /$fallback/d | sed /$branch/d)" ]; then
-      git reset --hard origin/master
+      git reset --hard $(git ancestor)
     fi
 
     # if fallback branch is contained remotely
     if [ "$(git branch --remote --contains $fallback | sed /$fallback/d)" ]; then
-      git reset --hard origin/master
+      git reset --hard $(git ancestor)
     fi
 
     if [ "$1" == "--force" ] || [ "$deletion" ]; then
@@ -65,7 +65,7 @@ if [ $branch != $fallback ]; then
     fi
   else
     git checkout -b $fallback
-    git reset --hard origin/master
+    git reset --hard $(git ancestor)
     if [ "$1" == "--force" ] || [ "$deletion" ]; then
       git branch -D $branch
     fi
