@@ -1,7 +1,8 @@
 #!/bin/bash
 
 #
-# Returns the path of the most recent ancestor branch on origin that
+# Returns the path of the most recent ancestor branch on origin. Optionally
+# excludes an input regex.
 #
 
 # only exclude input regex from matches
