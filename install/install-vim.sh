@@ -43,7 +43,6 @@ plugins=(
   noprompt/vim-yardoc
   msanders/cocoa.vim
   kien/rainbow_parentheses.vim
-  kshenoy/vim-signature
   derekwyatt/vim-fswitch
   terryma/vim-multiple-cursors
   junegunn/vim-easy-align

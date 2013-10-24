@@ -26,7 +26,6 @@ Pathogen and the following bundles are installed to ~/.vim.
   * [vim-yardoc](https://github.com/noprompt/vim-yardoc) - YARD syntax highlighting
   * [cocoa.vim](https://github.commsanders/cocoa.vim) - vim cocoa support
   * [rainbow_parentheses.vim](https://github.com/kien/rainbow_parentheses.vim) - better parentheses syntax highlighting
-  * [vim-signature](https://github.comkshenoy/vim-signature) - extended vim marks support
   * [vim-fswitch](https://github.com/derekwyatt/vim-fswitch) - easy companion file switching
   * [vim-multiple-cursors](https://github.com/terryma/vim-multiple-cursors) - multiple cursor selections
   * [vim-easy-align](https://github.com/junegunn/vim-easy-align) - vim alignment support
