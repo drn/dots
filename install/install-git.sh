@@ -2,7 +2,7 @@
 
 dev="$HOME/Development"
 dotfiles="$dev/dotfiles"
-gitdots="$dotfiles/git"
+gitfunc="$dotfiles/git/functions"
 githome="$HOME/.git-extensions"
 
 # include install functions
@@ -13,7 +13,7 @@ sudo rm -rf $githome
 mkdir $githome
 
 # install all git extensions
-for location in $gitdots/*; do
+for location in $gitfunc/*; do
   file="${location##*/}"
   link "$location" "$githome/$file"
 done

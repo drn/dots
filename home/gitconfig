@@ -1,11 +1,13 @@
 [merge]
   # opendiff is part of XCode for osx
   tool = opendiff
+
 [core]
   # default ignored files for OSX; see below
   excludesfile = /Users/darrencheng/.gitignore
   editor = mvim -f
   preloadindex = true
+
 [alias]
   # git fetch shortcut
   f = fetch
@@ -91,13 +93,19 @@
   sm = showme
   # git branches
   brs = branches
+
 [user]
   name = darrenli
   email = darren@thanx.com
+
 [github]
   user = darrenli
+
 [credential]
   helper = osxkeychain
-[heroku]
+
 [color]
   ui = auto
+
+[init]
+  templatedir = ~/Development/dotfiles/git/templates

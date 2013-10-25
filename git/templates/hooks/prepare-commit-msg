@@ -1,0 +1,6 @@
+#!/bin/sh
+
+branch="$(git me)"
+if [ "$(echo $branch | grep 'TA-')" ]; then
+  echo "$branch. $(cat $1)" > "$1"
+fi
