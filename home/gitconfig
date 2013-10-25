@@ -93,6 +93,9 @@
   sm = showme
   # git branches
   brs = branches
+  # git reset-ancestor
+  ra = !"git reset-ancestor"
+  raf = !"git reset-ancestor --force"
 
 [user]
   name = darrenli
