@@ -44,7 +44,6 @@ plugins=(
   gitfast
   git
   rails3
-  jira
   bundler
   macports
   powder
