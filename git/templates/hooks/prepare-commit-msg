@@ -2,5 +2,8 @@
 
 branch="$(git me)"
 if [ "$(echo $branch | grep 'TA-')" ]; then
-  echo "$branch. $(cat $1)" > "$1"
+  prefix="$branch. "
+  if [ -z "$(cat $1 | grep $prefix)" ]; then
+    echo "$prefix$(cat $1)" > "$1"
+  fi
 fi
