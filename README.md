@@ -49,6 +49,7 @@ Pathogen and the following bundles are installed to ~/.vim.
   * [ultisnips](https://github.com/SirVer/ultisnips) - vim snippets
   * [netrw](https://github.com/eiginn/netrw) - ensure netrw is up to date
   * [vim-css-color](https://github.com/skammer/vim-css-color) - highlight colors in css files
+  * [vim-bling](https://github.com/ivyl/vim-bling) - blink current search match
 
 ### Terminal
 

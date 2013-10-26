@@ -67,6 +67,7 @@ plugins=(
   SirVer/ultisnips
   eiginn/netrw
   skammer/vim-css-color
+  ivyl/vim-bling
 )
 
 # prune existing directories not in plugin whitelist
