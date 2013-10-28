@@ -33,5 +33,11 @@ if hash brew 2>/dev/null; then
     brew install the_silver_searcher
   fi
 
+  # ensure tig is installed
+  if [ -z "$(brew list | grep )" ]; then
+    echo "Installing tig via homebrew."
+    brew install tig
+  fi
+
 fi
 
