@@ -1,2 +1,2 @@
-" Indent after private and protected scoping
-let g:ruby_indent_private_protected_style="indent"
+" Indent after access modifier keywords
+let g:ruby_indent_access_modifier_style="indent"
