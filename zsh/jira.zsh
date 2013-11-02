@@ -24,17 +24,28 @@
 echoerr() { echo "$@" 1>&2; }
 
 jira () {
+  root_path=$(git rev-parse --show-toplevel)
+  repo=$(git path $1 | sed 's/.*\///')
+  repo=$(
+    git remote -v |
+    grep origin |
+    awk '{print $2}' |
+    uniq |
+    sed 's/.*\///' |
+    sed 's/.git//'
+  )
+
   if [ -f .jira-url ]; then
-    jira_url=$(cat .jira-url)
+    jira_url=$(cat $root_path/.jira-url)
   else
-    echo "JIRA url is not specified anywhere."
+    echo "JIRA url is not in $repo's root. Please see setup notes."
     return 0
   fi
 
   if [ -f .jira-auth ]; then
-    jira_auth=$(cat .jira-auth)
+    jira_auth=$(cat $root_path/.jira-auth)
   else
-    echo "JIRA auth is not found."
+    echo "JIRA auth is not in $repo's root. Please see setup notes."
     return 0
   fi
 
