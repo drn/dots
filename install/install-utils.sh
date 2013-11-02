@@ -34,7 +34,7 @@ if hash brew 2>/dev/null; then
   fi
 
   # ensure tig is installed
-  if [ -z "$(brew list | grep )" ]; then
+  if [ -z "$(brew list | grep tig)" ]; then
     echo "Installing tig via homebrew."
     brew install tig
   fi
