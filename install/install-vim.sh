@@ -55,7 +55,7 @@ plugins=(
   Valloric/YouCompleteMe
   nanotech/jellybeans.vim
   jeffkreeftmeijer/vim-numbertoggle
-  vim-ruby/vim-ruby
+  'vim-ruby/vim-ruby vim-ruby 859183e'
   plasticboy/vim-markdown
   groenewege/vim-less
   tpope/vim-endwise
@@ -79,7 +79,7 @@ for file in $existing; do
   # determine if file in ~/.vim/bundle is whitelisted
   should_delete=true
   for plugin in "${plugins[@]}"; do
-    base_plugin="$(echo "$plugin" | sed 's/.*\///')"
+    base_plugin="$(echo "$plugin" | sed 's/.*\///' | sed 's/[ ].*//')"
     if [ "$base_plugin" == "$base_file" ]; then
       should_delete=false
     fi
@@ -94,7 +94,7 @@ done
 
 # ensure all plugins in plugin list are up to date
 for plugin in "${plugins[@]}"; do
-  gitsync "$plugin"
+  gitsync $plugin
 done
 
 # install YouCompleteMe binaries if not --update-only
