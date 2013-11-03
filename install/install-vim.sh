@@ -67,7 +67,6 @@ plugins=(
   SirVer/ultisnips
   eiginn/netrw
   skammer/vim-css-color
-  ivyl/vim-bling
   othree/html5.vim
 )
 
