@@ -55,7 +55,7 @@ plugins=(
   Valloric/YouCompleteMe
   nanotech/jellybeans.vim
   jeffkreeftmeijer/vim-numbertoggle
-  'vim-ruby/vim-ruby vim-ruby 859183e'
+  vim-ruby/vim-ruby
   plasticboy/vim-markdown
   groenewege/vim-less
   tpope/vim-endwise
