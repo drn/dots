@@ -70,7 +70,7 @@ jira_all() {
   do
     branch=`echo $entry | sed 's/.*\///' | sed "s/'//"`
     if [ "$(echo $branch | grep '^[a-zA-Z]*-[0-9]*$')" ]; then
-      {jira describe $branch} &
+      ({echoerr $(jira describe $branch)} &)
     fi
   done
   wait
@@ -96,14 +96,14 @@ jira() {
     sed 's/.git//'
   )
 
-  if [ -f .jira-url ]; then
+  if [ -f $repo_dir/.jira-url ]; then
     jira_url=$(cat $repo_dir/.jira-url)
   else
     echo "JIRA url is not in $repo's root. Please see setup notes."
     return 0
   fi
 
-  if [ -f .jira-auth ]; then
+  if [ -f $repo_dir/.jira-auth ]; then
     jira_auth=$(cat $repo_dir/.jira-auth)
   else
     echo "JIRA auth is not in $repo's root. Please see setup notes."
