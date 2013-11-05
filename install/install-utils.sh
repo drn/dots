@@ -41,3 +41,17 @@ if hash brew 2>/dev/null; then
 
 fi
 
+# if rubygems is installed
+if hash gem 2>/dev/null; then
+
+  # ensure jira-cli is installed
+  if [ -z "$(gem list | grep jira-cli)" ]; then
+    echo "Installing jira-cli via rubygems"
+    gem install jira-cli
+  else
+    echo "Updating jira-cli via rubygems"
+    gem update jira-cli
+  fi
+
+fi
+

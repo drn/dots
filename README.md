@@ -61,6 +61,7 @@ installed.
   * [zsh-syntax-highlighting](https://github.com/zsh-users/zsh-syntax-highlighting) - additional shell syntax highlighting
   * [tmux](http://tmux.sourceforge.net/) - terminal multiplexer
   * [z](https://github.com/rupa/z) - weighted directory navigation
+  * [jira-cli](http://rubygems.org/gems/jira-cli) - JIRA workflow management CLI
 
 ### Fonts
 
