@@ -13,6 +13,7 @@ alias work="cd ~/Development/work"
 alias doc="cd ~/Documents"
 alias down="cd ~/Downloads"
 alias bin="cd ~/bin"
+alias jira-cli="cd ~/Development/personal/jira-cli"
 alias todo="vi ~/bin/todo"
 
 # SSH Aliases
