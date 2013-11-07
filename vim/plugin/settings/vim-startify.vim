@@ -39,6 +39,7 @@ let g:startify_bookmarks = [
 \ '~/.vimrc',
 \ '~/Development/work/thanx-web',
 \ '~/Development/dotfiles',
+\ '~/Development/personal/jira-cli',
 \ ]
 
 let g:startify_files_number = 5
