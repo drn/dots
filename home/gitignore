@@ -22,3 +22,5 @@ project.xcworkspace
 *.swp
 *.out
 
+#user specific files to ignore
+.jira-auth
