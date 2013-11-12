@@ -68,6 +68,7 @@ plugins=(
   eiginn/netrw
   skammer/vim-css-color
   othree/html5.vim
+  osyo-manga/vim-over
 )
 
 # prune existing directories not in plugin whitelist

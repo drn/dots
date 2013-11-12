@@ -50,6 +50,7 @@ Pathogen and the following bundles are installed to ~/.vim.
   * [netrw](https://github.com/eiginn/netrw) - ensure netrw is up to date
   * [vim-css-color](https://github.com/skammer/vim-css-color) - highlight colors in css files
   * [html5.vim](https://github.com/othree/html5.vim) - html5 syntax
+  * [vim-over](https://github.com/osyo-manga/vim-over) - substitution preview
 
 ### Terminal
 
