@@ -49,10 +49,15 @@ alias j="jira"
 # System Maintenance Commands
 update() {
   sudo -p "Enter your password: " echo "We're good to go!"
+  # upgrading Oh My Zsh
+  bash ~/.oh-my-zsh/tools/upgrade.sh
+  # upgrading Homebrew
   echo '\nUpdating Brew...'
   brew update
+  # upgrading RVM
   echo '\nUpdating RVM...'
   rvm get stable
+  # upgrading VIM plugins
   echo "\nUpdating vim plugins..."
   vimsync
 }
