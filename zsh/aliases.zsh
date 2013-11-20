@@ -50,7 +50,8 @@ alias j="jira"
 update() {
   sudo -p "Enter your password: " echo "We're good to go!"
   # upgrading Oh My Zsh
-  bash ~/.oh-my-zsh/tools/upgrade.sh
+  /usr/bin/env ZSH=$ZSH /bin/sh $ZSH/tools/upgrade.sh
+  echo "LAST_EPOCH=$(($(date +%s) / 60 / 60 / 24))" > ~/.zsh-update
   # upgrading Homebrew
   echo '\nUpdating Brew...'
   brew update
