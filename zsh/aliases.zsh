@@ -18,8 +18,8 @@ alias todo="vi ~/bin/todo"
 
 # SSH Aliases
 alias dlc="ssh darrenli@darrenlincheng.com"
-alias remotehome="ssh sanguinerane@sanguinerane.zapto.org"
-alias localhome="ssh sanguinerane@192.168.2.200"
+alias remotehome="ssh SanguineRane@sanguinerane.zapto.org"
+alias localhome="ssh SanguineRane@192.168.2.200"
 
 # Command Aliases
 alias vi="mvim"
