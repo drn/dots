@@ -39,6 +39,12 @@ if hash brew 2>/dev/null; then
     brew install tig
   fi
 
+  # ensure tree is installed
+  if [ -z "$(brew list | grep tree)" ]; then
+    echo "Installing tree via homebrew."
+    brew install tree
+  fi
+
 fi
 
 # if rubygems is installed
