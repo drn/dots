@@ -7,6 +7,7 @@ export PATH=$HOME/.git-extensions:$PATH
 # Include MySQL in PATH
 export PATH=/usr/local/mysql/bin:$PATH
 # Include Android tools in PATH
-export PATH=~/Developer/library/android-sdk-macosx/tools:$PATH
+export PATH=/Applications/Android\ Studio.app/sdk/platform-tools:$PATH
+export PATH=/Applications/Android\ Studio.app/sdk/tools:$PATH
 # Include postgres in path
 export PATH=/Applications/Postgres.app/Contents/MacOS/bin:$PATH
