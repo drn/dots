@@ -15,6 +15,7 @@ Vim configuration files (`.vimrc`, `.gvimrc`) files are installed.
 Pathogen and the following bundles are installed to ~/.vim.
 
   * [ctrlp.vim](https://github.com/kien/ctrlp.vim/) - fast fuzzy file navigation
+  * [ctrlp-matcher](https://github.com/JazzCore/ctrlp-cmatcher) - faster ctrl p matching
   * [vim-airline](https://github.com/bling/vim-airline/) - custom statusline
   * [vim-easymotion](https://github.com/Lokaltog/vim-easymotion) - extended vim motions
   * [vim-fugitive](https://github.com/tpope/vim-fugitive) - git wrapper

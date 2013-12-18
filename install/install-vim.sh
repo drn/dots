@@ -33,6 +33,7 @@ cd $vim/bundle
 # list of vim plugins to install
 plugins=(
   kien/ctrlp.vim
+  JazzCore/ctrlp-cmatcher
   bling/vim-airline
   Lokaltog/vim-easymotion
   tpope/vim-fugitive
@@ -98,17 +99,32 @@ for plugin in "${plugins[@]}"; do
   gitsync $plugin
 done
 
-# install YouCompleteMe binaries if not --update-only
+# if not --update-only
 if ! $updateonly; then
+
+  # install YouCompleteMe binaries
   cd YouCompleteMe
   echo "Compiling YouCompleteMe binaries... This may take a while."
-  ./install.sh >/dev/null 2>$dotfiles/install.log
+  ./install.sh >/dev/null 2>/dev/null
   success=$?
   if [[ $success -eq 0 ]]; then
     echo "YouCompleteMe binaries successfully compiled."
     sudo rm -f $dotfiles/install.log
   else
-    echo "YouCompleteMe binaries failed to compile. Please see $dotfiles/install.log for additional info."
+    echo "YouCompleteMe binaries failed to compile."
+  fi
+  cd $vim/bundle
+
+  # install ctrlp-matcher extensions
+  cd ctrlp-cmatcher
+  echo "Compiling ctrlp-matcher binaries..."
+  ./install_linux.sh >/dev/null 2>/dev/null
+  success=$?
+  if [[ $success -eq 0 ]]; then
+    echo "ctrlp-matcher binaries successfully compiled."
+    sudo rm -f $dotfiles/install.log
+  else
+    echo "ctrlp-matcher binaries failed to compile."
   fi
   cd $vim/bundle
 fi

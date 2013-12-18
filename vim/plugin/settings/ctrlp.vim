@@ -7,4 +7,6 @@ let g:ctrlp_custom_ignore = {
   \ 'dir':  '\v[\/]((\.(git|hg|svn))|(coverage))$',
   \ 'file': '\v\.(swp|zip|DS_Store|jira-url)$'
   \ }
+let g:ctrlp_match_func = {'match' : 'matcher#cmatch' }
 let g:ctrlp_max_height = 20
+let g:ctrlp_max_files = 0
