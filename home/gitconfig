@@ -94,8 +94,8 @@
   # git branches
   brs = branches
   # git reset-ancestor
-  ra = !"git reset-ancestor"
-  raf = !"git reset-ancestor --force"
+  reseta = !"git reset-ancestor"
+  resetaf = !"git reset-ancestor --force"
 
 [user]
   name = darrenli
