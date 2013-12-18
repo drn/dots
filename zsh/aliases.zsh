@@ -14,7 +14,7 @@ alias doc="cd ~/Documents"
 alias down="cd ~/Downloads"
 alias bin="cd ~/bin"
 alias jira-cli="cd ~/Development/personal/jira-cli"
-alias todo="vi ~/bin/todo"
+alias casks="cd $(brew --prefix)/Library/Taps/phinze-cask"
 
 # SSH Aliases
 alias dlc="ssh darrenli@darrenlincheng.com"
@@ -45,6 +45,7 @@ alias springup="rake db:test:prepare; spring testunit; spring status;"
 alias sup="springup"
 alias vimsync="bash $HOME/Development/dotfiles/install/install-vim.sh --update-only"
 alias j="jira"
+alias todo="vi ~/bin/todo"
 
 # System Maintenance Commands
 update() {
