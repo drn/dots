@@ -14,8 +14,8 @@ alias doc="cd ~/Documents"
 alias down="cd ~/Downloads"
 alias bin="cd ~/bin"
 alias jira-cli="cd ~/Development/personal/jira-cli"
-alias casks="cd $(brew --prefix)/Library/Taps/phinze-cask"
-alias casksv="cd $(brew --prefix)/Library/Taps/caskroom-versions"
+alias casks="cd /usr/local/bin/Library/Taps/phinze-cask"
+alias casksv="cd /usr/local/bin/Library/Taps/caskroom-versions"
 
 # SSH Aliases
 alias dlc="ssh darrenli@darrenlincheng.com"
