@@ -53,6 +53,7 @@ Pathogen and the following bundles are installed to ~/.vim.
   * [html5.vim](https://github.com/othree/html5.vim) - html5 syntax
   * [vim-over](https://github.com/osyo-manga/vim-over) - substitution preview
   * [vim-json](https://github.com/elzr/vim-json) - JSON syntax highlighting
+  * [vim-unimpaired](https://github.com/tpope/vim-unimpaired) - useful bracket mappings
 
 ### Terminal
 
