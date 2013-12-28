@@ -47,7 +47,7 @@ plugins=(
   derekwyatt/vim-fswitch
   terryma/vim-multiple-cursors
   junegunn/vim-easy-align
-  tpope/vim-dispatch
+  darrenli/vim-dispatch
   jgdavey/vim-turbux
   milkypostman/vim-togglelist
   rking/ag.vim
