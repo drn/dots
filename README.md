@@ -54,6 +54,7 @@ Pathogen and the following bundles are installed to ~/.vim.
   * [vim-over](https://github.com/osyo-manga/vim-over) - substitution preview
   * [vim-json](https://github.com/elzr/vim-json) - JSON syntax highlighting
   * [vim-unimpaired](https://github.com/tpope/vim-unimpaired) - useful bracket mappings
+  * [vim-vinegar](https://github.com/tpope/vim-vinegar) - netrw extension
 
 ### Terminal
 

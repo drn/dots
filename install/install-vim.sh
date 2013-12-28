@@ -72,6 +72,7 @@ plugins=(
   osyo-manga/vim-over
   elzr/vim-json
   tpope/vim-unimpaired
+  tpope/vim-vinegar
 )
 
 # prune existing directories not in plugin whitelist
