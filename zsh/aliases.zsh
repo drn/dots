@@ -58,8 +58,8 @@ update() {
   echo '\nUpdating Brew...'
   brew update
   # upgrading RVM
-  echo '\nUpdating RVM...'
-  rvm get stable
+  echo '\nUpdating rbenv...'
+  brew upgrade rbenv ruby-build
   # upgrading VIM plugins
   echo "\nUpdating vim plugins..."
   vimsync

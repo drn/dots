@@ -1,2 +1,16 @@
-# load rvm into the zsh shell
-[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"
+# Include ~/bin in PATH
+export PATH=~/bin:$PATH
+# Include Homebrew in PATH
+export PATH=/usr/local/bin:/usr/local/sbin:$PATH
+# Include git extensions in PATH
+export PATH=$HOME/.git-extensions:$PATH
+# Include MySQL in PATH
+export PATH=/usr/local/mysql/bin:$PATH
+# Include Android tools in PATH
+export PATH=/Applications/Android\ Studio.app/sdk/platform-tools:$PATH
+export PATH=/Applications/Android\ Studio.app/sdk/tools:$PATH
+# Include postgres in path
+export PATH=/Applications/Postgres.app/Contents/MacOS/bin:$PATH
+# Load rbenv
+export RBENV_ROOT="$HOME/.rbenv"
+eval "$(rbenv init -)"
