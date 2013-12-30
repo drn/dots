@@ -40,6 +40,7 @@ let g:startify_bookmarks = [
 \ '~/Development/work/thanx-web',
 \ '~/Development/dotfiles',
 \ '~/Development/personal/jira-cli',
+\ '~/Development/work/keyword-crawler'
 \ ]
 
 let g:startify_files_number = 5
