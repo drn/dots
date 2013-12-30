@@ -36,7 +36,6 @@ alias orig="find . -iname \"*.orig\" | xargs rm"
 alias swp="find . -iname \"*.swp\" | xargs rm"
 alias vim="/Applications/MacVim.app/Contents/MacOS/Vim"
 alias sqldev='mysql -u root thanx_development'
-alias gitk="~/.rvm/bin/gitk 2>/dev/null"
 alias aliases="vi ~/.oh-my-zsh/custom/aliases.zsh"
 alias theme="vi ~/.oh-my-zsh/custom/darrenli.zsh-theme"
 alias custom="cd ~/.oh-my-zsh/custom"
@@ -47,6 +46,7 @@ alias sup="springup"
 alias vimsync="bash $HOME/Development/dotfiles/install/install-vim.sh --update-only"
 alias j="jira"
 alias todo="vi ~/bin/todo"
+alias gitx="open -a ~/Applications/GitX.app ."
 
 # System Maintenance Commands
 update() {
