@@ -47,6 +47,7 @@ alias vimsync="bash $HOME/Development/dotfiles/install/install-vim.sh --update-o
 alias j="jira"
 alias todo="vi ~/bin/todo"
 alias gitx="open -a ~/Applications/GitX.app ."
+alias light="open -a /Applications/LightPaper.app"
 
 # System Maintenance Commands
 update() {
