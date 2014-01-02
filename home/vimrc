@@ -105,8 +105,8 @@ set hlsearch
 
 """ Mappings """
 
-" Open current file's directory listing
-nnoremap <silent> <D-d> :Ex<cr>zz
+" Open base directory in netrw
+nnoremap <silent> <leader>- :e `pwd`<cr>zz
 " Clear search highlighs
 nnoremap <silent> <D-k> :noh<cr>
 " Highlight .. patterns to easily navigate in directory listnings
