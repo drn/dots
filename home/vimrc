@@ -106,8 +106,6 @@ set hlsearch
 """ Mappings """
 
 " Open current file's directory listing
-nnoremap <silent> <D-e> :e `pwd`<cr>zz
-" Open working directory listing
 nnoremap <silent> <D-d> :Ex<cr>zz
 " Clear search highlighs
 nnoremap <silent> <D-k> :noh<cr>
