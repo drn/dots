@@ -55,6 +55,7 @@ Pathogen and the following bundles are installed to ~/.vim.
   * [vim-json](https://github.com/elzr/vim-json) - JSON syntax highlighting
   * [vim-unimpaired](https://github.com/tpope/vim-unimpaired) - useful bracket mappings
   * [vim-vinegar](https://github.com/tpope/vim-vinegar) - netrw extension
+  * [vim-eunuch](https://github.com/tpope/vim-eunuch) - unix shell aliases
 
 ### Terminal
 

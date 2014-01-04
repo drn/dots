@@ -73,6 +73,7 @@ plugins=(
   elzr/vim-json
   tpope/vim-unimpaired
   tpope/vim-vinegar
+  tpope/vim-eunuch
 )
 
 # prune existing directories not in plugin whitelist
