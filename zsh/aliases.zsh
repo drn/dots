@@ -52,16 +52,13 @@ alias light="open -a /Applications/LightPaper.app"
 # System Maintenance Commands
 update() {
   sudo -p "Enter your password: " echo "We're good to go!"
-  # upgrading Oh My Zsh
+  # update Oh My Zsh
   /usr/bin/env ZSH=$ZSH /bin/sh $ZSH/tools/upgrade.sh
   echo "LAST_EPOCH=$(($(date +%s) / 60 / 60 / 24))" > ~/.zsh-update
-  # upgrading Homebrew
-  echo '\nUpdating Brew...'
-  brew update
-  # upgrading RVM
-  echo '\nUpdating rbenv...'
-  brew upgrade rbenv ruby-build
-  # upgrading VIM plugins
+  # update and upgrade Homebrew
+  echo '\nUpdating Brew and any outdated packages...'
+  brew update; brew upgrade
+  # update VIM plugins
   echo "\nUpdating vim plugins..."
   vimsync
 }
