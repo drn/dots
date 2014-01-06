@@ -7,7 +7,7 @@ My development environment bootstrap script
 
 Single line installation:
 
-    curl --silent https://raw.github.com/darrenli/dotfiles/master/install/install.sh | sh
+    curl -s https://raw.github.com/darrenli/dotfiles/master/install/install.sh | sh
 
 ### VIM
 
