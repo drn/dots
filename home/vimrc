@@ -50,6 +50,8 @@ set nowb
 silent !mkdir ~/.vim/backups > /dev/null 2>&1
 set undodir=~/.vim/backups
 set undofile
+" smoother screen redraw
+set ttyfast
 
 """ Set Missing Filetypes """
 au BufRead,BufNewFile gitconfig set filetype=gitconfig
