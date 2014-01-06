@@ -102,6 +102,9 @@ highlight clear SignColumn
 " highlight search matches
 set hlsearch
 
+" disable syntax highlighting past specified column for long lines
+set synmaxcol=80
+
 
 """ Mappings """
 
