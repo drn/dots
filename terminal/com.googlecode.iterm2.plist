@@ -904,11 +904,11 @@
 	<key>NSWindow Frame Preferences</key>
 	<string>331 393 924 485 0 0 1440 878 </string>
 	<key>NSWindow Frame iTerm Window 0</key>
-	<string>0 0 1440 900 0 0 1440 878 </string>
+	<string>0 26 1440 852 0 0 1440 878 </string>
 	<key>NSWindow Frame iTerm Window 1</key>
-	<string>3 4 1434 874 0 0 1440 878 </string>
+	<string>2 35 1437 843 0 0 1440 878 </string>
 	<key>NSWindow Frame iTerm Window 2</key>
-	<string>0 442 650 426 0 0 1440 878 </string>
+	<string>723 20 1434 810 0 0 1440 878 </string>
 	<key>NSWindow Frame iTerm Window 3</key>
 	<string>3 444 650 426 0 0 1440 878 </string>
 	<key>NSWindow Frame iTerm Window 4</key>
@@ -1621,7 +1621,7 @@
 			<key>Tags</key>
 			<array/>
 			<key>Terminal Type</key>
-			<string>xterm</string>
+			<string>xterm-256color</string>
 			<key>Transparency</key>
 			<real>0.11262481659650803</real>
 			<key>Triggers</key>
