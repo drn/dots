@@ -9,6 +9,6 @@ source "$dotfiles/install/install.cfg"
 # ~ files
 for location in $dotfiles/home/*; do
   file="${location##*/}"
-  file="${file%.*}"
+  echo "$location to $HOME/.$file"
   link "$location" "$HOME/.$file"
 done

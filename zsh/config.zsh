@@ -44,3 +44,6 @@ HISTSIZE=5000
 
 # Disable tab completion
 compdef -d rake
+
+# Autoload tmux
+# if [ "$TMUX" = "" ]; then tmux; fi
