@@ -45,5 +45,8 @@ HISTSIZE=5000
 # Disable tab completion
 compdef -d rake
 
+# source travis gem
+[ -f ~/.travis/travis.sh ] && source ~/.travis/travis.sh
+
 # Autoload tmux
 # if [ "$TMUX" = "" ]; then tmux; fi
