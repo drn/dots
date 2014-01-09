@@ -74,6 +74,7 @@ plugins=(
   tpope/vim-unimpaired
   tpope/vim-vinegar
   tpope/vim-eunuch
+  StanAngeloff/php.vim
 )
 
 # prune existing directories not in plugin whitelist
