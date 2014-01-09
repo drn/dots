@@ -34,7 +34,6 @@ alias crepo="~/Development/opensource/crepo/crepo.py"
 alias rtest='ruby -I"lib:test"'
 alias orig="find . -iname \"*.orig\" | xargs rm"
 alias swp="find . -iname \"*.swp\" | xargs rm"
-alias vim="/Applications/MacVim.app/Contents/MacOS/Vim"
 alias sqldev='mysql -u root thanx_development'
 alias aliases="vi ~/.oh-my-zsh/custom/aliases.zsh"
 alias theme="vi ~/.oh-my-zsh/custom/darrenli.zsh-theme"
