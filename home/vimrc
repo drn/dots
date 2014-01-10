@@ -52,60 +52,18 @@ set undodir=~/.vim/backups
 set undofile
 " smoother screen redraw
 set ttyfast
-
-""" Set Missing Filetypes """
-au BufRead,BufNewFile gitconfig set filetype=gitconfig
-
-""" Jellybeans.vim Colorscheme """
-
-colorscheme jellybeans
-let g:jellybeans_background_color = "151535"
-let g:jellybeans_overrides = {
-\  'Todo': {
-\    'guifg':    'DF4085',
-\    'guibg':    '',
-\    'ctermfg':  'Red',
-\    'ctermbg':  '',
-\    'attr':     'bold'
-\  },
-\}
-color jellybeans
-
-
-""" Configure UI """
-
 " set background defaults
 set background=dark
 set transparency=3
-
-" configure and color the color column
-if exists('+colorcolumn')
-  set colorcolumn=80
-  hi ColorColumn guibg=#444444
-else
-  au BufWinEnter * let w:m2=matchadd('ErrorMsg', '\%>80v.\+', -1)
-endif
-
-" configure and highlight over length
-highlight OverLength ctermbg=red ctermfg=white guibg=#592929
-match OverLength /\%>80v.\+/
-
-" highlight and color the current line
-set cursorline
-highlight CursorLine guibg=#000070
-
-" configure and color the cursor
-set guicursor=n-v-c:blinkwait500-blinkoff500-blinkon500
-highlight Cursor guibg=#C92765
-
-" sign column highlight should be clear
-highlight clear SignColumn
-
 " highlight search matches
 set hlsearch
-
 " disable syntax highlighting past specified column for long lines
 set synmaxcol=160
+
+
+""" Set Missing Filetypes """
+
+au BufRead,BufNewFile gitconfig set filetype=gitconfig
 
 
 """ Mappings """
