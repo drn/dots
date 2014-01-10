@@ -20,9 +20,6 @@ color jellybeans
 
 " sign column highlight should be clear
 highlight clear SignColumn
-" configure and highlight over length
-highlight OverLength ctermbg=red ctermfg=white guibg=#592929
-match OverLength /\%>80v.\+/
 " highlight and color the current line
 set cursorline
 highlight CursorLine guibg=#000070
