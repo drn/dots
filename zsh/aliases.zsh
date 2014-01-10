@@ -25,6 +25,8 @@ alias localhome="ssh SanguineRane@192.168.1.200"
 # Command Aliases
 alias vi="mvim"
 alias v="mvim"
+# clear terminal buffer after vim exits
+vim() { /usr/local/bin/vim $1; clear }
 alias zshconfig="mvim ~/.zshrc"
 alias vimrc="mvim ~/.vimrc"
 alias gitconfig="mvim ~/.gitconfig"
