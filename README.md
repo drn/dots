@@ -57,6 +57,7 @@ Pathogen and the following bundles are installed to ~/.vim.
   * [vim-vinegar](https://github.com/tpope/vim-vinegar) - netrw extension
   * [vim-eunuch](https://github.com/tpope/vim-eunuch) - unix shell aliases
   * [php.vim](https://github.com/StanAngeloff/php.vim) - php syntax highlighting
+  * [gundo.vim](https://github.com/sjl/gundo.vim/) - visualize undo tree
 
 ### Terminal
 
