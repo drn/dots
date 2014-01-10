@@ -100,10 +100,6 @@ nnoremap <leader>b 77<Bar>i''<Esc>i<Return><Esc>kA\<Esc>j
 nnoremap <leader>w ddkP
 " Move line down
 nnoremap <leader>s ddp
-" Move word under cursor one word left
-nnoremap <leader>a "_yiw?\w\+\_W\+\%#<CR>:s/\(\%#\w\+\)\(\_W\+\)\(\w\+\)/\3\2\1/<CR><c-o><c-l> :noh<cr>
-" Move word under cursor one word right
-nnoremap <leader>d "_yiw:s/\(\%#\w\+\)\(\_W\+\)\(\w\+\)/\3\2\1/<CR><c-o>/\w\+\_W\+<CR><c-l> :noh<cr>
 
 " Automatically adjust quickfix window height
 "   https://gist.github.com/juanpabloaj/5845848
