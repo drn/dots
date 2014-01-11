@@ -865,7 +865,7 @@
 	<key>MaxVertically</key>
 	<false/>
 	<key>NSColorPanelMode</key>
-	<string>1</string>
+	<string>6</string>
 	<key>NSColorPanelVisibleSwatchRows</key>
 	<integer>3</integer>
 	<key>NSColorPickerSlidersDefaults</key>
@@ -902,13 +902,13 @@
 	<key>NSWindow Frame NSColorPanel</key>
 	<string>307 274 266 310 0 0 1440 878 </string>
 	<key>NSWindow Frame Preferences</key>
-	<string>331 393 924 485 0 0 1440 878 </string>
+	<string>-1050 858 924 485 -1080 -555 1080 1898 </string>
 	<key>NSWindow Frame iTerm Window 0</key>
-	<string>0 26 1440 852 0 0 1440 878 </string>
+	<string>-1080 -533 1080 1876 -1080 -555 1080 1898 </string>
 	<key>NSWindow Frame iTerm Window 1</key>
-	<string>2 35 1437 843 0 0 1440 878 </string>
+	<string>-1080 437 1074 906 -1080 -555 1080 1898 </string>
 	<key>NSWindow Frame iTerm Window 2</key>
-	<string>723 20 1434 810 0 0 1440 878 </string>
+	<string>-1077 149 650 426 -1080 -555 1080 1898 </string>
 	<key>NSWindow Frame iTerm Window 3</key>
 	<string>3 444 650 426 0 0 1440 878 </string>
 	<key>NSWindow Frame iTerm Window 4</key>
@@ -1500,11 +1500,11 @@
 			<key>Selection Color</key>
 			<dict>
 				<key>Blue Component</key>
-				<real>0.048427306115627289</real>
+				<real>0.59808349609375</real>
 				<key>Green Component</key>
-				<real>0.53260868787765503</real>
+				<real>0.061074282974004745</real>
 				<key>Red Component</key>
-				<real>0.0</real>
+				<real>1</real>
 			</dict>
 			<key>Semantic History</key>
 			<dict>
@@ -2432,7 +2432,7 @@
 	<key>SUHasLaunchedBefore</key>
 	<true/>
 	<key>SULastCheckTime</key>
-	<date>2014-01-06T23:19:57Z</date>
+	<date>2014-01-10T23:30:15Z</date>
 	<key>SavePasteHistory</key>
 	<false/>
 	<key>ShowBookmarkName</key>
