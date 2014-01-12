@@ -67,7 +67,6 @@ plugins=(
   nathanaelkane/vim-indent-guides
   SirVer/ultisnips
   eiginn/netrw
-  skammer/vim-css-color
   othree/html5.vim
   osyo-manga/vim-over
   elzr/vim-json
@@ -76,6 +75,7 @@ plugins=(
   tpope/vim-eunuch
   StanAngeloff/php.vim
   sjl/gundo.vim
+  chrisbra/color_highlight
 )
 
 # prune existing directories not in plugin whitelist

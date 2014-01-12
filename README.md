@@ -49,7 +49,6 @@ Pathogen and the following bundles are installed to ~/.vim.
   * [vim-indent-guides](https://github.com/nathanaelkane/vim-indent-guides) - visual indent levels
   * [ultisnips](https://github.com/SirVer/ultisnips) - vim snippets
   * [netrw](https://github.com/eiginn/netrw) - ensure netrw is up to date
-  * [vim-css-color](https://github.com/skammer/vim-css-color) - highlight colors in css files
   * [html5.vim](https://github.com/othree/html5.vim) - html5 syntax
   * [vim-over](https://github.com/osyo-manga/vim-over) - substitution preview
   * [vim-json](https://github.com/elzr/vim-json) - JSON syntax highlighting
@@ -58,6 +57,7 @@ Pathogen and the following bundles are installed to ~/.vim.
   * [vim-eunuch](https://github.com/tpope/vim-eunuch) - unix shell aliases
   * [php.vim](https://github.com/StanAngeloff/php.vim) - php syntax highlighting
   * [gundo.vim](https://github.com/sjl/gundo.vim/) - visualize undo tree
+  * [color_highlight](https://github.com/chrisbra/color_highlight) - color hex codes and color names
 
 ### Terminal
 
