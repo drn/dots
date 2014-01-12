@@ -1,0 +1,16 @@
+#!/bin/bash
+
+#
+# Switches to the last checked out branch in the reflog
+#
+
+last=`git reflog -n 50 | grep -m 1 'checkout: moving from' | sed 's/.*moving from //' | sed 's/ to .*//'`
+
+if [ -z "$last" ]; then
+  echo "Sorry, couldn't find your last branch."
+else
+  git co $last 2> /dev/null
+  if [ $? != 0 ]; then
+    echo "Sorry, '$last' no longer exists."
+  fi
+fi
