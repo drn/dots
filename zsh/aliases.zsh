@@ -53,7 +53,8 @@ alias light="open -a /Applications/LightPaper.app"
 
 # System Maintenance Commands
 update() {
-  sudo -p "Enter your password: " echo "We're good to go!\n"
+  sudo -p "Enter your password: " echo "We're good to go!"
+  echo ""
   # update Oh My Zsh
   /usr/bin/env ZSH=$ZSH /bin/sh $ZSH/tools/upgrade.sh
   echo "LAST_EPOCH=$(($(date +%s) / 60 / 60 / 24))" > ~/.zsh-update
