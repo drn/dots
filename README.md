@@ -58,6 +58,7 @@ Pathogen and the following bundles are installed to ~/.vim.
   * [php.vim](https://github.com/StanAngeloff/php.vim) - php syntax highlighting
   * [gundo.vim](https://github.com/sjl/gundo.vim/) - visualize undo tree
   * [color_highlight](https://github.com/chrisbra/color_highlight) - color hex codes and color names
+  * [vim-javascript-syntax](https://github.com/jelera/vim-javascript-syntax) - enhanced javascript syntax
 
 ### Terminal
 
