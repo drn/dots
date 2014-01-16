@@ -59,7 +59,9 @@ set transparency=3
 set hlsearch
 " disable syntax highlighting past specified column for long lines
 set synmaxcol=160
-
+" hide all scrollbars in gui vim
+set guioptions-=r
+set guioptions-=L
 
 """ Set Missing Filetypes """
 
