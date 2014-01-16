@@ -61,6 +61,7 @@ Pathogen and the following bundles are installed to ~/.vim.
   * [vim-javascript-syntax](https://github.com/jelera/vim-javascript-syntax) - enhanced javascript syntax
   * [gist-vim](https://github.com/mattn/gist-vim) - vimscript for gist
   * [webapi-vim](https://github.com/mattn/webapi-vim) - vim interface to web APIs
+  * [ZoomWin](https://github.com/vim-scripts/ZoomWin) - window toggling
 
 ### Terminal
 

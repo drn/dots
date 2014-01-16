@@ -80,6 +80,7 @@ plugins=(
   jelera/vim-javascript-syntax
   mattn/gist-vim
   mattn/webapi-vim
+  'vim-scripts/ZoomWin ZoomWin 23'
 )
 
 # prune existing directories not in plugin whitelist
