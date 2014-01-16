@@ -139,22 +139,22 @@ nnoremap <leader>q :Bdi<cr>
 " Window Control Mappings
 
 " open and switch to window right
-nnoremap <silent> ;d :rightbelow wincmd v<cr>
+nnoremap <silent> 'd :rightbelow wincmd v<cr>
 " open and switch to window left
-nnoremap <silent> ;a :leftabove wincmd v<cr>
+nnoremap <silent> 'a :leftabove wincmd v<cr>
 " open and switch to window above
-nnoremap <silent> ;w :leftabove wincmd s<cr>
+nnoremap <silent> 'w :leftabove wincmd s<cr>
 " open window below
-nnoremap <silent> ;s :rightbelow wincmd s<cr>
+nnoremap <silent> 's :rightbelow wincmd s<cr>
 
 " move to window on the right
-nnoremap <silent> 'd :wincmd l<cr>
+nnoremap <silent> ;d :wincmd l<cr>
 " move to window on the left
-nnoremap <silent> 'a :wincmd h<cr>
+nnoremap <silent> ;a :wincmd h<cr>
 " move to window above
-nnoremap <silent> 'w :wincmd k<cr>
+nnoremap <silent> ;w :wincmd k<cr>
 " move to window below
-nnoremap <silent> 's :wincmd j<cr>
+nnoremap <silent> ;s :wincmd j<cr>
 
 " move to window by number
 let i = 1
