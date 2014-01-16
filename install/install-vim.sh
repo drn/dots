@@ -78,6 +78,7 @@ plugins=(
   chrisbra/color_highlight
   jelera/vim-javascript-syntax
   mattn/gist-vim
+  mattn/webapi-vim
 )
 
 # prune existing directories not in plugin whitelist

@@ -60,6 +60,7 @@ Pathogen and the following bundles are installed to ~/.vim.
   * [color_highlight](https://github.com/chrisbra/color_highlight) - color hex codes and color names
   * [vim-javascript-syntax](https://github.com/jelera/vim-javascript-syntax) - enhanced javascript syntax
   * [gist-vim](https://github.com/mattn/gist-vim) - vimscript for gist
+  * [webapi-vim](https://github.com/mattn/webapi-vim) - vim interface to web APIs
 
 ### Terminal
 
