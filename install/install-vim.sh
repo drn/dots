@@ -19,6 +19,7 @@ fi
 mkdir -p $vim/autoload $vim/bundle $vim/ftplugin $vim/plugin/settings
 
 # recursively link all vim configuration files
+echo -e "\033[0;32mLinking all vim configuration files...\033[0m"
 rlink $vimsource $vim
 
 # install pathogen
@@ -82,6 +83,7 @@ plugins=(
 )
 
 # prune existing directories not in plugin whitelist
+echo -e "\033[0;32mEnforcing vim bundle whitelist...\033[0m"
 existing=$vim/bundle/*
 for file in $existing; do
   base_file="$(echo "$file" | sed 's/.*\///')"
@@ -103,9 +105,11 @@ for file in $existing; do
 done
 
 # ensure all plugins in plugin list are up to date
+echo -e "\033[0;32mEnsuring all vim bundles are up-to-date...\033[0m"
 for plugin in "${plugins[@]}"; do
   gitsync $plugin &
 done
+wait
 
 # if not --update-only
 if ! $updateonly; then
