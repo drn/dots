@@ -104,7 +104,7 @@ done
 
 # ensure all plugins in plugin list are up to date
 for plugin in "${plugins[@]}"; do
-  gitsync $plugin
+  gitsync $plugin &
 done
 
 # if not --update-only
