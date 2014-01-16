@@ -22,10 +22,10 @@ color jellybeans
 highlight clear SignColumn
 " highlight and color the current line
 set cursorline
-highlight CursorLine guibg=#000070
+highlight CursorLine guibg=#000070 ctermbg=17
 " configure and color the cursor
 set guicursor=n-v-c:blinkwait500-blinkoff500-blinkon500
-highlight Cursor guibg=#C92765
+highlight Cursor guibg=#C92765 ctermbg=161
 " configure and color the color column
 if exists('+colorcolumn')
   set colorcolumn=80
