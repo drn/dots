@@ -59,6 +59,7 @@ Pathogen and the following bundles are installed to ~/.vim.
   * [gundo.vim](https://github.com/sjl/gundo.vim/) - visualize undo tree
   * [color_highlight](https://github.com/chrisbra/color_highlight) - color hex codes and color names
   * [vim-javascript-syntax](https://github.com/jelera/vim-javascript-syntax) - enhanced javascript syntax
+  * [gist-vim](https://github.com/mattn/gist-vim) - vimscript for gist
 
 ### Terminal
 

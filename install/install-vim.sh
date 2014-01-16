@@ -77,6 +77,7 @@ plugins=(
   sjl/gundo.vim
   chrisbra/color_highlight
   jelera/vim-javascript-syntax
+  mattn/gist-vim
 )
 
 # prune existing directories not in plugin whitelist
