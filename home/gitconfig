@@ -96,6 +96,8 @@
   # git reset-ancestor
   reseta = !"git reset-ancestor"
   resetaf = !"git reset-ancestor --force"
+  # show staged diff
+  staged = diff --staged
 
 [user]
   name = darrenli
