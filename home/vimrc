@@ -76,13 +76,6 @@ nnoremap <silent> <D-k> :noh<cr>
 nnoremap <silent>  /\.\.<cr>
 " Reindent current file and return to previous location
 nnoremap <leader>I mzgg=G`z<CR>
-" Open vertical split window easily
-nnoremap <silent> <D-S-Up> :wincmd v<cr>
-" Rotate split windows easily
-nnoremap <silent> <D-S-Down> :wincmd r<cr>
-" Navigate split windows easily
-nnoremap <silent> <D-S-Left> :wincmd h<cr>
-nnoremap <silent> <D-S-Right> :wincmd l<cr>
 " Save file as root
 noremap <leader>W :w !sudo tee % > /dev/null<cr>
 " Delete the next search match
@@ -141,9 +134,20 @@ endfunction
 command! Bdi :call DeleteInactiveBufs()
 nnoremap <leader>q :Bdi<cr>
 
-" Easy window navigation
+" Window Control Mappings
+
+" open and switch to window right
+nnoremap <silent> ;d :rightbelow wincmd v<cr>
+" open and switch to window left
+nnoremap <silent> ;a :leftabove wincmd v<cr>
+" open and switch to window above
+nnoremap <silent> ;w :leftabove wincmd s<cr>
+" open window below
+nnoremap <silent> ;s :rightbelow wincmd s<cr>
+" rotate split windows
+nnoremap <silent> ;r :wincmd r<cr>
 let i = 1
 while i <= 9
-  execute 'nnoremap <silent> <leader>' . i . ' :' . i . 'wincmd w<CR>'
+  execute 'nnoremap <silent> ;' . i . ' :' . i . 'wincmd w<CR>'
   let i = i + 1
 endwhile
