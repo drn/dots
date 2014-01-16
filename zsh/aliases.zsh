@@ -59,10 +59,10 @@ update() {
   /usr/bin/env ZSH=$ZSH /bin/sh $ZSH/tools/upgrade.sh
   echo "LAST_EPOCH=$(($(date +%s) / 60 / 60 / 24))" > ~/.zsh-update
   # update and upgrade Homebrew
-  echo '\nUpdating Brew and any outdated packages...'
+  echo -e '\n\033[0;34mUpdating Brew and any outdated packages...\033[0m'
   brew update; brew upgrade
   # update VIM plugins
-  echo "\nUpdating vim plugins..."
+  echo "\n\033[0;34mUpdating vim plugins...\033[0m"
   vimsync
 }
 
