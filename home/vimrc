@@ -46,9 +46,11 @@ autocmd BufEnter * execute 'sign place 9999 line=1 name=dummy buffer=' . bufnr('
 set noswapfile
 set nobackup
 set nowb
-" persistent file undo
-silent !mkdir ~/.vim/backups > /dev/null 2>&1
-set undodir=~/.vim/backups
+"" persistent file undo
+if !isdirectory($HOME . "/.vim/backups")
+  call mkdir($HOME . "/.vim/backups", "p")
+endif
+set undodir=$HOME/.vim/backups
 set undofile
 " smoother screen redraw
 set ttyfast

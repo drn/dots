@@ -23,8 +23,6 @@ alias remotehome="ssh SanguineRane@sanguinerane.zapto.org"
 alias localhome="ssh SanguineRane@192.168.1.200"
 
 # Command Aliases
-# clear terminal buffer after vim exits
-vim() { /usr/local/bin/mvim -v $1; clear }
 alias vi="mvim"
 alias v="vim"
 alias zshconfig="mvim ~/.zshrc"
