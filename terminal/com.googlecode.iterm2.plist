@@ -904,9 +904,9 @@
 	<key>NSWindow Frame Preferences</key>
 	<string>-1050 858 924 485 -1080 -555 1080 1898 </string>
 	<key>NSWindow Frame iTerm Window 0</key>
-	<string>-1080 -533 1080 1876 -1080 -555 1080 1898 </string>
+	<string>-1080 -555 1080 949 -1080 -555 1080 1898 </string>
 	<key>NSWindow Frame iTerm Window 1</key>
-	<string>0 26 1440 852 0 0 1440 878 </string>
+	<string>-1077 624 650 426 -1080 -555 1080 1898 </string>
 	<key>NSWindow Frame iTerm Window 2</key>
 	<string>-1077 149 650 426 -1080 -555 1080 1898 </string>
 	<key>NSWindow Frame iTerm Window 3</key>
@@ -2372,6 +2372,8 @@
 	<false/>
 	<key>OpenTmuxWindowsIn</key>
 	<integer>0</integer>
+	<key>OptionClickMovesCursor</key>
+	<true/>
 	<key>PMPrintingExpandedStateForPrint2</key>
 	<false/>
 	<key>PassOnControlClick</key>
@@ -2478,6 +2480,6 @@
 	<key>findRegex_iTerm</key>
 	<false/>
 	<key>iTerm Version</key>
-	<string>1.0.0.20131124</string>
+	<string>1.0.0.20131218-nightly</string>
 </dict>
 </plist>
