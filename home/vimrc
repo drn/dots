@@ -72,8 +72,8 @@ au BufRead,BufNewFile gitconfig set filetype=gitconfig
 
 " Open base directory in netrw
 nnoremap <silent> <leader>- :e `pwd`<cr>zz
-" Clear search highlighs
-nnoremap <silent> K :noh<cr>
+" Clear search highlights
+nnoremap <silent> ;k :noh<cr>
 " Highlight .. patterns to easily navigate in directory listnings
 nnoremap <silent>  /\.\.<cr>
 " Reindent current file and return to previous location
