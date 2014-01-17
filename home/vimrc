@@ -7,6 +7,12 @@ set nocompatible
 call pathogen#infect()
 call pathogen#helptags()
 
+""" Set Missing Filetypes """
+
+au BufRead,BufNewFile gitconfig set filetype=gitconfig
+
+" Basic VIM settings
+
 " enable syntax highlighting
 syntax on
 set tabstop=2
@@ -39,6 +45,7 @@ set ttimeoutlen=50
 set shiftround
 " display tabs and trailing spaces visually
 set list listchars=tab:ˍˍ,trail:ˍ
+au FileType gitcommit set nolist listchars=eol:$
 " always display sign column
 autocmd BufEnter * sign define dummy
 autocmd BufEnter * execute 'sign place 9999 line=1 name=dummy buffer=' . bufnr('')
@@ -64,10 +71,6 @@ set synmaxcol=160
 " hide all scrollbars in gui vim
 set guioptions-=r
 set guioptions-=L
-
-""" Set Missing Filetypes """
-
-au BufRead,BufNewFile gitconfig set filetype=gitconfig
 
 
 """ Mappings """
