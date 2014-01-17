@@ -16,7 +16,6 @@ Pathogen and the following bundles are installed to ~/.vim.
 
   * [ctrlp.vim](https://github.com/kien/ctrlp.vim/) - fast fuzzy file navigation
   * [ctrlp-matcher](https://github.com/JazzCore/ctrlp-cmatcher) - faster ctrl p matching
-  * [vim-airline](https://github.com/bling/vim-airline/) - custom statusline
   * [vim-easymotion](https://github.com/Lokaltog/vim-easymotion) - extended vim motions
   * [vim-fugitive](https://github.com/tpope/vim-fugitive) - git wrapper
   * [vim-gitgutter](https://github.com/airblade/vim-gitgutter) - git gutter
@@ -62,6 +61,7 @@ Pathogen and the following bundles are installed to ~/.vim.
   * [webapi-vim](https://github.com/mattn/webapi-vim) - vim interface to web APIs
   * [ZoomWin](https://github.com/vim-scripts/ZoomWin) - window toggling
   * [vim-css-color](https://github.com/ap/vim-css-color) - css color highlighting
+  * [lightline.vim](https://github.com/itchyny/lightline.vim) - lightweight statusline
 
 ### Terminal
 

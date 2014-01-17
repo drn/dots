@@ -35,7 +35,6 @@ cd $vim/bundle
 plugins=(
   kien/ctrlp.vim
   JazzCore/ctrlp-cmatcher
-  bling/vim-airline
   Lokaltog/vim-easymotion
   tpope/vim-fugitive
   airblade/vim-gitgutter
@@ -81,6 +80,7 @@ plugins=(
   mattn/gist-vim
   mattn/webapi-vim
   'vim-scripts/ZoomWin ZoomWin 23'
+  itchyny/lightline.vim
 )
 
 # prune existing directories not in plugin whitelist
