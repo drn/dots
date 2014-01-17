@@ -10,9 +10,12 @@ updateonly=false;
 # include install functions
 source "$dotfiles/install/install.cfg"
 
-# if not updateonly, destroy old non-bundle ~/.vim hierarchy
+# remove all quickly-built directories
+rm -rf $vim/ftplugin $vim/plugin $vim/autoload
+
+# if not updateonly, destroy ~/.vim/bundles hierarchy
 if ! $updateonly; then
-  rm -rf $vim/ftplugin $vim/plugin $vim/autoload
+  rm -rf $vim/bundle
 fi
 
 # ensure non-bundle ~/.vim hierarchy
