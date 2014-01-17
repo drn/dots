@@ -57,11 +57,11 @@ Pathogen and the following bundles are installed to ~/.vim.
   * [vim-eunuch](https://github.com/tpope/vim-eunuch) - unix shell aliases
   * [php.vim](https://github.com/StanAngeloff/php.vim) - php syntax highlighting
   * [gundo.vim](https://github.com/sjl/gundo.vim/) - visualize undo tree
-  * [color_highlight](https://github.com/chrisbra/color_highlight) - color hex codes and color names
   * [vim-javascript-syntax](https://github.com/jelera/vim-javascript-syntax) - enhanced javascript syntax
   * [gist-vim](https://github.com/mattn/gist-vim) - vimscript for gist
   * [webapi-vim](https://github.com/mattn/webapi-vim) - vim interface to web APIs
   * [ZoomWin](https://github.com/vim-scripts/ZoomWin) - window toggling
+  * [vim-css-color](https://github.com/ap/vim-css-color) - css color highlighting
 
 ### Terminal
 

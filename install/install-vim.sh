@@ -76,7 +76,7 @@ plugins=(
   tpope/vim-eunuch
   StanAngeloff/php.vim
   sjl/gundo.vim
-  chrisbra/color_highlight
+  ap/vim-css-color
   jelera/vim-javascript-syntax
   mattn/gist-vim
   mattn/webapi-vim
