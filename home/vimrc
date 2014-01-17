@@ -1,8 +1,5 @@
 """ Default VIM configuration """
 
-" use VIM settings, not vi settings
-set nocompatible
-
 " load pathogen
 call pathogen#infect()
 call pathogen#helptags()
@@ -13,6 +10,8 @@ au BufRead,BufNewFile gitconfig set filetype=gitconfig
 
 " Basic VIM settings
 
+" use VIM settings, not vi settings
+set nocompatible
 " enable syntax highlighting
 syntax on
 set tabstop=2
