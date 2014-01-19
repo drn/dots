@@ -70,6 +70,12 @@ set synmaxcol=160
 " hide all scrollbars in gui vim
 set guioptions-=r
 set guioptions-=L
+" always show status line
+set laststatus=2
+" hide duplicate mode descriptions
+set noshowmode
+" set font
+set guifont=Menlo\ for\ Powerline:h13
 
 
 """ Mappings """
