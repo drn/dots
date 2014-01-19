@@ -1,3 +1,12 @@
+function! LightlineMode()
+  let fname = expand('%:t')
+  return fname == 'ControlP' ? 'CtrlP' :
+        \ fname == '__Gundo__' ? 'Gundo' :
+        \ fname == '__Gundo_Preview__' ? 'Gundo Preview' :
+        \ fname =~ 'NERD_tree' ? 'NERDTree' :
+        \ winwidth(0) > 60 ? lightline#mode() : ''
+endfunction
+
 function! LightlineModified()
   return &ft !~? 'help' && &modified ? '[+]' : ''
 endfunction
@@ -8,7 +17,7 @@ endfunction
 
 function! LightlineFilename()
   let fname = expand('%:t')
-  return fname == 'ControlP' ? g:lightline.ctrlp_item :
+  return fname == 'ControlP' ? '' :
         \  fname =~ '__Gundo\|NERD_tree' ? '' :
         \  ('' != LightlineReadonly() ? LightlineReadonly() . ' ' : '') .
         \  ('' != expand('%:t') ? expand('%:t') : '[No Name]') .

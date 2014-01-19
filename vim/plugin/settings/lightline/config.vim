@@ -5,8 +5,7 @@ let g:lightline = {
 \   'active': {
 \     'left': [
 \       [ 'mode', 'paste' ],
-\       [ 'fugitive', 'filename' ],
-\       [ 'ctrlpmark' ]
+\       [ 'fugitive', 'ctrlp', 'filename' ]
 \     ],
 \     'right': [
 \       [ 'syntastic', 'lineinfo' ],
@@ -22,7 +21,7 @@ let g:lightline = {
 \     'fileformat': 'LightlineFileformat',
 \     'filetype': 'LightlineFiletype',
 \     'fileencoding': 'LightlineFileencoding',
-\     'ctrlpmark': 'LightlineCtrlPMark',
+\     'ctrlp': 'LightlineCtrlP',
 \     'mode': 'LightlineMode'
 \   },
 \   'component_expand': {
