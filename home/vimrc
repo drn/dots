@@ -44,7 +44,9 @@ set ttimeoutlen=50
 set shiftround
 " display tabs and trailing spaces visually
 set list listchars=tab:ˍˍ,trail:ˍ
-au FileType gitcommit set nolist listchars=eol:$
+au FileType gitcommit set nolist
+" toggle visible whitespace
+nnoremap <silent> <leader>5 :set list!<cr>
 " always display sign column
 autocmd BufEnter * sign define dummy
 autocmd BufEnter * execute 'sign place 9999 line=1 name=dummy buffer=' . bufnr('')
@@ -173,13 +175,3 @@ endwhile
 
 " rotate split windows
 nnoremap <silent> ;r :wincmd r<cr>
-
-" Toggle Visible Whitespace
-function! ToggleVisibleWhitespace()
-  if &list == 1
-    set nolist listchars=eol:$
-  else
-    set list listchars=tab:ˍˍ,trail:ˍ
-  end
-endfunction
-nnoremap <silent> <leader>5 :call ToggleVisibleWhitespace()<cr>
