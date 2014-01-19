@@ -175,3 +175,13 @@ endwhile
 
 " rotate split windows
 nnoremap <silent> ;r :wincmd r<cr>
+
+" Toggle Visible Whitespace
+function! ToggleVisibleWhitespace()
+  if &list == 1
+    set nolist listchars=eol:$
+  else
+    set list listchars=tab:ˍˍ,trail:ˍ
+  end
+endfunction
+nnoremap <leader>5 :call ToggleVisibleWhitespace()<cr>
