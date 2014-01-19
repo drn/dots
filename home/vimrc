@@ -182,4 +182,4 @@ function! ToggleVisibleWhitespace()
     set list listchars=tab:ˍˍ,trail:ˍ
   end
 endfunction
-nnoremap <leader>5 :call ToggleVisibleWhitespace()<cr>
+nnoremap <silent> <leader>5 :call ToggleVisibleWhitespace()<cr>
