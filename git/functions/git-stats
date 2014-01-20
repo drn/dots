@@ -1,0 +1,24 @@
+#!/bin/bash
+
+#
+# Describes the specified author's contributions.
+#   Defaults to local author.
+#
+
+AUTHOR=$(git config --get user.email)
+if [ -n "$1" ]; then
+  AUTHOR=$1
+fi
+
+echo "Author:" $AUTHOR
+git log --stat --author $AUTHOR | awk -F',' '/files changed/ {
+  files += $1
+  insertions += $2
+  deletions += $3
+}
+END {
+  print "Files Changed: " files
+  print "Insertions: " insertions
+  print "Deletions: " deletions
+  print "Lines changed: " insertions + deletions
+}'
