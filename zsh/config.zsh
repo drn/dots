@@ -50,10 +50,3 @@ compdef -d rake
 
 # Autoload tmux
 # if [ "$TMUX" = "" ]; then tmux; fi
-
-# capture the working directory of tmux
-precmd() {
-  if [[ -n "$TMUX" ]]; then
-    tmux setenv "$(tmux display -p 'TMUX_PWD_#D')" "$PWD"
-  fi
-}

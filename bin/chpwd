@@ -1,0 +1,5 @@
+#!/usr/local/bin/zsh
+if [[ -n "$TMUX" ]]; then
+  uid="$( (echo $TMUX | cut -d , -f 2; tmux display -p "#D") | md5sum | cut -d \  -f 1 )"
+  tmux setenv "$uid" "$PWD"
+fi
