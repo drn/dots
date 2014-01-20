@@ -6,11 +6,9 @@
 tmux has-session -t thanxrails
 if [ $? != 0 ]; then
   tmux new-session -s thanxrails -n editor -d
-  tmux send-keys -t thanxrails 'source ~/.zshrc; cd ~/Development/work/thanx-web; clear' C-m
+  tmux send-keys -t thanxrails 'cd ~/Development/work/thanx-web; clear' C-m
   tmux split-window -v -t thanxrails
-  tmux send-keys -t thanxrails 'source ~/.zshrc; clear' C-m
   tmux split-window -v -t thanxrails
-  tmux send-keys -t thanxrails 'source ~/.zshrc; clear' C-m
   tmux select-layout -t thanxrails main-horizontal
   #tmux send-keys -t thanxrails:0.1 'cd /var/www/htdocs/' C-m
   tmux new-window -n console -t thanxrails
