@@ -1,0 +1,24 @@
+#!/usr/bin/env zsh
+set -ue
+
+git() {
+  # use git instead of hub, which git is normally aliased to
+  command git $*
+}
+
+change_to_tmux_pwd() {
+  local uid="$( (echo $TMUX | cut -d , -f 2; tmux display -p "#D") | md5sum | cut -d \  -f 1 )"
+  local tmux_pwd="$(tmux showenv "$uid" | cut -d = -f 2-)"
+  cd "$tmux_pwd"
+}
+
+statusline() {
+  if git root &> /dev/null; then
+    echo "⭠ $(git rev-parse --abbrev-ref HEAD 2>/dev/null)"
+  else
+    pwd | sed "s/.*\///"
+  fi
+}
+
+change_to_tmux_pwd
+statusline
