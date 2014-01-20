@@ -62,6 +62,7 @@ Pathogen and the following bundles are installed to ~/.vim.
   * [ZoomWin](https://github.com/vim-scripts/ZoomWin) - window toggling
   * [vim-css-color](https://github.com/ap/vim-css-color) - css color highlighting
   * [lightline.vim](https://github.com/itchyny/lightline.vim) - lightweight statusline
+  * [tmuxline.vim](https://github.com/edkolev/tmuxline.vim) - tmux statusline generator
 
 ### Terminal
 

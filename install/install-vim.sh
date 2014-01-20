@@ -84,6 +84,7 @@ plugins=(
   mattn/webapi-vim
   'vim-scripts/ZoomWin ZoomWin 23'
   itchyny/lightline.vim
+  darrenli/tmuxline.vim
 )
 
 # prune existing directories not in plugin whitelist
