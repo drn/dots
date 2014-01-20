@@ -48,38 +48,4 @@ alias j="jira"
 alias todo="vi ~/bin/todo"
 alias gitx="open -a ~/Applications/GitX.app ."
 alias light="open -a /Applications/LightPaper.app"
-
-# System Maintenance Commands
-update() {
-  sudo -p "Enter your password: " echo "We're good to go!"
-  echo ""
-  # update Oh My Zsh
-  /usr/bin/env ZSH=$ZSH /bin/sh $ZSH/tools/upgrade.sh
-  echo "LAST_EPOCH=$(($(date +%s) / 60 / 60 / 24))" > ~/.zsh-update
-  # update and upgrade Homebrew
-  echo -e '\n\033[0;34mUpdating Brew and any outdated packages...\033[0m'
-  brew update; brew upgrade
-  # update VIM plugins
-  echo "\n\033[0;34mUpdating vim plugins...\033[0m"
-  vimsync
-}
-
-# Tmux Aliases
-thanx() {
-  tmux has-session -t thanxrails
-  if [ $? != 0 ]; then
-    tmux new-session -s thanxrails -n editor -d
-    tmux send-keys -t thanxrails 'source ~/.zshrc; cd ~/Development/work/thanx-web; clear' C-m
-    tmux split-window -v -t thanxrails
-    tmux send-keys -t thanxrails 'source ~/.zshrc; clear' C-m
-    tmux split-window -v -t thanxrails
-    tmux send-keys -t thanxrails 'source ~/.zshrc; clear' C-m
-    tmux select-layout -t thanxrails main-horizontal
-    #tmux send-keys -t thanxrails:0.1 'cd /var/www/htdocs/' C-m
-    tmux new-window -n console -t thanxrails
-    #tmux send-keys -t thanxrails:1 'cd /var/www/htdocs/' C-m
-    tmux select-window -t thanxrails:0
-  fi
-  tmux attach -t thanxrails
-}
-
+alias update=". update"

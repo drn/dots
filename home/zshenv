@@ -1,5 +1,5 @@
 # Include ~/bin in PATH
-export PATH=~/bin:$PATH
+export PATH=$HOME/bin:$PATH
 # Include Homebrew in PATH
 export PATH=/usr/local/bin:/usr/local/sbin:$PATH
 # Include git extensions in PATH
