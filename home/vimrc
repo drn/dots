@@ -77,7 +77,7 @@ set laststatus=2
 " hide duplicate mode descriptions
 set noshowmode
 " set font
-set guifont=Menlo\ for\ Powerline:h13
+set guifont=Menlo\ for\ Powerline:h14
 
 
 """ Mappings """
