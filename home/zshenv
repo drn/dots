@@ -14,3 +14,5 @@ export PATH=/Applications/Postgres.app/Contents/MacOS/bin:$PATH
 # Load rbenv
 export RBENV_ROOT="$HOME/.rbenv"
 eval "$(rbenv init -)"
+# Set $DOTS
+export DOTS="$HOME/Development/dotfiles"
