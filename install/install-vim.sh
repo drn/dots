@@ -50,7 +50,7 @@ plugins=(
   derekwyatt/vim-fswitch
   terryma/vim-multiple-cursors
   junegunn/vim-easy-align
-  darrenli/vim-dispatch
+  tpope/vim-dispatch
   jgdavey/vim-turbux
   milkypostman/vim-togglelist
   rking/ag.vim
