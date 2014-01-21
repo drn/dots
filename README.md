@@ -63,6 +63,7 @@ Pathogen and the following bundles are installed to ~/.vim.
   * [vim-css-color](https://github.com/ap/vim-css-color) - css color highlighting
   * [lightline.vim](https://github.com/itchyny/lightline.vim) - lightweight statusline
   * [tmuxline.vim](https://github.com/edkolev/tmuxline.vim) - tmux statusline generator
+  * [Vim-R-plugin](https://github.com/vim-scripts/Vim-R-plugin) - vim R support
 
 ### Terminal
 

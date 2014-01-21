@@ -85,6 +85,7 @@ plugins=(
   'vim-scripts/ZoomWin ZoomWin 23'
   itchyny/lightline.vim
   darrenli/tmuxline.vim
+  vim-scripts/Vim-R-plugin
 )
 
 # prune existing directories not in plugin whitelist
