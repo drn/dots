@@ -849,7 +849,7 @@
 	<key>HideMenuBarInFullscreen</key>
 	<true/>
 	<key>HideScrollbar</key>
-	<false/>
+	<true/>
 	<key>HideTab</key>
 	<true/>
 	<key>HighlightTabLabels</key>
@@ -918,7 +918,7 @@
 	<key>NSWindow Frame Preferences</key>
 	<string>99 372 924 485 0 0 1440 878 </string>
 	<key>NSWindow Frame iTerm Window 0</key>
-	<string>0 4 1440 874 0 0 1440 878 </string>
+	<string>0 0 1440 900 0 0 1440 878 </string>
 	<key>NSWindow Frame iTerm Window 1</key>
 	<string>2 31 1437 842 0 0 1440 900 </string>
 	<key>NSWindow Frame iTerm Window 2</key>
