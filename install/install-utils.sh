@@ -59,5 +59,14 @@ if hash gem 2>/dev/null; then
     gem update jira-cli
   fi
 
+  # ensure tmuxinator is installed
+  if [ -z "$(gem list | grep tmuxinator)" ]; then
+    echo "Installing tmuxinator via rubygems"
+    gem install tmuxinator
+  else
+    echo "Updating tmuxinator via rubygems"
+    gem update tmuxinator
+  fi
+
 fi
 
