@@ -24,6 +24,9 @@ ZSH_HIGHLIGHT_STYLES[dollar-double-quoted-argument]=fg=cyan
 ZSH_HIGHLIGHT_STYLES[back-double-quoted-argument]=fg=cyan
 ZSH_HIGHLIGHT_STYLES[assign]=none
 
+# Set default shell editor
+export EDITOR='vim'
+
 # Colorize man pages
 export LESS_TERMCAP_mb=$'\E[01;31m'       # begin blinking
 export LESS_TERMCAP_md=$'\E[01;38;5;74m'  # begin bold
@@ -37,7 +40,7 @@ export LESS_TERMCAP_us=$'\E[04;38;5;146m' # begin underline
 setopt NO_NOMATCH
 
 # Set history size to 5k
-HISTSIZE=5000
+HISTSIZE=10000
 
 # Initialize Z
 . /usr/local/bin/z.sh
