@@ -84,7 +84,7 @@ plugins=(
   mattn/webapi-vim
   'vim-scripts/ZoomWin ZoomWin 23'
   itchyny/lightline.vim
-  darrenli/tmuxline.vim
+  edkolev/tmuxline.vim
   vim-scripts/Vim-R-plugin
   jayflo/vim-skip
 )
