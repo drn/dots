@@ -699,6 +699,13 @@
 			<key>Text</key>
 			<string></string>
 		</dict>
+		<key>0x74-0x100000</key>
+		<dict>
+			<key>Action</key>
+			<integer>13</integer>
+			<key>Text</key>
+			<string></string>
+		</dict>
 		<key>0x77-0x100000</key>
 		<dict>
 			<key>Action</key>
@@ -918,9 +925,9 @@
 	<key>NSWindow Frame Preferences</key>
 	<string>99 372 924 485 0 0 1440 878 </string>
 	<key>NSWindow Frame iTerm Window 0</key>
-	<string>-1080 -555 1079 1920 -1080 -555 1080 1920 </string>
+	<string>0 0 1440 900 0 0 1440 878 </string>
 	<key>NSWindow Frame iTerm Window 1</key>
-	<string>2 31 1437 842 0 0 1440 900 </string>
+	<string>0 4 1440 874 0 0 1440 900 </string>
 	<key>NSWindow Frame iTerm Window 2</key>
 	<string>2 9 1434 864 0 0 1440 900 </string>
 	<key>NSWindow Frame iTerm Window 3</key>
