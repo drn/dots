@@ -86,7 +86,6 @@ plugins=(
   itchyny/lightline.vim
   edkolev/tmuxline.vim
   vim-scripts/Vim-R-plugin
-  jayflo/vim-skip
 )
 
 # prune existing directories not in plugin whitelist
