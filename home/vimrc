@@ -86,8 +86,6 @@ set guifont=Menlo\ for\ Powerline:h14
 nnoremap <silent> <leader>- :e `pwd`<cr>zz
 " Clear search highlights
 nnoremap <silent> ;k :noh<cr>
-" Highlight .. patterns to easily navigate in directory listnings
-nnoremap <silent>  /\.\.<cr>
 " Reindent current file and return to previous location
 nnoremap <leader>I mzgg=G`z<CR>
 " Save file as root
@@ -100,9 +98,8 @@ nnoremap <leader>C :%s//
 nnoremap <leader>c :.,$s//
 " Break long string before 80
 nnoremap <leader>b 77<Bar>i''<Esc>i<Return><Esc>kA\<Esc>j
-" delete to beginning of the line
-nnoremap <silent> <leader>d :execute "normal! ^d0"<cr>
-
+" Delete from beggining of current line to end of last
+nnoremap <silent> B ^d0i<BS>
 
 """ Leader WASD Mappings """
 
