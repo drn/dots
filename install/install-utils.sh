@@ -45,6 +45,12 @@ if hash brew 2>/dev/null; then
     brew install tree
   fi
 
+  # ensure reattach-to-user-namespace is installed
+  if [ -z "$(brew list | grep reattach-to-user-namespace)" ]; then
+    echo "Installing reattach-to-user-namespace via homebrew."
+    brew install reattach-to-user-namespace
+  fi
+
 fi
 
 # if rubygems is installed
