@@ -18,6 +18,9 @@ link $opensource/z/z.sh $bin/z.sh
 link $opensource/z/z.1 /usr/local/share/man/man1/z.1
 touch ~/.z
 
+# install pow
+curl get.pow.cx | sh
+
 # if homebrew is installed
 if hash brew 2>/dev/null; then
 
