@@ -127,6 +127,7 @@ if ! $updateonly; then
   # install YouCompleteMe binaries
   cd YouCompleteMe
   echo "Compiling YouCompleteMe binaries... This may take a while."
+  git submodule update --init --recursive >/dev/null 2>/dev/null
   ./install.sh >/dev/null 2>/dev/null
   success=$?
   if [[ $success -eq 0 ]]; then
