@@ -923,7 +923,7 @@
 	<key>NSWindow Frame NSColorPanel</key>
 	<string>307 274 266 310 0 0 1440 878 </string>
 	<key>NSWindow Frame Preferences</key>
-	<string>99 372 924 485 0 0 1440 878 </string>
+	<string>227 188 924 485 0 0 1440 900 </string>
 	<key>NSWindow Frame iTerm Window 0</key>
 	<string>0 0 1440 900 0 0 1440 878 </string>
 	<key>NSWindow Frame iTerm Window 1</key>
@@ -1202,7 +1202,7 @@
 				<real>1</real>
 			</dict>
 			<key>Cursor Type</key>
-			<integer>0</integer>
+			<integer>2</integer>
 			<key>Custom Command</key>
 			<string>Yes</string>
 			<key>Custom Directory</key>
@@ -2503,7 +2503,7 @@
 	<key>SUHasLaunchedBefore</key>
 	<true/>
 	<key>SULastCheckTime</key>
-	<date>2014-01-22T19:57:56Z</date>
+	<date>2014-01-24T05:57:57Z</date>
 	<key>SavePasteHistory</key>
 	<false/>
 	<key>ShowBookmarkName</key>
