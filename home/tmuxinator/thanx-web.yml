@@ -9,4 +9,5 @@ windows:
       panes:
         - rails console
         - vim .
+  - terminal: git tra
   - logs: tail -f log/development.log
