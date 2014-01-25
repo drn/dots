@@ -1,0 +1,11 @@
+# ~/.tmuxinator/home.yml
+
+name: home
+root: ~/
+
+windows:
+  - terminal:
+      layout: even-horizontal
+      panes:
+        - vim
+        - pwd
