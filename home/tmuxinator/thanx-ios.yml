@@ -1,0 +1,11 @@
+# ~/.tmuxinator/thanx-ios.yml
+
+name: thanx-ios
+root: ~/Development/work/thanx-ios
+
+windows:
+  - browser:
+      layout: main-vertical
+      panes:
+        - git tra
+        - vim .

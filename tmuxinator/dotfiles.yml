@@ -1,9 +1,0 @@
-# ~/.tmuxinator/dotfiles.yml
-
-name: dotfiles
-root: ~/Development/dotfiles
-
-windows:
-  - editor: vim .
-  - terminal: ls
-  - update: update

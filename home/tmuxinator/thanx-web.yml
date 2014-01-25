@@ -1,0 +1,13 @@
+# ~/.tmuxinator/thanx-web.yml
+
+name: thanx-web
+root: ~/Development/work/thanx-web
+
+windows:
+  - editor:
+      layout: main-vertical
+      panes:
+        - rails console
+        - vim .
+  - logs: tail -f log/development.log
+  - worker: rake jobs:work

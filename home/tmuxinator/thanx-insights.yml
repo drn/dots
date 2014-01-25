@@ -1,0 +1,13 @@
+# ~/.tmuxinator/thanx-insights.yml
+
+name: thanx-insights
+root: ~/Development/work/thanx-insights
+
+windows:
+  - editor:
+      layout: main-vertical
+      panes:
+        - rails console
+        - vim .
+  - logs: tail -f log/development.log
+  - worker: rake jobs:work

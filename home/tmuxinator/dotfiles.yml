@@ -1,0 +1,13 @@
+# ~/.tmuxinator/dotfiles.yml
+
+name: dotfiles
+root: ~/Development/dotfiles
+
+windows:
+  - editor:
+      - vim .
+      - ':edit install/install-vim.sh'
+      - ':wincmd v'
+      - ':edit home/tmux.conf'
+      - ':wincmd l'
+  - terminal: git tra
