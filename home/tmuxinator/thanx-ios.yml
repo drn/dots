@@ -5,7 +5,7 @@ root: ~/Development/work/thanx-ios
 
 windows:
   - browser:
-      layout: main-vertical
+      layout: even-horizontal
       panes:
         - git tra
         - vim .

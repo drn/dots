@@ -5,9 +5,8 @@ root: ~/Development/work/thanx-web
 
 windows:
   - editor:
-      layout: main-vertical
+      layout: even-horizontal
       panes:
         - rails console
         - vim .
   - logs: tail -f log/development.log
-  - worker: rake jobs:work
