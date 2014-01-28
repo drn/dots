@@ -68,8 +68,7 @@
   # updates origin/master and syncs fork master to origin
   sync = !"git fetch origin; git upfork"
   s = !"git sync"
-  # stashes all changes and creates a fixup commit
-  fixup = !"git add -A; git commit -m 'fixup'"
+  # shorthand for fixup
   fu = !"git fixup"
   # number of lines
   impact = !"ruby ~/bin/gitimpact.rb"

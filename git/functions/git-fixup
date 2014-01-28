@@ -1,0 +1,15 @@
+#!/bin/bash
+
+#
+# Commits all uncommitted changes and creates a commit with the input
+# message or 'FIXUP'
+#
+
+message="$@"
+if [ -z "$message" ]; then
+  message="fixup"
+fi
+
+echo "Committing all uncommited changes with '$message'"
+git add -A
+git commit -m "$message"
