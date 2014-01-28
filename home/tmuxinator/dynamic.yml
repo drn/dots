@@ -1,0 +1,13 @@
+# ~/.tmuxinator/dynamic.yml
+
+name: dynamic
+root: ~/Development/personal/activerecord-dynamic
+
+windows:
+  - editor:
+      layout: even-horizontal
+      panes:
+        - ls
+        - vim .
+  - terminal: git tra
+  - tests: rspec
