@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# abort if not in git directory
+if ! git rev-parse --git-dir > /dev/null 2>&1; then
+  echo "Aborting. Not in a git repository."
+  exit 1
+fi
+
 branch="$(git rev-parse --abbrev-ref HEAD)"
 fallback="darren" # branch to transition to
 

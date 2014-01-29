@@ -8,6 +8,12 @@
 # is done in lexicographically.
 #
 
+# abort if not in git directory
+if ! git rev-parse --git-dir > /dev/null 2>&1; then
+  echo "Aborting. Not in a git repository."
+  exit 1
+fi
+
 # only exclude input regex from matches
 exclusion="$1"
 if [ -z "$exclusion" ]; then
