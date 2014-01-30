@@ -1,7 +1,21 @@
 #!/bin/bash
 
 #
-# Returns the current external ip if available
+# Returns the current external ip if available. Uses failover endpoints for
+# external ip retrieval if any services are unavailable.
 #
 
-curl ipv4.icanhazip.com 2>/dev/null
+services=(
+  bot.whatismyipaddress.com
+  ipv4.icanhazip.com
+  ipecho.net/plain
+  ifconfig.me
+  ipv4.ipogre.com
+)
+
+ip="$(dig +short myip.opendns.com @resolver1.opendns.com)"
+for service in "${services[@]}"; do
+  [[ ! -z "$ip" ]] && break
+  ip="$(curl -s $service 2>/dev/null)"
+done
+echo $ip
