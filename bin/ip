@@ -1,0 +1,7 @@
+#!/bin/bash
+
+#
+# Returns the current external ip if available
+#
+
+curl ipv4.icanhazip.com 2>/dev/null
