@@ -1,0 +1,13 @@
+#!/bin/bash
+
+#
+# Prints out relevant internet connectivity status. Prints either the external
+# ip @ the current SSID or @ local hostname.
+#
+
+ssid="$(airport -I | grep ' SSID' | sed 's/.*SSID: //')"
+if [ -z "$ssid" ]; then
+  echo "@ $(hostname -s)"
+else
+  echo "$(ip) @ $ssid"
+fi
