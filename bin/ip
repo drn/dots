@@ -13,7 +13,7 @@ services=(
   ipv4.ipogre.com
 )
 
-ip="$(dig +short myip.opendns.com @resolver1.opendns.com)"
+ip="$(dig +short myip.opendns.com @resolver1.opendns.com 2>/dev/null)"
 for service in "${services[@]}"; do
   [[ ! -z "$ip" ]] && break
   ip="$(curl -s $service 2>/dev/null)"
