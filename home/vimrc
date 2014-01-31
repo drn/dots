@@ -78,7 +78,8 @@ set laststatus=2
 set noshowmode
 " set font
 set guifont=Menlo\ for\ Powerline:h14
-
+" disable Ex-only mapping
+nnoremap Q <nop>
 
 """ Mappings """
 
