@@ -1,0 +1,57 @@
+#!/usr/local/bin/zsh
+
+#
+# Outputs the left and right statusline configurations.
+#
+
+# validate input arguments
+if [[ "$#" -ne 2 || ( "$1" != "left" && "$1" != "right" ) ]]; then
+  echo "Usage: tmux-status [left/right] [width]"
+  exit 1
+fi
+
+# validate width argument
+if ! [[ $2 =~ ^-?[0-9]+$ ]]; then
+ echo "Width argument must be an integer."
+ exit 1
+fi
+
+SIDE="$1"
+WIDTH="$2"
+
+# determine display size
+SIZE="max"
+if (( $WIDTH < 87 )); then SIZE="min";
+elif (( $WIDTH < 121 )); then SIZE="med"; fi
+
+# setup colors
+COL1="#[fg=colour236,bg=colour103]"
+COL1_2="#[fg=colour103,bg=colour239,nobold,nounderscore,noitalics]"
+COL1_3="#[fg=colour103,bg=colour236,nobold,nounderscore,noitalics]"
+COL2="#[fg=colour253,bg=colour239]"
+COL2_3="#[fg=colour239,bg=colour236,nobold,nounderscore,noitalics]"
+COL3="#[fg=colour244,bg=colour236]"
+
+if [ "$SIDE" = "left" ]; then
+  SEP="⮁"
+  FIRST="#S $SEP #W $SEP #F"
+  SECOND="$(whoami)"
+  THIRD="$(internet)"
+  SEP="⮀"
+  case $SIZE in
+    min) echo "$COL1 $FIRST $COL1_3$SEP$COL3" ;;
+    med) echo "$COL1 $FIRST $COL1_2$SEP$COL2 $THIRD $COL2_3$SEP$COL3" ;;
+    max) echo "$COL1 $FIRST $COL1_2$SEP$COL2 $SECOND $COL2_3$SEP$COL3 $THIRD" ;;
+  esac
+elif [ "$SIDE" = "right" ]; then
+  SEP="⮃"
+  FIRST="$(echo $(date +'%I:%M%p') | tr '[:upper:]' '[:lower:]')"
+  SECOND="$(date +'%a %d') $SEP $(date +'%b %Y')"
+  THIRD="$(cpu) Cpu $(memory) Mem $(battery) Bat"
+  SEP="⮂"
+  case $SIZE in
+    min) echo "$COL1_3$SEP$COL1 $FIRST " ;;
+    med) echo "$COL2_3$SEP$COL2 $THIRD $COL1_2$SEP$COL1 $FIRST " ;;
+    max) echo "$COL3 $THIRD $COL2_3$SEP$COL2 $SECOND $COL1_2$SEP$COL1 $FIRST " ;;
+  esac
+fi
