@@ -78,7 +78,6 @@ plugins=(
   tpope/vim-eunuch
   StanAngeloff/php.vim
   sjl/gundo.vim
-  ap/vim-css-color
   jelera/vim-javascript-syntax
   mattn/gist-vim
   mattn/webapi-vim
@@ -86,6 +85,7 @@ plugins=(
   itchyny/lightline.vim
   edkolev/tmuxline.vim
   vim-scripts/Vim-R-plugin
+  lilydjwg/colorizer
 )
 
 # prune existing directories not in plugin whitelist
