@@ -4,7 +4,7 @@ dev="$HOME/Development"
 dotfiles="$dev/dotfiles"
 
 # include install functions
-source "$dotfiles/install/install.cfg"
+source "$dotfiles/install/core.cfg"
 
 # ~ files
 for location in $dotfiles/home/*; do

@@ -8,7 +8,7 @@ updateonly=false;
 [ "$1" == "--update-only" ] && updateonly=true
 
 # include install functions
-source "$dotfiles/install/install.cfg"
+source "$dotfiles/install/core.cfg"
 
 # remove all quickly-built directories
 rm -rf $vim/ftplugin $vim/plugin

@@ -53,18 +53,18 @@ echo "Cloning darrenli/dotfiles to $dotfiles"
 git clone git@github.com:darrenli/dotfiles.git $dotfiles --quiet
 
 # install dotfiles
-bash $dotfiles/install/install-dotfiles.sh
+bash $dotfiles/install/dotfiles.sh
 # install terminal utilites
-bash $dotfiles/install/install-utils.sh
+bash $dotfiles/install/utils.sh
 # install bin files
-bash $dotfiles/install/install-bin.sh
+bash $dotfiles/install/bin.sh
 # install zsh configuration
-bash $dotfiles/install/install-zsh.sh
+bash $dotfiles/install/zsh.sh
 # install git configuration
-bash $dotfiles/install/install-git.sh
+bash $dotfiles/install/git.sh
 # install fonts
-bash $dotfiles/install/install-fonts.sh
+bash $dotfiles/install/fonts.sh
 # install vim configuration
-bash $dotfiles/install/install-vim.sh
+bash $dotfiles/install/vim.sh
 # install os x configuration
-bash $dotfiles/install/install-osx.sh
+bash $dotfiles/install/osx.sh

@@ -6,7 +6,7 @@ gitfunc="$dotfiles/git/functions"
 githome="$HOME/.git-extensions"
 
 # include install functions
-source "$dotfiles/install/install.cfg"
+source "$dotfiles/install/core.cfg"
 
 # recreate git extensions directory
 sudo rm -rf $githome

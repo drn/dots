@@ -5,7 +5,7 @@ dotfiles="$dev/dotfiles"
 fonts="$HOME/Library/Fonts"
 
 # include install functions
-source "$dotfiles/install/install.cfg"
+source "$dotfiles/install/core.cfg"
 
 # install fonts
 for location in $dotfiles/fonts/*; do

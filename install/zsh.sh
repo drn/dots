@@ -5,7 +5,7 @@ dotfiles="$dev/dotfiles"
 ohmyzsh="$HOME/.oh-my-zsh"
 
 # include install functions
-source "$dotfiles/install/install.cfg"
+source "$dotfiles/install/core.cfg"
 
 # install oh-my-zsh
 sudo rm -rf $ohmyzsh

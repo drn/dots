@@ -6,7 +6,7 @@ bin="$HOME/bin"
 ohmyzsh="$HOME/.oh-my-zsh"
 
 # include install functions
-source "$dotfiles/install/install.cfg"
+source "$dotfiles/install/core.cfg"
 
 # completely rebuild bin
 sudo rm -rf $bin

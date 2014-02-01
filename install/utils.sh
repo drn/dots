@@ -6,7 +6,7 @@ opensource="$dev/opensource"
 bin="/usr/local/bin"
 
 # include install functions
-source "$dotfiles/install/install.cfg"
+source "$dotfiles/install/core.cfg"
 
 # install hub
 curl http://hub.github.com/standalone -sLo $bin/hub && chmod +x $bin/hub
