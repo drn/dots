@@ -36,6 +36,12 @@ if hash brew 2>/dev/null; then
     brew install the_silver_searcher
   fi
 
+  # esnure gitx-rowanj is installed
+  if [ -z "$(brew cask list | grep gitx-rowanj)" ]; then
+    echo "Installing gitx-rowanj via homebrew casks."
+    brew cask install gitx-rowanj
+  fi
+
   # ensure tig is installed
   if [ -z "$(brew list | grep tig)" ]; then
     echo "Installing tig via homebrew."
