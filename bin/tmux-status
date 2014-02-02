@@ -21,7 +21,7 @@ WIDTH="$2"
 
 # determine display size
 SIZE="max"
-if (( $WIDTH < 87 )); then SIZE="min";
+if (( $WIDTH < 90 )); then SIZE="min";
 elif (( $WIDTH < 121 )); then SIZE="med"; fi
 
 # setup colors
