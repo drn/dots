@@ -43,7 +43,7 @@ setopt NO_NOMATCH
 HISTSIZE=10000
 
 # Initialize Z
-. /usr/local/bin/z.sh
+. `brew --prefix`/etc/profile.d/z.sh
 
 # Disable tab completion
 compdef -d rake
