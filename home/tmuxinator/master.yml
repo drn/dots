@@ -1,0 +1,10 @@
+# ~/.tmuxinator/master.yml
+
+name: master
+root: ~/Development
+
+windows:
+  - core: clear
+  - editor:
+    - vim
+    - ':wincmd v'
