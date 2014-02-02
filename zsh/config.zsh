@@ -52,4 +52,4 @@ compdef -d rake
 [ -f ~/.travis/travis.sh ] && source ~/.travis/travis.sh
 
 # Autoload tmux
-if [ "$TMUX" = "" ]; then tmuxinator start home; fi
+if [ "$TMUX" = "" ]; then tmuxinator start master; fi
