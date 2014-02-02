@@ -36,3 +36,4 @@ cask install plex-home-theater
 cask install chicken
 cask install cocktail
 cask install f-lux
+cask install wunderlist
