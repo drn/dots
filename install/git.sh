@@ -10,7 +10,7 @@ source "$dotfiles/install/core.cfg"
 
 # recreate git extensions directory
 sudo rm -rf $githome
-mkdir $githome
+mkdir -p $githome
 
 # install all git extensions
 for location in $gitfunc/*; do
