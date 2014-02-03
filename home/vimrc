@@ -71,6 +71,8 @@ set hlsearch
 set synmaxcol=160
 " hide all scrollbars in gui vim
 set guioptions-=r
+set guioptions-=l
+set guioptions-=R
 set guioptions-=L
 " always show status line
 set laststatus=2
