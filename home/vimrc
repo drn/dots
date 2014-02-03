@@ -46,7 +46,7 @@ set shiftround
 set list listchars=tab:ˍˍ,trail:ˍ
 au FileType gitcommit set nolist
 " toggle visible whitespace
-nnoremap <silent> <leader>5 :set list!<cr>
+nnoremap <silent> <leader>6 :set list!<cr>
 " always display sign column
 autocmd BufEnter * sign define dummy
 autocmd BufEnter * execute 'sign place 9999 line=1 name=dummy buffer=' . bufnr('')
