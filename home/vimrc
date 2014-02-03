@@ -101,6 +101,8 @@ nnoremap <leader>c :.,$s//
 nnoremap <leader>b 77<Bar>i''<Esc>i<Return><Esc>kA\<Esc>j
 " Delete from beggining of current line to end of last
 nnoremap <silent> B ^d0i<BS>
+" Redraw screen mapping
+nnoremap <leader>D :redraw!<cr>
 
 """ Leader WASD Mappings """
 
