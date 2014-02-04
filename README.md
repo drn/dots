@@ -64,6 +64,7 @@ Pathogen and the following bundles are installed to ~/.vim.
   * [tmuxline.vim](https://github.com/edkolev/tmuxline.vim) - tmux statusline generator
   * [Vim-R-plugin](https://github.com/vim-scripts/Vim-R-plugin) - vim R support
   * [colorizer](https://github.com/lilydjwg/colorizer) - color preview
+  * [matchit](https://github.com/vim-scripts/matchit.zip) - extended % matching
 
 ### Terminal
 

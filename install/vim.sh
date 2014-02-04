@@ -86,6 +86,7 @@ plugins=(
   edkolev/tmuxline.vim
   vim-scripts/Vim-R-plugin
   lilydjwg/colorizer
+  vim-scripts/matchit.zip
 )
 
 # prune existing directories not in plugin whitelist
