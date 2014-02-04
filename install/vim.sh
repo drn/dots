@@ -87,6 +87,7 @@ plugins=(
   vim-scripts/Vim-R-plugin
   lilydjwg/colorizer
   vim-scripts/matchit.zip
+  vim-scripts/YankRing.vim
 )
 
 # prune existing directories not in plugin whitelist
