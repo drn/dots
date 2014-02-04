@@ -4,6 +4,7 @@ dev="$HOME/Development"
 dotfiles="$dev/dotfiles"
 vimsource="$dotfiles/vim"
 vim="$HOME/.vim"
+vimfile="$dotfiles/Vimfile"
 updateonly=false;
 [ "$1" == "--update-only" ] && updateonly=true
 
@@ -35,61 +36,10 @@ fi
 cd $vim/bundle
 
 # list of vim plugins to install
-plugins=(
-  kien/ctrlp.vim
-  JazzCore/ctrlp-cmatcher
-  Lokaltog/vim-easymotion
-  tpope/vim-fugitive
-  airblade/vim-gitgutter
-  tpope/vim-rails
-  tpope/vim-bundler
-  scrooloose/syntastic
-  noprompt/vim-yardoc
-  msanders/cocoa.vim
-  kien/rainbow_parentheses.vim
-  derekwyatt/vim-fswitch
-  terryma/vim-multiple-cursors
-  junegunn/vim-easy-align
-  tpope/vim-dispatch
-  jgdavey/vim-turbux
-  milkypostman/vim-togglelist
-  rking/ag.vim
-  mhinz/vim-startify
-  puppetlabs/puppet-syntax-vim
-  Valloric/YouCompleteMe
-  nanotech/jellybeans.vim
-  jeffkreeftmeijer/vim-numbertoggle
-  vim-ruby/vim-ruby
-  plasticboy/vim-markdown
-  groenewege/vim-less
-  tpope/vim-endwise
-  tpope/vim-commentary
-  Raimondi/delimitMate
-  scrooloose/nerdtree
-  tpope/vim-surround
-  nathanaelkane/vim-indent-guides
-  SirVer/ultisnips
-  eiginn/netrw
-  othree/html5.vim
-  osyo-manga/vim-over
-  elzr/vim-json
-  tpope/vim-unimpaired
-  tpope/vim-vinegar
-  tpope/vim-eunuch
-  StanAngeloff/php.vim
-  sjl/gundo.vim
-  jelera/vim-javascript-syntax
-  mattn/gist-vim
-  mattn/webapi-vim
-  'vim-scripts/ZoomWin ZoomWin 23'
-  itchyny/lightline.vim
-  edkolev/tmuxline.vim
-  vim-scripts/Vim-R-plugin
-  lilydjwg/colorizer
-  vim-scripts/matchit.zip
-  tpope/vim-speeddating
-  maxbrunsfeld/vim-yankstack
-)
+plugins=(); i=0
+while read plugin; do
+  plugins[i]="$plugin"; ((i+=1))
+done < $vimfile
 
 # prune existing directories not in plugin whitelist
 echo -e "\033[0;32mEnforcing vim bundle whitelist...\033[0m"
