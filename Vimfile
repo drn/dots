@@ -51,3 +51,4 @@ lilydjwg/colorizer
 vim-scripts/matchit.zip
 tpope/vim-speeddating
 maxbrunsfeld/vim-yankstack
+jszakmeister/vim-togglecursor
