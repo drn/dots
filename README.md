@@ -66,6 +66,7 @@ Pathogen and the following bundles are installed to ~/.vim.
   * [colorizer](https://github.com/lilydjwg/colorizer) - color preview
   * [matchit](https://github.com/vim-scripts/matchit.zip) - extended % matching
   * [YankRing.vim](https://github.com/vim-scripts/YankRing.vim) - advanced yank register usage
+  * [vim-speeddating](https://github.com/tpope/vim-speeddating) - extended increment/decrement functionality
 
 ### Terminal
 
