@@ -1,5 +1,6 @@
 let g:ctrlp_show_hidden = 1
-noremap <silent> <leader>t :CtrlP<cr>
+let g:ctrlp_map = '<leader>t'
+let g:ctrlp_cmd = 'CtrlP'
 noremap <silent> <leader>T :CtrlPClearCache<bar>CtrlP<cr>
 noremap <silent> ;t :let g:ctrlp_working_path_mode = 'ra'<cr>
 noremap <silent> ;T :let g:ctrlp_working_path_mode = 'ca'<cr>
