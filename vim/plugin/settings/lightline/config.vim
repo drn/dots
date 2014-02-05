@@ -13,11 +13,21 @@ let g:lightline = {
 \       [ 'fileformat', 'fileencoding', 'filetype' ]
 \     ]
 \   },
+\   'inactive': {
+\     'left': [
+\       ['inactivefilename']
+\     ],
+\     'right': [
+\       ['lineinfo'],
+\       ['percent']
+\     ]
+\   },
 \   'component_function': {
 \     'readonly': 'LightlineReadonly',
 \     'modified': 'LightlineModified',
 \     'fugitive': 'LightlineFugitive',
 \     'filename': 'LightlineFilename',
+\     'inactivefilename': 'LightlineInactiveFilename',
 \     'fileformat': 'LightlineFileformat',
 \     'filetype': 'LightlineFiletype',
 \     'fileencoding': 'LightlineFileencoding',

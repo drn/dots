@@ -20,8 +20,21 @@ function! LightlineFilename()
   return fname == 'ControlP' ? '' :
         \  fname =~ '__Gundo\|NERD_tree' ? '' :
         \  ('' != LightlineReadonly() ? LightlineReadonly() . ' ' : '') .
-        \  ('' != expand('%:t') ? expand('%:t') : '[No Name]') .
+        \  ('' != fname ? fname : '[No Name]') .
         \  ('' != LightlineModified() ? ' ' . LightlineModified() : '')
+endfunction
+
+function! LightlineInactiveFilename()
+  let path = expand('%:p')
+  if '' != path
+    let basepath = substitute(path, '[^\/]*\/[^\/]*$','','')
+    let tail = substitute(path, basepath, '', '')
+    return ('' != tail ? '../' . tail : expand('%:t')) .
+          \  ('' != LightlineModified() ? ' ' . LightlineModified() : '')
+  else
+    return '[No Name]' .
+          \  ('' != LightlineModified() ? ' ' . LightlineModified() : '')
+  endif
 endfunction
 
 function! LightlineFileformat()
