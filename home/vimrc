@@ -82,6 +82,8 @@ set noshowmode
 set guifont=Menlo\ for\ Powerline:h14
 " disable Ex-only mapping
 nnoremap Q <nop>
+" enable mouse usage
+set mouse=a
 
 """ Mappings """
 
