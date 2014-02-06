@@ -867,6 +867,8 @@
 	<false/>
 	<key>Hotkey</key>
 	<false/>
+	<key>HotkeyAutoHides</key>
+	<true/>
 	<key>HotkeyChar</key>
 	<integer>0</integer>
 	<key>HotkeyCode</key>
@@ -925,7 +927,7 @@
 	<key>NSWindow Frame Preferences</key>
 	<string>227 188 924 485 0 0 1440 900 </string>
 	<key>NSWindow Frame iTerm Window 0</key>
-	<string>-1080 -555 1080 1920 -1080 -555 1080 1920 </string>
+	<string>0 0 1440 900 0 0 1440 878 </string>
 	<key>NSWindow Frame iTerm Window 1</key>
 	<string>0 414 650 452 0 0 1440 900 </string>
 	<key>NSWindow Frame iTerm Window 2</key>
@@ -1131,6 +1133,8 @@
 				<key>Red Component</key>
 				<real>1</real>
 			</dict>
+			<key>Application Keypad Allowed</key>
+			<integer>1</integer>
 			<key>Automatically Log</key>
 			<false/>
 			<key>BM Growl</key>
@@ -1687,6 +1691,17 @@
 			</array>
 			<key>Sync Title</key>
 			<false/>
+			<key>Tab Color</key>
+			<dict>
+				<key>Blue Component</key>
+				<real>0.0</real>
+				<key>Color Space</key>
+				<string>Calibrated</string>
+				<key>Green Component</key>
+				<real>0.0</real>
+				<key>Red Component</key>
+				<real>0.0</real>
+			</dict>
 			<key>Tags</key>
 			<array/>
 			<key>Terminal Type</key>
@@ -1704,6 +1719,10 @@
 			<key>Use Canonical Parser</key>
 			<false/>
 			<key>Use Italic Font</key>
+			<false/>
+			<key>Use Non-ASCII Font</key>
+			<true/>
+			<key>Use Tab Color</key>
 			<false/>
 			<key>Vertical Spacing</key>
 			<real>1</real>
@@ -2503,7 +2522,7 @@
 	<key>SUHasLaunchedBefore</key>
 	<true/>
 	<key>SULastCheckTime</key>
-	<date>2014-02-04T21:38:21Z</date>
+	<date>2014-02-05T21:43:10Z</date>
 	<key>SavePasteHistory</key>
 	<false/>
 	<key>ShowBookmarkName</key>
@@ -2549,6 +2568,6 @@
 	<key>findRegex_iTerm</key>
 	<false/>
 	<key>iTerm Version</key>
-	<string>1.0.0.20131218-nightly</string>
+	<string>1.0.0.20140204-nightly</string>
 </dict>
 </plist>
