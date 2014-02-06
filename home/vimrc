@@ -83,6 +83,8 @@ nnoremap Q <nop>
 nnoremap K <nop>
 " enable mouse usage
 set mouse=a
+" automatically redraw screen after save
+autocmd BufWritePost * :redraw!
 
 """ Mappings """
 
