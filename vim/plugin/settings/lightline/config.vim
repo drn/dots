@@ -41,7 +41,7 @@ let g:lightline = {
 \     'syntastic': 'error'
 \   },
 \   'component': {
-\     'lineinfo': '⭡%3l:%-2v'
+\     'lineinfo': '⭡ %3l:%-2v'
 \   },
 \   'separator': {
 \     'left': '⮀',
