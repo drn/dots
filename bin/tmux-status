@@ -34,7 +34,7 @@ COL3="#[fg=colour244,bg=colour236]"
 
 if [ "$SIDE" = "left" ]; then
   SEP="⮁"
-  FIRST="#S $SEP #W $SEP #F"
+  FIRST="#S $SEP #W $SEP #I:#F"
   SECOND="$(whoami)"
   THIRD="$(internet)"
   SEP="⮀"
