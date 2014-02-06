@@ -34,3 +34,13 @@ else
   au BufWinEnter * let w:m2=matchadd('ErrorMsg', '\%>80v.\+', -1)
 endif
 
+" make inactive splits more obvious
+augroup ObviousInactiveSplit
+  autocmd!
+  autocmd WinEnter * set cursorline
+  autocmd WinLeave * set nocursorline
+  if exists('+colorcolumn')
+    autocmd WinEnter * set colorcolumn=80
+    autocmd WinLeave * set colorcolumn=0
+  endif
+augroup END
