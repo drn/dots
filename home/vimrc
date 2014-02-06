@@ -24,9 +24,6 @@ set number
 set visualbell
 " share vim clipboard with system
 set clipboard=unnamed
-" use tabs instead of spaces in makefiles
-au BufEnter Makefile set noexpandtab sts=0
-au BufEnter makefile set noexpandtab sts=0
 " use auto-indentation
 filetype plugin indent on
 " trim all whitespace on save
