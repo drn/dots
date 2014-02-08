@@ -26,8 +26,6 @@ set visualbell
 set clipboard=unnamed
 " use auto-indentation
 filetype plugin indent on
-" trim all whitespace on save
-autocmd BufWritePre * :%s/\s\+$//e
 " set leader to ,
 let mapleader = ","
 " set minimum number of lines above and below cursor
@@ -44,9 +42,6 @@ set list listchars=tab:ˍˍ,trail:ˍ
 au FileType gitcommit set nolist
 " toggle visible whitespace
 nnoremap <silent> <leader>6 :set list!<cr>
-" always display sign column
-autocmd BufEnter * sign define dummy
-autocmd BufEnter * execute 'sign place 9999 line=1 name=dummy buffer=' . bufnr('')
 " turn off .swp files
 set noswapfile
 set nobackup
@@ -83,8 +78,23 @@ nnoremap Q <nop>
 nnoremap K <nop>
 " enable mouse usage
 set mouse=a
+
+
+""" Auto Commands """
+
+" trim all whitespace on save
+autocmd BufWritePre * :%s/\s\+$//e
+" always display sign column
+autocmd BufEnter * sign define dummy
+autocmd BufEnter * execute 'sign place 9999 line=1 name=dummy buffer=' . bufnr('')
 " automatically redraw screen after save
 autocmd BufWritePost * :redraw!
+" Automatically close QuickFix window
+aug QFClose
+  au!
+  au WinEnter * if winnr('$') == 1 && getbufvar(winbufnr(winnr()), "&buftype") == "quickfix"|q|endif
+aug END
+
 
 """ Mappings """
 
@@ -132,12 +142,6 @@ function! AdjustWindowHeight(minheight, maxheight)
   endw
   exe max([min([n_lines, a:maxheight]), a:minheight]) . "wincmd _"
 endfunction
-
-" Automatically close QuickFix window
-aug QFClose
-  au!
-  au WinEnter * if winnr('$') == 1 && getbufvar(winbufnr(winnr()), "&buftype") == "quickfix"|q|endif
-aug END
 
 " Delete Inactive Buffers
 function! CloseInactiveBuffers()
