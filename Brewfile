@@ -23,6 +23,8 @@ install imagemagick
 install macvim --override-system-vim
 install hub
 install z
+install python3
+install gradle
 
 # science
 install r
