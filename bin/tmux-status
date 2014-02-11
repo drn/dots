@@ -5,7 +5,9 @@
 #
 
 # validate input arguments
-if [[ "$#" -ne 2 || ( "$1" != "left" && "$1" != "right" ) ]]; then
+if [[ "$#" -ne 2 || (
+  "$1" != "left" && "$1" != "right" && "$1" != "center" && "$1" != "center-current"
+  ) ]]; then
   echo "Usage: tmux-status [left/right] [width]"
   exit 1
 fi
@@ -31,10 +33,12 @@ COL1_3="#[fg=colour103,bg=colour236,nobold,nounderscore,noitalics]"
 COL2="#[fg=colour253,bg=colour239]"
 COL2_3="#[fg=colour239,bg=colour236,nobold,nounderscore,noitalics]"
 COL3="#[fg=colour244,bg=colour236]"
+COL3_2="#[fg=colour236,bg=colour239,nobold,nounderscore,noitalics]"
+COL3_1="#[fg=colour236,bg=colour103,nobold,nounderscore,noitalics]"
 
 if [ "$SIDE" = "left" ]; then
   SEP="⮁"
-  FIRST="#S $SEP #W $SEP #I:#F"
+  FIRST="#S $SEP #F"
   SECOND="$(whoami)"
   THIRD="$(internet)"
   SEP="⮀"
@@ -54,4 +58,8 @@ elif [ "$SIDE" = "right" ]; then
     med) echo "$COL2_3$SEP$COL2 $THIRD $COL1_2$SEP$COL1 $FIRST " ;;
     max) echo "$COL3 $THIRD $COL2_3$SEP$COL2 $SECOND $COL1_2$SEP$COL1 $FIRST " ;;
   esac
+elif [ "$SIDE" = "center" ]; then
+  echo "${COL3_2}⮀${COL2} #I.#W ${COL2_3}⮀"
+elif [ "$SIDE" = "center-current" ]; then
+  echo "${COL3_1}⮀${COL1} #I.#W ${COL1_3}⮀"
 fi
