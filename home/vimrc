@@ -118,6 +118,8 @@ nnoremap <leader>b 77<Bar>i''<Esc>i<Return><Esc>kA\<Esc>j
 nnoremap <silent> B ^d0i<BS>
 " Redraw screen mapping
 nnoremap <leader>D :redraw!<cr>
+" Visually select all
+nnoremap <leader>a ggVG
 
 """ Leader WASD Mappings """
 
