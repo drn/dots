@@ -1,1 +1,1 @@
-nmap <silent> ;q <Plug>ZoomWin
+nmap <silent> ;z <Plug>ZoomWin
