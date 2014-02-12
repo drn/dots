@@ -25,6 +25,7 @@ install hub
 install z
 install python3
 install gradle
+install phantomjs
 
 # science
 install r
