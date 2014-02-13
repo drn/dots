@@ -1,10 +1,9 @@
 # ~/.tmuxinator/master.yml
 
 name: master
-root: ~/Development
+root: ~/Development/dotfiles
 
 windows:
   - core: clear
   - editor:
     - vim
-    - ':wincmd v'
