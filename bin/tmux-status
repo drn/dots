@@ -39,8 +39,8 @@ COL3_1="#[fg=colour236,bg=colour103,nobold,nounderscore,noitalics]"
 if [ "$SIDE" = "left" ]; then
   SEP="⮁"
   FIRST="#S $SEP #F"
-  SECOND="$(whoami)"
-  THIRD="$(internet)"
+  SECOND="$(ssid)"
+  THIRD="$(ip)"
   SEP="⮀"
   case $SIZE in
     min) echo "$COL1 $FIRST $COL1_3$SEP$COL3" ;;
@@ -51,7 +51,7 @@ elif [ "$SIDE" = "right" ]; then
   SEP="⮃"
   FIRST="$(echo $(date +'%I:%M%p') | tr '[:upper:]' '[:lower:]')"
   SECOND="$(date +'%a %d') $SEP $(date +'%b %Y')"
-  THIRD="$(cpu) Cpu $(memory) Mem $(battery) Bat"
+  THIRD="$(cpu) C $(memory) M $(battery) B"
   SEP="⮂"
   case $SIZE in
     min) echo "$COL1_3$SEP$COL1 $FIRST " ;;
