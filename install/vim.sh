@@ -69,9 +69,8 @@ wait
 # ensure all plugins in plugin list are up to date
 echo -e "\033[0;32mEnsuring all vim bundles are up-to-date...\033[0m"
 for plugin in "${plugins[@]}"; do
-  gitsync $plugin &
+  gitsync $plugin
 done
-wait
 
 # if not --update-only
 if ! $updateonly; then
@@ -79,12 +78,11 @@ if ! $updateonly; then
   # install YouCompleteMe binaries
   cd YouCompleteMe
   echo "Compiling YouCompleteMe binaries... This may take a while."
-  git submodule update --init --recursive >/dev/null 2>/dev/null
-  ./install.sh >/dev/null 2>/dev/null
+  git submodule update --init --recursive
+  ./install.sh
   success=$?
   if [[ $success -eq 0 ]]; then
     echo "YouCompleteMe binaries successfully compiled."
-    sudo rm -f $dotfiles/install.log
   else
     echo "YouCompleteMe binaries failed to compile."
   fi
@@ -93,11 +91,10 @@ if ! $updateonly; then
   # install ctrlp-matcher extensions
   cd ctrlp-cmatcher
   echo "Compiling ctrlp-matcher binaries..."
-  ./install_linux.sh >/dev/null 2>/dev/null
+  ./install_linux.sh
   success=$?
   if [[ $success -eq 0 ]]; then
     echo "ctrlp-matcher binaries successfully compiled."
-    sudo rm -f $dotfiles/install.log
   else
     echo "ctrlp-matcher binaries failed to compile."
   fi
