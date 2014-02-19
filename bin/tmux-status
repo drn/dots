@@ -49,7 +49,7 @@ if [ "$SIDE" = "left" ]; then
   esac
 elif [ "$SIDE" = "right" ]; then
   SEP="⮃"
-  FIRST="$(echo $(date +'%I:%M%p') | tr '[:upper:]' '[:lower:]')"
+  FIRST="$(echo $(date +'%l:%M%p') | tr '[:upper:]' '[:lower:]')"
   SECOND="$(date +'%a %d') $SEP $(date +'%b %Y')"
   THIRD="$(cpu)c $(memory)m $(battery)b"
   SEP="⮂"
