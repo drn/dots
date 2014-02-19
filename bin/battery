@@ -1,4 +1,4 @@
 #!/bin/bash
 pmset -g ps |
   sed -n 's/.*[[:blank:]]+*\(.*%\).*/\1/p' |
-  awk '{printf "%3d%%\n", $1}'
+  awk '{printf "%2d%%\n", $1}'
