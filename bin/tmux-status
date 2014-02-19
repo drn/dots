@@ -36,7 +36,7 @@ COL3="#[fg=colour244,bg=colour236]"
 COL3_2="#[fg=colour236,bg=colour239,nobold,nounderscore,noitalics]"
 COL3_1="#[fg=colour236,bg=colour103,nobold,nounderscore,noitalics]"
 
-if [ "$SIDE" = "left" ]; then
+function left {
   SEP="⮁"
   FIRST="#S $SEP #F"
   SECOND="$(ssid)"
@@ -47,7 +47,9 @@ if [ "$SIDE" = "left" ]; then
     med) echo "$COL1 $FIRST $COL1_2$SEP$COL2 $THIRD $COL2_3$SEP$COL3" ;;
     max) echo "$COL1 $FIRST $COL1_2$SEP$COL2 $SECOND $COL2_3$SEP$COL3 $THIRD" ;;
   esac
-elif [ "$SIDE" = "right" ]; then
+}
+
+function right {
   SEP="⮃"
   FIRST="$(echo $(date +'%l:%M%p') | tr '[:upper:]' '[:lower:]')"
   SECOND="$(date +'%a %d') $SEP $(date +'%b %Y')"
@@ -58,6 +60,14 @@ elif [ "$SIDE" = "right" ]; then
     med) echo "$COL2_3$SEP$COL2 $THIRD $COL1_2$SEP$COL1 $FIRST " ;;
     max) echo "$COL3 $THIRD $COL2_3$SEP$COL2 $SECOND $COL1_2$SEP$COL1 $FIRST " ;;
   esac
+}
+
+if [ "$SIDE" = "left" ]; then
+  other=$(right)
+  printf "%-${#other}s\n" "$(left)"
+elif [ "$SIDE" = "right" ]; then
+  other=$(left)
+  printf "%${#other}s\n" "$(right)"
 elif [ "$SIDE" = "center" ]; then
   echo "${COL3_2}⮀${COL2} #I.#W ${COL2_3}⮀"
 elif [ "$SIDE" = "center-current" ]; then
