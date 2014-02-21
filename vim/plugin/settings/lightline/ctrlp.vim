@@ -42,7 +42,7 @@ function! LightlineCtrlPStatusMain(focus, byfname, regex, prev, item, next, mark
   let g:lightline.ctrlp_item = a:item
   let g:lightline.ctrlp_next = a:next
   let g:lightline.ctrlp_marked = a:marked
-  unlet g:lightline.ctrlp_status
+  silent! unlet g:lightline.ctrlp_status
   return lightline#statusline(0)
 endfunction
 
