@@ -58,3 +58,4 @@ tpope/vim-jdaddy
 tpope/vim-abolish
 tpope/vim-repeat
 zaiste/tmux.vim
+kchmck/vim-coffee-script
