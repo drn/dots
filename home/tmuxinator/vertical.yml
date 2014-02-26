@@ -1,7 +1,7 @@
 # ~/.tmuxinator/vertical.yml
 
 name: vertical
-root: ~/Development/dotfiles
+root: /Users/darrencheng/Development/dotfiles
 
 windows:
   - core:
