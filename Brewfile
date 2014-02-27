@@ -41,3 +41,5 @@ cask install cocktail
 cask install f-lux
 cask install wunderlist
 cask install quicksilver
+cask install dropbox
+cask install dropbox-encore
