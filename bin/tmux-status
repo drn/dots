@@ -63,11 +63,9 @@ function right {
 }
 
 if [ "$SIDE" = "left" ]; then
-  other=$(right)
-  printf "%-${#other}s\n" "$(left)"
+  left
 elif [ "$SIDE" = "right" ]; then
-  other=$(left)
-  printf "%${#other}s\n" "$(right)"
+  right
 elif [ "$SIDE" = "center" ]; then
   echo "${COL3_2}⮀${COL2} #I #W ${COL2_3}⮀"
 elif [ "$SIDE" = "center-current" ]; then
