@@ -26,6 +26,7 @@ install z
 install python3
 install gradle
 install phantomjs
+install lua
 
 # science
 install r
