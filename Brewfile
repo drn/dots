@@ -45,3 +45,4 @@ cask install wunderlist
 cask install quicksilver
 cask install dropbox
 cask install dropbox-encore
+cask install google-chrome
