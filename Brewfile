@@ -27,6 +27,7 @@ install python3
 install gradle
 install phantomjs
 install lua
+install htop-osx
 
 # science
 install r
