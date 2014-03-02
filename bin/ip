@@ -18,8 +18,12 @@ services=(
   bot.whatismyipaddress.com
   ipv4.icanhazip.com
   ipecho.net/plain
+  wtfismyip.com/text
   ifconfig.me
   ipv4.ipogre.com
+  curlmyip.com
+  l2.io/ip
+  ip.appspot.com
 )
 
 # retrieval services
