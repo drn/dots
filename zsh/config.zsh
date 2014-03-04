@@ -53,3 +53,6 @@ compdef -d rake
 
 # Autoload tmux
 if [ "$TMUX" = "" ]; then tmuxinator start master; fi
+
+# Autoload fzf
+source ~/.fzf.zsh
