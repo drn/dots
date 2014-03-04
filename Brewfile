@@ -48,3 +48,5 @@ cask install dropbox-encore
 cask install google-chrome
 cask install hipchat
 cask install mailplane
+cask install jumpcut
+cask install menumeters
