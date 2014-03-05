@@ -1,0 +1,8 @@
+#!/bin/bash
+
+#
+# Commits all uncommitted changes and opens the commit message window.
+#
+
+git add -A
+git commit

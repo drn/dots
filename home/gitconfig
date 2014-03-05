@@ -50,7 +50,7 @@
   last = diff HEAD^..HEAD
   la = !"git last"
   # git commit --amend shortcut
-  amend = !"git commit --amend; open -a iTerm"
+  amend = commit --amend
   # returns the current branch name
   me = rev-parse --abbrev-ref HEAD
   # pushes current branch to the specified remote, defaults to fork
@@ -70,6 +70,8 @@
   s = !"git sync"
   # shorthand for fixup
   fu = !"git fixup"
+  # shorthand for commit-all
+  cma = !"git commit-all"
   # number of lines
   impact = !"ruby ~/bin/gitimpact.rb"
   # remote details
