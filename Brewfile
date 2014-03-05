@@ -29,6 +29,7 @@ install phantomjs
 install lua
 install htop-osx
 install postgresql
+install hr
 
 # science
 install r
