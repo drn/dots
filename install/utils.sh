@@ -19,29 +19,10 @@ if ! hash brew 2>/dev/null; then
   ruby -e "$(curl -fsSL https://raw.github.com/Homebrew/homebrew/go/install)"
 fi
 
-# install bundle
+# install Homebrew managed dependencies
 brew bundle $dotfiles/Brewfile
 
-# if rubygems is installed
-if hash gem 2>/dev/null; then
-
-  # ensure jira-cli is installed
-  if [ -z "$(gem list | grep jira-cli)" ]; then
-    echo "Installing jira-cli via rubygems"
-    gem install jira-cli
-  else
-    echo "Updating jira-cli via rubygems"
-    gem update jira-cli
-  fi
-
-  # ensure tmuxinator is installed
-  if [ -z "$(gem list | grep tmuxinator)" ]; then
-    echo "Installing tmuxinator via rubygems"
-    gem install tmuxinator
-  else
-    echo "Updating tmuxinator via rubygems"
-    gem update tmuxinator
-  fi
-
-fi
-
+# install Rubygems
+gem install bundler
+bundle install --gemfile=$dotfiles/Gemfile
+rm -f $dotfiles/Gemfile.lock
