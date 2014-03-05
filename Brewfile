@@ -28,6 +28,7 @@ install gradle
 install phantomjs
 install lua
 install htop-osx
+install postgresql
 
 # science
 install r

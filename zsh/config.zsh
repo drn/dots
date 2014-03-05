@@ -36,6 +36,9 @@ export LESS_TERMCAP_so=$'\E[38;5;246m'    # begin standout-mode - info box
 export LESS_TERMCAP_ue=$'\E[0m'           # end underline
 export LESS_TERMCAP_us=$'\E[04;38;5;146m' # begin underline
 
+# Set the default PostgreSQL host
+export PGHOST=localhost
+
 # Disable need to escape ^ characters
 setopt NO_NOMATCH
 
