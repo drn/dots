@@ -42,7 +42,7 @@ cask install etrecheck
 cask install plex-home-theater
 cask install chicken
 cask install cocktail
-cask install f-lux
+cask install flux
 cask install wunderlist
 cask install quicksilver
 cask install dropbox
