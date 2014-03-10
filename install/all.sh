@@ -53,7 +53,7 @@ echo "Cloning darrenli/dotfiles to $dotfiles"
 git clone git@github.com:darrenli/dotfiles.git $dotfiles --quiet
 
 # install dotfiles
-bash $dotfiles/install/dotfiles.sh
+bash $dotfiles/install/dots.sh
 # install terminal utilites
 bash $dotfiles/install/utils.sh
 # install bin files
