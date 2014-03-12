@@ -60,3 +60,4 @@ tpope/vim-repeat
 zaiste/tmux.vim
 kchmck/vim-coffee-script
 amix/vim-zenroom2
+tpope/vim-characterize
