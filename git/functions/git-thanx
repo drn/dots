@@ -1,0 +1,53 @@
+#!/bin/bash
+
+#
+# Ensures that thanx engineering remotes are available
+#
+
+remotes=(
+  'aaron anutron'
+  'davy davywentworth'
+  'marc marcferna'
+)
+
+if [[ "$#" -ne 1 ]]; then
+  echo "Usage: git thanx [add/remove]"
+  exit 1
+fi
+
+add_remote() {
+  if [[ "$#" -ne 2 ]]; then
+    echo "Usage: add_remote [fork] [github]"
+    exit 1
+  fi
+
+  remote_name="$1"
+  github_name="$2"
+
+  git remote add $remote_name git@github.com:$github_name/$(git repo).git 2>/dev/null
+}
+
+remove_remote() {
+  if [[ "$#" -ne 2 ]]; then
+    echo "Usage: remove_remote [fork] [github]"
+    exit 1
+  fi
+
+  remote_name="$1"
+  github_name="$2"
+
+  git remote remove $remote_name 2>/dev/null
+}
+
+if [ "$1" = "add" ]; then
+  for remote in "${remotes[@]}"; do
+    add_remote $remote
+  done
+  echo "Successfully added Thanx remotes"
+elif [ "$1" = "remove" ]; then
+  for remote in "${remotes[@]}"; do
+    remove_remote $remote
+  done
+  echo "Successfully removed Thanx remotes"
+fi
+
