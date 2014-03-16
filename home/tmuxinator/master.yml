@@ -4,6 +4,8 @@ name: master
 root: /Users/darrencheng/Development/dotfiles
 
 windows:
-  - core: clear
-  - editor:
-    - vim
+  - core:
+    layout: even-horizontal
+    pane:
+      - clear
+      - vim .
