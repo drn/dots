@@ -1,0 +1,12 @@
+#!/bin/bash
+
+#
+# SSHs into desktop either locally or remotely based on
+# the current network name.
+#
+
+if [ "$(ssid)" = "sanguinerane" ]; then
+  ssh SanguineRane@192.168.1.200
+else
+  ssh SanguineRane@sanguinerane.zapto.org
+fi

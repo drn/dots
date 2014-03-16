@@ -20,8 +20,6 @@ alias casksv="cd /usr/local/bin/Library/Taps/caskroom-versions"
 
 # SSH Aliases
 alias dlc="ssh darrenli@darrenlincheng.com"
-alias remotehome="ssh SanguineRane@sanguinerane.zapto.org"
-alias localhome="ssh SanguineRane@192.168.1.200"
 
 # Command Aliases
 alias vi="mvim"
