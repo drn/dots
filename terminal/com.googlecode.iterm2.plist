@@ -925,7 +925,7 @@
 	<key>NSWindow Frame NSColorPanel</key>
 	<string>307 274 266 310 0 0 1440 878 </string>
 	<key>NSWindow Frame Preferences</key>
-	<string>510 198 924 485 0 0 1440 878 </string>
+	<string>510 198 924 485 0 0 1440 900 </string>
 	<key>NSWindow Frame iTerm Window 0</key>
 	<string>-1080 -542 1080 1920 -1080 -542 1080 1920 </string>
 	<key>NSWindow Frame iTerm Window 1</key>
@@ -1134,7 +1134,7 @@
 				<real>1</real>
 			</dict>
 			<key>Application Keypad Allowed</key>
-			<integer>1</integer>
+			<integer>0</integer>
 			<key>Automatically Log</key>
 			<false/>
 			<key>BM Growl</key>
@@ -2543,7 +2543,7 @@
 	<key>SUHasLaunchedBefore</key>
 	<true/>
 	<key>SULastCheckTime</key>
-	<date>2014-03-14T06:47:43Z</date>
+	<date>2014-03-19T05:15:03Z</date>
 	<key>SavePasteHistory</key>
 	<false/>
 	<key>Secure Input</key>
