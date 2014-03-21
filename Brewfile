@@ -30,6 +30,7 @@ install lua
 install htop-osx
 install postgresql
 install hr
+install terminal-notifier
 
 # science
 install r
