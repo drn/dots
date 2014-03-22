@@ -40,7 +40,7 @@ tpope/vim-vinegar
 tpope/vim-eunuch
 StanAngeloff/php.vim
 sjl/gundo.vim
-jelera/vim-javascript-syntax
+pangloss/vim-javascript
 mattn/gist-vim
 mattn/webapi-vim
 vim-scripts/ZoomWin ZoomWin 23
