@@ -8,6 +8,7 @@ echo "Installing SanguineRane configuration for $(whoami)"
 
 # ensure sudo access
 sudo -p "Enter your password: " echo "We're good to go!"
+if [ $? -ne 0 ]; then exit 1; fi
 
 # change directory to home, in order to avoid directory conflicts
 cd ~
