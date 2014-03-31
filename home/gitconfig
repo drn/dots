@@ -99,6 +99,8 @@
   resetaf = !"git reset-ancestor --force"
   # show staged diff
   staged = diff --staged
+  # git combine
+  cb = !"git combine"
 
 [user]
   name = darrenli

@@ -1,0 +1,8 @@
+#!/bin/bash
+
+#
+# Combines all unstaged changes with the previous commit.
+#
+
+git add -A
+git commit --amend --no-edit
