@@ -1,2 +1,7 @@
 #!/bin/bash
+
+#
+# Prints the current percentage of CPU usage
+#
+
 top -l 1 | head -n 4 | tail -n 1 | awk '{printf "%2d%%\n", $3}'
