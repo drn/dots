@@ -83,7 +83,13 @@ set mouse=a
 """ Auto Commands """
 
 " trim all whitespace on save
-autocmd BufWritePre * :%s/\s\+$//e
+autocmd BufWritePre * call TrimWhitespace()
+function TrimWhitespace()
+  let line = line('.')
+  let col = col('.')
+  execute('%s/\s\+$//e')
+  call cursor(line, col)
+endfunction
 " always display sign column
 autocmd BufEnter * sign define dummy
 autocmd BufEnter * execute 'sign place 9999 line=1 name=dummy buffer=' . bufnr('')
