@@ -31,6 +31,7 @@ install htop-osx
 install postgresql
 install hr
 install terminal-notifier
+install fswatch
 
 # science
 install r
