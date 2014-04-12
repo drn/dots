@@ -1,10 +1,11 @@
 # Set up console prompt
-#   [darrencheng:dotfiles] (master:✗) ➜
-#   [darrencheng:dotfiles] (master) ➜
-#   [darrencheng:~] ➜
+#   dotfiles (⭠ master ☿) ➜
+#   dotfiles (⭠ master) ➜
+#   ~ ➜
+#   ❯
 
 ZSH_THEME_GIT_PROMPT_PREFIX=" %{$fg[blue]%}(⭠ %{$fg[red]%}"
-ZSH_THEME_GIT_PROMPT_DIRTY="%{$reset_color%}:%{$fg[yellow]%}☿%{$fg[blue]%})"
+ZSH_THEME_GIT_PROMPT_DIRTY="%{$reset_color%} %{$fg[yellow]%}☿%{$fg[blue]%})"
 ZSH_THEME_GIT_PROMPT_CLEAN="%{$fg[blue]%})"
 ZSH_THEME_GIT_PROMPT_SUFFIX="%{$reset_color%}"
 
