@@ -1,2 +1,2 @@
 " set split-pane height percentage
-let g:VimuxHeight = '25'
+let g:VimuxHeight = '22'
