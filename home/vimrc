@@ -204,3 +204,10 @@ nnoremap <silent> ''t :tab split<cr>
 nnoremap <silent> ;e :tabn<cr>
 " move to previous tab
 nnoremap <silent> ;q :tabp<cr>
+
+" Launch TextMate
+function LaunchTextmate()
+  silent !mate %:p
+  redraw!
+endfunction
+command! Mate call LaunchTextmate()
