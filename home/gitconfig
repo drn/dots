@@ -12,7 +12,7 @@
   # git fetch shortcut
   f = fetch
   # git status shortcut
-  st = status
+  st = !"git --no-pager status; git --no-pager diff --stat"
   # git checkout shortcut
   co = checkout
   # git rebase shortcut
