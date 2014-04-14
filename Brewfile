@@ -6,6 +6,7 @@ tap caskroom/versions
 tap homebrew/science
 tap homebrew/versions
 tap phinze/cask
+tap homebrew/dupes
 
 # formulae
 install brew-cask
@@ -54,3 +55,6 @@ cask install hipchat
 cask install mailplane
 cask install jumpcut
 cask install menumeters
+
+# system dupes
+brew install homebrew/dupes/less
