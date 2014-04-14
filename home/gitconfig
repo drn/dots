@@ -35,12 +35,12 @@
   # short version of cherry-pick
   pick = cherry-pick
   # show an ASCII version of the commit tree
-  tree = log --graph --decorate --oneline --remotes=origin --remotes=fork --glob=refs/heads HEAD
-  tr = log --graph --decorate --oneline --remotes=origin --remotes=fork --glob=refs/heads HEAD
-  treeall = log --graph --decorate --oneline --all
-  tra = log --graph --decorate --oneline --all
-  treesingle = log --graph --decorate --oneline
-  trs = log --graph --decorate --oneline
+  tree = !"git log --graph --decorate --oneline --remotes=origin --remotes=fork --glob=refs/heads HEAD; git --no-pager diff --stat"
+  tr = !"git log --graph --decorate --oneline --remotes=origin --remotes=fork --glob=refs/heads HEAD; git --no-pager diff --stat"
+  treeall = !"git log --graph --decorate --oneline --all; git --no-pager diff --stat"
+  tra = !"git log --graph --decorate --oneline --all; git --no-pager diff --stat"
+  treesingle = !"git log --graph --decorate --oneline; git --no-pager diff --stat"
+  trs = !"git log --graph --decorate --oneline; git --no-pager diff --stat"
   trak = !"clear; git tra"
   # The wip allows for a quick way to add all new and modified files to the index, while cleaning the index from the files removed from the working tree.
   wip = !"git add -A; git ls-files --deleted -z | xargs -0 git rm; git commit -m \"wip\""
