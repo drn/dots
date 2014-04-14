@@ -33,6 +33,8 @@ install postgresql
 install hr
 install terminal-notifier
 install fswatch
+install openssl
+link openssl --force
 
 # science
 install r
