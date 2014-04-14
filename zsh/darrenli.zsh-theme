@@ -13,10 +13,9 @@ prompt_git_dirty() {
 function prompt_git_info() {
   ref=$(command git symbolic-ref HEAD 2> /dev/null) || \
   ref=$(command git rev-parse --short HEAD 2> /dev/null) || return
-  local prefix=" %{$fg[blue]%}⭠ %{$fg[red]%}"
-  if prompt_git_dirty; then
-    local prefix=" %{$fg[magenta]%}⭠ %{$fg[red]%}"
-  fi
+  local git_color="blue"
+  if prompt_git_dirty; then git_color="yellow"; fi
+  local prefix=" %{$fg_bold[$git_color]%}⭠ %{$reset_color%}%{$fg[red]%}"
   local suffix="%{$reset_color%}"
   echo "$prefix${ref#refs/heads/}$suffix"
 }
