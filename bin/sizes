@@ -1,0 +1,8 @@
+#!/bin/bash
+
+#
+# Prints the sizes of the files and directories at the current path in
+# human-readable, sorted order.
+#
+
+du -s * | sort -nr | awk '{print $2}' | xargs du -sh
