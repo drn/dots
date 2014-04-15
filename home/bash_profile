@@ -4,6 +4,52 @@ HISTFILESIZE=5000
 # enable terminal colors
 export CLICOLOR=1
 
-# setup prompt
-export PS1="[\[\e[36;1m\]\u\[\e[0m\]:\[\e[31;1m\]\W\[\e[0m\]] \[\e[32;1m\]\#\[\e[0m\]) "
+# Colors
+ColorReset='\e[0m'       # Text Reset
+# Regular Colors
+Black='\e[0;30m'        # Black
+Red='\e[0;31m'          # Red
+Green='\e[0;32m'        # Green
+Yellow='\e[0;33m'       # Yellow
+Blue='\e[0;34m'         # Blue
+Purple='\e[0;35m'       # Purple
+Cyan='\e[0;36m'         # Cyan
+White='\e[0;37m'        # White
+# Bold
+BBlack='\e[1;90m'      # Black
+BRed='\e[1;91m'        # Red
+BGreen='\e[1;92m'      # Green
+BYellow='\e[1;93m'     # Yellow
+BBlue='\e[1;94m'       # Blue
+BPurple='\e[1;95m'     # Purple
+BCyan='\e[1;96m'       # Cyan
+BWhite='\e[1;97m'      # White
 
+# return true (0) if current git repo is dirty, false (1) otherwise
+prompt_git_dirty() {
+  local git_status=$(command git status -s 2> /dev/null | tail -n1)
+  if [ -z "$git_status" ]; then return 1; else return 0; fi
+}
+
+# prompt if current directory is a git repo
+prompt_git_info() {
+  ref=$(command git symbolic-ref HEAD 2> /dev/null) || \
+  ref=$(command git rev-parse --short HEAD 2> /dev/null) || return
+  local git_color="$BBlue"
+  if prompt_git_dirty; then git_color="$BYellow"; fi
+  local prefix=" ${git_color}⭠ $Red"
+  local suffix="$ColorReset"
+  echo "$prefix${ref#refs/heads/}$suffix"
+}
+
+terminal_prompt() {
+  if [ $? -eq 0 ]; then
+    # success
+    echo "$BRed\W$(prompt_git_info) ${BBlue}❯$ColorReset "
+  else
+    # failure
+    echo "$BRed\W$(prompt_git_info) ${BRed}❯$ColorReset "
+  fi
+}
+# export PS1="$(terminal_prompt)"
+export PS1="${BRed}\W ${BBlue}❯${ColorReset} "
