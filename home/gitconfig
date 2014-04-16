@@ -51,6 +51,8 @@
   la = !"git last"
   # git commit --amend shortcut
   amend = commit --amend
+  # git amend-all
+  ama = amend-all
   # returns the current branch name
   me = rev-parse --abbrev-ref HEAD
   # pushes current branch to the specified remote, defaults to fork
