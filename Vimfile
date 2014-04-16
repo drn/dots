@@ -31,7 +31,7 @@ scrooloose/nerdtree
 tpope/vim-surround
 nathanaelkane/vim-indent-guides
 SirVer/ultisnips
-eiginn/netrw
+eiginn/netrw netrw a98484b
 othree/html5.vim
 osyo-manga/vim-over
 elzr/vim-json
