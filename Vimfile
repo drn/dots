@@ -13,7 +13,7 @@ derekwyatt/vim-fswitch
 terryma/vim-multiple-cursors
 junegunn/vim-easy-align
 benmills/vimux
-jgdavey/vim-turbux
+drn/vim-turbux
 milkypostman/vim-togglelist
 rking/ag.vim
 mhinz/vim-startify
