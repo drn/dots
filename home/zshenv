@@ -13,6 +13,6 @@ export PATH=/Applications/Android\ Studio.app/sdk/tools:$PATH
 export PATH=/Applications/Postgres.app/Contents/MacOS/bin:$PATH
 # Load rbenv
 export RBENV_ROOT="$HOME/.rbenv"
-eval "$(rbenv init -)"
+eval "$(rbenv init - zsh)"
 # Set $DOTS
 export DOTS="$HOME/Development/dotfiles"
