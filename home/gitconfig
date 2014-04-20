@@ -103,6 +103,8 @@
   staged = diff --staged
   # git combine
   cb = !"git combine"
+  # print root git directory
+  root = !"pwd"
 
 [user]
   name = darrenli
