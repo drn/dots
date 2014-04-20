@@ -1,5 +1,6 @@
 kien/ctrlp.vim
 JazzCore/ctrlp-cmatcher
+tacahiroy/ctrlp-funky
 Lokaltog/vim-easymotion
 tpope/vim-fugitive
 airblade/vim-gitgutter
