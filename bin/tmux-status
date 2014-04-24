@@ -40,7 +40,7 @@ function left {
   SEP="⮁"
   FIRST="#S $SEP #F"
   SECOND="$(ssid)"
-  THIRD="$(ip)"
+  THIRD="$(lip)"
   SEP="⮀"
   case $SIZE in
     min) echo "$COL1 $FIRST $COL1_3$SEP$COL3" ;;
