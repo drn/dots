@@ -45,11 +45,11 @@ prompt_git_info() {
 terminal_prompt() {
   if [ $? -eq 0 ]; then
     # success
-    echo "$BRed\W$(prompt_git_info) ${BBlue}❯$ColorReset "
+    PS1="$BRed\W$(prompt_git_info) ${BBlue}❯$ColorReset "
   else
     # failure
-    echo "$BRed\W$(prompt_git_info) ${BRed}❯$ColorReset "
+    PS1="$BRed\W$(prompt_git_info) ${BRed}❯$ColorReset "
   fi
 }
-# export PS1="$(terminal_prompt)"
-export PS1="${BRed}\W ${BBlue}❯${ColorReset} "
+
+PROMPT_COMMAND=terminal_prompt
