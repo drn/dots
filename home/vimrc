@@ -126,6 +126,8 @@ nnoremap <silent> B ^d0i<BS>
 nnoremap <silent> <leader>D :redraw!<cr>
 " Visually select all
 nnoremap <leader>a ggVG
+" Reindent File
+nnoremap <silent> <leader>= ggVG=``
 
 """ Leader WASD Mappings """
 
