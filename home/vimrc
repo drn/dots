@@ -126,8 +126,6 @@ nnoremap <silent> B ^d0i<BS>
 nnoremap <silent> <leader>D :redraw!<cr>
 " Visually select all
 nnoremap <leader>a ggVG
-" Reindent File
-nnoremap <silent> <leader>= ggVG=``
 
 """ Leader WASD Mappings """
 
@@ -213,3 +211,12 @@ function LaunchTextmate()
   redraw!
 endfunction
 command! Mate call LaunchTextmate()
+
+" Reindent File
+nnoremap <silent> <leader>= :call Reindent()<CR>
+function Reindent()
+  let line = line('.')
+  let col = col('.')
+  execute "normal! ggVG="
+  call cursor(line, col)
+endfunction
