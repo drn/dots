@@ -44,7 +44,7 @@ sjl/gundo.vim
 pangloss/vim-javascript
 mattn/gist-vim
 mattn/webapi-vim
-vim-scripts/ZoomWin ZoomWin 23
+drn/zoomwin-vim
 itchyny/lightline.vim
 edkolev/tmuxline.vim
 vim-scripts/Vim-R-plugin
