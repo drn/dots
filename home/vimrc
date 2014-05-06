@@ -79,6 +79,8 @@ nnoremap Q <nop>
 nnoremap K <nop>
 " enable mouse usage
 set mouse=a
+" disable all folding
+set nofoldenable
 
 
 """ Auto Commands """
