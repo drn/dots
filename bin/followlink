@@ -1,5 +1,9 @@
 #!/bin/sh
 
+#
+# Follow the input symlink and output the destination path.
+#
+
 TARGET_FILE=$1
 if [ -z "$TARGET_FILE" ]; then
   echo 'Usage: followlink symlink'
@@ -12,9 +16,9 @@ TARGET_FILE=`basename $TARGET_FILE`
 # Iterate down a (possible) chain of symlinks
 while [ -L "$TARGET_FILE" ]
 do
-    TARGET_FILE=`readlink $TARGET_FILE`
-    cd `dirname $TARGET_FILE`
-    TARGET_FILE=`basename $TARGET_FILE`
+  TARGET_FILE=`readlink $TARGET_FILE`
+  cd `dirname $TARGET_FILE`
+  TARGET_FILE=`basename $TARGET_FILE`
 done
 
 # Compute the canonicalized name by finding the physical path
