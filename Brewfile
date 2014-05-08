@@ -35,6 +35,7 @@ install terminal-notifier
 install fswatch
 install openssl
 link openssl --force
+install go
 
 # science
 install r
