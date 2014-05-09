@@ -29,7 +29,7 @@ rlink $vimsource $vim
 # install pathogen
 if ! $updateonly; then
   echo "Installing Pathogen"
-  curl -Sso $vim/autoload/pathogen.vim https://raw.github.com/tpope/vim-pathogen/master/autoload/pathogen.vim
+  curl -Sso $vim/autoload/pathogen.vim https://raw.githubusercontent.com/tpope/vim-pathogen/master/autoload/pathogen.vim
 fi
 
 # install bundles
