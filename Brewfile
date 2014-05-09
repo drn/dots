@@ -36,6 +36,7 @@ install fswatch
 install openssl
 link openssl --force
 install go
+install redis
 
 # science
 install r
