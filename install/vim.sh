@@ -91,7 +91,9 @@ if ! $updateonly; then
   # install ctrlp-matcher extensions
   cd ctrlp-cmatcher
   echo "Compiling ctrlp-matcher binaries..."
-  ./install_linux.sh
+  export CFLAGS=-Qunused-arguments
+  export CPPFLAGS=-Qunused-arguments
+  ./install.sh
   success=$?
   if [[ $success -eq 0 ]]; then
     echo "ctrlp-matcher binaries successfully compiled."
