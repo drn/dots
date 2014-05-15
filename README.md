@@ -4,7 +4,7 @@ Quick Installation
 
     curl -s https://raw.github.com/darrenli/dotfiles/master/install/install.sh | sh
 
-![vim/tmux/terminal](https://raw2.github.com/darrenli/dotfiles/master/screenshots/tmux-vim.png)
+![vim/tmux/terminal(https://raw.githubusercontent.com/drn/dotfiles/master/screenshots/tmux-vim.png)
 
 ## Overview
 
