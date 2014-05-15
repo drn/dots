@@ -105,6 +105,8 @@
   cb = !"git combine"
   # print root git directory
   root = !"pwd"
+  # show the diff stats of the latest commit
+  stat = !"git --no-pager diff --stat HEAD^..HEAD"
 
 [user]
   name = darrenli
