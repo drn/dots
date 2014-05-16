@@ -46,9 +46,6 @@
   wip = !"git add -A; git ls-files --deleted -z | xargs -0 git rm; git commit -m \"wip\""
   # The unwip will restore the deleted files to the working tree!
   unwip = !"git log -n 1 | grep -q -c wip && git reset HEAD~1"
-  # inspect difference in last commit
-  last = diff HEAD^..HEAD
-  la = !"git last"
   # git commit --amend shortcut
   amend = commit --amend
   # git amend-all
