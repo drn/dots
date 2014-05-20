@@ -37,6 +37,7 @@ install openssl
 link openssl --force
 install go
 install redis
+install npm
 
 # science
 install r
