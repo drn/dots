@@ -13,7 +13,6 @@ let g:jellybeans_overrides = {
 \  },
 \}
 colorscheme jellybeans
-color jellybeans
 
 
 """ Configure UI """
