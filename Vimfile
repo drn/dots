@@ -68,3 +68,4 @@ nelstrom/vim-textobj-rubyblock
 ngmy/vim-rubocop
 jpalardy/vim-slime
 tpope/vim-characterize
+altercation/vim-colors-solarized
