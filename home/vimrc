@@ -133,9 +133,9 @@ nnoremap <leader>a ggVG
 """ Leader WASD Mappings """
 
 " Move line up
-nnoremap <leader>w ddkP
+nnoremap <silent> <leader>w :m -2<cr>
 " Move line down
-nnoremap <leader>s ddp
+nnoremap <silent> <leader>s :m +1<cr>
 
 " Automatically adjust quickfix window height
 "   https://gist.github.com/juanpabloaj/5845848
