@@ -37,10 +37,8 @@ let g:startify_skiplist = [
 
 let g:startify_bookmarks = [
 \ '~/.vimrc',
-\ '~/Development/work/thanx-web',
-\ '~/Development/dotfiles',
-\ '~/Development/personal/jira-cli',
-\ '~/Development/work/keyword-crawler'
+\ '~/Development/work/thanx-core',
+\ '~/Development/dotfiles'
 \ ]
 
 let g:startify_files_number = 5
