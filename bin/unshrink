@@ -1,0 +1,7 @@
+#!/bin/bash
+
+#
+# Disable shrink mode
+#
+
+unset DISABLE_PROMPT
