@@ -39,6 +39,7 @@ link openssl --force
 install go
 install redis
 install npm
+install mercurial
 
 # science
 install r
