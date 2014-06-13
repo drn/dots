@@ -40,6 +40,7 @@ install go
 install redis
 install npm
 install mercurial
+install irssi
 
 # science
 install r
