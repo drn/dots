@@ -57,7 +57,6 @@ set undofile
 set ttyfast
 " set background defaults
 set background=dark
-set transparency=3
 " highlight search matches
 set hlsearch
 " disable syntax highlighting past specified column for long lines
