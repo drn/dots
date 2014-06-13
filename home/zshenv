@@ -16,3 +16,5 @@ export PATH=/Users/$(whoami)/.rbenv/shims:$(brew --prefix rbenv)/bin:$PATH
 eval "$(rbenv init - zsh)"
 # Set $DOTS
 export DOTS="$HOME/Development/dotfiles"
+# Set $VIMRUNTIME to support neovim
+export VIMRUNTIME=/usr/local/Cellar/macvim/7.4-73/MacVim.app/Contents/Resources/vim/runtime
