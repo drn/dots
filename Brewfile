@@ -41,6 +41,7 @@ install redis
 install npm
 install mercurial
 install irssi
+install jq
 
 # science
 install r
