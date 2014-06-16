@@ -64,6 +64,7 @@ cask install hipchat
 cask install mailplane
 cask install jumpcut
 cask install menumeters
+cask install beacon-scanner
 
 # system dupes
 brew install homebrew/dupes/less
