@@ -1,0 +1,11 @@
+#!/bin/bash
+
+#
+# Conditionally create and checkout the 'fallback' branch.
+#
+
+if [ -z "$(git branch | grep darren)"]; then
+  git co -b darren
+else
+  git co darren
+fi

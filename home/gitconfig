@@ -107,6 +107,8 @@
   s = show
   last = show
   la = show
+  # fallback alias
+  fb = fallback
 
 [user]
   name = darrenli
