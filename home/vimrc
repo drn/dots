@@ -2,7 +2,7 @@
 
 " Neovim - Disable python-dependent plugins
 if has('neovim')
-  let g:pathogen_disabled = ['YouCompleteMe', 'ultisnips']
+  let g:pathogen_disabled = ['YouCompleteMe', 'ultisnips', 'ctrlp-cmatcher']
 endif
 
 

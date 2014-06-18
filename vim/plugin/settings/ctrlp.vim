@@ -8,7 +8,9 @@ let g:ctrlp_custom_ignore = {
   \ 'dir':  '\v[\/]((\.(git|hg|svn))|(coverage)|(tmp))$',
   \ 'file': '\v\.(swp|zip|DS_Store|jira-url)$'
   \ }
-let g:ctrlp_match_func = {'match' : 'matcher#cmatch' }
+if !has('neovim')
+  let g:ctrlp_match_func = {'match' : 'matcher#cmatch' }
+endif
 let g:ctrlp_max_height = 20
 let g:ctrlp_max_files = 0
 " configure identifier color (CtrlP matching)
