@@ -5,7 +5,6 @@ if has('neovim')
   let g:pathogen_disabled = ['YouCompleteMe', 'ultisnips', 'ctrlp-cmatcher']
 endif
 
-
 " load pathogen
 call pathogen#infect()
 call pathogen#helptags()
@@ -86,6 +85,8 @@ nnoremap K <nop>
 set mouse=a
 " disable all folding
 set nofoldenable
+" backspace through lines
+set backspace=indent,eol,start
 
 
 """ Auto Commands """
