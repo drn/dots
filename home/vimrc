@@ -1,5 +1,11 @@
 """ Default VIM configuration """
 
+" Neovim - Disable python-dependent plugins
+if has('neovim')
+  let g:pathogen_disabled = ['YouCompleteMe', 'ultisnips']
+endif
+
+
 " load pathogen
 call pathogen#infect()
 call pathogen#helptags()
@@ -223,7 +229,7 @@ function Reindent()
   call cursor(line, col)
 endfunction
 
-" Add support for neovim clipboard
+" Neovim - Add support for OSX clipboard
 if has('neovim')
   function! ClipboardYank()
     call system('pbcopy', @@)
@@ -231,7 +237,6 @@ if has('neovim')
   function! ClipboardPaste()
     let @@ = system('pbpaste')
   endfunction
-
   vnoremap <silent> y y:call ClipboardYank()<cr>
   onoremap <silent> y y:call ClipboardYank()<cr>
   vnoremap <silent> d d:call ClipboardYank()<cr>
