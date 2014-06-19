@@ -136,12 +136,25 @@ nnoremap <silent> <leader>D :redraw!<cr>
 " Visually select all
 nnoremap <leader>a ggVG
 
-""" Leader WASD Mappings """
+""" Line Adjustment Mappings """
 
 " Move line up
-nnoremap <silent> <leader>w :m -2<cr>
+function! MoveLineUp()
+  if line('.') != 1
+    exec "move -2"
+  endif
+endfunction
+nnoremap <silent> <leader>w :call MoveLineUp()<cr>
+
 " Move line down
-nnoremap <silent> <leader>s :m +1<cr>
+function! MoveLineDown()
+  if line('.') != line('$')
+    exec "move +1"
+  endif
+endfunction
+nnoremap <silent> <leader>s :call MoveLineDown()<cr>
+
+""" Functions
 
 " Automatically adjust quickfix window height
 "   https://gist.github.com/juanpabloaj/5845848
