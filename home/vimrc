@@ -198,6 +198,8 @@ nnoremap <silent> ''a :leftabove wincmd v<cr>
 nnoremap <silent> ''w :leftabove wincmd s<cr>
 " open window below
 nnoremap <silent> ''s :rightbelow wincmd s<cr>
+" resize windows evenly
+nnoremap <silent> ''= :windcmd =<cr>
 
 " move to window on the right
 nnoremap <silent> ;d :wincmd l<cr>
