@@ -46,7 +46,6 @@ mattn/gist-vim
 mattn/webapi-vim
 drn/zoomwin-vim
 itchyny/lightline.vim
-edkolev/tmuxline.vim
 vim-scripts/Vim-R-plugin
 lilydjwg/colorizer
 vim-scripts/matchit.zip
