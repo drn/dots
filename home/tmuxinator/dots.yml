@@ -1,0 +1,11 @@
+# ~/.tmuxinator/dots.yml
+
+name: dots
+root: /Users/darrencheng/Development/dotfiles
+
+windows:
+  - core:
+    layout: even-horizontal
+    panes:
+      - clear
+      - vim .
