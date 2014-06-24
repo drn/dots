@@ -42,6 +42,7 @@ install npm
 install mercurial
 install irssi
 install jq
+install ngrok
 
 # science
 install r
