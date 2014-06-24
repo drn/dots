@@ -47,7 +47,7 @@ set shiftround
 set list listchars=tab:ˍˍ,trail:ˍ
 au FileType gitcommit set nolist
 " toggle visible whitespace
-nnoremap <silent> <leader>6 :set list!<cr>
+nnoremap <silent> ;;w :set list!<cr>
 " turn off .swp files
 set noswapfile
 set nobackup

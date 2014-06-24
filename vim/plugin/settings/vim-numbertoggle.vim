@@ -1,1 +1,1 @@
-let g:NumberToggleTrigger="<leader>3"
+let g:NumberToggleTrigger=";;n"

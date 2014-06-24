@@ -1,5 +1,5 @@
 " toggle gundo with command-u
-nnoremap <silent> <leader>2 :GundoToggle<CR>
+nnoremap <silent> ;;u :GundoToggle<CR>
 " don't auto-preview
 let g:gundo_auto_preview=0
 " configure gundo ui

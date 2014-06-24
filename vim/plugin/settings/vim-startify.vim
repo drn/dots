@@ -43,4 +43,4 @@ let g:startify_bookmarks = [
 
 let g:startify_files_number = 5
 
-nnoremap <silent> <leader>0 :Startify<cr>
+nnoremap <silent> ;;s :Startify<cr>
