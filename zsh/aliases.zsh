@@ -35,6 +35,8 @@ alias top="htop"
 alias vi="vim"
 alias j="jira"
 alias o="open"
+alias pow="powder"
+alias p="powder"
 
 # Tmuxinator Aliases
 alias mxm="mux master"
