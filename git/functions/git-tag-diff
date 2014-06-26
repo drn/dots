@@ -1,0 +1,14 @@
+#!/bin/bash
+
+#
+# Outputs the diff --stat between the most recent two tags.
+#
+
+recent=$(git recent-tag)
+last=$(git last-tag)
+if [ -n "$recent" ] && [ -n "$last" ]; then
+  echo -n "Comparing $last to $recent "
+  read < /dev/tty
+fi
+git diff --stat $last..$recent 2>/dev/null
+exit 0

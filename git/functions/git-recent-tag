@@ -1,0 +1,8 @@
+#!/bin/bash
+
+#
+# Prints name of the most recent tag. If none exist, nothing is printed.
+#
+
+git describe 2>/dev/null
+exit 0

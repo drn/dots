@@ -1,0 +1,9 @@
+#!/bin/bash
+
+#
+# Prints name of the most second most recent tag. If none exist, nothing is
+# printed.
+#
+
+git describe --abbrev=0 $(git recent-tag)^ 2>/dev/null
+exit 0
