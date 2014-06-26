@@ -34,6 +34,7 @@ alias h="history"
 alias top="htop"
 alias vi="vim"
 alias j="jira"
+alias o="open"
 
 # Tmuxinator Aliases
 alias mxm="mux master"
