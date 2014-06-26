@@ -70,8 +70,6 @@
   fu = !"git fixup"
   # shorthand for commit-all
   cma = !"git commit-all"
-  # number of lines
-  impact = !"ruby ~/bin/gitimpact.rb"
   # remote details
   remote-details = !"git remote -v | grep 'fork' | awk '{print $2}' | uniq | sed 's#.*:##g' | sed 's#.git$##g'"
   # pull request
