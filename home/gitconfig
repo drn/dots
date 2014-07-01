@@ -107,6 +107,8 @@
   la = show
   # fallback alias
   fb = fallback
+  # reset --hard
+  rh = reset --hard
 
 [user]
   name = darrenli
