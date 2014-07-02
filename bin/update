@@ -8,6 +8,10 @@ sudo -p "Enter your password: " echo "We're good to go!"
 if [ $? -ne 0 ]; then exit 1; fi
 echo ""
 
+# rehashing rbenv
+echo "\n\033[0;34mRehashing rbenv binaries...\033[0m"
+rbenv rehash
+
 # update Oh My Zsh
 /usr/bin/env ZSH=$ZSH /bin/sh $ZSH/tools/upgrade.sh
 echo "LAST_EPOCH=$(($(date +%s) / 60 / 60 / 24))" > ~/.zsh-update
