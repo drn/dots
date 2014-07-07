@@ -9,7 +9,7 @@ if [ $? -ne 0 ]; then exit 1; fi
 echo ""
 
 # rehashing rbenv
-echo "\n\033[0;34mRehashing rbenv binaries...\033[0m"
+echo "\033[0;34mRehashing rbenv binaries...\033[0m\n"
 rbenv rehash
 
 # update Oh My Zsh
