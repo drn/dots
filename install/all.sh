@@ -57,6 +57,7 @@ git clone git@github.com:darrenli/dotfiles.git $dotfiles --quiet
 bash $dotfiles/install/dots.sh
 # install terminal utilites
 bash $dotfiles/install/utils.sh
+# install rbenv plugins
 # install node packages
 bash $dotfiles/install/node.sh
 # install bin files

@@ -12,7 +12,6 @@ tap homebrew/dupes
 install brew-cask
 install rbenv
 install ruby-build
-install rbenv-gemset
 install tmux
 install zsh
 install memcached
