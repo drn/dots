@@ -68,3 +68,4 @@ jpalardy/vim-slime
 tpope/vim-characterize
 altercation/vim-colors-solarized
 toyamarinyon/vim-swift
+junegunn/limelight.vim
