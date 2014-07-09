@@ -18,3 +18,51 @@ rescue LoadError => e
   warn "[WARN] #{e}"
   puts '$ gem install awesome_print'
 end
+
+Pry.config.colors = {
+  reset:         "\e[0m",
+  bold:          "\e[1m",
+  black:         "\e[30m",
+  red:           "\e[31m",
+  green:         "\e[32m",
+  yellow:        "\e[33m",
+  blue:          "\e[34m",
+  magenta:       "\e[35m",
+  cyan:          "\e[36m",
+  light_gray:    "\e[37m",
+  dark_gray:     "\e[90m",
+  light_red:     "\e[91m",
+  light_green:   "\e[92m",
+  light_yellow:  "\e[93m",
+  light_blue:    "\e[94m",
+  light_magenta: "\e[95m",
+  light_cyan:    "\e[96m",
+  white:         "\e[97m"
+}
+
+# customize pry prompt
+Pry.config.prompt = proc do |obj, level, _|
+  colors = Pry.config.colors
+
+  prompt = ""
+  if defined?(Rails)
+    prompt << colors[:red]
+
+    # application name
+    prompt << Rails.application.class.name.gsub('::Application','')
+    prompt << ' '
+
+    prompt << colors[:bold]
+    # rails environment
+    prompt << Rails.env.first(3)
+
+    prompt << colors[:reset]
+  else
+    prompt << colors[:reset]
+    prompt << colors[:red]
+    prompt << RUBY_VERSION.to_s
+    prompt << colors[:reset]
+  end
+
+  "#{prompt} #{colors[:bold]}#{colors[:yellow]}#{obj} #{colors[:green]}❯ #{colors[:reset]}"
+end
