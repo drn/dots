@@ -54,7 +54,8 @@ Pry.config.prompt = proc do |obj, level, _|
   end
   prompt << colors[:reset]
 
-  "#{prompt}"\
+  "#{colors[:bold]}#{colors[:blue]}❯#{colors[:reset]}"\
+  " #{prompt}"\
   " #{colors[:bold]}#{colors[:yellow]}#{obj}#{colors[:reset]}"\
   " #{colors[:bold]}#{colors[:magenta]}❯ #{colors[:reset]}"
 end
