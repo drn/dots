@@ -46,7 +46,7 @@ Pry.config.prompt = proc do |obj, level, _|
 
   prompt = ""
   prompt << colors[:bold]
-  prompt << colors[:red]
+  prompt << colors[:blue]
   if defined?(Rails)
     prompt << Rails.application.class.name.gsub('::Application','')
   else
