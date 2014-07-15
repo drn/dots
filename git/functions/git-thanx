@@ -8,6 +8,7 @@ remotes=(
   'aaron anutron'
   'davy davywentworth'
   'marc marcferna'
+  'fletch fzf'
 )
 
 if [[ "$#" -ne 1 ]]; then
