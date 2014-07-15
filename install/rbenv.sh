@@ -17,5 +17,4 @@ mkdir -p ~/.rbenv/plugins
 
 # install the following plugins
 cd $plugins
-gitsync ianheggie/rbenv-binstubs
-gitsync jf/rbenv-gemset
+# gitsync ...
