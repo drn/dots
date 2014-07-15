@@ -37,6 +37,7 @@ alias j="jira"
 alias o="open"
 alias pow="powder"
 alias p="powder"
+alias binstubs="bundle install --binstubs .bundle/bin"
 
 # Tmuxinator Aliases
 alias mxm="mux master"
