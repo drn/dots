@@ -2,6 +2,10 @@ Pry.commands.alias_command 'e', 'exit'
 Pry.commands.alias_command 'q', 'exit-program'
 Pry.commands.alias_command 'w', 'whereami'
 
+if defined?(Rails)
+  def outlog; Rails.logger = Logger.new(STDOUT) end
+end
+
 if defined?(PryDebugger)
   Pry.commands.alias_command 'c', 'continue'
   Pry.commands.alias_command 's', 'step'
