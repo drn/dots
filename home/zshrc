@@ -42,7 +42,6 @@ DISABLE_CORRECTION="true"
 # Example format: plugins=(rails git textmate ruby lighthouse)
 plugins=(
   gitfast
-  git
   rails
   bundler
   macports
