@@ -84,8 +84,6 @@ nnoremap Q <nop>
 nnoremap K <nop>
 " enable mouse usage
 set mouse=a
-" disable all folding
-set nofoldenable
 " backspace through lines
 set backspace=indent,eol,start
 
