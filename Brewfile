@@ -65,6 +65,7 @@ cask install mailplane
 cask install jumpcut
 cask install menumeters
 cask install beacon-scanner
+cask install mysqlworkbench
 
 # system dupes
 brew install homebrew/dupes/less
