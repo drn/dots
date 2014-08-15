@@ -11,6 +11,7 @@ alias root="cd $(git root)"
 
 # SSH Aliases
 alias dlc="ssh darrenli@darrenlincheng.com"
+alias jenkins="ssh bitnami@jenkins.thanx.com"
 
 # Command Aliases
 alias v="vim"
