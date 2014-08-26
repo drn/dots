@@ -66,6 +66,7 @@ cask install jumpcut
 cask install menumeters
 cask install beacon-scanner
 cask install mysqlworkbench
+cask install ubersicht
 
 # system dupes
 install homebrew/dupes/less
