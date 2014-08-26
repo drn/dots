@@ -69,3 +69,6 @@ cask install ubersicht
 
 # system dupes
 install homebrew/dupes/less
+
+# clean up
+cleanup -s
