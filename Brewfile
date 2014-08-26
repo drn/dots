@@ -2,11 +2,11 @@ update
 upgrade
 
 # taps
-tap caskroom/versions
-tap homebrew/science
-tap homebrew/versions
-tap phinze/cask
-tap homebrew/dupes
+tap caskroom/homebrew-versions
+tap homebrew/homebrew-science
+tap homebrew/homebrew-versions
+tap homebrew/homebrew-dupes
+tap caskroom/homebrew-cask
 
 # formulae
 install brew-cask
