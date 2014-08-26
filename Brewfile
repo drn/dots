@@ -68,4 +68,4 @@ cask install beacon-scanner
 cask install mysqlworkbench
 
 # system dupes
-brew install homebrew/dupes/less
+install homebrew/dupes/less
