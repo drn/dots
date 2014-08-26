@@ -9,8 +9,6 @@ export PATH=/usr/local/mysql/bin:$PATH
 # Include Android tools in PATH
 export PATH=/Applications/Android\ Studio.app/sdk/platform-tools:$PATH
 export PATH=/Applications/Android\ Studio.app/sdk/tools:$PATH
-# Include postgres in path
-export PATH=/Applications/Postgres.app/Contents/MacOS/bin:$PATH
 # Load rbenv
 export PATH=/Users/$(whoami)/.rbenv/shims:$(brew --prefix rbenv)/bin:$PATH
 eval "$(rbenv init - zsh)"

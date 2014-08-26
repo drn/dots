@@ -21,6 +21,9 @@ fi
 
 # install Homebrew managed dependencies
 brew bundle $dotfiles/Brewfile
+ln -sfv /usr/local/opt/postgresql/*.plist ~/Library/LaunchAgents
+launchctl unload ~/Library/LaunchAgents/homebrew.mxcl.postgresql.plist
+launchctl load ~/Library/LaunchAgents/homebrew.mxcl.postgresql.plist
 
 # install Rubygems
 gem install bundler
