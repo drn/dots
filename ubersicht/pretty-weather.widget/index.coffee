@@ -4,7 +4,7 @@ exclude  = "minutely,hourly,alerts,flags"
 
 primaryColor   = "#151535"
 
-command: "curl -sS 'https://api.forecast.io/forecast/#{apiKey}/#{location}?units=auto&exclude=#{exclude}'"
+command: "curl -sS 'https://api.forecast.io/forecast/#{apiKey}/#{location}?units=auto&exclude=#{exclude}' 2>/dev/null"
 
 refreshFrequency: 600000
 
