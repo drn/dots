@@ -53,12 +53,6 @@ nnoremap <silent> ;;w :set list!<cr>
 set noswapfile
 set nobackup
 set nowb
-"" persistent file undo
-if !isdirectory($HOME . "/.vim/backups")
-  call mkdir($HOME . "/.vim/backups", "p")
-endif
-set undodir=$HOME/.vim/backups
-set undofile
 " smoother screen redraw
 set ttyfast
 " set background defaults
