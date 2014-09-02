@@ -4,5 +4,4 @@
 # Install the latest neovim version.
 #
 
-brew remove neovim
-brew install --HEAD https://raw.github.com/neovim/neovim/master/neovim.rb
+brew reinstall --HEAD https://raw.github.com/neovim/neovim/master/neovim.rb
