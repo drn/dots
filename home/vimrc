@@ -86,6 +86,10 @@ nnoremap K <nop>
 set mouse=a
 " backspace through lines
 set backspace=indent,eol,start
+" enable folding based on syntax rules
+set foldmethod=syntax
+" open all folds by default
+set nofoldenable
 
 
 """ Auto Commands """
