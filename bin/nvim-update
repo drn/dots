@@ -1,7 +1,9 @@
 #!/bin/bash
 
 #
-# Install the latest neovim version.
+# Install the latest neovim version and the neovim python client.
 #
 
 brew reinstall --HEAD https://raw.github.com/neovim/neovim/master/neovim.rb
+sudo pip uninstall xerox && sudo pip install xerox
+sudo pip uninstall neovim && sudo pip install neovim
