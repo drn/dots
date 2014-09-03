@@ -43,6 +43,7 @@ install irssi
 install jq
 install ngrok
 install gource
+install ffmpeg
 
 # science
 install r
