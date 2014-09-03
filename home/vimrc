@@ -3,7 +3,7 @@
 " Neovim
 if has('neovim')
   " Disable python-dependent plugins
-  let g:pathogen_disabled = ['YouCompleteMe', 'ultisnips', 'ctrlp-cmatcher', 'CoVim']
+  let g:pathogen_disabled = ['YouCompleteMe', 'ultisnips', 'CoVim']
   " Add support for clipboard
   let s:python_host_init = 'python -c "import neovim; neovim.start_host()"'
   let &initpython = s:python_host_init
