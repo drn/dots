@@ -42,6 +42,7 @@ install mercurial
 install irssi
 install jq
 install ngrok
+install gource
 
 # science
 install r
