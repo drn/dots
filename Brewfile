@@ -59,8 +59,6 @@ cask install cocktail
 cask install flux
 cask install wunderlist
 cask install quicksilver
-cask install dropbox-encore
-cask install google-chrome
 cask install hipchat
 cask install mailplane
 cask install jumpcut
