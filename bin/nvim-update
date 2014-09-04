@@ -4,6 +4,9 @@
 # Install the latest neovim version and the neovim python client.
 #
 
+sudo -p "Enter your password: " echo "We're good to go!"
+if [ $? -ne 0 ]; then exit 1; fi
+
 brew reinstall --HEAD https://raw.github.com/neovim/neovim/master/neovim.rb
-sudo pip uninstall xerox && sudo pip install xerox
-sudo pip uninstall neovim && sudo pip install neovim
+sudo pip uninstall -y xerox && sudo pip install xerox
+sudo pip uninstall -y neovim && sudo pip install neovim
