@@ -47,7 +47,6 @@ mattn/webapi-vim
 drn/zoomwin-vim
 itchyny/lightline.vim
 vim-scripts/Vim-R-plugin
-lilydjwg/colorizer
 vim-scripts/matchit.zip
 tpope/vim-speeddating
 maxbrunsfeld/vim-yankstack
