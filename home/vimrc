@@ -248,3 +248,20 @@ function Reindent()
   execute "normal! ggVG="
   call cursor(line, col)
 endfunction
+
+function ProfileStart()
+  profile start profile.log
+  profile func *
+  profile file *
+  echomsg "Starting Profiling..."
+endfunction
+
+function ProfileEnd()
+  echomsg "Ending Profiling... Open profile.log for details."
+  sleep 1
+  profile pause
+  noautocmd qall!
+endfunction
+
+noremap <silent> <leader>d> :call ProfileStart()<CR>
+noremap <silent> <leader>d< :call ProfileEnd()<CR>
