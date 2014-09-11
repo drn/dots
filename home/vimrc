@@ -258,7 +258,7 @@ endfunction
 
 function ProfileEnd()
   echomsg "Ending Profiling... Open profile.log for details."
-  sleep 1
+  sleep 2
   profile pause
   noautocmd qall!
 endfunction
