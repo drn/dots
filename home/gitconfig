@@ -48,8 +48,6 @@
   unwip = !"git log -n 1 | grep -q -c wip && git reset HEAD~1"
   # git commit --amend shortcut
   amend = commit --amend
-  # git amend-all
-  ama = amend-all
   # returns the current branch name
   me = rev-parse --abbrev-ref HEAD
   # pushes current branch to the specified remote, defaults to fork
@@ -109,6 +107,8 @@
   fb = fallback
   # reset --hard
   rh = reset --hard
+  # git amend-all
+  aa = amend-all
 
 [user]
   name = darrenli
