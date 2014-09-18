@@ -39,6 +39,9 @@ alias o="open"
 alias pow="powder"
 alias p="powder"
 alias binstubs="bundle install --binstubs .bundle/bin"
+alias scratch-pad="v ~/.scratch-pad"
+alias scratch="scratch-pad"
+alias pad="scratch-pad"
 
 # Tmuxinator Aliases
 alias mxm="mux master"
