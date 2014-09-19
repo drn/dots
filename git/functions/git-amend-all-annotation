@@ -1,0 +1,9 @@
+#!/bin/bash
+
+#
+# Add all unstaged changes and kicks off an amend, allowing edits to the
+# commit message.
+#
+
+git add -A
+git commit --amend

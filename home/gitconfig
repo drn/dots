@@ -109,6 +109,8 @@
   rh = reset --hard
   # git amend-all
   aa = amend-all
+  # git amend-all-annotate
+  aaa = amend-all-annotate
 
 [user]
   name = darrenli
