@@ -55,13 +55,9 @@
   pmf = !"git pushme --force"
   # pushes current branch to origin/master
   mm = !"git masterme"
-  # delete specified branch from the specified remote
-  delete = !sh -c 'git push $1 :$2' -
   # delete current branch from origin, fork, and locally
   km = !"git killme"
   kmf = !"git killme --force"
-  # updates fork/master to origin/master
-  upfork = push fork origin/master:master --force
   # updates origin/master and syncs fork master to origin
   sync = !"git fetch origin; git upfork"
   # shorthand for fixup
@@ -70,10 +66,6 @@
   cma = !"git commit-all"
   # remote details
   remote-details = !"git remote -v | grep 'fork' | awk '{print $2}' | uniq | sed 's#.*:##g' | sed 's#.git$##g'"
-  # pull request
-  pum = !"git pullme"
-  # pushes to origin/master
-  publish = push origin HEAD:master
   # browse the current head on github
   bro = !"hub browse -- commit/`git rev-parse HEAD`"
   # better blame
@@ -83,14 +75,9 @@
   # rebase on most recent ancestor
   rbr = rebase-relevant
   # hard reset to master
-  resetm = !"git reset --hard origin/master"
-  # git showme
-  sm = showme
+  rhm = !"git reset --hard origin/master"
   # git branches
   brs = branches
-  # git reset-ancestor
-  reseta = !"git reset-ancestor"
-  resetaf = !"git reset-ancestor --force"
   # show staged diff
   staged = diff --staged
   # git combine
@@ -107,10 +94,10 @@
   fb = fallback
   # reset --hard
   rh = reset --hard
-  # git amend-all
+  # git amend aliases
+  a = !"git commit --amend"
   aa = amend-all
-  # git amend-all-annotate
-  aaa = amend-all-annotate
+  aaa = amend-all-annotation
 
 [user]
   name = darrenli
