@@ -1,5 +1,7 @@
-# Include ~/bin in PATH
+# Include ~/bin scripts in PATH
 export PATH=$HOME/bin:$PATH
+# Include ~/.secure scripts in PATH
+export PATH=$HOME/.secure:$PATH
 # Include Homebrew in PATH
 export PATH=/usr/local/bin:/usr/local/sbin:$PATH
 # Include git extensions in PATH
