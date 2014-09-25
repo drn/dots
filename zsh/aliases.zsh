@@ -42,6 +42,7 @@ alias binstubs="bundle install --binstubs .bundle/bin"
 alias scratch-pad="v ~/.scratch-pad"
 alias scratch="scratch-pad"
 alias pad="scratch-pad"
+alias secure="v ~/.secure"
 
 # Tmuxinator Aliases
 alias mxm="mux master"
