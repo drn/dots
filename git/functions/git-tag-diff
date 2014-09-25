@@ -7,8 +7,8 @@
 recent=$(git recent-tag)
 last=$(git last-tag)
 if [ -n "$recent" ] && [ -n "$last" ]; then
-  echo -n "Comparing $last to $recent "
-  read < /dev/tty
+  echo "Comparing $last to $recent ..."
+  sleep 1
 fi
 git diff --stat $last..$recent 2>/dev/null
 exit 0
