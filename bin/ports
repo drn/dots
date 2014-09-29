@@ -1,0 +1,12 @@
+#!/bin/bash
+
+#
+# List the active TCP or UDP ports of localhost in use.
+#
+
+if [ "$1" == "tcp" ] || [ "$1" == "udp" ]; then
+  sudo lsof -i -n -P | grep --ignore-case --color=never $1
+  exit 1
+fi
+echo "Usage: ports [udp|tcp]"
+
