@@ -1,0 +1,12 @@
+#!/bin/bash
+
+#
+# Modify a note with the input specified name in the default system editor.
+#
+
+mkdir -p ~/.notes
+if [ -z "$1" ]; then
+  vim ~/.notes
+else
+  vim ~/.notes/$1
+fi

@@ -21,7 +21,7 @@ call pathogen#helptags()
 au BufRead,BufNewFile gitconfig set filetype=gitconfig
 au BufRead,BufNewFile *.cfg set filetype=sh
 au BufRead,BufNewFile pryrc set filetype=ruby
-au BufRead,BufNewFile .scratch-pad set filetype=ruby
+au BufRead,BufNewFile scratch-pad set filetype=ruby
 
 " Basic VIM settings
 
