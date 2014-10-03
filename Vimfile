@@ -31,7 +31,6 @@ Raimondi/delimitMate
 scrooloose/nerdtree
 tpope/vim-surround
 nathanaelkane/vim-indent-guides
-SirVer/ultisnips
 eiginn/netrw netrw a98484b
 othree/html5.vim
 osyo-manga/vim-over
@@ -59,7 +58,6 @@ tpope/vim-repeat
 zaiste/tmux.vim
 kchmck/vim-coffee-script
 tpope/vim-characterize
-FredKSchott/CoVim
 kana/vim-textobj-user
 nelstrom/vim-textobj-rubyblock
 ngmy/vim-rubocop
