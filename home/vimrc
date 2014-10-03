@@ -25,6 +25,8 @@ au BufRead,BufNewFile scratch-pad set filetype=ruby
 
 " Basic VIM settings
 
+" use old regexp engine
+set regexpengine=1
 " use VIM settings, not vi settings
 set nocompatible
 " enable syntax highlighting
