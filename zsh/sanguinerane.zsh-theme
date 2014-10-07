@@ -63,22 +63,18 @@ terminal_prompt_preexec() {
 
 # terminal prompt
 terminal_prompt() {
+  # success / failure indicator color
   if [ $? -eq 0 ]; then
-    # success
-    indicator="%{$fg_bold[blue]%}❯%{$reset_color%} "
-    if [ -z "$DISABLE_PROMPT" ]; then
-      echo "%{$fg_bold[red]%}%c%{$reset_color%}$(prompt_git_info) $indicator"
-    else
-      echo $indicator
-    fi
+    indicator_color="blue"
   else
-    # failure
-    indicator="%{$fg_bold[red]%}❯%{$reset_color%} "
-    if [ -z "$DISABLE_PROMPT" ]; then
-      echo "%{$fg_bold[red]%}%c%{$reset_color%}$(prompt_git_info) $indicator"
-    else
-      echo $indicator
-    fi
+    indicator_color="red"
+  fi
+  indicator="%{$fg_bold[$indicator_color]%}❯%{$reset_color%} "
+  # shrunk prompt
+  if [ -z "$DISABLE_PROMPT" ]; then
+    echo "%{$fg_bold[red]%}%c%{$reset_color%}$(prompt_git_info) $indicator"
+  else
+    echo $indicator
   fi
 }
 
