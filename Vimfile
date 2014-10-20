@@ -66,3 +66,4 @@ tpope/vim-characterize
 altercation/vim-colors-solarized
 toyamarinyon/vim-swift
 junegunn/limelight.vim
+haya14busa/incsearch.vim
