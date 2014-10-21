@@ -1,56 +1,43 @@
-#!/bin/bash
+#!/usr/bin/ruby
 
 #
-# Ensures that thanx engineering remotes are available
+# Thanx engineering git remote management.
 #
 
-remotes=(
-  'aaron anutron'
-  'davy davywentworth'
-  'marc marcferna'
-  'fletch fzf'
-)
+REMOTES = {
+  aaron: {
+    username: :anutron,
+    exceptions: { 'thanx-core' => 'thanx-web' }
+  },
+  davy: {
+    username: :davywentworth,
+    exceptions: { 'thanx-core' => 'thanx-web' }
+  },
+  fletch: {
+    username: :fzf
+  },
+  marc: {
+    username: :marcferna,
+    exceptions: { 'thanx-core' => 'thanx-web' }
+  }
+}.freeze
 
-if [[ "$#" -ne 1 ]]; then
-  echo "Usage: git thanx [add/remove]"
-  exit 1
-fi
+REPO = `git repo`.strip.freeze
 
-add_remote() {
-  if [[ "$#" -ne 2 ]]; then
-    echo "Usage: add_remote [fork] [github]"
-    exit 1
-  fi
+def usage; puts 'Usage: git thanx [add/remove]' end
 
-  remote_name="$1"
-  github_name="$2"
-
-  git remote add $remote_name git@github.com:$github_name/$(git repo).git 2>/dev/null
-}
-
-remove_remote() {
-  if [[ "$#" -ne 2 ]]; then
-    echo "Usage: remove_remote [fork] [github]"
-    exit 1
-  fi
-
-  remote_name="$1"
-  github_name="$2"
-
-  git remote remove $remote_name 2>/dev/null
-}
-
-if [ "$1" = "add" ]; then
-  for remote in "${remotes[@]}"; do
-    add_remote $remote
-  done
-  echo "Successfully added Thanx remotes"
-elif [ "$1" = "remove" ]; then
-  for remote in "${remotes[@]}"; do
-    remove_remote $remote
-  done
-  echo "Successfully removed Thanx remotes"
-else
-  echo "Usage: git thanx [add/remove]"
-fi
-
+(usage; exit) if ARGV.count != 1
+case ARGV[0]
+when 'add'
+  REMOTES.each do |remote, info|
+    repo = (info[:exceptions] || {})[REPO] || REPO
+    address = "git@github.com:#{info[:username]}/#{repo}"
+    `git remote add #{remote} #{address} 2>/dev/null`
+  end
+  puts 'Successfully added Thanx remotes'
+when 'remove'
+  REMOTES.each do |remote, _|
+    `git remote remove #{remote} 2>/dev/null`
+  end
+  puts 'Successfully removed Thanx remotes'
+end
