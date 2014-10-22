@@ -39,7 +39,7 @@ else
 fi
 
 # push or force push depending on remote and flags
-if [ $remote == "origin" ] && [ "$1" != "--force" ] && [ "$2" != "--force" ]; then
+if [ $remote == "upstream" ] && [ "$1" != "--force" ] && [ "$2" != "--force" ]; then
   git push $remote $branch
 else
   git push $remote $branch -f
