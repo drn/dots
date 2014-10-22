@@ -107,3 +107,5 @@
 
 [init]
   templatedir = ~/Development/dotfiles/git/templates
+[remotes]
+	default = origin upstream
