@@ -11,6 +11,7 @@
 [alias]
   # git fetch shortcut
   f = fetch
+  fa = fetch --all
   # git status shortcut
   st = !"git --no-pager status; git --no-pager diff --stat"
   # git checkout shortcut
