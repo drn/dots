@@ -1,10 +1,10 @@
 #!/bin/bash
 
 #
-# Returns the path of the most recent ancestor branch on origin. Optionally
+# Returns the path of the most recent ancestor branch on upstream. Optionally
 # excludes an input regex.
 #
-# Matching with origin/master branch is weighted the most. Otherwise, matching
+# Matching with upstream/master branch is weighted the most. Otherwise, matching
 # is done in lexicographically.
 #
 
@@ -21,14 +21,14 @@ if [ -z "$exclusion" ]; then
 fi
 
 # backtrack at most 500 commits looking for the most recent ancestor branch
-# on origin
+# on upstream
 index=1
 while [ $index -lt 500 ]; do
   ticks="$(printf '^%.0s' $(seq 1 $index))"
 
-  # use origin/master as ancestor with highest priority
-  if [ "$(git branch --remote --contains HEAD$ticks | grep 'origin/master')" ]; then
-    path="origin/master"
+  # use upstream/master as ancestor with highest priority
+  if [ "$(git branch --remote --contains HEAD$ticks | grep 'upstream/master')" ]; then
+    path="upstream/master"
   fi
 
   if [ -z "$path" ]; then
@@ -36,13 +36,13 @@ while [ $index -lt 500 ]; do
     # remote branch
     #   * search remote branches containing the current ancestor commit
     #   * potentially exclude input regex from matches
-    #   * filter by commits on origin
-    #   * filter out origin/HEAD branch
+    #   * filter by commits on upstream
+    #   * filter out upstream/HEAD branch
     #   * select the first match
     path="$(
       git branch --remote --contains HEAD$ticks |
       grep -v "$exclusion" |
-      grep origin |
+      grep upstream |
       sed /HEAD/d |
       head -n 1 |
       sed 's/[ ]*//'
@@ -58,5 +58,5 @@ while [ $index -lt 500 ]; do
   let index+=1
 done
 
-# return the description (remote/branch) of the most recent ancestor on origin
+# return the description (remote/branch) of the most recent ancestor on upstream
 echo $path

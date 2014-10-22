@@ -2,5 +2,5 @@
 
 branch="$(git me)"
 
-echo "Attempting to push local $branch to origin/master..."
-git push origin $branch:master
+echo "Attempting to push local $branch to upstream/master..."
+git push upstream $branch:master

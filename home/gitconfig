@@ -35,8 +35,8 @@
   # short version of cherry-pick
   pick = cherry-pick
   # show an ASCII version of the commit tree
-  tree = !"git log --graph --decorate --oneline --remotes=origin --remotes=fork --glob=refs/heads HEAD; git --no-pager diff --stat"
-  tr = !"git log --graph --decorate --oneline --remotes=origin --remotes=fork --glob=refs/heads HEAD; git --no-pager diff --stat"
+  tree = !"git log --graph --decorate --oneline --remotes=upstream --remotes=origin --glob=refs/heads HEAD; git --no-pager diff --stat"
+  tr = !"git log --graph --decorate --oneline --remotes=upstream --remotes=origin --glob=refs/heads HEAD; git --no-pager diff --stat"
   treeall = !"git log --graph --decorate --oneline --all; git --no-pager diff --stat"
   tra = !"git log --graph --decorate --oneline --all; git --no-pager diff --stat"
   treesingle = !"git log --graph --decorate --oneline; git --no-pager diff --stat"
@@ -48,32 +48,28 @@
   unwip = !"git log -n 1 | grep -q -c wip && git reset HEAD~1"
   # returns the current branch name
   me = rev-parse --abbrev-ref HEAD
-  # pushes current branch to the specified remote, defaults to fork
+  # pushes current branch to the specified remote, defaults to origin
   pm = !"git pushme"
   pmf = !"git pushme --force"
-  # pushes current branch to origin/master
+  # pushes current branch to upstream/master
   mm = !"git masterme"
-  # delete current branch from origin, fork, and locally
+  # delete current branch from upstream, origin, and locally
   km = !"git killme"
   kmf = !"git killme --force"
-  # updates origin/master and syncs fork master to origin
-  sync = !"git fetch origin; git upfork"
   # shorthand for fixup
   fu = !"git fixup"
   # shorthand for commit-all
   cma = !"git commit-all"
-  # remote details
-  remote-details = !"git remote -v | grep 'fork' | awk '{print $2}' | uniq | sed 's#.*:##g' | sed 's#.git$##g'"
   # browse the current head on github
   bro = !"hub browse -- commit/`git rev-parse HEAD`"
   # better blame
   changes = !"git log --follow -p "
-  # rebase on origin/master
-  rbm = !"git rb origin/master"
+  # rebase on upstream/master
+  rbm = !"git rb upstream/master"
   # rebase on most recent ancestor
   rbr = rebase-relevant
   # hard reset to master
-  rhm = !"git reset --hard origin/master"
+  rhm = !"git reset --hard upstream/master"
   # git branches
   brs = branches
   # show staged diff
@@ -83,7 +79,6 @@
   # show the diff stats of the latest commit
   stat = !"git --no-pager diff --stat HEAD^..HEAD"
   # git show aliases
-  s = show
   last = show
   la = show
   # fallback alias

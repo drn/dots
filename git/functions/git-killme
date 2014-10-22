@@ -21,16 +21,16 @@ if [ "$1" != "--force" ] && [ -z "$(git st | grep 'nothing to commit')" ]; then
   exit 1
 fi
 
-# remove branch from fork
-if [ "$(git branch --remote | grep fork/$branch)" ]; then
-  echo "Deleting $branch from fork..."
-  git push fork :$branch
-fi
-
 # remove branch from origin
 if [ "$(git branch --remote | grep origin/$branch)" ]; then
   echo "Deleting $branch from origin..."
   git push origin :$branch
+fi
+
+# remove branch from upstream
+if [ "$(git branch --remote | grep upstream/$branch)" ]; then
+  echo "Deleting $branch from upstream..."
+  git push upstream :$branch
 fi
 
 # check out fallback branch

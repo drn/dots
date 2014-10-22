@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #
-# Prints the author of the input remote. Remote defaults to origin if no
+# Prints the author of the input remote. Remote defaults to upstream if no
 # remote is input.
 #
 

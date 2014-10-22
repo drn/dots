@@ -2,13 +2,13 @@
 
 #
 # Prints the address (git@github.com:author/repo.git) of the input remote.
-# Remote defaults to origin if no remote is input.
+# Remote defaults to upstream if no remote is input.
 #
 
 # determine which remote to determine address for
 remote="$1"
 if [ -z "$remote" ]; then
-  remote="origin"
+  remote="upstream"
 fi
 
 # determine remote address

@@ -1,28 +1,28 @@
 #!/bin/bash
 
 #
-# Displays the current branch in github if it exists on origin or fork.
+# Displays the current branch in github if it exists upstream or on origin
 #
 
 branch="$(git me)"
 remote=""
 
 # if the current branch exists on origin, show that branch
-if [ "$(git branch --remote | grep origin/$branch)" ]; then
-  remote="origin"
+if [ "$(git branch --remote | grep upstream/$branch)" ]; then
+  remote="upstream"
 fi
 
 # if current branch is not on origin
 if [ -z "$remote" ]; then
-  # if the current branch exists on fork, show that branch
-  if [ "$(git branch --remote | grep "fork/$branch")" ]; then
-    remote="fork"
+  # if the current branch exists on origin, show that branch
+  if [ "$(git branch --remote | grep "origin/$branch")" ]; then
+    remote="origin"
   fi
 fi
 
 # either display an error message or display the branch in github
 if [ -z "$remote" ]; then
-  echo "Sorry, your current branch doesn't exist on origin or fork."
+  echo "Sorry, your current branch doesn't exist upstream or on origin"
 else
   # determine full remote path
   remote="$(git remote -v | grep $remote | awk '{print $2}' | uniq | sed 's#.*:##g' | sed 's#.git$##g')"

@@ -3,7 +3,7 @@
 #
 # Pushes the current branch to:
 #   * specified or current branch
-#   * fork if it exists, origin otherwise
+#   * origin if it exists, upstream otherwise
 # Optional set --force to force push commit
 #
 
@@ -21,10 +21,10 @@ if [ "$remote" ] && [ -z "$(git remote | grep $remote)"]; then
   exit 0
 fi
 
-# set remote to fork or origin
-remote="$(git remote | grep 'fork')"
+# set remote to origin or upstream
+remote="$(git remote | grep 'origin')"
 if [ -z "$remote" ]; then
-  remote="origin"
+  remote="upstream"
 fi
 
 # output description of actions
