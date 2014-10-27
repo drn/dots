@@ -20,3 +20,6 @@ export PATH=.bundle/bin:$PATH
 export DOTS="$HOME/Development/dotfiles"
 # Set $VIMRUNTIME to support neovim
 export VIMRUNTIME="$(brew --prefix macvim | sed 's/macvim//')$(readlink `brew --prefix macvim`)/MacVim.app/Contents/Resources/vim/runtime"
+# Set default Postgres host and port
+export PGHOST=localhost
+export PGPORT=5432
