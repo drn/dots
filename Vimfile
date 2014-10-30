@@ -7,7 +7,6 @@ airblade/vim-gitgutter
 tpope/vim-rails
 tpope/vim-bundler
 scrooloose/syntastic
-msanders/cocoa.vim
 kien/rainbow_parentheses.vim
 derekwyatt/vim-fswitch
 terryma/vim-multiple-cursors
@@ -53,7 +52,6 @@ kana/vim-textobj-user
 nelstrom/vim-textobj-rubyblock
 jpalardy/vim-slime
 tpope/vim-characterize
-altercation/vim-colors-solarized
-toyamarinyon/vim-swift
 junegunn/limelight.vim
 haya14busa/incsearch.vim
+noprompt/vim-yardoc
