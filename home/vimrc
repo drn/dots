@@ -201,6 +201,12 @@ nnoremap <leader>q :call CloseInactiveBuffers()<cr>
 
 " Window Control Mappings
 
+" resize window mappings
+nnoremap <silent> 'd :vertical resize +5<cr>
+nnoremap <silent> 'a :vertical resize -5<cr>
+nnoremap <silent> 's :resize -5<cr>
+nnoremap <silent> 'w :resize +5<cr>
+
 " open and switch to window right
 nnoremap <silent> ''d :rightbelow wincmd v<cr>
 " open and switch to window left
