@@ -48,3 +48,8 @@ alias note="notes note"
 alias mxm="mux master"
 alias mxv="mux vertical"
 alias mxd="mux dots"
+
+# Open Aliases
+alias odsk="open ~/Desktop"
+alias odown="open ~/Downloads"
+alias odoc="open ~/Documents"
