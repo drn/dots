@@ -16,6 +16,7 @@ alias jenkins="ssh bitnami@jenkins.thanx.com"
 # Command Aliases
 alias v="vim"
 alias vn="vim -u NONE"
+alias vnone="vim -u NONE"
 alias adb="~/Development/library/android-sdk-macosx/platform-tools/adb"
 alias vimdiff="mvim -d"
 alias crepo="~/Development/opensource/crepo/crepo.py"
