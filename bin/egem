@@ -15,4 +15,14 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
-$EDITOR $gem_path
+editor="$EDITOR"
+if [ -z "$editor" ]; then
+  editor="vim"
+fi
+
+if [ $editor == "vim" ]; then
+  $editor $gem_path -c 'cd %:h'
+else
+  $editor $gem_path
+fi
+
