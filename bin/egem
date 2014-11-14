@@ -1,0 +1,18 @@
+#!/bin/bash
+
+#
+# Opens $EDITOR to specified gem files
+#
+
+if [ -z "$1" ]; then
+  echo "Gem to edit must be specified"
+  exit 1
+fi
+
+gem_path=$(gem which $1 2>/dev/null)
+if [ $? -ne 0 ]; then
+  echo "Could not find specified '$1' gem"
+  exit 1
+fi
+
+$EDITOR $gem_path
