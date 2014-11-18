@@ -70,7 +70,9 @@ Pry.config.prompt = proc do |object, nest_level, _|
   context = Pry.view_clip(object)
   case context
   when "main"; context = ""
-  else; context = " " + colors[:light_red] + context + colors[:reset]
+  else
+    context = context.to_s.gsub('#<','').gsub('>','')
+    context = " " + colors[:light_red] + context + colors[:reset]
   end
 
   magenta = "#{colors[:bold]}#{colors[:magenta]}❯#{colors[:reset]}"
