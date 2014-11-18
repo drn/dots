@@ -55,3 +55,4 @@ tpope/vim-characterize
 junegunn/limelight.vim
 haya14busa/incsearch.vim
 noprompt/vim-yardoc
+MattesGroeger/vim-bookmarks
