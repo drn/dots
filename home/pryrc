@@ -43,7 +43,7 @@ Pry.config.colors = {
 }
 
 # customize pry prompt
-Pry.config.prompt = proc do |_, nest_level, _|
+Pry.config.prompt = proc do |object, nest_level, _|
   colors = Pry.config.colors
 
   prompt = ""
@@ -67,6 +67,12 @@ Pry.config.prompt = proc do |_, nest_level, _|
     level << colors[:reset]
   end
 
+  context = Pry.view_clip(object)
+  case context
+  when "main"; context = ""
+  else; context = " " + colors[:light_red] + context + colors[:reset]
+  end
+
   magenta = "#{colors[:bold]}#{colors[:magenta]}❯#{colors[:reset]}"
   blue = "#{colors[:bold]}#{colors[:blue]}❯#{colors[:reset]}"
   cyan = "#{colors[:bold]}#{colors[:cyan]}❯#{colors[:reset]}"
@@ -74,5 +80,5 @@ Pry.config.prompt = proc do |_, nest_level, _|
   prefix = magenta + blue + magenta + " "
   suffix = " " + cyan + " " + colors[:reset]
 
-  prefix + prompt + level + suffix
+  prefix + prompt + context + level + suffix
 end
