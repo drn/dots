@@ -44,6 +44,7 @@ alias secure="v ~/.secure"
 alias todo="notes todo"
 alias pad="notes scratch-pad"
 alias note="notes note"
+alias swift="xcrun swift"
 
 # Tmuxinator Aliases
 alias mxm="mux master"
