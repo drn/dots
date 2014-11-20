@@ -93,11 +93,11 @@
   aaa = amend-all-annotation
 
 [user]
-  name = darrenli
+  name = Darren Cheng
   email = darren@thanx.com
 
 [github]
-  user = darrenli
+  user = drn
 
 [credential]
   helper = osxkeychain
