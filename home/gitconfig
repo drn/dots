@@ -9,6 +9,7 @@
   preloadindex = true
 
 [alias]
+  up = upstream
   # git fetch shortcuts
   f = fetch-dynamic
   fa = fetch --all

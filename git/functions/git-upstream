@@ -1,0 +1,18 @@
+#!/bin/bash
+
+#
+# Push the input branch (or current branch if none is specified) upstream
+#
+
+if [ -z "$(git remote | grep upstream)" ]; then
+  echo "No upstream remote to push to..."
+  exit 1
+fi
+
+branch=$1
+if [ -z "$branch" ]; then
+  branch="$(git symbolic-ref --short HEAD)"
+fi
+
+echo "Pushing $branch upstream..."
+git push upstream $branch
