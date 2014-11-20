@@ -72,6 +72,7 @@ Pry.config.prompt = proc do |object, nest_level, _|
   when "main"; context = ""
   else
     context = context.to_s.gsub('#<','').gsub('>','')
+    context = '*::' + context.gsub(/.*::/,'') if context.include?('::')
     context = " " + colors[:light_red] + context + colors[:reset]
   end
 
