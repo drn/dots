@@ -1,0 +1,14 @@
+#!/bin/bash
+
+#
+# Fetches from upstream remote if it exists. Otherwise, origin.
+#
+
+if [ "$(git remote | grep upstream)" ]; then
+  echo "Fetching upstream changes..."
+  git fetch upstream
+else
+  echo "Fetching origin changes..."
+  git fetch
+fi
+

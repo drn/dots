@@ -9,8 +9,8 @@
   preloadindex = true
 
 [alias]
-  # git fetch shortcut
-  f = fetch upstream
+  # git fetch shortcuts
+  f = fetch-dynamic
   fa = fetch --all
   # git status shortcut
   st = !"git --no-pager status; git --no-pager diff --stat"
