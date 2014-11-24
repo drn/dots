@@ -72,6 +72,8 @@
   rbr = rebase-relevant
   # hard reset to master
   rhm = !"git reset --hard upstream/master"
+  # hard reset to ancestor
+  rhr = reset-relevant
   # git branches
   brs = branches
   # show staged diff
