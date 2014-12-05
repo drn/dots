@@ -6,7 +6,7 @@ airblade/vim-gitgutter
 tpope/vim-rails
 tpope/vim-bundler
 scrooloose/syntastic
-kien/rainbow_parentheses.vim
+luochen1990/rainbow
 derekwyatt/vim-fswitch
 terryma/vim-multiple-cursors
 junegunn/vim-easy-align
