@@ -1,6 +1,8 @@
 #!/usr/bin/ruby
 
 #
+# Usage: git semver [major / minor / patch]
+#
 # Generates a new git tag based off of the latest tag
 #
 
