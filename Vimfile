@@ -41,7 +41,6 @@ vim-scripts/matchit.zip
 tpope/vim-speeddating
 maxbrunsfeld/vim-yankstack
 jszakmeister/vim-togglecursor
-kshenoy/vim-signature
 vim-scripts/indenthtml.vim
 tpope/vim-repeat
 zaiste/tmux.vim
