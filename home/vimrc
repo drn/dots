@@ -278,3 +278,9 @@ endfunction
 
 noremap <silent> <leader>d> :call ProfileStart()<CR>
 noremap <silent> <leader>d< :call ProfileEnd()<CR>
+
+function Enter()
+  cd %:h
+  echomsg "Set working directory to " . getcwd()
+endfunction
+noremap <silent> <leader>e :call Enter()<CR>
