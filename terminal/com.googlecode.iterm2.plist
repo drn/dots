@@ -720,6 +720,13 @@
 			<key>Text</key>
 			<string></string>
 		</dict>
+		<key>0x70-0x100000</key>
+		<dict>
+			<key>Action</key>
+			<integer>13</integer>
+			<key>Text</key>
+			<string></string>
+		</dict>
 		<key>0x74-0x100000</key>
 		<dict>
 			<key>Action</key>
@@ -952,7 +959,7 @@
 	<key>NSWindow Frame Preferences</key>
 	<string>172 184 924 485 0 0 1440 900 </string>
 	<key>NSWindow Frame iTerm Window 0</key>
-	<string>-1080 -660 1080 1920 -1080 -660 1080 1920 </string>
+	<string>-1080 -619 1080 1920 -1080 -619 1080 1920 </string>
 	<key>NSWindow Frame iTerm Window 1</key>
 	<string>0 414 650 452 0 0 1440 900 </string>
 	<key>NSWindow Frame iTerm Window 2</key>
@@ -2584,7 +2591,7 @@
 	<key>SUHasLaunchedBefore</key>
 	<true/>
 	<key>SULastCheckTime</key>
-	<date>2014-10-13T05:00:33Z</date>
+	<date>2014-12-15T19:12:27Z</date>
 	<key>SavePasteHistory</key>
 	<false/>
 	<key>Secure Input</key>
