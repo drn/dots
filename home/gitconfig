@@ -94,6 +94,8 @@
   a = commit --amend
   aa = amend-all
   aaa = amend-all-annotation
+  # git semver alias
+  ver = semver
 
 [user]
   name = Darren Cheng
