@@ -2,8 +2,8 @@
 
 dev="$HOME/Development"
 dotfiles="$dev/dotfiles"
-ubersicht="$dotfiles/ubersicht"
-destination="$HOME/Library/Application Support/Übersicht/widgets"
+mjolnir="$dotfiles/mjolnir"
+destination="$HOME/.mjolnir"
 
 # include install functions
 source "$dotfiles/install/core.cfg"
@@ -13,7 +13,7 @@ sudo rm -rf "$destination"
 mkdir -p "$destination"
 
 # install all files in $dotfiles/ubersicht to ubersicht widgets directory
-for location in $ubersicht/*; do
+for location in $mjolnir/*; do
   file="${location##*/}"
   link "$location" "$destination/$file"
 done
