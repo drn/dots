@@ -59,6 +59,14 @@ hotkey.bind({"ctrl", "alt", "cmd"}, "return", function()
     win:maximize()
   end
 end)
+hotkey.bind({"ctrl", "alt", "cmd"}, "'", function()
+  local win = window.focusedwindow()
+  local screenrect = win:screen():fullframe()
+  local f = win:frame()
+  f.x = screenrect.x + ((screenrect.w / 2) - (f.w / 2))
+  f.y = screenrect.y + ((screenrect.h / 2) - (f.h / 2))
+  win:setframe(f)
+end)
 
 -- Mjolnir
 
