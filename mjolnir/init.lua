@@ -7,75 +7,49 @@ local window = require "mjolnir.window"
 hotkey.bind({"ctrl", "alt", "cmd"}, "p", function()
   local win = window.focusedwindow()
   if not win:isfullscreen() then
-    local f = win:screen():frame()
-    f.w = f.w / 2
-    f.h = f.h / 2
-    win:setframe(f)
+    win:movetounit({x=0, y=0, w=0.5, h=0.5})
   end
 end)
 hotkey.bind({"ctrl", "alt", "cmd"}, "[", function()
   local win = window.focusedwindow()
   if not win:isfullscreen() then
-    local f = win:screen():frame()
-    f.w = f.w / 2
-    f.h = f.h / 2
-    f.x = f.w
-    win:setframe(f)
+    win:movetounit({x=0.5, y=0, w=0.5, h=0.5})
   end
 end)
 hotkey.bind({"ctrl", "alt", "cmd"}, "]", function()
   local win = window.focusedwindow()
   if not win:isfullscreen() then
-    local f = win:screen():frame()
-    f.w = f.w / 2
-    f.h = f.h / 2
-    f.y = f.y + f.h
-    win:setframe(f)
+    win:movetounit({x=0, y=0.5, w=0.5, h=0.5})
   end
 end)
 hotkey.bind({"ctrl", "alt", "cmd"}, "\\", function()
   local win = window.focusedwindow()
   if not win:isfullscreen() then
-    local f = win:screen():frame()
-    f.w = f.w / 2
-    f.h = f.h / 2
-    f.x = f.w
-    f.y = f.y + f.h
-    win:setframe(f)
+    win:movetounit({x=0.5, y=0.5, w=0.5, h=0.5})
   end
 end)
 hotkey.bind({"ctrl", "alt", "cmd"}, "right", function()
   local win = window.focusedwindow()
   if not win:isfullscreen() then
-    local f = win:screen():frame()
-    f.w = f.w / 2
-    f.x = f.w
-    win:setframe(f)
+    win:movetounit({x=0.5, y=0, w=0.5, h=1})
   end
 end)
 hotkey.bind({"ctrl", "alt", "cmd"}, "left", function()
   local win = window.focusedwindow()
   if not win:isfullscreen() then
-    local f = win:screen():frame()
-    f.w = f.w / 2
-    win:setframe(f)
+    win:movetounit({x=0, y=0, w=0.5, h=1})
   end
 end)
 hotkey.bind({"ctrl", "alt", "cmd"}, "up", function()
   local win = window.focusedwindow()
-  if win:isfullscreen() ~= nil then
-    local f = win:screen():frame()
-    f.h = f.h / 2
-    win:setframe(f)
+  if not win:isfullscreen() then
+    win:movetounit({x=0, y=0, w=1, h=0.5})
   end
 end)
 hotkey.bind({"ctrl", "alt", "cmd"}, "down", function()
   local win = window.focusedwindow()
   if not win:isfullscreen() then
-    local f = win:screen():frame()
-    f.h = f.h / 2
-    f.y = f.y + f.h
-    win:setframe(f)
+    win:movetounit({x=0, y=0.5, w=1, h=0.5})
   end
 end)
 hotkey.bind({"ctrl", "alt", "cmd"}, "return", function()
