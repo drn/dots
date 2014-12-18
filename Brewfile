@@ -28,6 +28,7 @@ install python3
 install gradle
 install phantomjs
 install lua
+install luarocks
 install htop-osx
 install postgresql
 install hr
