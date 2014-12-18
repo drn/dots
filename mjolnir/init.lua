@@ -10,24 +10,25 @@ hotkey.bind({"ctrl", "alt", "cmd"}, "p", function()
     win:movetounit({x=0, y=0, w=0.5, h=0.5})
   end
 end)
-hotkey.bind({"ctrl", "alt", "cmd"}, "[", function()
+hotkey.bind({"ctrl", "alt", "cmd"}, "\\", function()
   local win = window.focusedwindow()
   if not win:isfullscreen() then
     win:movetounit({x=0.5, y=0, w=0.5, h=0.5})
   end
 end)
-hotkey.bind({"ctrl", "alt", "cmd"}, "]", function()
+hotkey.bind({"ctrl", "alt", "cmd"}, "[", function()
   local win = window.focusedwindow()
   if not win:isfullscreen() then
     win:movetounit({x=0, y=0.5, w=0.5, h=0.5})
   end
 end)
-hotkey.bind({"ctrl", "alt", "cmd"}, "\\", function()
+hotkey.bind({"ctrl", "alt", "cmd"}, "]", function()
   local win = window.focusedwindow()
   if not win:isfullscreen() then
     win:movetounit({x=0.5, y=0.5, w=0.5, h=0.5})
   end
 end)
+
 hotkey.bind({"ctrl", "alt", "cmd"}, "right", function()
   local win = window.focusedwindow()
   if not win:isfullscreen() then
