@@ -12,41 +12,25 @@ function resize(coordinates)
   end
 end
 
----- Quadrants
-
-hotkey.bind({"ctrl", "alt", "cmd"}, "p", function()
-  resize({x=0, y=0, w=0.5, h=0.5})
-end)
-hotkey.bind({"ctrl", "alt", "cmd"}, "\\", function()
-  resize({x=0.5, y=0, w=0.5, h=0.5})
-end)
-hotkey.bind({"ctrl", "alt", "cmd"}, "[", function()
-  resize({x=0, y=0.5, w=0.5, h=0.5})
-end)
-hotkey.bind({"ctrl", "alt", "cmd"}, "]", function()
-  resize({x=0.5, y=0.5, w=0.5, h=0.5})
-end)
-
----- Halves
-
-hotkey.bind({"ctrl", "alt", "cmd"}, "right", function()
-  resize({x=0.5, y=0, w=0.5, h=1})
-end)
-hotkey.bind({"ctrl", "alt", "cmd"}, "left", function()
-  resize({x=0, y=0, w=0.5, h=1})
-end)
-hotkey.bind({"ctrl", "alt", "cmd"}, "up", function()
-  resize({x=0, y=0, w=1, h=0.5})
-end)
-hotkey.bind({"ctrl", "alt", "cmd"}, "down", function()
-  resize({x=0, y=0.5, w=1, h=0.5})
-end)
-
----- Fullscreen
-
-hotkey.bind({"ctrl", "alt", "cmd"}, "return", function()
-  resize({x=0, y=0, w=1, h=1})
-end)
+local bindings = {
+  -- Quadrants
+  p          = { x=0,   y=0,   w=0.5, h=0.5 },
+  ["\\"]     = { x=0.5, y=0,   w=0.5, h=0.5 },
+  ["["]      = { x=0,   y=0.5, w=0.5, h=0.5 },
+  ["]"]      = { x=0.5, y=0.5, w=0.5, h=0.5 },
+  -- Halves
+  right      = { x=0.5, y=0,   w=0.5, h=1   },
+  left       = { x=0,   y=0,   w=0.5, h=1   },
+  up         = { x=0,   y=0,   w=1,   h=0.5 },
+  down       = { x=0,   y=0.5, w=1,   h=0.5 },
+  -- Fullscreen
+  ["return"] = { x=0,   y=0,   w=1,   h=1   }
+}
+for key,coordinates in pairs(bindings) do
+  hotkey.bind({"ctrl", "alt", "cmd"}, key, function()
+    resize(coordinates)
+  end)
+end
 
 ---- Center
 
