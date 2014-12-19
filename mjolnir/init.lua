@@ -73,31 +73,29 @@ hotkey.bind({"ctrl", "alt", "cmd", "shift"}, "return", function()
 end)
 
 -- Application
-local appmods = {"cmd", "alt", "shift"}
-hotkey.bind(appmods, "i", function()
-  app.launchorfocus("iTerm")
-end)
-hotkey.bind(appmods, "return", function()
-  app.launchorfocus("Safari")
-end)
-hotkey.bind(appmods, "n", function()
-  app.launchorfocus("Messages")
-end)
-hotkey.bind(appmods, "m", function()
-  app.launchorfocus("HipChat")
-end)
-hotkey.bind(appmods, "'", function()
-  app.launchorfocus("Wunderlist")
-end)
-hotkey.bind(appmods, ".", function()
-  app.launchorfocus("MacVim")
-end)
-hotkey.bind({"cmd", "shift"}, "/", function()
-  app.launchorfocus("Mailplane 3")
-end)
-hotkey.bind({"cmd", "alt"}, "return", function()
-  app.launchorfocus("Google Chrome")
-end)
+local bindings = {
+  [{ "cmd", "alt", "shift"}] = {
+    iTerm      = "i",
+    Safari     = "return",
+    Messages   = "n",
+    HipChat    = "m",
+    Wunderlist = "'",
+    MacVim     = "."
+  },
+  [{ "cmd", "shift"}] = {
+    [ "Mailplane 3" ] = "/",
+  },
+  [{ "cmd", "alt"}] = {
+    [ "Google Chrome" ] = "return"
+  }
+}
+for modifiers,apps in pairs(bindings) do
+  for name, key in pairs(apps) do
+    hotkey.bind(modifiers, key, function()
+      app.launchorfocus(name)
+    end)
+  end
+end
 
 -- Mjolnir
 
