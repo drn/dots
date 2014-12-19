@@ -1,7 +1,7 @@
 local hotkey = require "mjolnir.hotkey"
 local window = require "mjolnir.window"
 local screen = require "mjolnir.screen"
-local app = require "mjolnir.application"
+local application = require "mjolnir.application"
 
 -- Window Management
 
@@ -76,7 +76,7 @@ local bindings = {
 for modifiers,apps in pairs(bindings) do
   for name, key in pairs(apps) do
     hotkey.bind(modifiers, key, function()
-      app.launchorfocus(name)
+      application.launchorfocus(name)
     end)
   end
 end
