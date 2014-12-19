@@ -28,6 +28,9 @@ defaults write com.apple.finder ShowStatusBar -bool true
 echo "Setting hidden dock applications as translucent"
 defaults write com.apple.dock showhidden -bool true
 
+echo "Setting Notification Center banner display time"
+defaults write com.apple.notificationcenterui bannerTime 2.5
+
 # ensure changes take effect immediately
 killall Dock
 killall Finder
