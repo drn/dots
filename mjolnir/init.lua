@@ -1,6 +1,7 @@
 local hotkey = require "mjolnir.hotkey"
 local window = require "mjolnir.window"
 local screen = require "mjolnir.screen"
+local app = require "mjolnir.application"
 
 -- Window Management
 
@@ -69,6 +70,33 @@ hotkey.bind({"ctrl", "alt", "cmd", "shift"}, "return", function()
   if current:id() ~= next:id() then
     win:setframe(next:fullframe())
   end
+end)
+
+-- Application
+local appmods = {"cmd", "alt", "shift"}
+hotkey.bind(appmods, "i", function()
+  app.launchorfocus("iTerm")
+end)
+hotkey.bind(appmods, "return", function()
+  app.launchorfocus("Safari")
+end)
+hotkey.bind(appmods, "n", function()
+  app.launchorfocus("Messages")
+end)
+hotkey.bind(appmods, "m", function()
+  app.launchorfocus("HipChat")
+end)
+hotkey.bind(appmods, "'", function()
+  app.launchorfocus("Wunderlist")
+end)
+hotkey.bind(appmods, ".", function()
+  app.launchorfocus("MacVim")
+end)
+hotkey.bind({"cmd", "shift"}, "/", function()
+  app.launchorfocus("Mailplane 3")
+end)
+hotkey.bind({"cmd", "alt"}, "return", function()
+  app.launchorfocus("Google Chrome")
 end)
 
 -- Mjolnir
