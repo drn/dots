@@ -18,7 +18,6 @@ REMOTES = {
     exceptions: { 'thanx-core' => 'thanx-web' }
   },
   fletch: { username: :fzf },
-  blake:  { username: :blakem },
   roy:    { username: :theElectricMiracleCat }
 }.freeze
 
