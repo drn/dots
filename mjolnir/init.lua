@@ -1,5 +1,6 @@
 local hotkey = require "mjolnir.hotkey"
 local window = require "mjolnir.window"
+local screen = require "mjolnir.screen"
 
 -- Window Management
 
@@ -56,6 +57,18 @@ hotkey.bind({"ctrl", "alt", "cmd"}, "'", function()
   f.x = screenrect.x + ((screenrect.w / 2) - (f.w / 2))
   f.y = screenrect.y + ((screenrect.h / 2) - (f.h / 2))
   win:setframe(f)
+end)
+
+---- Screen
+
+hotkey.bind({"ctrl", "alt", "cmd", "shift"}, "return", function()
+  local win = window.focusedwindow()
+  if win == nil then return end
+  current = win:screen()
+  next = current:next()
+  if current:id() ~= next:id() then
+    win:setframe(next:fullframe())
+  end
 end)
 
 -- Mjolnir
