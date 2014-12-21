@@ -93,6 +93,35 @@ end)
 -- iTunes
 
 hotkey.bind({ "cmd", "alt", "shift"}, "a", function()
+  itunesdisplay()
+end)
+hotkey.bind({ "ctrl" }, "space", function()
+  itunes("playpause")
+end)
+hotkey.bind({ "cmd", "alt" }, "left", function()
+  itunes("back track")
+end)
+hotkey.bind({ "cmd", "alt" }, "right", function()
+  itunes("next track")
+end)
+hotkey.bind({ "ctrl", "cmd" }, "right", function()
+  local position = itunes("player position")
+  itunes("set player position to "..(tonumber(position) + 10))
+end)
+hotkey.bind({ "ctrl", "cmd" }, "left", function()
+  local position = itunes("player position")
+  itunes("set player position to "..(tonumber(position) - 10))
+end)
+hotkey.bind({ "ctrl", "cmd" }, "up", function()
+  local volume = itunes("sound volume")
+  itunes("set sound volume to "..(tonumber(volume) + 5))
+end)
+hotkey.bind({ "ctrl", "cmd" }, "down", function()
+  local volume = itunes("sound volume")
+  itunes("set sound volume to "..(tonumber(volume) - 5))
+end)
+
+function itunesdisplay()
   local info = itunesinfo()
   local title = info["name"]
   local message = info["artist"]
@@ -105,7 +134,7 @@ hotkey.bind({ "cmd", "alt", "shift"}, "a", function()
     " -sender com.apple.iTunes"..
     " -activate com.apple.iTunes"
   )
-end)
+end
 
 function itunesinfo()
   local rawinfo = itunes(
