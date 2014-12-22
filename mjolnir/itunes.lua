@@ -1,6 +1,7 @@
 local itunes = {}
 
 local utils = require "utils"
+local notifier = require "notifier"
 
 function itunes.playpause() run("playpause") end
 function itunes.back() run("back track") end
@@ -9,17 +10,15 @@ function itunes.position(seconds) setposition(getposition() + seconds) end
 function itunes.volume(percent) setvolume(getvolume() + percent) end
 function itunes.notification()
   local info = getinfo()
-  local title = info["name"]
-  local message = info["artist"]
-  if info["album"] ~= nil then message = message.." - "..info["album"] end
-  print(os.execute(
-    "/usr/local/bin/terminal-notifier"..
-    " -title '"..title.."'"..
-    " -message '"..message.."'"..
-    " -appIcon $HOME/.mjolnir/itunes-cover"..
-    " -sender com.apple.iTunes"..
-    " -activate com.apple.iTunes"
-  ))
+  local album = info['album']
+  local artist = info['artist']
+  local message = (album == nil) and artist or artist..' - '..album
+  notifier.notify({
+    title    = info['name'],
+    message  = message,
+    icon     = '$HOME/.mjolnir/itunes-cover',
+    bundleid = 'com.apple.iTunes'
+  })
 end
 
 function getvolume() return tonumber(tostring(run("sound volume"))) end
