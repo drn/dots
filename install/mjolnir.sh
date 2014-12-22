@@ -20,8 +20,4 @@ luarocks install mjolnir.hotkey
 luarocks install mjolnir.application
 luarocks install mjolnir.screen
 
-# install all files in $dotfiles/ubersicht to ubersicht widgets directory
-for location in $mjolnir/*; do
-  file="${location##*/}"
-  link "$location" "$destination/$file"
-done
+link $mjolnir $destination
