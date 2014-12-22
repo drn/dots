@@ -1,64 +1,34 @@
 package.path = os.getenv("HOME").."/.mjolnir/?.lua;"..package.path
-local hotkey = require "mjolnir.hotkey"
-local window = require "mjolnir.window"
-local screen = require "mjolnir.screen"
+local hotkey      = require "mjolnir.hotkey"
 local application = require "mjolnir.application"
-local itunes = require "itunes"
+local itunes      = require "itunes"
+local resize      = require "resize"
 
 -- Window Management
 
-function resize(coordinates)
-  local win = window.focusedwindow()
-  if win ~= nil then
-    win:movetounit(coordinates)
-  end
-end
-
-local bindings = {
-  -- Quadrants
-  p          = { x=0,   y=0,   w=0.5, h=0.5 },
-  ["\\"]     = { x=0.5, y=0,   w=0.5, h=0.5 },
-  ["["]      = { x=0,   y=0.5, w=0.5, h=0.5 },
-  ["]"]      = { x=0.5, y=0.5, w=0.5, h=0.5 },
-  -- Halves
-  right      = { x=0.5, y=0,   w=0.5, h=1   },
-  left       = { x=0,   y=0,   w=0.5, h=1   },
-  up         = { x=0,   y=0,   w=1,   h=0.5 },
-  down       = { x=0,   y=0.5, w=1,   h=0.5 },
-  -- Fullscreen
-  ["return"] = { x=0,   y=0,   w=1,   h=1   }
+local resizemod = {"ctrl", "alt", "cmd"}
+local resizebindings = {
+  topleft     = 'p',
+  topright    = '\\',
+  bottomleft  = '[',
+  bottomright = ']',
+  right       = 'right',
+  left        = 'left',
+  top         = 'up',
+  bottom      = 'down',
+  full        = 'return'
 }
-for key,coordinates in pairs(bindings) do
-  hotkey.bind({"ctrl", "alt", "cmd"}, key, function()
-    resize(coordinates)
+for name,key in pairs(resizebindings) do
+  hotkey.bind(resizemod, key, function()
+    resize[name]()
   end)
 end
-
----- Center
-
-hotkey.bind({"ctrl", "alt", "cmd"}, "'", function()
-  local win = window.focusedwindow()
-  if win == nil then return end
-  local screenrect = win:screen():fullframe()
-  local f = win:frame()
-  f.x = screenrect.x + ((screenrect.w / 2) - (f.w / 2))
-  f.y = screenrect.y + ((screenrect.h / 2) - (f.h / 2))
-  win:setframe(f)
-end)
-
----- Screen
-
-hotkey.bind({"ctrl", "alt", "cmd", "shift"}, "return", function()
-  local win = window.focusedwindow()
-  if win == nil then return end
-  current = win:screen()
-  next = current:next()
-  if current:id() ~= next:id() then
-    win:setframe(next:fullframe())
-  end
-end)
+hotkey.bind(resizemod, "'", function() resize.center() end)
+table.insert(resizemod, "shift")
+hotkey.bind(resizemod, "return", function() resize.changescreen() end)
 
 -- Application
+
 local bindings = {
   [{ "cmd", "alt", "shift"}] = {
     iTerm      = "i",
