@@ -1,5 +1,6 @@
 local resize = require "resize"
 local itunes = require "itunes"
+local caffeine = require "caffeine"
 
 -- Window Management
 
@@ -64,6 +65,11 @@ hs.hotkey.bind({ "ctrl", "cmd" }, "up", function() itunes.increaseVolume() end)
 hs.hotkey.bind({ "ctrl", "cmd" }, "down", function() itunes.decreaseVolume() end)
 hs.hotkey.bind({ "alt", "cmd" }, "up", function() itunes.maxVolume() end)
 hs.hotkey.bind({ "alt", "cmd" }, "down", function() itunes.minVolume() end)
+
+-- Caffeine
+
+hs.hotkey.bind({'cmd', 'shift'}, ',', function() caffeine.display() end)
+hs.hotkey.bind({'cmd', 'alt', 'shift'}, ',', function() caffeine.toggle() end)
 
 -- Open Hammerspoon Console
 
