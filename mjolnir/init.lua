@@ -1,33 +1,6 @@
 package.path = os.getenv("HOME").."/.mjolnir/?.lua;"..package.path
 local hotkey      = require "mjolnir.hotkey"
-local application = require "mjolnir.application"
 local itunes      = require "itunes"
-
--- Application
-
-local bindings = {
-  [{ "cmd", "alt", "shift"}] = {
-    iTerm      = "i",
-    Safari     = "return",
-    Messages   = "n",
-    HipChat    = "m",
-    Wunderlist = "'",
-    MacVim     = "."
-  },
-  [{ "cmd", "shift"}] = {
-    [ "Mailplane 3" ] = "/",
-  },
-  [{ "cmd", "alt"}] = {
-    [ "Google Chrome" ] = "return"
-  }
-}
-for modifiers,apps in pairs(bindings) do
-  for name, key in pairs(apps) do
-    hotkey.bind(modifiers, key, function()
-      application.launchorfocus(name)
-    end)
-  end
-end
 
 -- Mjolnir
 
