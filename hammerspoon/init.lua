@@ -1,6 +1,7 @@
 local resize = require "resize"
 local itunes = require "itunes"
 local caffeine = require "caffeine"
+local screen = require "screen"
 
 -- Window Management
 
@@ -83,4 +84,9 @@ end)
 
 function reloadConfig(files) hs.reload() end
 hs.pathwatcher.new(os.getenv("HOME") .. "/.hammerspoon/", reloadConfig):start()
+
+-- Watch for Screen changes
+
+screen.watch()
+
 hs.alert.show("Hammerspoon Reloaded", 0.5)
