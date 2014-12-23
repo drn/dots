@@ -23,7 +23,7 @@ for name,key in pairs(resizebindings) do
 end
 hs.hotkey.bind(resizemod, "'", function() resize.center() end)
 table.insert(resizemod, "shift")
-hs.hotkey.bind(resizemod, "return", function() resize.changescreen() end)
+hs.hotkey.bind(resizemod, "return", function() resize.changeScreen() end)
 
 -- Application
 
