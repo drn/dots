@@ -1,4 +1,5 @@
 local resize = require "resize"
+local itunes = require "itunes"
 
 -- Window Management
 
@@ -49,6 +50,21 @@ for modifiers,apps in pairs(bindings) do
   end
 end
 
+-- iTunes
+
+hs.hotkey.bind({ "cmd", "alt", "shift"}, "a", function()
+  hs.itunes.displayCurrentTrack()
+end)
+hs.hotkey.bind({ "ctrl" }, "space", function() hs.itunes.play() end)
+hs.hotkey.bind({ "cmd", "alt" }, "left", function() hs.itunes.previous() end)
+hs.hotkey.bind({ "cmd", "alt" }, "right", function() hs.itunes.next() end)
+hs.hotkey.bind({ "ctrl", "cmd" }, "right", function() itunes.forward() end)
+hs.hotkey.bind({ "ctrl", "cmd" }, "left", function() itunes.backward() end)
+hs.hotkey.bind({ "ctrl", "cmd" }, "up", function() itunes.increaseVolume() end)
+hs.hotkey.bind({ "ctrl", "cmd" }, "down", function() itunes.decreaseVolume() end)
+hs.hotkey.bind({ "alt", "cmd" }, "up", function() itunes.maxVolume() end)
+hs.hotkey.bind({ "alt", "cmd" }, "down", function() itunes.minVolume() end)
+
 -- Open Hammerspoon Console
 
 hs.hotkey.bind({"ctrl", "alt", "cmd"}, "o", function() hs.openConsole() end)
@@ -57,4 +73,4 @@ hs.hotkey.bind({"ctrl", "alt", "cmd"}, "o", function() hs.openConsole() end)
 
 function reloadConfig(files) hs.reload() end
 hs.pathwatcher.new(os.getenv("HOME") .. "/.hammerspoon/", reloadConfig):start()
-hs.alert.show("Hammerspoon Reloaded", 0.8)
+hs.alert.show("Hammerspoon Reloaded", 0.5)
