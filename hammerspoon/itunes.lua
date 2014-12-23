@@ -46,4 +46,10 @@ function itunes.minVolume()
   hs.alert.show(' ↓ 0%', 0.5)
 end
 
+function itunes.playpause()
+  tell('playpause')
+  icon = (tell('player state as string') == 'playing') and ' ▶' or ' ◼'
+  hs.alert.show(icon, 0.5)
+end
+
 return itunes
