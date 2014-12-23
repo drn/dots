@@ -5,7 +5,7 @@
 #
 
 pg_ctl -D /usr/local/var/postgres -l /usr/local/var/postgres/server.log start
-tail -f /usr/local/var/postgres/server.log
+tail /usr/local/var/postgres/server.log
 rm /usr/local/var/postgres/postmaster.pid
 pg_ctl -D /usr/local/var/postgres -l /usr/local/var/postgres/server.log start
 ps x | grep postgres
