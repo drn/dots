@@ -52,4 +52,6 @@ function itunes.playpause()
   hs.alert.show(icon, 0.5)
 end
 
+function itunes.display() hs.itunes.displayCurrentTrack() end
+
 return itunes

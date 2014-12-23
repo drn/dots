@@ -53,9 +53,7 @@ end
 
 -- iTunes
 
-hs.hotkey.bind({ "cmd", "alt", "shift"}, "a", function()
-  hs.itunes.displayCurrentTrack()
-end)
+hs.hotkey.bind({ "cmd", "alt", "shift"}, "a", function() itunes.display() end)
 hs.hotkey.bind({ "ctrl" }, "space", function() itunes.playpause() end)
 hs.hotkey.bind({ "cmd", "alt" }, "left", function() hs.itunes.previous() end)
 hs.hotkey.bind({ "cmd", "alt" }, "right", function() hs.itunes.next() end)
