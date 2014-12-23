@@ -73,6 +73,12 @@ hs.hotkey.bind({'cmd', 'alt', 'shift'}, ',', function() caffeine.toggle() end)
 
 hs.hotkey.bind({"ctrl", "alt", "cmd"}, "o", function() hs.openConsole() end)
 
+-- Test Binding
+
+hs.hotkey.bind({"ctrl", "alt", "cmd"}, "j", function()
+  hs.alert.show('Testing...')
+end)
+
 -- Auto-reload configuration
 
 function reloadConfig(files) hs.reload() end
