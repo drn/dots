@@ -41,6 +41,7 @@ end
 function setUnit(unit)
   local win = hs.window.focusedWindow()
   if win == nil then return end
+  if win:application():title() == 'iTerm' then return end
 
   local screenframe = win:screen():frame()
   local expected = frameForUnit(screenframe, unit)
