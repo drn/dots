@@ -2,30 +2,6 @@ package.path = os.getenv("HOME").."/.mjolnir/?.lua;"..package.path
 local hotkey      = require "mjolnir.hotkey"
 local application = require "mjolnir.application"
 local itunes      = require "itunes"
-local resize      = require "resize"
-
--- Window Management
-
-local resizemod = {"ctrl", "alt", "cmd"}
-local resizebindings = {
-  topleft     = 'p',
-  topright    = '\\',
-  bottomleft  = '[',
-  bottomright = ']',
-  right       = 'right',
-  left        = 'left',
-  top         = 'up',
-  bottom      = 'down',
-  full        = 'return'
-}
-for name,key in pairs(resizebindings) do
-  hotkey.bind(resizemod, key, function()
-    resize[name]()
-  end)
-end
-hotkey.bind(resizemod, "'", function() resize.center() end)
-table.insert(resizemod, "shift")
-hotkey.bind(resizemod, "return", function() resize.changescreen() end)
 
 -- Application
 
