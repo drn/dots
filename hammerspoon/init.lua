@@ -70,6 +70,12 @@ hs.hotkey.bind({ "alt", "cmd" }, "down", function() itunes.minVolume() end)
 hs.hotkey.bind({'cmd', 'shift'}, ',', function() caffeine.display() end)
 hs.hotkey.bind({'cmd', 'alt', 'shift'}, ',', function() caffeine.toggle() end)
 
+-- Date & Time
+
+hs.hotkey.bind({'ctrl', 'cmd'}, '/', function()
+  hs.alert.show(os.date("%A, %h %e @ %H:%M:%S %p"), 2.5)
+end)
+
 -- Open Hammerspoon Console
 
 hs.hotkey.bind({"ctrl", "alt", "cmd"}, "o", function() hs.openConsole() end)
