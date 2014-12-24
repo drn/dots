@@ -1,7 +1,8 @@
-local resize = require "resize"
-local itunes = require "itunes"
-local caffeine = require "caffeine"
-local screen = require "screen"
+local resize   = require 'resize'
+local itunes   = require 'itunes'
+local caffeine = require 'caffeine'
+local screen   = require 'screen'
+local torrent  = require 'torrent'
 
 -- Window Management
 
@@ -94,5 +95,9 @@ hs.pathwatcher.new(os.getenv("HOME") .. "/.hammerspoon/", reloadConfig):start()
 -- Watch for Screen changes
 
 screen.watch()
+
+-- Watch for Torrent changes
+
+torrent.watch()
 
 hs.alert.show("Hammerspoon Reloaded", 0.5)
