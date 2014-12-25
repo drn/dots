@@ -86,7 +86,7 @@ hs.hotkey.bind({"ctrl", "alt", "cmd"}, "o", function() hs.openConsole() end)
 -- Test Binding
 
 hs.hotkey.bind({"ctrl", "alt", "cmd"}, "j", function()
-  hs.alert.show('Testing...')
+  hs.alert.show(#hs.screen:allScreens()..' screen available')
 end)
 
 -- Auto-reload configuration
