@@ -39,7 +39,7 @@ COL3_1="#[fg=colour236,bg=colour103,nobold,nounderscore,noitalics]"
 function left {
   SEP="⮁"
   FIRST="#S $SEP #F"
-  SECOND="$(ssid)"
+  SECOND="$(ssid | sed s/\#//g)"
   THIRD="$(lip)"
   SEP="⮀"
   case $SIZE in
