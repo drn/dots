@@ -74,7 +74,9 @@ hs.hotkey.bind({'cmd', 'alt', 'shift'}, ',', function() caffeine.toggle() end)
 -- Date & Time
 
 hs.hotkey.bind({'ctrl', 'cmd'}, '/', function()
-  hs.alert.show(os.date("%A, %h %e @ %H:%M:%S %p"), 2.5)
+  local date = os.date("%A, %h %e")
+  local time = os.date("%H:%M%p"):gsub('^0',''):lower()
+  hs.alert.show(time..' - '..date, 2.5)
 end)
 
 -- Open Hammerspoon Console
