@@ -1,6 +1,6 @@
 local itunes = {}
 
-local as = require "hs.applescript"
+local as = require 'hs.applescript'
 
 local function tell(cmd)
   local _cmd = 'tell application "iTunes" to ' .. cmd
@@ -21,7 +21,7 @@ end
 
 function itunes.backward()
   local updated = math.floor(position() - 10)
-  tell("set player position to "..updated)
+  tell('set player position to '..updated)
   local message = (updated < 0) and ' ⇤' or ' ← '..updated..'s'
   hs.alert.show(message, 0.5)
 end
