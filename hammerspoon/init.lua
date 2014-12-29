@@ -57,8 +57,8 @@ end
 
 hs.hotkey.bind({ 'cmd', 'alt', 'shift'}, 'a', function() itunes.display() end)
 hs.hotkey.bind({ 'ctrl' }, 'space', function() itunes.playpause() end)
-hs.hotkey.bind({ 'cmd', 'alt' }, 'left', function() hs.itunes.previous() end)
-hs.hotkey.bind({ 'cmd', 'alt' }, 'right', function() hs.itunes.next() end)
+hs.hotkey.bind({ 'cmd', 'alt' }, 'left', function() itunes.previous() end)
+hs.hotkey.bind({ 'cmd', 'alt' }, 'right', function() itunes.next() end)
 hs.hotkey.bind({ 'ctrl', 'cmd' }, 'right', function() itunes.forward() end)
 hs.hotkey.bind({ 'ctrl', 'cmd' }, 'left', function() itunes.backward() end)
 hs.hotkey.bind({ 'ctrl', 'cmd' }, 'up', function() itunes.increaseVolume() end)
@@ -86,7 +86,7 @@ hs.hotkey.bind({'ctrl', 'alt', 'cmd'}, 'o', function() hs.openConsole() end)
 -- Test Binding
 
 hs.hotkey.bind({'ctrl', 'alt', 'cmd'}, 'j', function()
-  hs.alert.show(#hs.screen:allScreens()..' screen available')
+  -- TODO
 end)
 
 -- Auto-reload configuration
