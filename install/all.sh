@@ -50,8 +50,8 @@ echo "Ensuring expected directory hierarchy is in place."
 mkdir -p $dev $dev/personal $dev/work $dev/opensource
 # ensure dotfiles is up to date
 sudo rm -rf $dotfiles
-echo "Cloning darrenli/dotfiles to $dotfiles"
-git clone git@github.com:darrenli/dotfiles.git $dotfiles --quiet
+echo "Cloning drn/dotfiles to $dotfiles"
+git clone git@github.com:drn/dotfiles.git $dotfiles --quiet
 
 # install dotfiles
 bash $dotfiles/install/dots.sh

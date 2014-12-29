@@ -2,7 +2,7 @@
 
 Quick Installation
 
-    curl -s https://raw.github.com/darrenli/dotfiles/master/install/install.sh | sh
+    curl -s https://raw.github.com/drn/dotfiles/master/install/install.sh | sh
 
 ![vim/tmux/terminal](https://raw.githubusercontent.com/drn/dotfiles/master/screenshots/tmux-vim.png)
 
@@ -26,17 +26,17 @@ and installation of the following sections:
 
 ### Dots
 
-All files in the [home](https://github.com/darrenli/dotfiles/tree/master/home)
+All files in the [home](https://github.com/drn/dotfiles/tree/master/home)
 directory are symlinked to `$HOME` with a `.` prefix.
 
 ### VIM
 
-  * The [vimrc](https://github.com/darrenli/dotfiles/blob/master/home/vimrc)
+  * The [vimrc](https://github.com/drn/dotfiles/blob/master/home/vimrc)
     contains all non-plugin related mappings, configurations, and functions.
     This is auto-symlinked with the other `~/.*` files
-  * The [Vimfile](https://github.com/darrenli/dotfiles/blob/master/Vimfile)
+  * The [Vimfile](https://github.com/drn/dotfiles/blob/master/Vimfile)
     is the canonical listing of the included 50+ vim plugins
-  * [Plugin settings](https://github.com/darrenli/dotfiles/tree/master/vim/plugin/settings)
+  * [Plugin settings](https://github.com/drn/dotfiles/tree/master/vim/plugin/settings)
     are symlinked into the appropriate `~/.vim/*` location
   * Binaries for installed plugins are automatically compiled
   * A `vimsync` alias installed for easy bundle version management
@@ -46,21 +46,21 @@ directory are symlinked to `$HOME` with a `.` prefix.
 The default shell is overridden and set to Homebrew installed ZSH.
 
   * [oh-my-zsh](https://github.com/robbyrussell/oh-my-zsh) - zsh configuration management framework
-  * [custom](https://github.com/darrenli/dotfiles/tree/master/zsh) shell prompt,
+  * [custom](https://github.com/drn/dotfiles/tree/master/zsh) shell prompt,
     aliases, plugins, completions are configured
 
 ### Git
 
   * Default config files (`.gitconfig`, `.gitignore`)
-  * Custom [git extensions](https://github.com/darrenli/dotfiles/tree/master/git/functions)
+  * Custom [git extensions](https://github.com/drn/dotfiles/tree/master/git/functions)
     tailored to my workflow
 
 ### Utils
 
 Terminal utilities and system tools are installed via the
-[util script](https://github.com/darrenli/dotfiles/blob/master/install/utils.sh)
+[util script](https://github.com/drn/dotfiles/blob/master/install/utils.sh)
 
-  * The [Brewfile](https://github.com/darrenli/dotfiles/blob/master/Brewfile)
+  * The [Brewfile](https://github.com/drn/dotfiles/blob/master/Brewfile)
     is the canonical listing of Homebrew installed utilities
   * Other utilities installed via other sources include:
     * [pow.cx](http://pow.cx) - zero-config rack server
@@ -75,7 +75,7 @@ Terminal utilities and system tools are installed via the
 
 ### OS X
 
-[OS X Configuration](https://github.com/darrenli/dotfiles/blob/master/install/osx.sh)
+[OS X Configuration](https://github.com/drn/dotfiles/blob/master/install/osx.sh)
 including:
 
   * faster key press
