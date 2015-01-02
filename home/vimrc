@@ -1,15 +1,14 @@
 """ Default VIM configuration """
 
 " Neovim
-if has('neovim')
+if $MYVIMRC =~ 'nvimrc'
   " Disable python-dependent plugins
   let g:pathogen_disabled = ['YouCompleteMe', 'ultisnips', 'CoVim']
-  " Add support for clipboard
-  let s:python_host_init = 'python -c "import neovim; neovim.start_host()"'
-  let &initpython = s:python_host_init
-  let &initclipboard = s:python_host_init
-  " Automatically use clipboard as storage for the unnamed register"
-  set unnamedclip
+  " share nvim clipboard with system
+  set clipboard+=unnamedplus
+else
+  " share vim clipboard with system
+  set clipboard=unnamed
 endif
 
 " load pathogen
@@ -39,8 +38,6 @@ set expandtab
 set number
 " disable error bell
 set visualbell
-" share vim clipboard with system
-set clipboard=unnamed
 " use auto-indentation
 filetype plugin indent on
 " set leader to ,

@@ -7,9 +7,7 @@
 sudo -p "Enter your password: " echo "We're good to go!"
 if [ $? -ne 0 ]; then exit 1; fi
 
-sudo pip uninstall -y xerox
-sudo pip install xerox
-sudo pip uninstall -y neovim
-sudo pip install neovim
 brew tap neovim/homebrew-neovim 2>/dev/null
+brew uninstall neovim
+brew cleanup -s
 brew reinstall --HEAD neovim
