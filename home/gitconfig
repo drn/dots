@@ -37,13 +37,8 @@
   # short version of cherry-pick
   pick = cherry-pick
   # show an ASCII version of the commit tree
-  tree = !"git log --graph --decorate --oneline --remotes=upstream --remotes=origin --glob=refs/heads HEAD; git --no-pager diff --stat"
-  tr = !"git log --graph --decorate --oneline --remotes=upstream --remotes=origin --glob=refs/heads HEAD; git --no-pager diff --stat"
-  treeall = !"git log --graph --decorate --oneline --all; git --no-pager diff --stat"
-  tra = !"git log --graph --decorate --oneline --all; git --no-pager diff --stat"
-  treesingle = !"git log --graph --decorate --oneline; git --no-pager diff --stat"
-  trs = !"git log --graph --decorate --oneline; git --no-pager diff --stat"
-  trak = !"clear; git tra"
+  tree = !"git log --graph --decorate --oneline --all; git --no-pager diff --stat"
+  t = !"git tree"
   # The wip allows for a quick way to add all new and modified files to the index, while cleaning the index from the files removed from the working tree.
   wip = !"git add -A; git ls-files --deleted -z | xargs -0 git rm; git commit -m \"wip\""
   # The unwip will restore the deleted files to the working tree!
