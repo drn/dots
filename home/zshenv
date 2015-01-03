@@ -9,8 +9,8 @@ export PATH=$HOME/.git-extensions:$PATH
 # Include MySQL in PATH
 export PATH=/usr/local/mysql/bin:$PATH
 # Include Android tools in PATH
-export PATH=/Applications/Android\ Studio.app/sdk/platform-tools:$PATH
-export PATH=/Applications/Android\ Studio.app/sdk/tools:$PATH
+export PATH=$HOME/Library/Android/sdk/platform-tools:$PATH
+export PATH=$HOME/Library/Android/sdk/tools:$PATH
 # Load rbenv
 export PATH=/Users/$(whoami)/.rbenv/shims:$(brew --prefix rbenv)/bin:$PATH
 eval "$(rbenv init - zsh)"
