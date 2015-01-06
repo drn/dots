@@ -3,6 +3,7 @@ local itunes   = require 'itunes'
 local caffeine = require 'caffeine'
 local screen   = require 'screen'
 local torrent  = require 'torrent'
+local chrome   = require 'chrome'
 
 -- Window Management
 
@@ -70,6 +71,10 @@ hs.hotkey.bind({ 'alt', 'cmd' }, 'down', function() itunes.minVolume() end)
 
 hs.hotkey.bind({'cmd', 'shift'}, ',', function() caffeine.display() end)
 hs.hotkey.bind({'cmd', 'alt', 'shift'}, ',', function() caffeine.toggle() end)
+
+-- Chrome
+
+hs.hotkey.bind({'ctrl', 'alt', 'cmd'}, 'n', function() chrome.nextProfile() end)
 
 -- Date & Time
 
