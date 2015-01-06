@@ -706,6 +706,13 @@
 			<key>Text</key>
 			<string></string>
 		</dict>
+		<key>0x50-0x120000</key>
+		<dict>
+			<key>Action</key>
+			<integer>13</integer>
+			<key>Text</key>
+			<string></string>
+		</dict>
 		<key>0x64-0x100000</key>
 		<dict>
 			<key>Action</key>
@@ -2605,7 +2612,7 @@
 	<key>SUHasLaunchedBefore</key>
 	<true/>
 	<key>SULastCheckTime</key>
-	<date>2015-01-01T20:28:53Z</date>
+	<date>2015-01-05T18:15:25Z</date>
 	<key>SavePasteHistory</key>
 	<false/>
 	<key>Secure Input</key>
