@@ -73,3 +73,4 @@ install homebrew/dupes/less
 
 # clean up
 cleanup -s
+cask cleanup
