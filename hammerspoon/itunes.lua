@@ -18,7 +18,7 @@ end
 local function formatSeconds(seconds)
   local minutes = math.floor(seconds / 60)
   local hours = math.floor(minutes / 60)
-  local formatted = (seconds % 60)..'s'
+  local formatted = math.floor(seconds % 60)..'s'
   if minutes > 0 then formatted = (minutes % 60)..'m '..formatted end
   if hours > 0 then formatted = hours..'h '..formatted end
   return formatted
@@ -38,7 +38,7 @@ end
 
 function itunes.forward()
   if not isRunning() then return end
-  local updated = math.floor(position() + 10)
+  local updated = position() + 10
   tell('set player position to '..updated)
   message = (position() < updated) and ' ⇥' or ' → '..formatSeconds(updated)
   hs.alert.show(message, 0.5)
@@ -46,7 +46,7 @@ end
 
 function itunes.backward()
   if not isRunning() then return end
-  local updated = math.floor(position() - 10)
+  local updated = position() - 10
   tell('set player position to '..updated)
   local message = (updated < 0) and ' ⇤' or ' ← '..formatSeconds(updated)
   hs.alert.show(message, 0.5)
