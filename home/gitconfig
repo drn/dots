@@ -15,6 +15,8 @@
   fa = fetch --all
   # git status shortcut
   st = !"git --no-pager status; git --no-pager diff --stat"
+  # git diff
+  d = diff
   # git checkout shortcut
   co = checkout
   # git rebase shortcut
