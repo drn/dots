@@ -20,9 +20,9 @@ if [ -z "$remote" ]; then
   fi
 fi
 
-# either display an error message or display the branch in github
 if [ -z "$remote" ]; then
-  echo "Sorry, your current branch doesn't exist upstream or on origin"
+  # default to browsing master on either upstream or origin
+  hub browse $(git path) tree/master
 else
   # determine full remote path
   remote="$(git remote -v | grep $remote | awk '{print $2}' | uniq | sed 's#.*:##g' | sed 's#.git$##g')"
