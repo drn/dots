@@ -51,7 +51,8 @@ nelstrom/vim-textobj-rubyblock
 jpalardy/vim-slime
 tpope/vim-characterize
 junegunn/limelight.vim
-haya14busa/incsearch.vim
 noprompt/vim-yardoc
 Keithbsmiley/swift.vim
 ConradIrwin/vim-bracketed-paste
+junegunn/vim-pseudocl
+junegunn/vim-oblique
