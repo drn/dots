@@ -67,6 +67,7 @@ cask install menumeters
 cask install beacon-scanner
 cask install mysqlworkbench
 cask install ubersicht
+cask install licecap
 
 # system dupes
 install homebrew/dupes/less
