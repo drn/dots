@@ -24,7 +24,10 @@ local function formatSeconds(seconds)
   return formatted
 end
 
-local function position() return tonumber(tell('player position')) end
+local function position()
+  local currentPosition = tonumber(tell('player position'))
+  return currentPosition ~= nil and currentPosition or 0
+end
 
 function itunes.next()
   if not isRunning() then return end
