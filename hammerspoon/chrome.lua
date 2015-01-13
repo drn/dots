@@ -1,5 +1,7 @@
 local chrome = {}
 
+local as = require 'hs.applescript'
+
 local profiles = { 'Personal', 'Thanx' }
 
 local function inspect(app)
@@ -17,11 +19,30 @@ local function next(app)
   end
 end
 
+local function tell(cmd)
+  local _cmd = 'tell application "Google Chrome" to ' .. cmd
+  local _ok, result = as.applescript(_cmd)
+  return result
+end
+
 function chrome.nextProfile()
   local app = hs.application.applicationsForBundleID('com.google.Chrome')[1]
   if app ~= nil then
     app:activate()
     app:selectMenuItem({'People', next(app)})
+  end
+end
+
+function chrome.swapProfile()
+  local app = hs.application.applicationsForBundleID('com.google.Chrome')[1]
+  if app ~= nil then
+    local url = tell('tell window 1 to URL of active tab')
+    hs.alert.show(hs.inspect.inspect(url))
+    app:activate()
+    app:selectMenuItem({'People', next(app)})
+    if type(url) == 'string' and not url:match('chrome://') then
+      tell('tell window 1 to set URL of active tab to "'..url..'"')
+    end
   end
 end
 
