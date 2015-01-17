@@ -34,10 +34,10 @@ local function handleTorrent(tor)
     os.execute('open '..downloadsPath)
     tellFinder('reveal ("'..downloadsPath..tor..'" as POSIX file)')
     print('reveal ("'..downloadsPath..tor..'" as POSIX file)')
-    hs.alert.show(formattedName(tor)..' detected')
+    hs.alert(formattedName(tor)..' detected')
   elseif handleType == 'auto' then
     os.execute('mv "'..downloadsPath..tor..'" "'..autoEnqueuePath..tor..'"')
-    hs.alert.show(formattedName(tor)..' enqueued for download')
+    hs.alert(formattedName(tor)..' enqueued for download')
   end
 end
 

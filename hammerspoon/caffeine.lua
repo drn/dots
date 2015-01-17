@@ -3,7 +3,7 @@ local caffeine = {}
 local sleepType = 'system'
 local menuItem = nil
 
-local function alert(message) hs.alert.show(message, 1) end
+local function alert(message) hs.alert(message, 1) end
 local function isOn() return hs.caffeinate.get(sleepType) end
 local function createMenuItem()
   if menuItem ~= nil then return end

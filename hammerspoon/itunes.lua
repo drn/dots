@@ -44,7 +44,7 @@ function itunes.forward()
   local updated = position() + 10
   tell('set player position to '..updated)
   message = (position() < updated) and ' ⇥' or ' → '..formatSeconds(updated)
-  hs.alert.show(message, 0.5)
+  hs.alert(message, 0.5)
 end
 
 function itunes.backward()
@@ -52,37 +52,37 @@ function itunes.backward()
   local updated = position() - 10
   tell('set player position to '..updated)
   local message = (updated < 0) and ' ⇤' or ' ← '..formatSeconds(updated)
-  hs.alert.show(message, 0.5)
+  hs.alert(message, 0.5)
 end
 
 function itunes.increaseVolume()
   if not isRunning() then return end
   tell('set sound volume to '..tonumber(tell('sound volume')) + 10)
-  hs.alert.show(' ↑ '..tell('sound volume')..'%', 0.5)
+  hs.alert(' ↑ '..tell('sound volume')..'%', 0.5)
 end
 
 function itunes.decreaseVolume()
   if not isRunning() then return end
   tell('set sound volume to '..tonumber(tell('sound volume')) - 10)
-  hs.alert.show(' ↓ '..tell('sound volume')..'%', 0.5)
+  hs.alert(' ↓ '..tell('sound volume')..'%', 0.5)
 end
 
 function itunes.maxVolume()
   if not isRunning() then return end
   tell('set sound volume to 100')
-  hs.alert.show(' ↑ 100%', 0.5)
+  hs.alert(' ↑ 100%', 0.5)
 end
 
 function itunes.minVolume()
   if not isRunning() then return end
   tell('set sound volume to 0')
-  hs.alert.show(' ↓ 0%', 0.5)
+  hs.alert(' ↓ 0%', 0.5)
 end
 
 function itunes.playpause()
   tell('playpause')
   icon = (tell('player state as string') == 'playing') and ' ▶' or ' ◼'
-  hs.alert.show(icon, 0.5)
+  hs.alert(icon, 0.5)
 end
 
 function itunes.display()

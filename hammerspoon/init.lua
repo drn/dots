@@ -84,7 +84,7 @@ end)
 hs.hotkey.bind({'ctrl', 'cmd'}, '/', function()
   local date = os.date('%A, %h %e')
   local time = os.date('%H:%M%p'):gsub('^0',''):lower()
-  hs.alert.show(time..' - '..date, 2.5)
+  hs.alert(time..' - '..date, 2.5)
 end)
 
 -- Open Hammerspoon Console
@@ -110,4 +110,4 @@ screen.watch()
 
 torrent.watch()
 
-hs.alert.show('Hammerspoon Reloaded', 0.5)
+hs.alert('Hammerspoon Reloaded', 0.5)

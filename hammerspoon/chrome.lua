@@ -37,7 +37,7 @@ function chrome.swapProfile()
   local app = hs.application.applicationsForBundleID('com.google.Chrome')[1]
   if app ~= nil then
     local url = tell('tell window 1 to URL of active tab')
-    hs.alert.show(hs.inspect.inspect(url))
+    hs.alert(hs.inspect.inspect(url))
     app:activate()
     app:selectMenuItem({'People', next(app)})
     if type(url) == 'string' and not url:match('chrome://') then
