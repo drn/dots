@@ -93,6 +93,8 @@
   aaa = amend-all-annotation
   # git semver alias
   ver = semver
+  # git clone --depth=1 alias
+  shallow = clone --depth=1
 
 [user]
   name = Darren Cheng
