@@ -4,12 +4,6 @@ local as = require 'hs.applescript'
 
 local profiles = { 'Personal', 'Thanx' }
 
-local function inspect(app)
-  for _,profile in pairs(profiles) do
-    print(profile, hs.inspect.inspect(app:findMenuItem({'People', profile})))
-  end
-end
-
 local function next(app)
   for i,profile in pairs(profiles) do
     local menuItem = app:findMenuItem({'People', profile})
@@ -37,9 +31,9 @@ function chrome.swapProfile()
   local app = hs.application.applicationsForBundleID('com.google.Chrome')[1]
   if app ~= nil then
     local url = tell('tell window 1 to URL of active tab')
-    hs.alert(hs.inspect.inspect(url))
     app:activate()
     app:selectMenuItem({'People', next(app)})
+    os.execute('sleep 0.5')
     if type(url) == 'string' and not url:match('chrome://') then
       tell('tell window 1 to set URL of active tab to "'..url..'"')
     end
