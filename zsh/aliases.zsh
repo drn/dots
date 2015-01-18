@@ -1,56 +1,51 @@
 # Jump Aliases
-alias dots="cd ~/Development/dotfiles"
-alias dsk="cd ~/Desktop"
-alias db="cd ~/Dropbox"
-alias dev="cd ~/Development"
-alias work="cd ~/Development/work"
-alias doc="cd ~/Documents"
-alias docs="cd ~/Documents"
-alias down="cd ~/Downloads"
+alias dots='cd ~/Development/dotfiles'
+alias dsk='cd ~/Desktop'
+alias db='cd ~/Dropbox'
+alias dev='cd ~/Development'
+alias work='cd ~/Development/work'
+alias doc='cd ~/Documents'
+alias docs='cd ~/Documents'
+alias down='cd ~/Downloads'
 alias root="cd $(git root)"
 
 # SSH Aliases
-alias dlc="ssh darrenli@darrenlincheng.com"
-alias jenkins="ssh bitnami@jenkins.thanx.com"
+alias dlc='ssh darrenli@darrenlincheng.com'
+alias jenkins='ssh bitnami@jenkins.thanx.com'
 
 # Command Aliases
-alias v="vim"
-alias vn="vim -u NONE"
-alias vnone="vim -u NONE"
-alias vimdiff="mvim -d"
-alias crepo="~/Development/opensource/crepo/crepo.py"
 alias rtest='ruby -I"lib:test"'
-alias orig="find . -iname \"*.orig\" | xargs rm"
-alias swp="find . -iname \"*.swp\" | xargs rm"
-alias sqldev='mysql -u root thanx_development'
-alias sup="rake db:test:prepare; spring testunit; spring status;"
+alias orig='find . -iname \"*.orig\" | xargs rm'
+alias swp='find . -iname \"*.swp\" | xargs rm'
 alias vimsync="bash $HOME/Development/dotfiles/install/vim.sh --update-only"
-alias gitx="open -a ~/Applications/GitX.app ."
-alias light="open -a /Applications/LightPaper.app"
-alias update=". update"
-alias shrink=". shrink"
-alias unshrink=". unshrink"
-alias aud="vim ~/Dropbox/To\ Audrey.txt"
-alias h="history"
-alias top="htop"
-alias vi="vim"
-alias j="jira"
-alias o="open"
-alias pow="powder"
-alias p="powder"
-alias binstubs="bundle install --binstubs .bundle/bin"
-alias secure="v ~/.secure"
-alias todo="notes todo"
-alias pad="notes scratch-pad"
-alias note="notes note"
-alias swift="xcrun swift"
+alias gitx='open -a ~/Applications/GitX.app .'
+alias light='open -a /Applications/LightPaper.app'
+alias update='. update'
+alias shrink='. shrink'
+alias unshrink='. unshrink'
+alias aud='vim ~/Dropbox/To\ Audrey.txt'
+alias h='history'
+alias top='htop'
+alias j='jira'
+alias o='open'
+alias binstubs='bundle install --binstubs .bundle/bin'
+alias secure='v ~/.secure'
+alias todo='notes todo'
+alias pad='notes scratch-pad'
+alias note='notes note'
+alias swift='xcrun swift'
+alias v='vim'
+alias vn='vim -u NONE'
+alias vnone='vim -u NONE'
+alias vimdiff='mvim -d'
+alias vi='vim'
+alias ls='ls -G'
+alias l='ls -lah'
+alias la='ls -lAh'
+alias lr='ls -lR'
+alias g='git'
 
 # Tmuxinator Aliases
-alias mxm="mux master"
-alias mxv="mux vertical"
-alias mxd="mux dots"
-
-# Open Aliases
-alias odsk="open ~/Desktop"
-alias odown="open ~/Downloads"
-alias odoc="open ~/Documents"
+alias mxm='mux master'
+alias mxv='mux vertical'
+alias mxd='mux dots'
