@@ -42,10 +42,7 @@ DISABLE_CORRECTION="true"
 # Example format: plugins=(rails git textmate ruby lighthouse)
 plugins=(
   gitfast
-  rails
   bundler
-  macports
-  powder
   heroku
   history-substring-search
   zsh-syntax-highlighting
