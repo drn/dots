@@ -24,10 +24,9 @@ fi
 # on upstream
 index=1
 while [ $index -lt 500 ]; do
-  ticks="$(printf '^%.0s' $(seq 1 $index))"
 
   # use upstream/master as ancestor with highest priority
-  if [ "$(git branch --remote --contains HEAD$ticks | grep 'upstream/master')" ]; then
+  if [ "$(git branch --remote --contains HEAD~$index | grep 'upstream/master')" ]; then
     path="upstream/master"
   fi
 
@@ -40,7 +39,7 @@ while [ $index -lt 500 ]; do
     #   * filter out upstream/HEAD branch
     #   * select the first match
     path="$(
-      git branch --remote --contains HEAD$ticks |
+      git branch --remote --contains HEAD~$index |
       grep -v "$exclusion" |
       grep upstream |
       sed /HEAD/d |
