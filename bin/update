@@ -8,6 +8,9 @@ sudo -p "Enter your password: " echo "We're good to go!"
 if [ $? -ne 0 ]; then exit 1; fi
 echo ""
 
+# rename current tmux window
+tmux rename-window 'update'
+
 # rehashing rbenv
 echo "\033[0;34mRehashing rbenv binaries...\033[0m\n"
 rm -f $HOME/.rbenv/shims/.rbenv-shim
