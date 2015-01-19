@@ -96,6 +96,7 @@
   # git clone --depth=1 alias
   shallow = clone --depth=1
   rbb = rebase-back
+  sb = show-back
 
 [user]
   name = Darren Cheng
