@@ -6,4 +6,4 @@ let g:syntastic_style_error_symbol='☿'
 " Disable syntastic checking on save and quit
 let g:syntastic_check_on_wq=0
 " Use current rbenv ruby version
-let g:syntastic_ruby_exec = '~/.rbenv/versions/2.1.1/bin/ruby'
+let g:syntastic_ruby_exec = '~/.rbenv/shims/ruby'
