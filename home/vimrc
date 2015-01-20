@@ -1,5 +1,7 @@
 """ Default VIM configuration """
 
+source $HOME/.vim/plugins.vim
+
 " Neovim
 if $MYVIMRC =~ 'nvimrc'
   " Disable python-dependent plugins
@@ -10,10 +12,6 @@ else
   " share vim clipboard with system
   set clipboard=unnamed
 endif
-
-" load pathogen
-call pathogen#infect()
-call pathogen#helptags()
 
 """ Set Missing Filetypes """
 

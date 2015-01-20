@@ -4,6 +4,8 @@ augroup AutoSyntastic
 augroup END
 
 function! s:syntastic()
-  SyntasticCheck
+  if exists(':SyntasticCheck')
+    SyntasticCheck
+  endif
   call lightline#update()
 endfunction

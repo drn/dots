@@ -26,4 +26,4 @@ brew update; brew upgrade; brew cleanup -s; brew cask cleanup
 
 # update VIM plugins
 echo "\n\033[0;34mUpdating vim plugins...\033[0m"
-bash $HOME/Development/dotfiles/install/vim.sh --update-only
+bash $HOME/Development/dotfiles/install/vim.sh
