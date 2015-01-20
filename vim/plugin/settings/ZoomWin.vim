@@ -1,1 +1,1 @@
-nmap <silent> ;z <Plug>ZoomWin
+nmap <silent> ;z :ZoomWin<CR>
