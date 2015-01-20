@@ -7,3 +7,5 @@ let g:syntastic_style_error_symbol='☿'
 let g:syntastic_check_on_wq=0
 " Use current rbenv ruby version
 let g:syntastic_ruby_exec = '~/.rbenv/shims/ruby'
+" Disable checking for the following filetypes
+let g:syntastic_eruby_checkers=[]
