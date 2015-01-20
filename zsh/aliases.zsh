@@ -17,7 +17,6 @@ alias jenkins='ssh bitnami@jenkins.thanx.com'
 alias rtest='ruby -I"lib:test"'
 alias orig='find . -iname \"*.orig\" | xargs rm'
 alias swp='find . -iname \"*.swp\" | xargs rm'
-alias vimsync="bash $HOME/Development/dotfiles/install/vim.sh --update-only"
 alias gitx='open -a ~/Applications/GitX.app .'
 alias light='open -a /Applications/LightPaper.app'
 alias update='. update'

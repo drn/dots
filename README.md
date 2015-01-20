@@ -39,7 +39,6 @@ directory are symlinked to `$HOME` with a `.` prefix.
   * [Plugin settings](https://github.com/drn/dotfiles/tree/master/vim/plugin/settings)
     are symlinked into the appropriate `~/.vim/*` location
   * Binaries for installed plugins are automatically compiled
-  * A `vimsync` alias installed for easy bundle version management
 
 ### ZSH
 
