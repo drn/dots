@@ -33,6 +33,7 @@ function chrome.swapProfile()
     local url = tell('tell window 1 to URL of active tab')
     app:activate()
     app:selectMenuItem({'People', next(app)})
+    app:selectMenuItem({'File', 'New Tab'})
     os.execute('sleep 0.5')
     if type(url) == 'string' and not url:match('chrome://') then
       tell('tell window 1 to set URL of active tab to "'..url..'"')
