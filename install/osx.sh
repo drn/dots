@@ -1,3 +1,8 @@
+if [[ $OSTYPE != darwin* ]]; then
+  echo 'Skipping OSX-specific installation'
+  exit 0
+fi
+
 echo "Ensuring no sleepimage files are generated"
 # set hibernate mode to desktop
 sudo pmset -a hibernatemode 0
