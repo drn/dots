@@ -1,7 +1,7 @@
-source $HOME/.vim/plugins.vim
-source $HOME/.vim/functions.vim
-source $HOME/.vim/autocommands.vim
 source $HOME/.vim/settings.vim
+source $HOME/.vim/plugins.vim
+source $HOME/.vim/autocommands.vim
+source $HOME/.vim/functions.vim
 source $HOME/.vim/mappings/basic.vim
 source $HOME/.vim/mappings/window.vim
 source $HOME/.vim/mappings/tab.vim
