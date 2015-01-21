@@ -28,7 +28,10 @@ Plug 'jszakmeister/vim-togglecursor'
 Plug 'noprompt/vim-yardoc'
 Plug 'ConradIrwin/vim-bracketed-paste'
 Plug 'junegunn/vim-oblique'
+" vim-oblique dependency
 Plug 'junegunn/vim-pseudocl'
+" not lazyloaded to ensure ruby configuration is preloaded
+Plug 'tpope/vim-rbenv'
 
 " Lazy-load plugins
 Plug 'scrooloose/nerdtree', { 'on': [ 'NERDTreeToggle', 'NERDTreeFind' ] }
