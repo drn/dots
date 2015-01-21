@@ -1,13 +1,8 @@
 #!/bin/bash
-
-dev="$HOME/Development"
-dotfiles="$dev/dotfiles"
-
-# include install functions
-source "$dotfiles/install/core.cfg"
+source "$HOME/.dots/install/core.cfg"
 
 # ~ files
-for location in $dotfiles/home/*; do
+for location in $HOME/.dots/home/*; do
   file="${location##*/}"
   echo "$location to $HOME/.$file"
   link "$location" "$HOME/.$file"

@@ -112,6 +112,6 @@
   ui = auto
 
 [init]
-  templatedir = ~/Development/dotfiles/git/templates
+  templatedir = ~/.dots/git/templates
 [remotes]
 	default = origin upstream

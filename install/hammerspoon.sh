@@ -1,7 +1,4 @@
 #!/bin/bash
+source "$HOME/.dots/install/core.cfg"
 
-dotfiles="$HOME/Development/dotfiles"
-hammerspoon="$dotfiles/hammerspoon/"
-destination="$HOME/.hammerspoon"
-source "$dotfiles/install/core.cfg"
-link $hammerspoon $destination
+link "$HOME/.dots/hammerspoon/" "$HOME/.hammerspoon"

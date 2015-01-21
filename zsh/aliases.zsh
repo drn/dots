@@ -1,5 +1,5 @@
 # Jump Aliases
-alias dots='cd ~/Development/dotfiles'
+alias dots='cd ~/.dots'
 alias dsk='cd ~/Desktop'
 alias db='cd ~/Dropbox'
 alias dev='cd ~/Development'

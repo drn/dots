@@ -1,12 +1,5 @@
 #!/bin/bash
-
-dev="$HOME/Development"
-dotfiles="$dev/dotfiles"
-opensource="$dev/opensource"
-bin="/usr/local/bin"
-
-# include install functions
-source "$dotfiles/install/core.cfg"
+source "$HOME/.dots/install/core.cfg"
 
 # ensure z directory is available
 touch ~/.z
@@ -20,12 +13,12 @@ if ! hash brew 2>/dev/null; then
 fi
 
 # install Homebrew managed dependencies
-brew bundle $dotfiles/Brewfile
+brew bundle $HOME/.dots/Brewfile
 ln -sfv /usr/local/opt/postgresql/*.plist ~/Library/LaunchAgents
 launchctl unload ~/Library/LaunchAgents/homebrew.mxcl.postgresql.plist
 launchctl load ~/Library/LaunchAgents/homebrew.mxcl.postgresql.plist
 
 # install Rubygems
 gem install bundler
-bundle install --gemfile=$dotfiles/Gemfile
-rm -f $dotfiles/Gemfile.lock
+bundle install --gemfile=$HOME/.dots/Gemfile
+rm -f $HOME/.dots/Gemfile.lock

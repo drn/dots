@@ -1,7 +1,7 @@
 # ~/.tmuxinator/vertical.yml
 
 name: vertical
-root: /Users/darrencheng/Development/work/thanx-core
+root: ~/Development/work/thanx-core
 
 windows:
   - core:

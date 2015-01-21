@@ -1,9 +1,5 @@
 #!/bin/bash
 
-# set up default development directory
-dev="$HOME/Development"
-dotfiles="$dev/dotfiles"
-
 echo "Installing SanguineRane configuration for $(whoami)"
 
 # ensure sudo access
@@ -45,31 +41,28 @@ else
   chsh -s /bin/zsh
 fi
 
-# create default directory structure
-echo "Ensuring expected directory hierarchy is in place."
-mkdir -p $dev $dev/personal $dev/work $dev/opensource
-# ensure dotfiles is up to date
-sudo rm -rf $dotfiles
-echo "Cloning drn/dotfiles to $dotfiles"
-git clone git@github.com:drn/dotfiles.git $dotfiles --quiet
+# ensure dotfiles are up to date
+sudo rm -rf $HOME/.dots
+echo "Cloning drn/dotfiles to $HOME/.dots"
+git clone git@github.com:drn/dotfiles.git $HOME/.dots --quiet
 
 # install dotfiles
-bash $dotfiles/install/dots.sh
+bash $HOME/.dots/install/dots.sh
 # install terminal utilites
-bash $dotfiles/install/utils.sh
+bash $HOME/.dots/install/utils.sh
 # install node packages
-bash $dotfiles/install/node.sh
+bash $HOME/.dots/install/node.sh
 # install bin files
-bash $dotfiles/install/bin.sh
+bash $HOME/.dots/install/bin.sh
 # install zsh configuration
-bash $dotfiles/install/zsh.sh
+bash $HOME/.dots/install/zsh.sh
 # install git configuration
-bash $dotfiles/install/git.sh
+bash $HOME/.dots/install/git.sh
 # install fonts
-bash $dotfiles/install/fonts.sh
+bash $HOME/.dots/install/fonts.sh
 # install vim configuration
-bash $dotfiles/install/vim.sh
+bash $HOME/.dots/install/vim.sh
 # install os x configuration
-bash $dotfiles/install/osx.sh
+bash $HOME/.dots/install/osx.sh
 # install ubersicht widgets
-bash $dotfiles/install/ubersicht.sh
+bash $HOME/.dots/install/ubersicht.sh

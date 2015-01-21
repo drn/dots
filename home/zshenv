@@ -17,7 +17,7 @@ eval "$(rbenv init - zsh)"
 # Include binstubs in path
 export PATH=.bundle/bin:$PATH
 # Set $DOTS
-export DOTS="$HOME/Development/dotfiles"
+export DOTS="$HOME/.dots"
 # Set $VIMRUNTIME to support neovim
 export VIMRUNTIME="$(brew --prefix macvim | sed 's/macvim//')$(readlink `brew --prefix macvim`)/MacVim.app/Contents/Resources/vim/runtime"
 # Set default Postgres host and port

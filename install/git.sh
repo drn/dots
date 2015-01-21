@@ -1,19 +1,12 @@
 #!/bin/bash
-
-dev="$HOME/Development"
-dotfiles="$dev/dotfiles"
-gitfunc="$dotfiles/git/functions"
-githome="$HOME/.git-extensions"
-
-# include install functions
-source "$dotfiles/install/core.cfg"
+source "$HOME/.dots/install/core.cfg"
 
 # recreate git extensions directory
-sudo rm -rf $githome
-mkdir -p $githome
+sudo rm -rf $HOME/.git-extensions
+mkdir -p $HOME/.git-extensions
 
 # install all git extensions
-for location in $gitfunc/*; do
+for location in $HOME/.dots/git/functions/*; do
   file="${location##*/}"
-  link "$location" "$githome/$file"
+  link "$location" "$HOME/.git-extensions/$file"
 done

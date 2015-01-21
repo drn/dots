@@ -1,7 +1,7 @@
 # ~/.tmuxinator/dots.yml
 
 name: dots
-root: /Users/darrencheng/Development/dotfiles
+root: ~/.dots
 
 windows:
   - core:

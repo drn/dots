@@ -1,22 +1,17 @@
 #!/bin/bash
-
-dev="$HOME/Development"
-dotfiles="$dev/dotfiles"
-ohmyzsh="$HOME/.oh-my-zsh"
-
-# include install functions
-source "$dotfiles/install/core.cfg"
+source "$HOME/.dots/install/core.cfg"
 
 # install oh-my-zsh
-sudo rm -rf $ohmyzsh
-gitsync robbyrussell/oh-my-zsh $ohmyzsh
+sudo rm -rf $HOME/.oh-my-zsh
+gitsync robbyrussell/oh-my-zsh $HOME/.oh-my-zsh
 
 # install custom oh-my-zsh config files
-for location in $dotfiles/zsh/*; do
+for location in $HOME/.dots/zsh/*; do
   file="${location##*/}"
-  link "$location" "$ohmyzsh/custom/$file"
+  link "$location" "$HOME/.oh-my-zsh/custom/$file"
 done
 
 # install zsh-syntax-highlighting
-mkdir -p "$ohmyzsh/custom/plugins"
-gitsync zsh-users/zsh-syntax-highlighting "$ohmyzsh/custom/plugins/zsh-syntax-highlighting"
+mkdir -p "$HOME/.oh-my-zsh/custom/plugins"
+install_path="$HOME/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting"
+gitsync zsh-users/zsh-syntax-highlighting $install_path
