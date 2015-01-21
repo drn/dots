@@ -97,6 +97,8 @@
   shallow = clone --depth=1
   rbb = rebase-back
   sb = show-back
+  rename = branch -m
+  rn = branch -m
 
 [user]
   name = Darren Cheng
