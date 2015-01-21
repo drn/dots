@@ -1,51 +1,29 @@
 call plug#begin('~/.vim/plugged')
 
-Plug 'kien/ctrlp.vim'
-Plug 'tacahiroy/ctrlp-funky'
-Plug 'eiginn/netrw', { 'tag': 'a98484b' }
-Plug 'Lokaltog/vim-easymotion'
-Plug 'tpope/vim-fugitive'
-Plug 'tpope/vim-rails'
-Plug 'luochen1990/rainbow'
-Plug 'derekwyatt/vim-fswitch'
-Plug 'junegunn/vim-easy-align'
-Plug 'benmills/vimux'
-Plug 'drn/vim-turbux'
-Plug 'milkypostman/vim-togglelist'
-Plug 'rking/ag.vim'
-Plug 'mhinz/vim-startify'
 Plug 'nanotech/jellybeans.vim'
+Plug 'itchyny/lightline.vim'
+Plug 'eiginn/netrw', { 'tag': 'a98484b' }
+Plug 'luochen1990/rainbow'
+Plug 'mhinz/vim-startify'
+Plug 'Lokaltog/vim-easymotion'
 Plug 'jeffkreeftmeijer/vim-numbertoggle'
-Plug 'groenewege/vim-less'
-Plug 'tpope/vim-endwise'
-Plug 'tpope/vim-commentary'
 Plug 'Raimondi/delimitMate'
-Plug 'tpope/vim-surround'
 Plug 'nathanaelkane/vim-indent-guides'
-Plug 'othree/html5.vim'
-Plug 'osyo-manga/vim-over'
+Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-endwise'
+Plug 'tpope/vim-surround'
 Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-vinegar'
 Plug 'tpope/vim-eunuch'
-Plug 'mattn/gist-vim'
-Plug 'mattn/webapi-vim'
-Plug 'itchyny/lightline.vim'
+Plug 'tpope/vim-repeat'
+Plug 'tpope/vim-characterize'
 Plug 'vim-scripts/matchit.zip'
-Plug 'tpope/vim-speeddating'
 Plug 'maxbrunsfeld/vim-yankstack'
 Plug 'jszakmeister/vim-togglecursor'
-Plug 'vim-scripts/indenthtml.vim'
-Plug 'tpope/vim-repeat'
-Plug 'zaiste/tmux.vim'
-Plug 'kchmck/vim-coffee-script'
-Plug 'tpope/vim-characterize'
-Plug 'jpalardy/vim-slime'
-Plug 'tpope/vim-characterize'
-Plug 'junegunn/limelight.vim'
 Plug 'noprompt/vim-yardoc'
 Plug 'ConradIrwin/vim-bracketed-paste'
-Plug 'junegunn/vim-pseudocl'
 Plug 'junegunn/vim-oblique'
+Plug 'junegunn/vim-pseudocl'
 
 " Lazy-load plugins
 Plug 'scrooloose/nerdtree', { 'on': [ 'NERDTreeToggle', 'NERDTreeFind' ] }
@@ -53,15 +31,52 @@ Plug 'sjl/gundo.vim', { 'on': 'GundoToggle' }
 Plug 'drn/zoomwin-vim', { 'on': 'ZoomWin' }
 Plug 'rking/ag.vim', { 'on': 'Ag' }
 Plug 'airblade/vim-gitgutter', { 'on': 'GitGutterToggle' }
+Plug 'derekwyatt/vim-fswitch', { 'on': 'FSHere' }
+Plug 'junegunn/vim-easy-align', { 'on': 'EasyAlign' }
+Plug 'milkypostman/vim-togglelist', { 'on': 'ToggleQuickfixList' }
+Plug 'mattn/gist-vim', { 'on': 'Gist' }
+Plug 'mattn/webapi-vim', { 'on': 'Gist' }
+Plug 'tacahiroy/ctrlp-funky', { 'on': 'CtrlPFunky' }
+Plug 'junegunn/limelight.vim', { 'on': 'Limelight' }
+Plug 'kien/ctrlp.vim', { 'on': [
+\   'CtrlP',
+\   'CtrlPClearCache',
+\   'CtrlPFunky'
+\ ] }
+Plug 'benmills/vimux', { 'on': [
+\   '<Plug>SendTestToTmux',
+\   '<Plug>SendFocusedTestToTmux'
+\ ] }
+Plug 'drn/vim-turbux', { 'on': [
+\   '<Plug>SendTestToTmux',
+\   '<Plug>SendFocusedTestToTmux'
+\ ] }
+Plug 'tpope/vim-commentary', { 'on': [
+\ '<Plug>Commentary',
+\ '<Plug>CommentaryLine'
+\ ] }
+Plug 'tpope/vim-speeddating', { 'on': [
+\ '<Plug>SpeedDatingUp',
+\ '<Plug>SpeedDatingDown'
+\ ] }
+Plug 'jpalardy/vim-slime', { 'on': [
+\ '<Plug>SlimeRegionSend',
+\ '<Plug>SlimeParagraphSend',
+\ '<Plug>SlimeConfig'
+\ ] }
 
-" Ruby
+" Language-specific plugins
 Plug 'scrooloose/syntastic', { 'for': 'ruby' }
 Plug 'vim-ruby/vim-ruby', { 'for': [ 'ruby', 'eruby' ] }
+Plug 'tpope/vim-rails', { 'for': [ 'ruby', 'eruby' ] }
 Plug 'kana/vim-textobj-user', { 'for': [ 'ruby', 'eruby' ] }
 Plug 'nelstrom/vim-textobj-rubyblock', { 'for': [ 'ruby', 'eruby' ] }
-
-" Swift
+Plug 'groenewege/vim-less', { 'for': 'less' }
 Plug 'Keithbsmiley/swift.vim', { 'for': 'swift' }
+Plug 'zaiste/tmux.vim', { 'for': 'tmux' }
+Plug 'othree/html5.vim', { 'for': 'html'}
+Plug 'vim-scripts/indenthtml.vim', { 'for': 'html'}
+Plug 'kchmck/vim-coffee-script', { 'for': 'coffee' }
 
 " Non-neovim plugins
 if $MYVIMRC !~ 'nvimrc'
