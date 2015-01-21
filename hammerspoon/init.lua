@@ -62,10 +62,8 @@ hs.hotkey.bind({ 'cmd', 'alt' }, 'left', function() itunes.previous() end)
 hs.hotkey.bind({ 'cmd', 'alt' }, 'right', function() itunes.next() end)
 hs.hotkey.bind({ 'ctrl', 'cmd' }, 'right', function() itunes.forward() end)
 hs.hotkey.bind({ 'ctrl', 'cmd' }, 'left', function() itunes.backward() end)
-hs.hotkey.bind({ 'ctrl', 'cmd' }, 'up', function() itunes.increaseVolume() end)
-hs.hotkey.bind({ 'ctrl', 'cmd' }, 'down', function() itunes.decreaseVolume() end)
-hs.hotkey.bind({ 'alt', 'cmd' }, 'up', function() itunes.maxVolume() end)
-hs.hotkey.bind({ 'alt', 'cmd' }, 'down', function() itunes.minVolume() end)
+hs.hotkey.bind({ 'cmd', 'alt' }, 'up', function() itunes.increaseVolume() end)
+hs.hotkey.bind({ 'cmd', 'alt' }, 'down', function() itunes.decreaseVolume() end)
 
 -- Caffeine
 
