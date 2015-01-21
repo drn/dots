@@ -6,7 +6,6 @@ Plug 'eiginn/netrw', { 'tag': 'a98484b' }
 Plug 'Lokaltog/vim-easymotion'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-rails'
-Plug 'tpope/vim-bundler'
 Plug 'luochen1990/rainbow'
 Plug 'derekwyatt/vim-fswitch'
 Plug 'junegunn/vim-easy-align'
