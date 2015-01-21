@@ -38,7 +38,7 @@ Plug 'rking/ag.vim', { 'on': 'Ag' }
 Plug 'airblade/vim-gitgutter', { 'on': 'GitGutterToggle' }
 Plug 'derekwyatt/vim-fswitch', { 'on': 'FSHere' }
 Plug 'junegunn/vim-easy-align', { 'on': 'EasyAlign' }
-Plug 'milkypostman/vim-togglelist', { 'on': 'ToggleQuickfixList' }
+Plug 'milkypostman/vim-togglelist', { 'on': [] }
 Plug 'mattn/gist-vim', { 'on': 'Gist' }
 Plug 'mattn/webapi-vim', { 'on': 'Gist' }
 Plug 'tacahiroy/ctrlp-funky', { 'on': 'CtrlPFunky' }

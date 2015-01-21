@@ -1,2 +1,6 @@
 let g:toggle_list_no_mappings = 1
-nnoremap <script> <silent> <leader>/ :call ToggleQuickfixList()<CR>
+function! ToggleQuickfix()
+  call plug#load('vim-togglelist')
+  call ToggleQuickfixList()
+endfunction
+nnoremap <script> <silent> <leader>/ :call ToggleQuickfix()<CR>
