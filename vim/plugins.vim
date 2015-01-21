@@ -7,7 +7,7 @@ let g:plug_window = ''
 
 Plug 'nanotech/jellybeans.vim'
 Plug 'itchyny/lightline.vim'
-Plug 'drn/netrw'
+Plug 'eiginn/netrw'
 Plug 'luochen1990/rainbow'
 Plug 'mhinz/vim-startify'
 Plug 'Lokaltog/vim-easymotion'
