@@ -1,8 +1,13 @@
 call plug#begin('~/.vim/plugged')
 
+" Allow YCM time to compile
+let g:plug_timeout = 180
+" Run plug commands in current split
+let g:plug_window = ''
+
 Plug 'nanotech/jellybeans.vim'
 Plug 'itchyny/lightline.vim'
-Plug 'eiginn/netrw', { 'tag': 'a98484b' }
+Plug 'drn/netrw'
 Plug 'luochen1990/rainbow'
 Plug 'mhinz/vim-startify'
 Plug 'Lokaltog/vim-easymotion'
