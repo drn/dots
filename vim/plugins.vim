@@ -32,6 +32,7 @@ Plug 'junegunn/vim-oblique'
 Plug 'junegunn/vim-pseudocl'
 " not lazyloaded to ensure ruby configuration is preloaded
 Plug 'tpope/vim-rbenv'
+Plug 'vim-ruby/vim-ruby'
 
 " Lazy-load plugins
 Plug 'scrooloose/nerdtree', { 'on': [ 'NERDTreeToggle', 'NERDTreeFind' ] }
@@ -75,7 +76,6 @@ Plug 'jpalardy/vim-slime', { 'on': [
 
 " Language-specific plugins
 Plug 'scrooloose/syntastic', { 'for': 'ruby' }
-Plug 'vim-ruby/vim-ruby', { 'for': [ 'ruby', 'eruby' ] }
 Plug 'tpope/vim-rails', { 'for': [ 'ruby', 'eruby' ] }
 Plug 'kana/vim-textobj-user', { 'for': [ 'ruby', 'eruby' ] }
 Plug 'nelstrom/vim-textobj-rubyblock', { 'for': [ 'ruby', 'eruby' ] }
