@@ -46,13 +46,10 @@ setopt NO_NOMATCH
 HISTSIZE=10000
 
 # Initialize Z
-. `brew --prefix`/etc/profile.d/z.sh
+. /usr/local/etc/profile.d/z.sh
 
 # Disable tab completion
 compdef -d rake
-
-# source travis gem
-[ -f ~/.travis/travis.sh ] && source ~/.travis/travis.sh
 
 # Autoload tmux
 if [ "$TMUX" = "" ]; then tmuxinator start master; fi

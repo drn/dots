@@ -12,14 +12,12 @@ export PATH=/usr/local/mysql/bin:$PATH
 export PATH=$HOME/Library/Android/sdk/platform-tools:$PATH
 export PATH=$HOME/Library/Android/sdk/tools:$PATH
 # Load rbenv
-export PATH=/Users/$(whoami)/.rbenv/shims:$(brew --prefix rbenv)/bin:$PATH
-eval "$(rbenv init - zsh)"
+export PATH=/Users/$(whoami)/.rbenv/shims:/usr/local/opt/bin:$PATH
+eval "$(rbenv init - --no-rehash)"
 # Include binstubs in path
 export PATH=.bundle/bin:$PATH
 # Set $DOTS
 export DOTS="$HOME/.dots"
-# Set $VIMRUNTIME to support neovim
-export VIMRUNTIME="$(brew --prefix macvim | sed 's/macvim//')$(readlink `brew --prefix macvim`)/MacVim.app/Contents/Resources/vim/runtime"
 # Set default Postgres host and port
 export PGHOST=localhost
 export PGPORT=5432
