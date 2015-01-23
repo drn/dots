@@ -1,3 +1,5 @@
+#!/usr/local/bin/zsh
+
 # Set up console prompt
 #   dotfiles ⭠ master ❯
 #   ~ ❯
@@ -22,6 +24,33 @@ prompt_human_time() {
   echo "$fg_bold[black]("\
        "$fg_no_bold[magenta]$human_time${seconds}s"\
        "$fg_bold[black])$reset_color"
+}
+
+# Format directory listing
+prompt_directory() {
+  directory=${PWD##*/}
+  prefix=''
+  if [[ $directory == .* ]]; then
+    fullpath=$PWD
+    [[ "$PWD" =~ ^"$HOME"(/|$) ]] && fullpath="~${fullpath#$HOME}"
+    ancestors="${fullpath//[^\/]}"
+    if [[ ${#ancestors} == 1 ]]; then
+      if [[ $fullpath[1] = '/' ]]; then
+        # /.dir
+        prefix="%{$fg_bold[white]%}❮"
+      else
+        # ~/.dir
+        prefix="%{$fg_bold[magenta]%}❮"
+      fi
+    else
+      # ~/**/.dir
+      prefix="%{$fg_bold[cyan]%}❮"
+    fi
+    echo "$prefix %{$fg_bold[red]%}${directory##*.}%{$reset_color%}"
+  else
+    # ~/**/dir
+    echo "%{$fg_bold[red]%}%c%{$reset_color%}"
+  fi
 }
 
 ### Git Helpers
@@ -72,7 +101,7 @@ terminal_prompt() {
   indicator="%{$fg_bold[$indicator_color]%}❯%{$reset_color%} "
   # shrunk prompt
   if [ -z "$DISABLE_PROMPT" ]; then
-    echo "%{$fg_bold[red]%}%c%{$reset_color%}$(prompt_git_info) $indicator"
+    echo "$(prompt_directory)$(prompt_git_info) $indicator"
   else
     echo $indicator
   fi
