@@ -26,31 +26,51 @@ prompt_human_time() {
        "$fg_bold[black])$reset_color"
 }
 
-# Format directory listing
-prompt_directory() {
-  directory=${PWD##*/}
-  prefix=''
-  if [[ $directory == .* ]]; then
-    fullpath=$PWD
-    [[ "$PWD" =~ ^"$HOME"(/|$) ]] && fullpath="~${fullpath#$HOME}"
-    ancestors="${fullpath//[^\/]}"
-    if [[ ${#ancestors} == 1 ]]; then
-      if [[ $fullpath[1] = '/' ]]; then
-        # /.dir
-        prefix="%{$fg_bold[white]%}❮"
-      else
-        # ~/.dir
-        prefix="%{$fg_bold[magenta]%}❮"
-      fi
-    else
-      # ~/**/.dir
-      prefix="%{$fg_bold[cyan]%}❮"
-    fi
-    echo "$prefix %{$fg_bold[red]%}${directory##*.}%{$reset_color%}"
+prompt_directory_info() {
+  if [[ $PWD == '/' ]]; then
+    echo 'root'
+  elif [[ ${#${PWD//[^\/]}} == 1 ]]; then
+    echo 'rootchild'
+  elif [[ $PWD == $HOME ]]; then
+    echo 'home'
+  elif [[ ${#${${PWD//$HOME}//[^\/]}} == 1 ]]; then
+    echo 'homechild'
   else
-    # ~/**/dir
-    echo "%{$fg_bold[red]%}%c%{$reset_color%}"
+    echo 'other'
   fi
+}
+
+prompt_directory_name() {
+  if [[ ${PWD##*/} == .* ]]; then
+    surround="%{$fg_bold[cyan]%}·%{$reset_color%}"
+    echo "$surround%{$fg_bold[red]%}${${PWD##*/}##.}%{$reset_color%}$surround"
+  else
+    echo "%{$fg_bold[red]%}${${PWD##*/}##.}%{$reset_color%}"
+  fi
+}
+
+# Format directory listing
+#   TODO configurable list of special directories
+#   TODO use ~ and / for root indicators. < isnt consistent
+#   TODO use symbol or . for .dir indicator
+prompt_directory() {
+  case "$(prompt_directory_info)" in
+    root)
+      echo "%{$fg_bold[white]%}/"
+      ;;
+    home)
+      echo "%{$fg_bold[white]%}~"
+      ;;
+    rootchild)
+      echo "%{$fg_bold[magenta]%}/ $(prompt_directory_name)"
+      ;;
+    homechild)
+      echo "%{$fg_bold[magenta]%}~ $(prompt_directory_name)"
+      ;;
+    *)
+      prompt_directory_name
+      ;;
+  esac
 }
 
 ### Git Helpers
