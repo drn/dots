@@ -31,6 +31,8 @@ install lua
 install luarocks
 install htop-osx
 install postgresql
+install mysql
+postinstall mysql
 install hr
 install terminal-notifier
 install fswatch
