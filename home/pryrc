@@ -87,3 +87,26 @@ Pry.config.prompt = proc do |object, nest_level, _|
 
   prefix + prompt + context + level + suffix
 end
+
+# Legible callstack display
+def callstack
+  colors = Pry.config.colors
+  files = []
+  lines = []
+  methods = []
+  caller.each do |line|
+    splits = line.gsub(/.*\//,'').split(':',3)
+    files << splits[0]
+    lines << splits[1]
+    methods << splits[2]
+  end
+  linesize = lines.max { |x,y| x.length <=> y.length }.length
+  filesize = files.max { |x,y| x.length <=> y.length }.length
+  (1..caller.count-1).each do |i|
+    puts colors[:bold] + colors[:cyan] +
+    lines[i].to_s.rjust(linesize) + '  ' + colors[:bold] + colors[:red] +
+      files[i].to_s.ljust(filesize) + '  ' + colors[:reset] + colors[:magenta] +
+      methods[i].to_s
+  end
+  nil
+end
