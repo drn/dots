@@ -29,6 +29,11 @@ local function position()
   return currentPosition ~= nil and currentPosition or 0
 end
 
+local function duration()
+  local currentPosition = tonumber(tell('duration of current track'))
+  return currentPosition ~= nil and currentPosition or 0
+end
+
 function itunes.next()
   if not isRunning() then return end
   hs.itunes.next()
@@ -87,7 +92,15 @@ end
 
 function itunes.display()
   if not isRunning() then return end
-  hs.itunes.displayCurrentTrack()
+  artist = tell('artist of the current track as string')
+  album  = tell('album of the current track as string')
+  track  = tell('name of the current track as string')
+  current = position()
+  total   = duration()
+  percent = math.floor(current / total * 100 + 0.5)
+  time   = formatSeconds(current)..'  ('..percent..'%)'..'\n'..formatSeconds(total)
+  info   = track..'\n'..album..'\n'..artist..'\n'..time
+  hs.alert.show(info, 1.75)
 end
 
 return itunes
