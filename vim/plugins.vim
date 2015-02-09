@@ -26,6 +26,7 @@ Plug 'maxbrunsfeld/vim-yankstack'
 Plug 'jszakmeister/vim-togglecursor'
 Plug 'noprompt/vim-yardoc'
 Plug 'ConradIrwin/vim-bracketed-paste'
+Plug 'junegunn/vim-peekaboo'
 Plug 'junegunn/vim-oblique'
 " vim-oblique dependency
 Plug 'junegunn/vim-pseudocl'
