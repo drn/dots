@@ -32,6 +32,9 @@ Plug 'junegunn/vim-pseudocl'
 " not lazyloaded to ensure ruby configuration is preloaded
 Plug 'tpope/vim-rbenv'
 Plug 'vim-ruby/vim-ruby'
+" not lazyloaded to ensure proper load order
+Plug 'kien/ctrlp.vim'
+Plug 'tacahiroy/ctrlp-funky'
 
 " Lazy-load plugins
 Plug 'scrooloose/nerdtree', { 'on': [ 'NERDTreeToggle', 'NERDTreeFind' ] }
@@ -44,13 +47,7 @@ Plug 'junegunn/vim-easy-align', { 'on': 'EasyAlign' }
 Plug 'milkypostman/vim-togglelist', { 'on': [] }
 Plug 'mattn/gist-vim', { 'on': 'Gist' }
 Plug 'mattn/webapi-vim', { 'on': 'Gist' }
-Plug 'tacahiroy/ctrlp-funky', { 'on': 'CtrlPFunky' }
 Plug 'junegunn/limelight.vim', { 'on': 'Limelight' }
-Plug 'kien/ctrlp.vim', { 'on': [
-\   'CtrlP',
-\   'CtrlPClearCache',
-\   'CtrlPFunky'
-\ ] }
 Plug 'benmills/vimux', { 'on': [
 \   '<Plug>SendTestToTmux',
 \   '<Plug>SendFocusedTestToTmux'
