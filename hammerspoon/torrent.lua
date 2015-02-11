@@ -60,7 +60,6 @@ local function setType(type)
 end
 
 local cycle = hs.fnutils.cycle({
-  function() setType('open') end,
   function() setType('auto') end,
   function() setType('off') end
 })
