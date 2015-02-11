@@ -1,6 +1,5 @@
 local resize   = require 'resize'
 local itunes   = require 'itunes'
-local caffeine = require 'caffeine'
 local screen   = require 'screen'
 local torrent  = require 'torrent'
 local chrome   = require 'chrome'
@@ -64,11 +63,6 @@ hs.hotkey.bind({ 'ctrl', 'cmd' }, 'right', function() itunes.forward() end)
 hs.hotkey.bind({ 'ctrl', 'cmd' }, 'left', function() itunes.backward() end)
 hs.hotkey.bind({ 'cmd', 'alt' }, 'up', function() itunes.increaseVolume() end)
 hs.hotkey.bind({ 'cmd', 'alt' }, 'down', function() itunes.decreaseVolume() end)
-
--- Caffeine
-
-hs.hotkey.bind({'cmd', 'shift'}, ',', function() caffeine.display() end)
-hs.hotkey.bind({'cmd', 'alt', 'shift'}, ',', function() caffeine.toggle() end)
 
 -- Chrome
 
