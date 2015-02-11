@@ -15,8 +15,8 @@ alias jenkins='ssh bitnami@jenkins.thanx.com'
 
 # Command Aliases
 alias rtest='ruby -I"lib:test"'
-alias orig='find . -iname \"*.orig\" | xargs rm'
-alias swp='find . -iname \"*.swp\" | xargs rm'
+alias orig='find . -iname "*.orig" | xargs rm'
+alias swp='find . -iname "*.swp" | xargs rm'
 alias gitx='open -a ~/Applications/GitX.app .'
 alias light='open -a /Applications/LightPaper.app'
 alias update='. update'
