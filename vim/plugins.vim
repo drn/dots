@@ -36,6 +36,9 @@ Plug 'vim-ruby/vim-ruby'
 " not lazyloaded to ensure proper load order
 Plug 'kien/ctrlp.vim'
 Plug 'tacahiroy/ctrlp-funky'
+" not lazyloaded to preserve functionality
+Plug 'benmills/vimux'
+Plug 'drn/vim-turbux'
 
 " Lazy-load plugins
 Plug 'scrooloose/nerdtree', { 'on': [ 'NERDTreeToggle', 'NERDTreeFind' ] }
@@ -49,14 +52,6 @@ Plug 'milkypostman/vim-togglelist', { 'on': [] }
 Plug 'mattn/gist-vim', { 'on': 'Gist' }
 Plug 'mattn/webapi-vim', { 'on': 'Gist' }
 Plug 'junegunn/limelight.vim', { 'on': 'Limelight' }
-Plug 'benmills/vimux', { 'on': [
-\   '<Plug>SendTestToTmux',
-\   '<Plug>SendFocusedTestToTmux'
-\ ] }
-Plug 'drn/vim-turbux', { 'on': [
-\   '<Plug>SendTestToTmux',
-\   '<Plug>SendFocusedTestToTmux'
-\ ] }
 Plug 'tpope/vim-commentary', { 'on': [
 \ '<Plug>Commentary',
 \ '<Plug>CommentaryLine'
