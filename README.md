@@ -1,10 +1,44 @@
+# Dots
+
+> Obsessively curated dotfiles.
+
+**Dots** provides installation of a continuously maintained
+
+## Contents
+
+* [1. Overview](#1-overview)
+* [2. Components](#2-components)
+  * [2.1 ~/.*](#21-)
+  * [2.2 ~/bin]
+  * [2.3 Prompt]
+  * [2.4 Vim]
+  * [2.5 ZSH]
+  * [2.6 Git]
+  * [2.7 OS X]
+  * [2.8 Utilities]
+* [3. Usage]
+
+## 1. Overview
+
+## 2. Components
+
+### 2.1 ~/.*
+
+* vimrc
+* nvimrc
+* gitconfig
+* pryrc
+* zshenv
+* zshrc
+
+### 2.2 ~/bin
+
+
 ## TL;DR
 
 Quick Installation
 
-    curl -s https://raw.github.com/drn/dotfiles/master/install/install.sh | sh
-
-![vim/tmux/terminal](https://raw.githubusercontent.com/drn/dotfiles/master/screenshots/tmux-vim.png)
+    curl -s https://raw.github.com/drn/dotfiles/master/install/all.sh | sh
 
 ## Overview
 
@@ -84,24 +118,4 @@ including:
 
 ## License
 
-The MIT license.
-
-Copyright (c) 2013 Darren Cheng (http://sanguinerane.com/)
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is furnished
-to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+This project is licensed under the [MIT License](http://opensource.org/licenses/MIT)
