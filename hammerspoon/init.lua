@@ -34,7 +34,7 @@ local bindings = {
     iTerm      = 'i',
     Safari     = 'return',
     Messages   = 'n',
-    HipChat    = 'm',
+    Slack      = 'm',
     Wunderlist = "'",
     MacVim     = '.'
   },
