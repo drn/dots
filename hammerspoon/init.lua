@@ -40,6 +40,7 @@ local bindings = {
   },
   [{ 'cmd', 'shift'}] = {
     [ 'Mailplane 3' ] = '/',
+    HipChat           = 'm'
   },
   [{ 'cmd', 'alt'}] = {
     [ 'Google Chrome' ] = 'return'
