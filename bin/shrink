@@ -6,5 +6,4 @@
 
 export DISABLE_PROMPT=1
 clear
-sleep 0.2
 tmux clear-history
