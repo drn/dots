@@ -72,6 +72,7 @@ function resize.changeScreen()
   local win = hs.window.focusedWindow()
   if win == nil then return end
   local current = win:screen()
+  if current == nil then return end
   local next = current:next()
   if current:id() == next:id() then return end
 
