@@ -7,7 +7,7 @@ if ! git rev-parse --git-dir > /dev/null 2>&1; then
 fi
 
 branch="$(git rev-parse --abbrev-ref HEAD)"
-fallback="darren" # branch to transition to
+fallback="root" # branch to transition to
 
 # prevent destruction of the master branch
 if [ $branch == "master" ]; then
