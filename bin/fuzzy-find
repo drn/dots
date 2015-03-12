@@ -1,0 +1,21 @@
+#!/bin/bash
+
+#
+# Fuzzy find by filename and contents
+#
+# Usage: fuzzy-find query
+#
+
+query="$1"
+
+if [ -z $query ]; then
+  echo -e '\033[0;31mMissing input query\033[0m'
+  exit 1
+fi
+
+echo -e '\033[0;34mMatching files:\033[0m'
+find . -iname "*$query*"
+echo -e '\n\033[0;34mMatching contents:\033[0m'
+ag $query
+echo
+
