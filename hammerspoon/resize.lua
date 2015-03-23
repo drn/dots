@@ -87,6 +87,8 @@ function resize.changeScreen()
   local win = hs.window.focusedWindow()
   if isIterm(win) and win:isStandard() then
     win:toggleFullScreen()
+  else
+    resize.center()
   end
 end
 
