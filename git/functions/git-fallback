@@ -4,7 +4,7 @@
 # Conditionally create and checkout the 'fallback' branch.
 #
 
-if [ -z "$(git branch | grep root)"]; then
+if [ -z "$(git branch | grep root)" ]; then
   git co -b root
 else
   git co root
