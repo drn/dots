@@ -53,12 +53,12 @@ render: (o) -> """
 
 update: (output, domEl) ->
   data  = JSON.parse(output)
-  today = data.daily.data[0]
-  date  = @getDate today.time
+  current = data.currently
+  date  = @getDate current.time
 
-  $(domEl).find('.temp')[0].textContent = Math.round(today.temperatureMax)+'°'
-  $(domEl).find('.summary').text today.summary
-  $(domEl).find('.icon')[0]?.textContent = @getIcon(today)
+  $(domEl).find('.temp')[0].textContent = Math.round(current.temperature)+'°'
+  $(domEl).find('.summary').text current.summary
+  $(domEl).find('.icon')[0]?.textContent = @getIcon(current)
   $(domEl).find('.date').prop('textContent',@dayMapping[date.getDay()])
 
 style: """
