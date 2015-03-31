@@ -37,11 +37,13 @@ end
 function itunes.next()
   if not isRunning() then return end
   hs.itunes.next()
+  hs.alert.show(' ⇥', 0.5)
 end
 
 function itunes.previous()
   if not isRunning() then return end
   tell('back track')
+  hs.alert.show(' ⇤', 0.5)
 end
 
 function itunes.forward()
