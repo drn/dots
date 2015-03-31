@@ -41,7 +41,7 @@ end
 
 function itunes.previous()
   if not isRunning() then return end
-  hs.itunes.previous()
+  tell('back track')
 end
 
 function itunes.forward()
