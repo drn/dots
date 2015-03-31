@@ -1,0 +1,9 @@
+#!/bin/bash
+
+#
+# Fuzzy find by filename
+#
+# Usage: fuzzy-find-file query
+#
+
+find . -iname "*$1*"
