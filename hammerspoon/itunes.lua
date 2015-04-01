@@ -94,9 +94,9 @@ end
 
 function itunes.display()
   if not isRunning() then return end
-  artist = tell('artist of the current track as string')
-  album  = tell('album of the current track as string')
-  track  = tell('name of the current track as string')
+  artist = tell('artist of the current track as string') or ''
+  album  = tell('album of the current track as string') or ''
+  track  = tell('name of the current track as string') or ''
   current = position()
   total   = duration()
   percent = math.floor(current / total * 100 + 0.5)
