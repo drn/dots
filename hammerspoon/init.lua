@@ -39,8 +39,7 @@ local bindings = {
     MacVim     = '.'
   },
   [{ 'cmd', 'shift'}] = {
-    [ 'Mailplane 3' ] = '/',
-    HipChat           = 'm'
+    [ 'Mailplane 3' ] = '/'
   },
   [{ 'cmd', 'alt'}] = {
     [ 'Google Chrome' ] = 'return'
