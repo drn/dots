@@ -2,6 +2,7 @@
 alias dots='cd ~/.dots'
 alias dsk='cd ~/Desktop'
 alias db='cd ~/Dropbox'
+alias tdb='cd ~/Documents/Thanx/Dropbox\ \(Thanx\)'
 alias dev='cd ~/Development'
 alias work='cd ~/Development/work'
 alias doc='cd ~/Documents'
