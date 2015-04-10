@@ -27,6 +27,14 @@ hs.hotkey.bind(resizemod, "'", function() resize.center() end)
 table.insert(resizemod, 'shift')
 hs.hotkey.bind(resizemod, 'return', function() resize.changeScreen() end)
 
+-- Fine Grained Window Adjustment
+
+local resizeTouchMod = {'ctrl', 'alt', 'cmd', 'shift'}
+local directions = {'left', 'right', 'up', 'down'}
+for _,direction in pairs(directions) do
+  hs.hotkey.bind(resizeTouchMod, direction, function() resize.touch(direction) end)
+end
+
 -- Application
 
 local bindings = {

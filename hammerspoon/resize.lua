@@ -58,6 +58,22 @@ for name,unit in pairs(units) do
   resize[name] = function() setUnit(unit) end
 end
 
+function resize.touch(direction)
+  local win = hs.window.focusedWindow()
+  if win == nil then return end
+  local f = win:frame()
+  if     direction == 'left' then
+    f.x = f.x - 1
+  elseif direction == 'right' then
+    f.x = f.x + 1
+  elseif direction == 'up' then
+    f.y = f.y - 1
+  elseif direction == 'down' then
+    f.y = f.y + 1
+  end
+  win:setFrame(f, 0)
+end
+
 function resize.center()
   local win = hs.window.focusedWindow()
   if win == nil then return end
