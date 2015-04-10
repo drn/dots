@@ -70,6 +70,7 @@ cask install beacon-scanner
 cask install mysqlworkbench
 cask install ubersicht
 cask install licecap
+cask install anybar
 
 # system dupes
 install homebrew/dupes/less
