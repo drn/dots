@@ -105,4 +105,27 @@ function itunes.display()
   hs.alert.show(info, 1.75)
 end
 
+function itunes.addToPlaylist(playlist)
+  if not isRunning() then return end
+  script = [[
+    tell application "iTunes"
+      set trackId to (persistent ID of current track)
+      set result to (tracks of playlist "]]..playlist..[[" whose persistent ID is trackId)
+      if result is {} then
+        duplicate current track to playlist "]]..playlist..'"\n'..[[
+        "true"
+      else
+        "false"
+      end if
+    end tell
+  ]]
+  local _ok, result = as.applescript(script)
+  if result == 'true' then
+    track = tell('name of the current track as string') or ''
+    hs.alert.show(track..' → '..playlist)
+  else
+    hs.alert.show('✓', 0.3)
+  end
+end
+
 return itunes
