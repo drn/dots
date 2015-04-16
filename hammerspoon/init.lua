@@ -3,6 +3,7 @@ local itunes   = require 'itunes'
 local screen   = require 'screen'
 local torrent  = require 'torrent'
 local chrome   = require 'chrome'
+local osx      = require 'osx'
 
 -- Window Management
 
@@ -93,6 +94,10 @@ end)
 -- Open Hammerspoon Console
 
 hs.hotkey.bind({'ctrl', 'alt', 'cmd'}, 'o', function() hs.openConsole() end)
+
+-- OS Bindings
+
+hs.hotkey.bind({'ctrl', 'alt', 'cmd', 'shift'}, 'l', function() osx.lock() end)
 
 -- Test Binding
 
