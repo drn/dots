@@ -10,4 +10,7 @@ if [ $? -ne 0 ]; then exit 1; fi
 brew tap neovim/homebrew-neovim 2>/dev/null
 brew uninstall neovim
 brew cleanup -s
-brew reinstall --HEAD neovim
+brew install --HEAD neovim
+brew link --overwrite neovim
+sudo pip uninstall neovim
+sudo pip install neovim
