@@ -99,6 +99,7 @@
   sb = show-back
   rename = branch -m
   rn = branch -m
+  sync = !"git push origin upstream/master:master -f"
 
 [user]
   name = Darren Cheng
