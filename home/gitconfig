@@ -100,6 +100,7 @@
   rename = branch -m
   rn = branch -m
   sync = !"git push origin upstream/master:master -f"
+  s = !"git sync"
 
 [user]
   name = Darren Cheng
