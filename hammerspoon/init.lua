@@ -75,6 +75,9 @@ hs.hotkey.bind({ 'cmd', 'alt' }, 'down', function() itunes.decreaseVolume() end)
 hs.hotkey.bind({ 'ctrl', 'shift' }, 'space', function()
   itunes.addToPlaylist('Dunno')
 end)
+hs.hotkey.bind({ 'ctrl', 'shift' }, ',', function()
+  itunes.addToPlaylist('Erg')
+end)
 
 -- Chrome
 
