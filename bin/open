@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# /usr/bin/open shim to allow default open targets
+
+if [ "$#" -eq 0 ]; then
+  if [ -n "$(ls | grep xcworkspace)" ]; then
+    /usr/bin/open *.xcworkspace
+    exit 0
+  fi
+fi
+/usr/bin/open "$@"
