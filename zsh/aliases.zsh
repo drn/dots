@@ -47,6 +47,7 @@ alias g='git'
 alias vimsync="bash $DOTS/install/vim.sh"
 alias ff="fuzzy-find"
 alias fff="fuzzy-find-file"
+alias nuc="nucleus"
 
 # Tmuxinator Aliases
 alias mxm='mux master'

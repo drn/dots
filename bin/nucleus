@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Usage: nucleus [on/off]
+# Usage: nucleus [on|off|update|up]
 
 if [ "$1" = "on" ]; then
   echo -e "\033[0;32mEnabling...\033[0m"
@@ -9,6 +9,10 @@ if [ "$1" = "on" ]; then
 elif [ "$1" = "off" ]; then
   echo -e "\033[0;31mDisabling...\033[0m"
   bundle config --delete local.nucleus
+  exit 0
+elif [ "$1" = "update" ] || [ "$1" = "up" ]; then
+  echo -e "\033[0;31mUpdating...\033[0m"
+  bundle update nucleus
   exit 0
 fi
 
