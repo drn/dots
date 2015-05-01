@@ -71,6 +71,7 @@ cask install mysqlworkbench
 cask install ubersicht
 cask install licecap
 cask install anybar
+cask install provisioning # .mobileprovision quicklook plugin
 
 # system dupes
 install homebrew/dupes/less
