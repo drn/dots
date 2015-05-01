@@ -22,7 +22,7 @@ echo "LAST_EPOCH=$(($(date +%s) / 60 / 60 / 24))" > ~/.zsh-update
 
 # update and upgrade Homebrew
 echo -e '\n\033[0;34mUpdating Brew and any outdated packages...\033[0m'
-brew update; brew upgrade; brew cleanup -s; brew cask cleanup
+brew update; brew upgrade --all; brew cleanup -s; brew cask cleanup
 
 # update VIM plugins
 echo "\n\033[0;34mUpdating vim plugins...\033[0m"
