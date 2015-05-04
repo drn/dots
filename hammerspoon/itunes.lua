@@ -56,10 +56,16 @@ end
 
 function itunes.backward()
   if not isRunning() then return end
-  local updated = position() - 10
+  local position = position()
+  if position < 0.5 then
+    tell('back track')
+    hs.alert(' ⇤', 0.5)
+    return
+  end
+  local updated = position - 10
+  if updated < 0 then updated = 0 end
   tell('set player position to '..updated)
-  local message = (updated < 0) and ' ⇤' or ' ← '..formatSeconds(updated)
-  hs.alert(message, 0.5)
+  hs.alert(' ← '..formatSeconds(updated), 0.5)
 end
 
 function itunes.increaseVolume()
