@@ -1,7 +1,6 @@
 local resize   = require 'resize'
 local itunes   = require 'itunes'
 local screen   = require 'screen'
-local torrent  = require 'torrent'
 local chrome   = require 'chrome'
 local osx      = require 'osx'
 
@@ -116,9 +115,5 @@ hs.pathwatcher.new(os.getenv('HOME') .. '/.hammerspoon/', reloadConfig):start()
 -- Watch for Screen changes
 
 screen.watch()
-
--- Watch for Torrent changes
-
-torrent.watch()
 
 hs.alert('Hammerspoon Reloaded', 0.5)
