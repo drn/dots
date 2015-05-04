@@ -52,7 +52,7 @@ function left {
 function right {
   SEP="⮃"
   FIRST="$(echo $(date +'%l:%M%p') | tr '[:upper:]' '[:lower:]')"
-  SECOND="$(date +'%a %d') $SEP $(date +'%b %Y')"
+  SECOND="$(date +'%a %-d') $SEP $(date +'%b %Y')"
   THIRD="$(cpu)c $(memory)m $(battery)b"
   SEP="⮂"
   case $SIZE in
