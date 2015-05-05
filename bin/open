@@ -2,10 +2,23 @@
 
 # /usr/bin/open shim to allow default open targets
 
+# no argument defaults
 if [ "$#" -eq 0 ]; then
   if [ -n "$(ls | grep xcworkspace)" ]; then
+    # open xcworkspace if available
     /usr/bin/open *.xcworkspace
-    exit 0
+  else
+    # open the current folder in finder
+    /usr/bin/open .
   fi
+  exit 0
 fi
+
+# 'help' command
+if [ "$1" = "help" ]; then
+  /usr/bin/open
+  exit 0
+fi
+
+# fallback to defaults
 /usr/bin/open "$@"
