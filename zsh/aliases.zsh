@@ -9,6 +9,7 @@ alias doc='cd ~/Documents'
 alias docs='cd ~/Documents'
 alias down='cd ~/Downloads'
 alias root="cd $(git root)"
+alias logs="cd ~/.logs"
 
 # SSH Aliases
 alias dlc='ssh darrenli@darrenlincheng.com'
