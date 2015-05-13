@@ -22,6 +22,7 @@ alias swp='find . -iname "*.swp" | xargs rm'
 alias gitx='open -a ~/Applications/GitX.app .'
 alias light='open -a /Applications/LightPaper.app'
 alias update='. update'
+alias up="update"
 alias shrink='. shrink'
 alias unshrink='. unshrink'
 alias aud='vim ~/Dropbox/To\ Audrey.txt'
