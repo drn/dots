@@ -66,3 +66,9 @@ function Enter()
   echomsg "Set working directory to " . getcwd()
 endfunction
 noremap <silent> <leader>e :call Enter()<CR>
+
+function JsonFormat()
+  exec "'<,'>!python -m json.tool"
+  call Reindent()
+endfunction
+vmap <silent> JJ :call JsonFormat()<CR>
