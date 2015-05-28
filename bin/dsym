@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# Find dSYMs matching the input UUID
+
+UUID="$1"
+
+if [ -z "$UUID" ]; then
+  echo "Usage: dsym [UUID]"
+  exit 1
+fi
+
+cd /Users/darrencheng/Library/Developer/Xcode/Archives/
+find . -iname "*.app.dSYM" | while read dsym; do
+  dwarfdump --uuid "$dsym" | cut -d' ' -f2 | while read dsym_uuid; do
+    if [ "$dsym_uuid" = "$UUID" ]; then
+      folder="$(echo $dsym | sed "s/dSYMs\/.*.dSYM//g")dSYMs"
+      echo "Found in $folder"
+      open "$folder"
+    fi
+  done
+done
