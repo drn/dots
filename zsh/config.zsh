@@ -2,6 +2,7 @@
 ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets)
 
 # Override highlighter colors
+typeset -gA ZSH_HIGHLIGHT_STYLES
 ZSH_HIGHLIGHT_STYLES[default]=none
 ZSH_HIGHLIGHT_STYLES[unknown-token]=fg=red,bold
 ZSH_HIGHLIGHT_STYLES[reserved-word]=fg=green
@@ -47,9 +48,6 @@ HISTSIZE=10000
 
 # Initialize Z
 . /usr/local/etc/profile.d/z.sh
-
-# Disable tab completion
-compdef -d rake
 
 # Autoload tmux
 if [ "$TMUX" = "" ]; then tmuxinator start master; fi
