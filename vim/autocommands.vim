@@ -2,7 +2,7 @@
 au BufRead,BufNewFile gitconfig set filetype=gitconfig
 au BufRead,BufNewFile *.cfg set filetype=sh
 au BufRead,BufNewFile pryrc set filetype=ruby
-au BufRead,BufNewFile scratch-pad set filetype=ruby
+au BufRead,BufNewFile scratch-pad set filetype=txt
 
 " trim all whitespace on save
 autocmd BufWritePre * call TrimWhitespace()
