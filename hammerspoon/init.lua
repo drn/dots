@@ -3,6 +3,7 @@ local itunes   = require 'itunes'
 local screen   = require 'screen'
 local chrome   = require 'chrome'
 local osx      = require 'osx'
+local finder   = require 'finder'
 
 -- Window Management
 
@@ -100,6 +101,7 @@ hs.hotkey.bind({'ctrl', 'alt', 'cmd'}, 'o', function() hs.openConsole() end)
 -- OS Bindings
 
 hs.hotkey.bind({'ctrl', 'alt', 'cmd', 'shift'}, 'l', function() osx.screensaver() end)
+hs.hotkey.bind({'ctrl', 'alt', 'cmd'}, 'r', function() finder.refresh() end)
 
 -- Test Binding
 
