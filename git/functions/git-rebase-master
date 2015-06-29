@@ -1,0 +1,12 @@
+#!/bin/bash
+
+#
+# Rebase on top of upstream/master if it exists. Otherwise, attempts to rebase
+# on top of origin/master.
+#
+
+if [ -n "$(git remote | grep "upstream")" ]; then
+  git rebase upstream/master
+else
+  git rebase origin/master
+fi

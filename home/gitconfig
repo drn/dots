@@ -64,7 +64,7 @@
   # better blame
   changes = !"git log --follow -p "
   # rebase on upstream/master
-  rbm = !"git rb upstream/master"
+  rbm = rebase-master
   # rebase on most recent ancestor
   rbr = rebase-relevant
   # hard reset to master
