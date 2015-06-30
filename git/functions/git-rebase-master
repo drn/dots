@@ -6,7 +6,7 @@
 #
 
 if [ -n "$(git remote | grep "upstream")" ]; then
-  git rebase upstream/master
+  git rebase upstream/master $1
 else
-  git rebase origin/master
+  git rebase origin/master $1
 fi
