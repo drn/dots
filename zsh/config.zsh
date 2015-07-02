@@ -26,7 +26,7 @@ ZSH_HIGHLIGHT_STYLES[back-double-quoted-argument]=fg=cyan
 ZSH_HIGHLIGHT_STYLES[assign]=none
 
 # Set default shell editor
-export EDITOR='vim'
+export EDITOR='nvim'
 
 # Colorize man pages
 export LESS_TERMCAP_mb=$'\E[01;31m'       # begin blinking
