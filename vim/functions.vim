@@ -71,7 +71,7 @@ function JsonFormat()
   exec "'<,'>!python -m json.tool"
   call Reindent()
 endfunction
-vmap <silent> JJ :call JsonFormat()<CR>
+vmap <silent> F :call JsonFormat()<CR>
 
 function ToggleZoomPane()
   let wincount = winnr('$')
