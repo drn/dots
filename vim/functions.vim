@@ -72,3 +72,16 @@ function JsonFormat()
   call Reindent()
 endfunction
 vmap <silent> JJ :call JsonFormat()<CR>
+
+function ToggleZoomPane()
+  let wincount = winnr('$')
+  if wincount > 1
+    tab split
+  else
+    let tabcount = tabpagenr('$')
+    if tabcount > 1
+      quit
+    end
+  end
+endfunction
+nmap <silent> ;z :call ToggleZoomPane()<CR>

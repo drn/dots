@@ -5,7 +5,7 @@ let g:lightline = {
 \   'active': {
 \     'left': [
 \       [ 'mode', 'paste' ],
-\       [ 'fugitive', 'ctrlp', 'filename', 'zoomwin' ]
+\       [ 'fugitive', 'ctrlp', 'filename', 'zoompane' ]
 \     ],
 \     'right': [
 \       [ 'syntastic', 'lineinfo' ],
@@ -33,7 +33,7 @@ let g:lightline = {
 \     'fileencoding': 'LightlineFileencoding',
 \     'ctrlp': 'LightlineCtrlP',
 \     'mode': 'LightlineMode',
-\     'zoomwin': 'LightlineZoomWinIndicator'
+\     'zoompane': 'LightlineZoomPaneIndicator'
 \   },
 \   'component_expand': {
 \     'syntastic': 'SyntasticStatuslineFlag'

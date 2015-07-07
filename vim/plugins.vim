@@ -44,7 +44,6 @@ Plug 'drn/vim-turbux'
 " Lazy-load plugins
 Plug 'scrooloose/nerdtree', { 'on': [ 'NERDTreeToggle', 'NERDTreeFind' ] }
 Plug 'sjl/gundo.vim', { 'on': 'GundoToggle' }
-Plug 'drn/zoomwin-vim', { 'on': 'ZoomWin' }
 Plug 'rking/ag.vim', { 'on': 'Ag' }
 Plug 'airblade/vim-gitgutter', { 'on': 'GitGutterToggle' }
 Plug 'derekwyatt/vim-fswitch', { 'on': 'FSHere' }
