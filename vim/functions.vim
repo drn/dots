@@ -79,7 +79,8 @@ function ToggleZoomPane()
     tab split
   else
     let tabcount = tabpagenr('$')
-    if tabcount > 1
+    let currenttab = tabpagenr()
+    if tabcount > 1 && currenttab == tabcount
       quit
     end
   end
