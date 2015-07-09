@@ -101,6 +101,8 @@
   rn = branch -m
   sync = !"git push origin upstream/master:master -f"
   s = !"git sync"
+  pt = push --tags
+  ptu = push --tags upstream
 
 [user]
   name = Darren Cheng
