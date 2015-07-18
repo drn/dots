@@ -24,19 +24,18 @@ updated = ->{ "#{prefix}#{major}.#{minor}.#{patch}" }
 case ARGV[0]
 when "major"
   major += 1
+  minor = 0
+  patch = 0
 when "minor"
   minor += 1
+  patch = 0
 when "patch"
   patch += 1
 end
 
 if updated.call != tag
-  print "Update #{tag} to #{updated.call}? (y/n) "
-  confirm = $stdin.gets
-  if confirm[0] == 'y'
-    `git tag -a #{updated.call} -m ''`
-    puts "Updated to #{updated.call}"
-  end
+  puts "Updating from #{tag} to #{updated.call}"
+  `git tag -a #{updated.call} -m ''`
 else
   puts "Current version is #{tag}"
 end
