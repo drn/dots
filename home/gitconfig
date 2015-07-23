@@ -68,7 +68,7 @@
   # rebase on most recent ancestor
   rbr = rebase-relevant
   # hard reset to master
-  rhm = !"git reset --hard upstream/master"
+  rhm = reset-hard-master
   # hard reset to ancestor
   rhr = reset-relevant
   # git branches

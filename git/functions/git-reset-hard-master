@@ -1,0 +1,20 @@
+#!/bin/bash
+
+# Resets hard to upstream/master or origin/master
+
+remotes="$(git remote)"
+
+if [ -n "$(echo $remotes | grep upstream)" ]; then
+  echo "Resetting to upstream/master..."
+  git reset --hard upstream/master
+  exit 0
+fi
+
+if [ -n "$(echo $remotes | grep origin)" ]; then
+  echo "Resetting to origin/master..."
+  git reset --hard origin/master
+  exit 0
+fi
+
+echo "Neither `upstream` or `origin` exist in this repository."
+exit 1
