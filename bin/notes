@@ -6,7 +6,7 @@
 
 mkdir -p ~/.notes
 if [ -z "$1" ]; then
-  vim ~/.notes
+  $EDITOR ~/.notes
 else
-  vim ~/.notes/$1
+  $EDITOR ~/.notes/$1
 fi
