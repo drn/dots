@@ -47,6 +47,7 @@ install jq
 install ngrok
 install gource
 install ffmpeg
+install cv
 
 # science
 install r
