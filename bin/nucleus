@@ -11,7 +11,7 @@ elif [ "$1" = "off" ]; then
   bundle config --delete local.nucleus
   exit 0
 elif [ "$1" = "update" ] || [ "$1" = "up" ]; then
-  echo -e "\033[0;31mUpdating...\033[0m"
+  echo -e "\033[0;32mUpdating...\033[0m"
   bundle update nucleus
   exit 0
 fi
