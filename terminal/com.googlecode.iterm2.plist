@@ -947,9 +947,9 @@
 	<key>NSColorPickerSlidersDefaults</key>
 	<string>1</string>
 	<key>NSNavLastRootDirectory</key>
-	<string>~/Development/dotfiles/terminal</string>
+	<string>~/Documents</string>
 	<key>NSNavPanelExpandedSizeForSaveMode</key>
-	<string>{712, 448}</string>
+	<string>{712, 532}</string>
 	<key>NSNavPanelExpandedStateForSaveMode</key>
 	<true/>
 	<key>NSQuotedKeystrokeBinding</key>
@@ -978,9 +978,9 @@
 	<key>NSWindow Frame NSColorPanel</key>
 	<string>307 274 266 310 0 0 1440 878 </string>
 	<key>NSWindow Frame Preferences</key>
-	<string>172 184 924 485 0 0 1440 900 </string>
+	<string>172 174 924 485 0 0 1440 877 </string>
 	<key>NSWindow Frame iTerm Window 0</key>
-	<string>0 4 1440 873 0 0 1440 900 </string>
+	<string>0 0 1440 900 0 0 1440 877 </string>
 	<key>NSWindow Frame iTerm Window 1</key>
 	<string>0 414 650 452 0 0 1440 900 </string>
 	<key>NSWindow Frame iTerm Window 2</key>
@@ -2542,6 +2542,10 @@
 	<true/>
 	<key>NoSyncDoNotWarnBeforeMultilinePaste_selection</key>
 	<integer>0</integer>
+	<key>NoSyncTimeOfLastPromo</key>
+	<real>454872685.84376198</real>
+	<key>NoSyncTimeOfLastPromoDownload</key>
+	<real>461485603.52666998</real>
 	<key>OnlyWhenMoreTabs</key>
 	<true/>
 	<key>OpenArrangementAtStartup</key>
@@ -2612,7 +2616,7 @@
 	<key>SUHasLaunchedBefore</key>
 	<true/>
 	<key>SULastCheckTime</key>
-	<date>2015-01-20T18:15:55Z</date>
+	<date>2015-08-17T06:26:43Z</date>
 	<key>SavePasteHistory</key>
 	<false/>
 	<key>Secure Input</key>
@@ -2621,6 +2625,8 @@
 	<false/>
 	<key>ShowBookmarkName</key>
 	<false/>
+	<key>ShowFullScreenTabBar</key>
+	<true/>
 	<key>ShowPaneTitles</key>
 	<true/>
 	<key>SmartPlacement</key>
@@ -2662,6 +2668,6 @@
 	<key>findRegex_iTerm</key>
 	<false/>
 	<key>iTerm Version</key>
-	<string>2.0</string>
+	<string>2.1.1</string>
 </dict>
 </plist>
