@@ -100,13 +100,25 @@ hs.hotkey.bind({'ctrl', 'alt', 'cmd'}, 'o', function() hs.openConsole() end)
 
 -- OS Bindings
 
-hs.hotkey.bind({'ctrl', 'alt', 'cmd', 'shift'}, 'l', function() osx.screensaver() end)
-hs.hotkey.bind({'ctrl', 'alt', 'cmd'}, 'r', function() finder.refresh() end)
+hs.hotkey.bind({'ctrl', 'alt', 'cmd', 'shift'}, 'l', function()
+  osx.screensaver()
+end)
+hs.hotkey.bind({'ctrl', 'alt', 'cmd'}, 'r', function()
+  finder.refresh()
+end)
+hs.hotkey.bind({'ctrl', 'alt', 'cmd'}, 'i', function()
+  if hs.execute('networksetup -getairportpower en0 | grep On') == '' then
+    hs.alert.show('Turning WiFi on...', 0.5)
+    os.execute('networksetup -setairportpower en0 on')
+  else
+    hs.alert.show('Turning WiFi off...', 0.5)
+    os.execute('networksetup -setairportpower en0 off')
+  end
+end)
 
 -- Test Binding
 
 hs.hotkey.bind({'ctrl', 'alt', 'cmd'}, 'j', function()
-  -- TODO
 end)
 
 -- Auto-reload configuration
