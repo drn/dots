@@ -90,7 +90,7 @@ end)
 
 hs.hotkey.bind({'ctrl', 'cmd'}, '/', function()
   local date = os.date('%A, %h %e')
-  local time = os.date('%H:%M%p'):gsub('^0',''):lower()
+  local time = os.date('%I:%M%p'):gsub('^0',''):lower()
   hs.alert(time..' - '..date, 2.5)
 end)
 
