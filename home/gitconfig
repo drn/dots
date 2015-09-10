@@ -105,6 +105,7 @@
   s = !"git sync"
   pt = push --tags
   ptu = push --tags upstream
+  ta = tag-after
 
 [user]
   name = Darren Cheng

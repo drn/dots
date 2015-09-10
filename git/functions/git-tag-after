@@ -1,0 +1,26 @@
+#!/bin/bash
+
+#
+# Displays the description of the tag immediately after the input commit
+#
+
+if [ "$#" -ne 1 ]; then
+  echo "Usage: git tag-after commit-hash"
+  exit 0
+fi
+
+tag=$(git tag --contains $1 2>/dev/null)
+
+if [ $? -ne 0 ]; then
+  echo -e "\033[0;31mUnknown commit \033[1;97m$1\033[0;31m specified\033[0m"
+  exit 0
+fi
+
+tag=$(echo $tag | sed 's/ .*//g')
+
+if [ -z "$tag" ]; then
+  echo -e "\033[0;31mNo tags exist after commit \033[1;97m$1\033[0m"
+  exit 0
+fi
+
+git --no-pager show $tag
