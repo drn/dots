@@ -1,0 +1,73 @@
+# vim:set sw=2 ts=2 et:
+
+# Variables
+set horizontal-scroll = 33%
+set line-graphics = yes
+
+# Views
+set blame-view  = date:default author:full file-name:auto id:yes,color line-number:no,interval=5 text
+set grep-view   = file-name:no line-number:yes,interval=1 text
+set main-view   = line-number:no,interval=5 id:yes date:no author:full commit-title:yes,graph,refs,overflow=no
+set refs-view   = date:default author:full ref commit-title
+set stash-view  = line-number:no,interval=5 id:no date:default author:full commit-title
+set status-view = line-number:no,interval=5 status:short file-name
+set tree-view   = line-number:no,interval=5 mode author:full file-size date:default id:no file-name
+
+# Colors
+# color cursor black blue bold reverse
+# color status white default
+# color title-focus white black
+# color date yellow default
+# color author green default
+# color main-head magenta default
+# color main-tag yellow default
+# color stat-staged green default
+# color stat-unstaged red default
+# color stat-untracked yellow default
+# color tree.header white default
+# color tree.directory cyan default
+
+# # Bindings
+
+# ## Generic
+# bind generic F !git fetch
+# bind generic Y !@csh -c "echo -n %(commit) | pbcopy"
+
+# ## Main
+# bind main ! !git revert %(commit)
+# bind main C !?git checkout %(commit)
+# bind main H !?git reset --hard %(commit)
+# bind main R !git rebase -i --autosquash %(commit)^
+# bind main P !git cherry-pick %(commit)
+# bind main F !@sh -c "git show %(commit) --pretty=format: --name-only | xargs | xsel -ib"
+# bind main E !<sh -c "vim -c 'Gedit %(commit)' $(ls | head -1)"
+# bind main V !<sh -c "vim $(git show %(commit) --pretty=format: --name-only | xargs)"
+
+# ## Diff
+# bind diff <Up> move-up
+# bind diff <Down> move-down
+# # Edit all files of commit
+# bind diff A !git add %(file)              # Add current file
+# bind diff C !git commit -av               # Add and commit
+# bind diff P !git add -p %(file)           # Partially add current file
+# bind diff F !@sh -c "git show %(commit) --pretty=format: --name-only | xargs | xsel -ib"
+# bind diff E !<sh -c "vim -c 'Gedit %(commit)' $(ls | head -1)"
+# bind diff V !<sh -c "vim $(git show %(commit) --pretty=format: --name-only | xargs)"
+
+# ## Tree
+# bind tree V !vim %(file)
+
+# ## Branch
+# bind branch N !@git branch %(prompt)
+# bind branch C !@git co %(branch)
+# bind branch R !@git rebase
+# bind branch D !@git branch -D %(branch)
+
+# ## Status
+# bind status R !@git reset HEAD %(file)
+# bind status A !@git commit --amend
+# bind status N !@git add -N %(file)
+
+# ## Stage
+# bind stage 1 stage-update-line # Stage a single line
+# bind stage C !@git commit # Commit staging changes
