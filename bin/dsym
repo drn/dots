@@ -9,7 +9,7 @@ if [ -z "$UUID" ]; then
   exit 1
 fi
 
-cd /Users/darrencheng/Library/Developer/Xcode/Archives/
+cd $HOME/Library/Developer/Xcode/Archives/
 find . -iname "*.app.dSYM" | while read dsym; do
   dwarfdump --uuid "$dsym" | cut -d' ' -f2 | while read dsym_uuid; do
     if [ "$dsym_uuid" = "$UUID" ]; then
