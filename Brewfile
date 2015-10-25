@@ -12,7 +12,7 @@ tap caskroom/homebrew-cask
 install brew-cask
 install rbenv
 install ruby-build
-install tmux
+install tmux --HEAD
 install zsh
 install memcached
 install the_silver_searcher
