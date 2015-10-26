@@ -13,7 +13,6 @@ sudo rm -rf "$HOME/bin"
 # git configuration
 sudo rm -rf "$HOME/.git-extensions"
 # ~ files and directories
-sudo rm -rf "$HOME/.tmuxinator"
 sudo rm -rf "$HOME/.bash_profile"
 sudo rm -rf "$HOME/.gemrc"
 sudo rm -rf "$HOME/.gitconfig"

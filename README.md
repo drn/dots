@@ -99,8 +99,6 @@ Terminal utilities and system tools are installed via the
     * [pow.cx](http://pow.cx) - zero-config rack server
     * [jira-cli](http://rubygems.org/gems/jira-cli) - JIRA workflow management
       CLI
-    * [tmuxinator](https://github.com/tmuxinator/tmuxinator) - tmux session
-      management
 
 ### Fonts
 

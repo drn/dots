@@ -52,8 +52,8 @@ alias ff="fuzzy-find"
 alias fff="fuzzy-find-file"
 alias nuc="nucleus"
 alias ver="version"
+alias smux="tmux-start"
 
-# Tmuxinator Aliases
-alias mxm='mux master'
-alias mxv='mux vertical'
-alias mxd='mux dots'
+# tmux-start shortcuts
+alias mxm='tmux-start master'
+alias mxv='tmux-start vertical'

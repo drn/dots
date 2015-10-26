@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# Automate tmux session start-up
+
+if [ "$#" -ne 1 ]; then
+  echo "Usage: tmux-start [session-name]"
+fi
+
+SESSION="$1"
+
+tmux new-session -d -s $SESSION 2>/dev/null
+
+if [ $? -eq 0 ]; then
+  (tmux send-keys -t $SESSION "cd ~/Development/work/thanx-core; clear" C-m) &
+fi
+
+if [ -n "$TMUX" ]; then
+  tmux switch-client -t $SESSION
+else
+  tmux attach -t $SESSION
+fi

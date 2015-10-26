@@ -50,7 +50,7 @@ HISTSIZE=10000
 . /usr/local/etc/profile.d/z.sh
 
 # Autoload tmux
-if [ "$TMUX" = "" ]; then tmuxinator start master; fi
+if [ "$TMUX" = "" ]; then smux master; fi
 
 # Autoload fzf
 source ~/.fzf.zsh

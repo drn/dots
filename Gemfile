@@ -1,7 +1,6 @@
 source 'http://rubygems.org'
 
 gem 'jira-cli'
-gem 'tmuxinator'
 gem 'foreman'
 gem 'powder'
 gem 'cocoapods'
