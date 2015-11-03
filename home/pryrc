@@ -55,7 +55,7 @@ Pry.config.prompt = proc do |object, nest_level, _|
   prompt << colors[:blue]
   if ENV.key?('PROMPT_NAME')
     prompt << ENV['PROMPT_NAME']
-  elsif defined?(Rails)
+  elsif defined?(Rails) && Rails.respond_to?(:application)
     prompt << Rails.application.class.name.gsub('::Application','')
   else
     prompt << RUBY_VERSION.to_s
