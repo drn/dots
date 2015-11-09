@@ -124,3 +124,5 @@
   templatedir = ~/.dots/git/templates
 [remotes]
 	default = origin upstream
+[push]
+	default = matching
