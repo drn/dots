@@ -35,6 +35,7 @@ alias secure='v ~/.secure'
 alias todo='notes todo'
 alias pad='notes scratch-pad'
 alias note='notes note'
+alias think="tmux rename-window 'thoughts'; notes thoughts"
 alias v.='vim .'
 alias v='vim'
 alias vn='vim -u NONE'
