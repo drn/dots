@@ -48,6 +48,7 @@ install ngrok
 install gource
 install ffmpeg
 install cv
+install neovim/neovim/neovim
 
 # science
 install r
