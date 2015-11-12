@@ -2,7 +2,8 @@ apiKey   = '5c363c151c2e6b9771a727ff556ab69b' # developer.forecast.io
 location = '37.771971,-122.425316'            # 100 Laguna St., SF
 exclude  = "minutely,hourly,alerts,flags"
 
-primaryColor   = "#151535"
+# primaryColor   = "#151535" # dark blue
+primaryColor   = "#AAA" # light gray
 
 command: "curl -sS 'https://api.forecast.io/forecast/#{apiKey}/#{location}?units=auto&exclude=#{exclude}' 2>/dev/null"
 
