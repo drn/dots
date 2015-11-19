@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #
-# Push the input branch (or current branch if none is specified) upstream
+# Pushes the current branch upstream
 #
 
 if [ -z "$(git remote | grep upstream)" ]; then
@@ -9,10 +9,7 @@ if [ -z "$(git remote | grep upstream)" ]; then
   exit 1
 fi
 
-branch=$1
-if [ -z "$branch" ]; then
-  branch="$(git symbolic-ref --short HEAD)"
-fi
+branch="$(git symbolic-ref --short HEAD)"
 
-echo "Pushing $branch upstream..."
-git push upstream $branch
+echo "Pushing local \`$branch\` to upstream/$branch..."
+git push upstream $branch $1
