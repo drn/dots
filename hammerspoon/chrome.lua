@@ -19,6 +19,14 @@ local function tell(cmd)
   return result
 end
 
+function chrome.openProfileMenu()
+  local app = hs.application.applicationsForBundleID('com.google.Chrome')[1]
+  if app ~= nil then
+    app:activate()
+    app:selectMenuItem({'People'})
+  end
+end
+
 function chrome.nextProfile()
   local app = hs.application.applicationsForBundleID('com.google.Chrome')[1]
   if app ~= nil then

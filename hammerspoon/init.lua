@@ -81,7 +81,9 @@ end)
 
 -- Chrome
 
-hs.hotkey.bind({'ctrl', 'alt', 'cmd'}, 'n', function() chrome.nextProfile() end)
+hs.hotkey.bind({'ctrl', 'alt', 'cmd'}, 'n', function()
+  chrome.openProfileMenu()
+end)
 hs.hotkey.bind({'ctrl', 'alt', 'cmd', 'shift'}, 'n', function()
   chrome.swapProfile()
 end)
