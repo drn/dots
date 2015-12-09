@@ -1,0 +1,16 @@
+#!/bin/bash
+
+#
+# Converts a shallow-cloned single-branch repository to a full-depth
+# multi-branch repository.
+#
+
+echo "Ensure no remotes are configured as single-branch..."
+remotes=(`git remote`)
+for remote in ${remotes[@]}; do
+  echo "  * $remote"
+  git config remote.$remote.fetch "+refs/heads/*:refs/remotes/$remote/*"
+done
+
+echo "Ensure repository is not a shallow clone..."
+[[ ! -s "$(git rev-parse --git-dir)/shallow" ]] || git fetch --unshallow >/dev/null
