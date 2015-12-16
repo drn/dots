@@ -1,13 +1,11 @@
 # Jump Aliases
-alias dots='cd ~/.dots'
-alias dsk='cd ~/Desktop'
-alias db='cd ~/Dropbox'
-alias tdb='cd ~/Documents/Thanx/Dropbox\ \(Thanx\)'
-alias dev='cd ~/Development'
+alias dots='tmux rename-window dots; cd ~/.dots'
+alias dsk='tmux rename-window desktop; cd ~/Desktop'
+alias dev='tmux rename-window dev; cd ~/Development'
 alias work='cd ~/Development/work'
 alias doc='cd ~/Documents'
 alias docs='cd ~/Documents'
-alias down='cd ~/Downloads'
+alias down='tmux rename-window downloads; cd ~/Downloads'
 alias logs="cd ~/.logs"
 
 # SSH Aliases
@@ -32,10 +30,10 @@ alias o='open'
 alias o.='open .'
 alias binstubs='bundle install --binstubs .bundle/bin'
 alias secure='v ~/.secure'
-alias todo="tmux rename-window 'todo'; notes todo"
+alias todo='tmux rename-window todo; notes todo'
 alias pad='notes scratch-pad'
 alias note='notes note'
-alias think="tmux rename-window 'thoughts'; notes thoughts"
+alias think='tmux rename-window thoughts; notes thoughts'
 alias v.='vim .'
 alias v='vim'
 alias vn='vim -u NONE'
