@@ -86,3 +86,21 @@ function ToggleZoomPane()
   end
 endfunction
 nmap <silent> ;z :call ToggleZoomPane()<CR>
+
+function! GlobalReplace()
+  let find = input('Find: ')
+  if len(find) == 0
+    return
+  endif
+  let replace = input('Replace: ')
+  if len(replace) == 0
+    return
+  endif
+  let filematcher = input('File Matcher (**/*.rb): ')
+  if len(filematcher) == 0
+    return
+  endif
+  execute 'args `grep -nl ' . find . ' ' . filematcher . '`'
+  execute 'argdo %s/' . find . '/' . replace . '/ge | w'
+endfunction
+command! GlobalReplace call GlobalReplace()
