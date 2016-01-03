@@ -7,7 +7,7 @@ primaryColor   = "#AAA" # light gray
 
 command: "curl -sS 'https://api.forecast.io/forecast/#{apiKey}/#{location}?units=auto&exclude=#{exclude}' 2>/dev/null"
 
-refreshFrequency: 600000
+refreshFrequency: 60000
 
 svgNs: 'xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"'
 
