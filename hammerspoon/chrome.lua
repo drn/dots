@@ -23,7 +23,9 @@ function chrome.openProfileMenu()
   local app = hs.application.applicationsForBundleID('com.google.Chrome')[1]
   if app ~= nil then
     local url = tell('tell window 1 to URL of active tab')
-    hs.pasteboard.setContents(url)
+    if url ~= 'chrome://newtab/' then
+      hs.pasteboard.setContents(url)
+    end
     app:activate()
     app:selectMenuItem({'People'})
   end
