@@ -24,3 +24,4 @@ project.xcworkspace
 
 #user specific files to ignore
 .jira-auth
+.jira-cli
