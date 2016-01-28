@@ -18,7 +18,7 @@ REMOTES = {
     exceptions: { 'thanx-core' => 'thanx-web' }
   },
   fletch: { username: :fzf },
-  roy:    { username: :theElectricMiracleCat }
+  sean:   { username: :smcgee8 }
 }.freeze
 
 REPO = `git repo`.strip.freeze
