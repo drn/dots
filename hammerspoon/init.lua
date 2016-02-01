@@ -85,7 +85,7 @@ hs.hotkey.bind({'ctrl', 'alt', 'cmd'}, 'n', function()
   chrome.openProfileMenu()
 end)
 hs.hotkey.bind({'ctrl', 'alt', 'cmd', 'shift'}, 'n', function()
-  chrome.swapProfile()
+  chrome.copyUrl()
 end)
 
 -- Date & Time
