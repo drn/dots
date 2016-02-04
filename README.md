@@ -8,7 +8,7 @@
 
 Quick Installation
 
-    curl -s https://raw.github.com/drn/dotfiles/master/install/all.sh | sh
+    curl -s https://raw.githubusercontent.com/drn/dotfiles/master/install/all.sh | sh
 
 ## Overview
 
