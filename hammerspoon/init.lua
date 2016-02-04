@@ -4,6 +4,7 @@ local screen   = require 'screen'
 local chrome   = require 'chrome'
 local osx      = require 'osx'
 local finder   = require 'finder'
+local volume   = require 'volume'
 
 -- Window Management
 
@@ -116,6 +117,15 @@ hs.hotkey.bind({'ctrl', 'alt', 'cmd'}, 'i', function()
     hs.alert.show('Turning WiFi off...', 0.5)
     os.execute('networksetup -setairportpower en0 off')
   end
+end)
+
+-- Volume Bindings
+
+hs.hotkey.bind({'ctrl', 'cmd'}, 'up', function()
+  volume.increase()
+end)
+hs.hotkey.bind({'ctrl', 'cmd'}, 'down', function()
+  volume.decrease()
 end)
 
 -- Test Binding
