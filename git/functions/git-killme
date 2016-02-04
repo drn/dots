@@ -9,12 +9,6 @@ fi
 branch="$(git rev-parse --abbrev-ref HEAD)"
 fallback="root" # branch to transition to
 
-# prevent destruction of the master branch
-if [ $branch == "master" ]; then
-  echo "Cannot kill master"
-  exit 1
-fi
-
 # prevent destruction of uncommitted data
 if [ "$1" != "--force" ] && [ -z "$(git st | grep 'nothing to commit')" ]; then
   echo "Aborting deletion of branch '$branch'... uncommitted data."
@@ -22,13 +16,13 @@ if [ "$1" != "--force" ] && [ -z "$(git st | grep 'nothing to commit')" ]; then
 fi
 
 # remove branch from origin
-if [ "$(git branch --remote | grep origin/$branch)" ]; then
+if [ $branch != 'master' ] && [ "$(git branch --remote | grep origin/$branch)" ]; then
   echo "Deleting $branch from origin..."
   git push origin :$branch
 fi
 
 # remove branch from upstream
-if [ "$(git branch --remote | grep upstream/$branch)" ]; then
+if [ $branch != 'master' ] && [ "$(git branch --remote | grep upstream/$branch)" ]; then
   echo "Deleting $branch from upstream..."
   git push upstream :$branch
 fi
