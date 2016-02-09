@@ -1,83 +1,62 @@
-update
-upgrade
-
-# taps
-tap caskroom/homebrew-versions
-tap homebrew/homebrew-science
-tap homebrew/homebrew-versions
-tap homebrew/homebrew-dupes
-tap caskroom/homebrew-cask
-
 # formulae
-install brew-cask
-install rbenv
-install ruby-build
-install tmux --HEAD
-install zsh
-install memcached
-install the_silver_searcher
-install tig
-install tree
-install reattach-to-user-namespace
-install heroku-toolbelt
-install imagemagick
-install macvim --override-system-vim
-install hub
-install z
-install python3
-install gradle
-install phantomjs
-install lua
-install luarocks
-install htop-osx
-install postgresql
-install mysql
-postinstall mysql
-install hr
-install terminal-notifier
-install fswatch
-install openssl
-link openssl --force
-install go
-install redis
-install npm
-install mercurial
-install irssi
-install jq
-install ngrok
-install gource
-install ffmpeg
-install cv
-install neovim/neovim/neovim
-
-# science
-install r
+brew 'brew-cask'
+brew 'rbenv'
+brew 'ruby-build'
+brew 'tmux', args: [ '--HEAD' ]
+brew 'zsh'
+brew 'memcached'
+brew 'the_silver_searcher'
+brew 'tig'
+brew 'tree'
+brew 'reattach-to-user-namespace'
+brew 'heroku-toolbelt'
+brew 'imagemagick'
+brew 'macvim', args: [ '--override-system-vim' ]
+brew 'hub'
+brew 'z'
+brew 'python3'
+brew 'gradle'
+brew 'phantomjs'
+brew 'lua'
+brew 'luarocks'
+brew 'htop-osx'
+brew 'postgresql'
+brew 'mysql'
+brew 'hr'
+brew 'terminal-notifier'
+brew 'fswatch'
+brew 'openssl'
+brew 'go'
+brew 'redis'
+brew 'npm'
+brew 'mercurial'
+brew 'irssi'
+brew 'jq'
+brew 'ngrok'
+brew 'gource'
+brew 'ffmpeg'
+brew 'cv'
+brew 'neovim/neovim/neovim'
+brew 'homebrew/dupes/less'
 
 # casks
-cask install gitx-rowanj
-cask install whatpulse
-cask install iterm2-nightly
-cask install etrecheck
-cask install plex-home-theater
-cask install chicken
-cask install cocktail
-cask install flux
-cask install wunderlist
-cask install quicksilver
-cask install hipchat
-cask install mailplane
-cask install jumpcut
-cask install menumeters
-cask install beacon-scanner
-cask install mysqlworkbench
-cask install ubersicht
-cask install licecap
-cask install anybar
-cask install provisioning # .mobileprovision quicklook plugin
-
-# system dupes
-install homebrew/dupes/less
-
-# clean up
-cleanup -s
-cask cleanup
+cask 'rowanj-gitx'
+cask 'whatpulse'
+cask 'iterm2-nightly'
+cask 'etrecheck'
+cask 'plex-home-theater'
+cask 'chicken'
+cask 'cocktail'
+cask 'flux'
+cask 'wunderlist'
+cask 'quicksilver'
+cask 'hipchat'
+cask 'mailplane'
+cask 'jumpcut'
+cask 'menumeters'
+cask 'beacon-scanner'
+cask 'mysqlworkbench'
+cask 'ubersicht'
+cask 'licecap'
+cask 'anybar'
+cask 'provisioning' # .mobileprovision quicklook plugin

@@ -13,7 +13,7 @@ if ! hash brew 2>/dev/null; then
 fi
 
 # install Homebrew managed dependencies
-brew bundle $HOME/.dots/Brewfile
+brew bundle --file=$HOME/.dots/Brewfile
 ln -sfv /usr/local/opt/postgresql/*.plist ~/Library/LaunchAgents
 launchctl unload ~/Library/LaunchAgents/homebrew.mxcl.postgresql.plist
 launchctl load ~/Library/LaunchAgents/homebrew.mxcl.postgresql.plist
