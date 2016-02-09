@@ -1,0 +1,11 @@
+#!/bin/bash
+
+#
+# If no upstream branch exists, renames origin to upstream and adds origin
+# remote pointing to fork (eg. drn/:repo).
+#
+
+if [ -z "$(git remote | grep upstream)" ]; then
+  git remote rename origin upstream
+  git remote add origin git@github.com:drn/$(git repo).git
+fi
