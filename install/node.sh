@@ -5,3 +5,4 @@ npm install -g semver
 npm install -g bower
 npm install -g grunt-cli
 npm install -g underscore-cli
+npm install -g diff-so-fancy

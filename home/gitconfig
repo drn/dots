@@ -7,6 +7,7 @@
   excludesfile = ~/.gitignore
   editor = nvim -f
   preloadindex = true
+  pager = diff-highlight | diff-so-fancy | less --tabs=1,5 -R
 
 [alias]
   up = upstream
@@ -122,7 +123,9 @@
 
 [init]
   templatedir = ~/.dots/git/templates
+
 [remotes]
-	default = origin upstream
+  default = origin upstream
+
 [push]
-	default = matching
+  default = matching
