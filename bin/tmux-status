@@ -8,7 +8,7 @@
 if [[ "$#" -ne 2 || (
   "$1" != "left" && "$1" != "right" && "$1" != "center" && "$1" != "center-current"
   ) ]]; then
-  echo "Usage: tmux-status [left/right] [width]"
+  echo "Usage: tmux-status [left/right/center] [width]"
   exit 1
 fi
 
