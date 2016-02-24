@@ -9,11 +9,17 @@ end
 
 function volume.increase()
   device:setVolume(device:volume() + 6)
+  if device:muted() then
+    device:setMuted(false)
+  end
   display()
 end
 
 function volume.decrease()
   device:setVolume(device:volume() - 6)
+  if device:volume() == 0 then
+    device:setMuted(true)
+  end
   display()
 end
 
