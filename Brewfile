@@ -2,6 +2,7 @@
 brew 'brew-cask'
 brew 'rbenv'
 brew 'ruby-build'
+brew 'pyenv'
 brew 'tmux', args: [ '--HEAD' ]
 brew 'zsh'
 brew 'memcached'
