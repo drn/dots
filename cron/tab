@@ -1,1 +1,0 @@
-*/5 * * * * ~/.secure/feral-sync > ~/.logs/cron.log 2>&1
