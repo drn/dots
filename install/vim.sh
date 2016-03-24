@@ -23,6 +23,6 @@ rlink $HOME/.dots/vim $vim
 echo -e "\033[0;32mInstalling vim-plug\033[0m"
 curl -fLo $HOME/.vim/autoload/plug.vim --create-dirs $vimplug
 rm -f /tmp/vim-update-result
-nvim -c "PlugUpdate|set modifiable|4d|2d|2d|1d|execute line('$')|put=''|pu|w /tmp/vim-update-result|q|q|q|q"
+vim -c "PlugUpdate|set modifiable|4d|2d|2d|1d|execute line('$')|put=''|pu|w /tmp/vim-update-result|q|q|q|q"
 cat /tmp/vim-update-result
 rm -f /tmp/vim-update-result
