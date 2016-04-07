@@ -47,7 +47,7 @@ alias vimsync="bash $DOTS/install/vim.sh"
 alias ff="fuzzy-find"
 alias fff="fuzzy-find-file"
 alias nuc="nucleus"
-alias ver="version"
+alias ver="thanx version"
 alias smux="tmux-start"
 alias t='thanx'
 
