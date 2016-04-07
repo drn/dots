@@ -49,6 +49,7 @@ alias fff="fuzzy-find-file"
 alias nuc="nucleus"
 alias ver="version"
 alias smux="tmux-start"
+alias t='thanx'
 
 # tmux-start shortcuts
 alias mxm='tmux-start master'
