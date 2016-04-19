@@ -3,7 +3,7 @@ local screen = {}
 local watcher = nil
 local lastCount = nil
 
-local function screenCount() return #hs.screen:allScreens() end
+local function screenCount() return #hs.screen.allScreens() end
 
 local function handleCountChange(count)
   if count == 1 then

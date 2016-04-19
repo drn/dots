@@ -12,7 +12,7 @@ local function isRunning()
   local _cmd = 'tell application "System Events" to (name of processes)'..
                ' contains "iTunes"'
   local _ok, result = as.applescript(_cmd)
-  return result:match('true') ~= nil
+  return result
 end
 
 local function formatSeconds(seconds)

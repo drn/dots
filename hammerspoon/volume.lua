@@ -4,7 +4,7 @@ local device = hs.audiodevice.defaultOutputDevice()
 
 local function display()
   hs.alert.closeAll(0)
-  hs.alert.show(device:volume()..'% ♬', 0.5)
+  hs.alert.show(math.floor(device:volume() + 0.5)..'% ♬', 0.5)
 end
 
 function volume.increase()
