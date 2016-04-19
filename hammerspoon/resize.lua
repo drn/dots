@@ -1,7 +1,7 @@
 local resize = {}
 
 local function isIterm(win)
-  return (win:application():title() == 'iTerm')
+  return (win:application():title() == 'iTerm2')
 end
 
 local function frameForUnit(baseframe, unit)
