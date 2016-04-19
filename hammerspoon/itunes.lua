@@ -34,6 +34,11 @@ local function duration()
   return currentPosition ~= nil and currentPosition or 0
 end
 
+local function display(message)
+  hs.alert.closeAll(0)
+  hs.alert.show(message, 0.5)
+end
+
 function itunes.next()
   if not isRunning() then return end
   hs.itunes.next()
@@ -43,59 +48,58 @@ end
 function itunes.previous()
   if not isRunning() then return end
   tell('back track')
-  hs.alert.show(' ⇤', 0.5)
+  display(' ⇤')
 end
 
 function itunes.forward()
   if not isRunning() then return end
   local updated = position() + 10
   tell('set player position to '..updated)
-  message = (position() < updated) and ' ⇥' or ' → '..formatSeconds(updated)
-  hs.alert(message, 0.5)
+  message = (position() < math.floor(updated)) and ' ⇥' or ' → '..formatSeconds(updated)
+  display(message)
 end
 
 function itunes.backward()
   if not isRunning() then return end
   local position = position()
   if position < 0.5 then
-    tell('back track')
-    hs.alert(' ⇤', 0.5)
+    itunes.previous()
     return
   end
   local updated = position - 10
   if updated < 0 then updated = 0 end
   tell('set player position to '..updated)
-  hs.alert(' ← '..formatSeconds(updated), 0.5)
+  display(' ← '..formatSeconds(updated))
 end
 
 function itunes.increaseVolume()
   if not isRunning() then return end
   tell('set sound volume to '..tonumber(tell('sound volume')) + 10)
-  hs.alert(' ↑ '..tell('sound volume')..'%', 0.5)
+  display(' ↑ '..tell('sound volume')..'%')
 end
 
 function itunes.decreaseVolume()
   if not isRunning() then return end
   tell('set sound volume to '..tonumber(tell('sound volume')) - 10)
-  hs.alert(' ↓ '..tell('sound volume')..'%', 0.5)
+  display(' ↓ '..tell('sound volume')..'%')
 end
 
 function itunes.maxVolume()
   if not isRunning() then return end
   tell('set sound volume to 100')
-  hs.alert(' ↑ 100%', 0.5)
+  display(' ↑ 100%')
 end
 
 function itunes.minVolume()
   if not isRunning() then return end
   tell('set sound volume to 0')
-  hs.alert(' ↓ 0%', 0.5)
+  display(' ↓ 0%')
 end
 
 function itunes.playpause()
   tell('playpause')
   icon = (tell('player state as string') == 'playing') and ' ▶' or ' ◼'
-  hs.alert(icon, 0.5)
+  display(icon)
 end
 
 function itunes.display()
@@ -108,6 +112,7 @@ function itunes.display()
   percent = math.floor(current / total * 100 + 0.5)
   time   = formatSeconds(current)..'  ('..percent..'%)'..'\n'..formatSeconds(total)
   info   = track..'\n'..album..'\n'..artist..'\n'..time
+  hs.alert.closeAll(0)
   hs.alert.show(info, 1.75)
 end
 
