@@ -42,7 +42,7 @@ end
 function itunes.next()
   if not isRunning() then return end
   hs.itunes.next()
-  hs.alert.show(' ⇥', 0.5)
+  display(' ⇥')
 end
 
 function itunes.previous()
