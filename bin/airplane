@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# Power-saving airplane mode
+
+# kill extraneous apps
+echo -e '\033[0;34mTerminating extraneous applications...\033[0m'
+killall Dropbox 2>/dev/null
+killall Screenhero 2>/dev/null
+killall 'Google Drive' 2>/dev/null
+killall Übersicht 2>/dev/null
+killall Caffeine 2>/dev/null
+killall CCMenu 2>/dev/null
+
+# turn off wifi
+echo -e '\033[0;34mTurning off wifi...\033[0m'
+networksetup -setairportpower en0 off

@@ -50,6 +50,7 @@ alias nuc="thanx nucleus"
 alias ver="thanx version"
 alias smux="tmux-start"
 alias t='thanx'
+alias plane='airplane'
 
 # tmux-start shortcuts
 alias mxm='tmux-start master'
