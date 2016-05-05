@@ -32,5 +32,6 @@ if [ "$ZSHENV_SOURCED" != "true" ]; then
   # Set default Postgres host and port
   export PGHOST=localhost
   export PGPORT=5432
-
+  export LANG=en_US.UTF-8
+  export LC_ALL=en_US.UTF-8
 fi
