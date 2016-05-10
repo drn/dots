@@ -19,6 +19,11 @@ done
 echo -e "\033[0;32mLinking all vim configuration files...\033[0m"
 rlink $HOME/.dots/vim $vim
 
+# ensure neovim directories exist
+mkdir -p ${XDG_CONFIG_HOME:=$HOME/.config}
+ln -s $vim $XDG_CONFIG_HOME/nvim
+ln -s $HOME/.vimrc $XDG_CONFIG_HOME/nvim/init.vim
+
 # install vim-plug and bundles
 echo -e "\033[0;32mInstalling vim-plug\033[0m"
 curl -fLo $HOME/.vim/autoload/plug.vim --create-dirs $vimplug
