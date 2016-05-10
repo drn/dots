@@ -36,6 +36,12 @@ defaults write com.apple.dock showhidden -bool true
 echo "Setting Notification Center banner display time"
 defaults write com.apple.notificationcenterui bannerTime 2.5
 
+echo "Disabling autocorrect"
+defaults write -g NSAutomaticSpellingCorrectionEnabled -bool false
+
+echo "Disable natural scroll"
+defaults write NSGlobalDomain com.apple.swipescrolldirection -bool false
+
 # ensure changes take effect immediately
 killall Dock
 killall Finder
