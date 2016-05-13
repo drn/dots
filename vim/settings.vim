@@ -1,5 +1,3 @@
-" use old regexp engine
-set regexpengine=1
 " use VIM settings, not vi settings
 set nocompatible
 " enable syntax highlighting
