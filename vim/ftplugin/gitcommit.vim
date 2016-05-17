@@ -5,3 +5,6 @@ if exists('+colorcolumn')
 else
   au BufWinEnter * let w:m2=matchadd('ErrorMsg', '\%>50v.\+', -1)
 endif
+
+highlight OverLength ctermbg=red ctermfg=white guibg=#592929
+match OverLength /\%73v.\+/
