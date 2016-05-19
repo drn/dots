@@ -7,7 +7,9 @@ if [ $? -ne 0 ]; then exit 1; fi
 echo ""
 
 # rename current tmux window
-tmux rename-window 'update'
+if [ "$TERM" = "screen" ] && [ -n "$TMUX" ]; then
+  tmux rename-window 'update'
+fi
 
 # ensure most recent crontab is being used
 echo "\033[0;34mEnsuring cron job installation...\033[0m"
