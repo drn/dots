@@ -107,6 +107,7 @@
   pt = push --tags
   ptu = push --tags upstream
   ta = tag-after
+  rpu = remote prune upstream
 
 [user]
   name = Darren Cheng
