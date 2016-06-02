@@ -1,14 +1,20 @@
-#!/bin/bash
+#!/usr/bin/env ruby
 
 #
-# Fetches from upstream remote if it exists. Otherwise, origin.
+# Fetches from input remote, upstream if it exists, origin otherwise.
 #
 
-if [ "$(git remote | grep upstream)" ]; then
-  echo "Fetching upstream changes..."
-  git fetch upstream
-else
-  echo "Fetching origin changes..."
-  git fetch
-fi
+if !ARGV[0].nil?
+  puts "Fetching #{ARGV[0]} changes..."
+  system("git fetch #{ARGV[0]}")
+  exit
+end
 
+if !`git remote | grep upstream`.empty?
+  puts "Fetching upstream changes..."
+  system('git fetch upstream')
+  exit
+end
+
+puts "Fetching origin changes..."
+system('git fetch')
