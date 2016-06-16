@@ -11,9 +11,15 @@ function osx.screensaver()
 end
 
 function osx.lock()
-  hs.alert.show("locking system...")
+  hs.alert.show("Locking...")
   sleep()
   os.execute("/System/Library/CoreServices/Menu\\ Extras/User.menu/Contents/Resources/CGSession -suspend")
+end
+
+function osx.sleep()
+  hs.alert.show("Sleeping...")
+  sleep()
+  os.execute("pmset sleepnow")
 end
 
 return osx
