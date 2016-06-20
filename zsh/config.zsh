@@ -51,7 +51,7 @@ HISTSIZE=10000
 # Auto-rename tmux window
 function _z_wrapper() {
   _z $1
-  if [ "$TERM" = "screen" ] && [ -n "$TMUX" ]; then
+  if [[ "$TERM" = "screen"* ]] && [ -n "$TMUX" ]; then
     if [ -n "$1" ]; then
       if [[ $PWD == *"/thanx-"* ]]; then
         if [ "$(tmux display-message -p '#{window_panes}')" = "1" ]; then
