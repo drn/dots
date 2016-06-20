@@ -1,9 +1,16 @@
-#!/bin/sh
+#!/usr/bin/env ruby
 
-branch="$(git me)"
-if [ "$(echo $branch | grep '\(TA\|PD\)-')" ]; then
-  prefix="$branch. "
-  if [ -z "$(cat $1 | grep $prefix)" ]; then
-    echo "$prefix$(cat $1)" > "$1"
-  fi
-fi
+#
+# If the branch matches the JIRA issue regex (TA-****) and the summary doesn't
+# already have a JIRA issue regex prefix, then prepend the branch name to the
+# commit summary.
+#
+
+summary = File.read(ARGV[0])
+branch = `git rev-parse --abbrev-ref HEAD`.strip
+regex = /^TA-/
+if branch =~ regex
+  unless summary =~ regex
+    File.write(ARGV[0], "#{branch}. #{summary}")
+  end
+end
