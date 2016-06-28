@@ -21,6 +21,10 @@ echo "\n\033[0;34mRehashing rbenv binaries...\033[0m\n"
 rm -f $HOME/.rbenv/shims/.rbenv-shim
 rbenv rehash
 
+# rehashing pyenv
+echo "\033[0;34mRehashing pyenv binaries...\033[0m\n"
+pyenv rehash
+
 # update Oh My Zsh
 /usr/bin/env ZSH=$ZSH /bin/sh $ZSH/tools/upgrade.sh
 echo "LAST_EPOCH=$(($(date +%s) / 60 / 60 / 24))" > ~/.zsh-update
