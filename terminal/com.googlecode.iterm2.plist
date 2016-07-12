@@ -734,6 +734,13 @@
 			<key>Text</key>
 			<string></string>
 		</dict>
+		<key>0x6d-0x180000</key>
+		<dict>
+			<key>Action</key>
+			<integer>13</integer>
+			<key>Text</key>
+			<string></string>
+		</dict>
 		<key>0x70-0x100000</key>
 		<dict>
 			<key>Action</key>
@@ -2547,10 +2554,14 @@
 			<string>/Users/darrencheng</string>
 		</dict>
 	</array>
+	<key>NoSyncConfirmBeta</key>
+	<true/>
 	<key>NoSyncDoNotWarnBeforeMultilinePaste</key>
 	<true/>
 	<key>NoSyncDoNotWarnBeforeMultilinePaste_selection</key>
 	<integer>0</integer>
+	<key>NoSyncInstallationId</key>
+	<string>A5ED7758-282F-4FAA-973A-8D9E6771AFA6</string>
 	<key>NoSyncLastTipTime</key>
 	<real>477339862.46188599</real>
 	<key>NoSyncPermissionToShowTip</key>
@@ -2639,11 +2650,11 @@
 	<key>SUFeedAlternateAppNameKey</key>
 	<string>iTerm</string>
 	<key>SUFeedURL</key>
-	<string>https://iterm2.com/appcasts/final.xml</string>
+	<string>https://iterm2.com/appcasts/final.xml?shard=58</string>
 	<key>SUHasLaunchedBefore</key>
 	<true/>
 	<key>SULastCheckTime</key>
-	<date>2016-04-18T06:45:05Z</date>
+	<date>2016-07-11T22:57:09Z</date>
 	<key>SavePasteHistory</key>
 	<false/>
 	<key>Secure Input</key>
@@ -2697,6 +2708,6 @@
 	<key>findRegex_iTerm</key>
 	<false/>
 	<key>iTerm Version</key>
-	<string>2.9.20160209-nightly</string>
+	<string>3.0.4</string>
 </dict>
 </plist>
