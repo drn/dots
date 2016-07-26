@@ -108,6 +108,7 @@
   ptu = push --tags upstream
   ta = tag-after
   rpu = remote prune upstream
+  rpo = remote prune origin
   expire = reflog expire --expire-unreachable=now --all
 
 [user]
