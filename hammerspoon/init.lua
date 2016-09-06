@@ -82,6 +82,9 @@ end)
 
 -- Chrome
 
+hs.hotkey.bind({'ctrl', 'alt', 'cmd'}, 'm', function()
+  chrome.refocus()
+end)
 hs.hotkey.bind({'ctrl', 'alt', 'cmd'}, 'n', function()
   chrome.openProfileMenu()
 end)

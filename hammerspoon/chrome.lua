@@ -26,4 +26,11 @@ function chrome.openProfileMenu()
   end
 end
 
+function chrome.refocus()
+  local app = hs.application.applicationsForBundleID('com.google.Chrome')[1]
+  if app ~= nil then
+    tell('tell window 1 to set URL of active tab to "javascript:"')
+  end
+end
+
 return chrome
