@@ -113,12 +113,12 @@ hs.hotkey.bind({'ctrl', 'alt', 'cmd'}, 'r', function()
   finder.refresh()
 end)
 hs.hotkey.bind({'ctrl', 'alt', 'cmd'}, 'i', function()
-  if hs.execute('networksetup -getairportpower en0 | grep On') == '' then
+  if hs.execute('/usr/sbin/networksetup -getairportpower en0 | grep On') == '' then
     hs.alert.show('Turning WiFi on...', 0.5)
-    os.execute('networksetup -setairportpower en0 on')
+    os.execute('/usr/sbin/networksetup -setairportpower en0 on')
   else
     hs.alert.show('Turning WiFi off...', 0.5)
-    os.execute('networksetup -setairportpower en0 off')
+    os.execute('/usr/sbin/networksetup -setairportpower en0 off')
   end
 end)
 

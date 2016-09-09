@@ -13,4 +13,4 @@ killall CCMenu 2>/dev/null
 
 # turn off wifi
 echo -e '\033[0;34mTurning off wifi...\033[0m'
-networksetup -setairportpower en0 off
+/usr/sbin/networksetup -setairportpower en0 off
