@@ -5,6 +5,7 @@ local chrome   = require 'chrome'
 local osx      = require 'osx'
 local finder   = require 'finder'
 local volume   = require 'volume'
+local wifi     = require 'wifi'
 
 -- Window Management
 
@@ -113,13 +114,7 @@ hs.hotkey.bind({'ctrl', 'alt', 'cmd'}, 'r', function()
   finder.refresh()
 end)
 hs.hotkey.bind({'ctrl', 'alt', 'cmd'}, 'i', function()
-  if hs.execute('/usr/sbin/networksetup -getairportpower en0 | grep On') == '' then
-    hs.alert.show('Turning WiFi on...', 0.5)
-    os.execute('/usr/sbin/networksetup -setairportpower en0 on')
-  else
-    hs.alert.show('Turning WiFi off...', 0.5)
-    os.execute('/usr/sbin/networksetup -setairportpower en0 off')
-  end
+  wifi.toggle()
 end)
 
 -- Volume Bindings
