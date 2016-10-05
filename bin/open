@@ -7,6 +7,9 @@ if [ "$#" -eq 0 ]; then
   if [ -n "$(ls | grep xcworkspace)" ]; then
     # open xcworkspace if available
     /usr/bin/open *.xcworkspace
+  elif [ -n "$(ls | grep local.properties)" ]; then
+    # open android studio
+    /usr/bin/open -a "android studio"
   else
     # open the current folder in finder
     /usr/bin/open .
