@@ -7,18 +7,24 @@
 REMOTES = {
   aaron: {
     username: :anutron,
-    exceptions: { 'thanx-core' => 'thanx-web' }
+    exceptions: {
+      'thanx-core' => 'thanx-web'
+    }
   },
   davy: {
     username: :davywentworth,
-    exceptions: { 'thanx-core' => 'thanx-web' }
+    exceptions: {
+      'thanx-core' => 'thanx-web'
+    }
   },
   marc: {
     username: :marcferna,
-    exceptions: { 'thanx-core' => 'thanx-web' }
+    exceptions: {
+      'thanx-core' => 'thanx-web',
+      'thanx-android' => 'android'
+    }
   },
-  fletch: { username: :fzf },
-  sean:   { username: :smcgee8 }
+  fletch: { username: :fzf }
 }.freeze
 
 REPO = `git repo`.strip.freeze
