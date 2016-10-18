@@ -29,6 +29,7 @@ Plug 'noprompt/vim-yardoc'
 Plug 'ConradIrwin/vim-bracketed-paste'
 Plug 'junegunn/vim-peekaboo'
 Plug 'junegunn/vim-oblique'
+Plug 'w0rp/ale'
 " vim-oblique dependency
 Plug 'junegunn/vim-pseudocl'
 " not lazyloaded to ensure ruby configuration is preloaded
@@ -69,7 +70,6 @@ Plug 'jpalardy/vim-slime', { 'on': [
 \ ] }
 
 " Language-specific plugins
-Plug 'scrooloose/syntastic', { 'for': 'ruby' }
 Plug 'tpope/vim-rails', { 'for': [ 'ruby', 'eruby' ] }
 Plug 'kana/vim-textobj-user', { 'for': [ 'ruby', 'eruby' ] }
 Plug 'nelstrom/vim-textobj-rubyblock', { 'for': [ 'ruby', 'eruby' ] }
