@@ -46,6 +46,7 @@ plugins=(
   heroku
   history-substring-search
   zsh-syntax-highlighting
+  zsh-autosuggestions
   brew
   rake
 )

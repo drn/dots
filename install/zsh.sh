@@ -15,7 +15,13 @@ for location in $HOME/.dots/zsh/*; do
   link "$location" "$HOME/.oh-my-zsh/custom/$file"
 done
 
-# install zsh-syntax-highlighting
+# install zsh plugins
 mkdir -p "$HOME/.oh-my-zsh/custom/plugins"
+
+# install zsh-syntax-highlighting
 install_path="$HOME/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting"
 gitsync zsh-users/zsh-syntax-highlighting $install_path
+
+# install zsh-autosuggestions
+install_path="$HOME/.oh-my-zsh/custom/plugins/zsh-autosuggestions"
+gitsync zsh-users/zsh-autosuggestions $install_path
