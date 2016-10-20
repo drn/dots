@@ -5,6 +5,9 @@
 #   ~ ❯
 #   ❯
 
+autoload -U add-zsh-hook
+setopt PROMPT_SUBST
+
 CMD_MAX_EXEC_TIME=5
 
 ### Format Helpers

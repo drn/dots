@@ -21,7 +21,7 @@ and installation of the following sections:
 
   * dotfiles - basic `~/.*` config files
   * vim - vim
-  * zsh - oh-my-zsh
+  * zsh - antibody
   * git - custom functions, templates, hooks
   * utilities - terminal utilities
   * bin - custom scripts on the `$PATH`

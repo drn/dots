@@ -1,4 +1,5 @@
 # Include color ENV variables for easy echo coloring
+autoload -U colors && colors
 
 # color reset
 CRESET='\033[0m'
@@ -20,3 +21,6 @@ LBLUE='\033[01;34m'
 LPURPLE='\033[01;35m'
 LCYAN='\033[01;36m'
 WHITE='\033[01;37m'
+
+# adjust ls colors
+export LSCOLORS="Gxfxcxdxbxegedabagacad"

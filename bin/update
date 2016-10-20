@@ -25,12 +25,12 @@ rbenv rehash
 echo "\033[0;34mRehashing pyenv binaries...\033[0m\n"
 pyenv rehash
 
-# update Oh My Zsh
-/usr/bin/env ZSH=$ZSH /bin/sh $ZSH/tools/upgrade.sh
-echo "LAST_EPOCH=$(($(date +%s) / 60 / 60 / 24))" > ~/.zsh-update
+# update ZSH plugins
+echo "\033[0;34mUpdating zsh plugins...\033[0m\n"
+antibody bundle < "$HOME/.dots/zsh/bundles" > ~/.bundles
 
 # update and upgrade Homebrew
-echo -e '\n\033[0;34mUpdating Brew and any outdated packages...\033[0m'
+echo -e '\033[0;34mUpdating Brew and any outdated packages...\033[0m'
 brew update; brew upgrade --all; brew cleanup -s; brew cask cleanup
 
 # update VIM plugins

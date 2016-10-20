@@ -1,3 +1,6 @@
+# System Aliases
+alias ls='ls -G'
+
 # Jump Aliases
 alias dots='tmux rename-window dots 2>/dev/null; cd ~/.dots'
 alias dsk='tmux rename-window desktop 2>/dev/null; cd ~/Desktop'

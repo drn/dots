@@ -28,6 +28,10 @@ ZSH_HIGHLIGHT_STYLES[assign]=none
 # Set default shell editor
 export EDITOR='nvim'
 
+# Pager config
+export PAGER="less"
+export LESS="-R"
+
 # Colorize man pages
 export LESS_TERMCAP_mb=$'\E[01;31m'       # begin blinking
 export LESS_TERMCAP_md=$'\E[01;38;5;74m'  # begin bold
@@ -65,6 +69,3 @@ alias ${_Z_CMD:-z}='_z_wrapper 2>&1'
 
 # Autoload tmux
 if [ "$TMUX" = "" ]; then smux master; fi
-
-# Autoload fzf
-source ~/.fzf.zsh
