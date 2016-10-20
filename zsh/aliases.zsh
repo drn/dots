@@ -1,6 +1,11 @@
 # System Aliases
 alias ls='ls -G'
+alias l='ls -lah'
+alias la='ls -ah'
+alias lr='ls -lR'
 alias history='fc -l 1'
+alias o='open'
+alias o.='open .'
 
 # Jump Aliases
 alias dots='tmux rename-window dots 2>/dev/null; cd ~/.dots'
@@ -25,8 +30,6 @@ alias aud='vim ~/Dropbox/To\ Audrey.txt'
 alias h='history'
 alias top='htop'
 alias j='jira'
-alias o='open'
-alias o.='open .'
 alias binstubs='bundle install --binstubs .bundle/bin'
 alias secure='v ~/.secure'
 alias todo='tmux rename-window todo 2>/dev/null; notes todo'
@@ -37,10 +40,6 @@ alias v.='nvim .'
 alias v='nvim'
 alias vimdiff='mvim -d'
 alias vi='vim'
-alias ls='ls -G'
-alias l='ls -lah'
-alias la='ls -lAh'
-alias lr='ls -lR'
 alias g='git'
 alias vimsync="bash $DOTS/install/vim.sh"
 alias ff="fuzzy-find"
