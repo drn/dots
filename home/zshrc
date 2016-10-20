@@ -1,33 +1,16 @@
-autoload -U compaudit compinit
-
-source $HOME/.dots/zsh/prompt.zsh
-source $HOME/.dots/zsh/history.zsh
-source $HOME/.dots/zsh/aliases.zsh
-source $HOME/.dots/zsh/colors.zsh
-source $HOME/.dots/zsh/config.zsh
-source $HOME/.dots/zsh/functions.zsh
-source $HOME/.dots/zsh/git-completion.zsh
-
-# emacs key bindings
-bindkey -e
-
-# git completion
-source /usr/local/etc/bash_completion.d/git-completion.bash 2>/dev/null
-
 # antibody bundles
 source ~/.bundles
 
-# bind history substring keys
-bindkey '^[[A' history-substring-search-up
-bindkey '^[[B' history-substring-search-down
+# config
+source $HOME/.dots/zsh/basic.zsh
+source $HOME/.dots/zsh/colors.zsh
+source $HOME/.dots/zsh/history.zsh
+source $HOME/.dots/zsh/prompt.zsh
+source $HOME/.dots/zsh/completion.zsh
+source $HOME/.dots/zsh/aliases.zsh
+source $HOME/.dots/zsh/functions.zsh
+source $HOME/.dots/zsh/bindings.zsh
+source $HOME/.dots/zsh/settings.zsh
 
-# go to beginning of line
-if [[ "${terminfo[khome]}" != "" ]]; then
-  bindkey "${terminfo[khome]}" beginning-of-line
-fi
-# go to end of line
-if [[ "${terminfo[kend]}" != "" ]]; then
-  bindkey "${terminfo[kend]}" end-of-line
-fi
-# delete from cursor to beginning of line
-bindkey \^U backward-kill-line
+# autoload tmux
+if [ "$TMUX" = "" ]; then smux master; fi
