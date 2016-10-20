@@ -13,4 +13,4 @@ source $DOTS/zsh/bindings.zsh
 source $DOTS/zsh/settings.zsh
 
 # autoload tmux
-if [ "$TMUX" = "" ]; then smux master; fi
+if [ "$TMUX" = "" ]; then tmux-start master; fi

@@ -51,7 +51,6 @@ alias ff="fuzzy-find"
 alias fff="fuzzy-find-file"
 alias nuc="thanx nucleus"
 alias ver="thanx version"
-alias smux="tmux-start"
 alias t='thanx'
 alias plane='airplane'
 
