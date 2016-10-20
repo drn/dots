@@ -1,5 +1,6 @@
 # System Aliases
 alias ls='ls -G'
+alias history='fc -l 1'
 
 # Jump Aliases
 alias dots='tmux rename-window dots 2>/dev/null; cd ~/.dots'
