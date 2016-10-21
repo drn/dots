@@ -40,6 +40,7 @@ Plug 'tacahiroy/ctrlp-funky'
 " not lazyloaded to preserve functionality
 Plug 'benmills/vimux'
 Plug 'drn/vim-turbux'
+Plug 'wakatime/vim-wakatime'
 
 " Lazy-load plugins
 Plug 'scrooloose/nerdtree', { 'on': [ 'NERDTreeToggle', 'NERDTreeFind' ] }

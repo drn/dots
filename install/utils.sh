@@ -22,3 +22,6 @@ launchctl load ~/Library/LaunchAgents/homebrew.mxcl.postgresql.plist
 gem install bundler
 bundle install --gemfile=$HOME/.dots/Gemfile
 rm -f $HOME/.dots/Gemfile.lock
+
+# install wakatime
+pip install wakatime
