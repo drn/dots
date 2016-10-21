@@ -8,3 +8,7 @@ _git_cp () { _git_cherry_pick }
 
 # git completion
 source /usr/local/etc/bash_completion.d/git-completion.bash 2>/dev/null
+
+# zsh completion style
+zstyle ':completion:*' menu yes select
+zstyle ':completion:*' list-colors "${(@s.:.)LS_COLORS}"
