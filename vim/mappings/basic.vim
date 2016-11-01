@@ -20,3 +20,5 @@ nnoremap <silent> B ^d0i<BS>
 nnoremap <silent> <leader>D :redraw!<cr>
 " Visually select all
 nnoremap <leader>a ggVG
+" Echo path relative to working directory
+nnoremap <leader>? :echo @%<cr>
