@@ -24,6 +24,15 @@ nnoremap <silent> ;w :wincmd k<cr>
 " move to window below
 nnoremap <silent> ;s :wincmd j<cr>
 
+" move the current window to the right
+nnoremap <silent> ;D :wincmd L<cr>
+" move the current window to the left
+nnoremap <silent> ;A :wincmd H<cr>
+" move the current window to the top
+nnoremap <silent> ;W :wincmd K<cr>
+" move the current window to the bottom
+nnoremap <silent> ;S :wincmd J<cr>
+
 " move to window by number
 let i = 1
 while i <= 9
