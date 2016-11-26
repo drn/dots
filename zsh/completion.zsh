@@ -12,3 +12,5 @@ source /usr/local/etc/bash_completion.d/git-completion.bash 2>/dev/null
 # zsh completion style
 zstyle ':completion:*' menu yes select
 zstyle ':completion:*' list-colors "${(@s.:.)LS_COLORS}"
+# case insensitive, hyphen-insensitive, partial-word and substring completion
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|=*' 'l:|=* r:|=*'
