@@ -46,6 +46,7 @@ local bindings = {
     Safari     = 'return',
     Messages   = 'n',
     Slack      = 'm',
+    Discord    = 'j',
     Wunderlist = "'",
     MacVim     = '.'
   },
