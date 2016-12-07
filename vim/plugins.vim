@@ -41,6 +41,7 @@ Plug 'tacahiroy/ctrlp-funky'
 Plug 'benmills/vimux'
 Plug 'drn/vim-turbux'
 Plug 'wakatime/vim-wakatime'
+Plug 'machakann/vim-highlightedyank'
 
 " Lazy-load plugins
 Plug 'scrooloose/nerdtree', { 'on': [ 'NERDTreeToggle', 'NERDTreeFind' ] }
