@@ -4,7 +4,17 @@ local device = hs.audiodevice.defaultOutputDevice()
 
 local function display(text)
   hs.alert.closeAll(0)
-  hs.alert.show(text..math.floor(device:volume() + 0.5)..'% 🔊', 0.5)
+  local icon = '🔈'
+  if device:volume() > 30 then
+    icon = '🔉'
+  end
+  if device:volume() > 60 then
+    icon = '🔊'
+  end
+  if device:muted() then
+    icon = '🔇'
+  end
+  hs.alert.show(text..math.floor(device:volume() + 0.5)..'% '..icon, 0.5)
 end
 
 function volume.increase()
