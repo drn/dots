@@ -75,13 +75,13 @@ end
 function itunes.increaseVolume()
   if not isRunning() then return end
   tell('set sound volume to '..tonumber(tell('sound volume')) + 10)
-  display(' ↑ '..tell('sound volume')..'%')
+  display(' ↑ '..tell('sound volume')..'% ♬')
 end
 
 function itunes.decreaseVolume()
   if not isRunning() then return end
   tell('set sound volume to '..tonumber(tell('sound volume')) - 10)
-  display(' ↓ '..tell('sound volume')..'%')
+  display(' ↓ '..tell('sound volume')..'% ♬')
 end
 
 function itunes.maxVolume()
