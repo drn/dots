@@ -16,22 +16,22 @@ echo "\033[0;34mEnsuring cron job installation...\033[0m"
 /usr/bin/crontab ~/.dots/cron/tab
 /usr/bin/crontab -l
 
-# rehashing rbenv
-echo "\n\033[0;34mRehashing rbenv binaries...\033[0m\n"
-rm -f $HOME/.rbenv/shims/.rbenv-shim
-rbenv rehash
-
-# rehashing pyenv
-echo "\033[0;34mRehashing pyenv binaries...\033[0m\n"
-pyenv rehash
-
 # update ZSH plugins
-echo "\033[0;34mUpdating zsh plugins...\033[0m\n"
+echo "\n\033[0;34mUpdating zsh plugins...\033[0m\n"
 antibody bundle < "$HOME/.dots/zsh/bundles" > ~/.bundles
 
 # update and upgrade Homebrew
 echo -e '\033[0;34mUpdating Brew and any outdated packages...\033[0m'
 brew update; brew upgrade; brew cleanup -s; brew cask cleanup
+
+# rehashing rbenv
+echo "\n\033[0;34mRehashing rbenv binaries...\033[0m"
+rm -f $HOME/.rbenv/shims/.rbenv-shim
+rbenv rehash
+
+# rehashing pyenv
+echo "\n\033[0;34mRehashing pyenv binaries...\033[0m"
+pyenv rehash
 
 # update VIM plugins
 echo "\n\033[0;34mUpdating vim plugins...\033[0m"
