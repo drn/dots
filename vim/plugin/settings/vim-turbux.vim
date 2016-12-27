@@ -6,6 +6,9 @@ nmap <leader>R <Plug>SendFocusedTestToTmux
 " use custom turbux runner
 let g:turbux_custom_runner = 'TurbuxCustomRunner'
 function! TurbuxCustomRunner(command)
+  if exists('g:VimuxRunnerIndex')
+    unlet g:VimuxRunnerIndex
+  endif
   call VimuxClearRunnerHistory()
   call VimuxRunCommand(a:command)
 endfunction
