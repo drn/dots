@@ -28,6 +28,13 @@ ln -shfF $HOME/.vimrc $XDG_CONFIG_HOME/nvim/init.vim
 echo -e "\033[0;32mInstalling vim-plug\033[0m"
 curl -fLo $HOME/.vim/autoload/plug.vim --create-dirs $vimplug
 rm -f /tmp/vim-update-result
+
+echo -e "\033[0;32mUpdating vim plugins\033[0m"
 vim -c "PlugUpdate|set modifiable|4d|2d|2d|1d|execute line('$')|put=''|pu|w /tmp/vim-update-result|q|q|q|q"
+cat /tmp/vim-update-result
+rm -f /tmp/vim-update-result
+
+echo -e "\033[0;32mCleaning unused vim plugins\033[0m"
+vim -c "PlugClean!|set modifiable|w /tmp/vim-update-result|q|q|q|q"
 cat /tmp/vim-update-result
 rm -f /tmp/vim-update-result
