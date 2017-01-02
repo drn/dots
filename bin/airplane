@@ -10,6 +10,7 @@ killall 'Google Drive' 2>/dev/null
 killall Übersicht 2>/dev/null
 killall Caffeine 2>/dev/null
 killall CCMenu 2>/dev/null
+killall whatpulse 2>/dev/null
 
 # turn off wifi
 echo -e '\033[0;34mTurning off wifi...\033[0m'
