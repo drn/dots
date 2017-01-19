@@ -2,7 +2,7 @@
 
 > Obsessively curated dotfiles.
 
-**Dots** provides installation of a continuously maintained
+**Dots** provides installation of a continuously maintained development setup.
 
 ## TL;DR
 
