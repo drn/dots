@@ -11,7 +11,7 @@ brew 'tig'
 brew 'tree'
 brew 'reattach-to-user-namespace'
 brew 'heroku-toolbelt'
-brew 'imagemagick'
+brew 'imagemagick@6'
 brew 'macvim', args: [ '--override-system-vim' ]
 brew 'hub'
 brew 'z'
