@@ -8,13 +8,6 @@ local function tell(cmd)
   return result
 end
 
-local function isRunning()
-  local _cmd = 'tell application "System Events" to (name of processes)'..
-               ' contains "iTunes"'
-  local _ok, result = as.applescript(_cmd)
-  return result
-end
-
 local function formatSeconds(seconds)
   local minutes = math.floor(seconds / 60)
   local hours = math.floor(minutes / 60)
@@ -40,19 +33,19 @@ local function display(message)
 end
 
 function itunes.next()
-  if not isRunning() then return end
+  if not hs.itunes.isRunning() then return end
   hs.itunes.next()
   display(' ⇥')
 end
 
 function itunes.previous()
-  if not isRunning() then return end
+  if not hs.itunes.isRunning() then return end
   tell('back track')
   display(' ⇤')
 end
 
 function itunes.forward()
-  if not isRunning() then return end
+  if not hs.itunes.isRunning() then return end
   local updated = position() + 10
   tell('set player position to '..updated)
   message = (position() < math.floor(updated)) and ' ⇥' or ' → '..formatSeconds(updated)
@@ -60,7 +53,7 @@ function itunes.forward()
 end
 
 function itunes.backward()
-  if not isRunning() then return end
+  if not hs.itunes.isRunning() then return end
   local position = position()
   if position < 0.5 then
     itunes.previous()
@@ -73,25 +66,25 @@ function itunes.backward()
 end
 
 function itunes.increaseVolume()
-  if not isRunning() then return end
+  if not hs.itunes.isRunning() then return end
   tell('set sound volume to '..tonumber(tell('sound volume')) + 10)
   display(' ↑ '..tell('sound volume')..'% ♬')
 end
 
 function itunes.decreaseVolume()
-  if not isRunning() then return end
+  if not hs.itunes.isRunning() then return end
   tell('set sound volume to '..tonumber(tell('sound volume')) - 10)
   display(' ↓ '..tell('sound volume')..'% ♬')
 end
 
 function itunes.maxVolume()
-  if not isRunning() then return end
+  if not hs.itunes.isRunning() then return end
   tell('set sound volume to 100')
   display(' ↑ 100%')
 end
 
 function itunes.minVolume()
-  if not isRunning() then return end
+  if not hs.itunes.isRunning() then return end
   tell('set sound volume to 0')
   display(' ↓ 0%')
 end
@@ -103,7 +96,7 @@ function itunes.playpause()
 end
 
 function itunes.display()
-  if not isRunning() then return end
+  if not hs.itunes.isRunning() then return end
   artist = tell('artist of the current track as string') or ''
   album  = tell('album of the current track as string') or ''
   track  = tell('name of the current track as string') or ''
@@ -117,7 +110,7 @@ function itunes.display()
 end
 
 function itunes.addToPlaylist(playlist)
-  if not isRunning() then return end
+  if not hs.itunes.isRunning() then return end
   script = [[
     tell application "iTunes"
       set trackId to (persistent ID of current track)
