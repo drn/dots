@@ -1,11 +1,11 @@
-local resize   = require 'resize'
-local itunes   = require 'itunes'
-local screen   = require 'screen'
-local chrome   = require 'chrome'
-local osx      = require 'osx'
-local finder   = require 'finder'
-local volume   = require 'volume'
-local wifi     = require 'wifi'
+local resize = require 'resize'
+local music  = require 'music'
+local screen = require 'screen'
+local chrome = require 'chrome'
+local osx    = require 'osx'
+local finder = require 'finder'
+local volume = require 'volume'
+local wifi   = require 'wifi'
 
 -- Window Management
 
@@ -67,14 +67,14 @@ end
 
 -- iTunes
 
-hs.hotkey.bind({ 'cmd', 'alt', 'shift'}, 'a', function() itunes.display() end)
-hs.hotkey.bind({ 'ctrl' }, 'space', function() itunes.playpause() end)
-hs.hotkey.bind({ 'cmd', 'alt' }, 'left', function() itunes.previous() end)
-hs.hotkey.bind({ 'cmd', 'alt' }, 'right', function() itunes.next() end)
-hs.hotkey.bind({ 'ctrl', 'cmd' }, 'right', function() itunes.forward() end)
-hs.hotkey.bind({ 'ctrl', 'cmd' }, 'left', function() itunes.backward() end)
-hs.hotkey.bind({ 'cmd', 'alt' }, 'up', function() itunes.increaseVolume() end)
-hs.hotkey.bind({ 'cmd', 'alt' }, 'down', function() itunes.decreaseVolume() end)
+hs.hotkey.bind({ 'cmd', 'alt', 'shift'}, 'a', function() music.display() end)
+hs.hotkey.bind({ 'ctrl' }, 'space', function() music.playpause() end)
+hs.hotkey.bind({ 'cmd', 'alt' }, 'left', function() music.previous() end)
+hs.hotkey.bind({ 'cmd', 'alt' }, 'right', function() music.next() end)
+hs.hotkey.bind({ 'ctrl', 'cmd' }, 'right', function() music.forward() end)
+hs.hotkey.bind({ 'ctrl', 'cmd' }, 'left', function() music.backward() end)
+hs.hotkey.bind({ 'cmd', 'alt' }, 'up', function() music.increaseVolume() end)
+hs.hotkey.bind({ 'cmd', 'alt' }, 'down', function() music.decreaseVolume() end)
 
 -- Chrome
 
