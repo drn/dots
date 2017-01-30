@@ -1,5 +1,13 @@
 local spotify = {}
 
+local as = require 'hs.applescript'
+
+local function tell(cmd)
+  local _cmd = 'tell application "Spotify" to ' .. cmd
+  local _ok, result = as.applescript(_cmd)
+  return result
+end
+
 local function formatSeconds(seconds)
   local minutes = math.floor(seconds / 60)
   local hours = math.floor(minutes / 60)
