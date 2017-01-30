@@ -17,11 +17,6 @@ local function formatSeconds(seconds)
   return formatted
 end
 
-local function position()
-  local currentPosition = tonumber(tell('player position'))
-  return currentPosition ~= nil and currentPosition or 0
-end
-
 local function duration()
   local currentPosition = tonumber(tell('duration of current track'))
   return currentPosition ~= nil and currentPosition or 0
@@ -46,52 +41,52 @@ end
 
 function itunes.forward()
   if not hs.itunes.isRunning() then return end
-  local updated = position() + 10
-  tell('set player position to '..updated)
-  message = (position() < math.floor(updated)) and ' ⇥' or ' → '..formatSeconds(updated)
+  local updated = hs.itunes.getPosition() + 10
+  hs.itunes.setPosition(updated)
+  message = (hs.itunes.getPosition() < math.floor(updated)) and ' ⇥' or ' → '..formatSeconds(updated)
   display(message)
 end
 
 function itunes.backward()
   if not hs.itunes.isRunning() then return end
-  local position = position()
+  local position = hs.itunes.getPosition()
   if position < 0.5 then
     itunes.previous()
     return
   end
   local updated = position - 10
   if updated < 0 then updated = 0 end
-  tell('set player position to '..updated)
+  hs.itunes.setPosition(updated)
   display(' ← '..formatSeconds(updated))
 end
 
 function itunes.increaseVolume()
   if not hs.itunes.isRunning() then return end
-  tell('set sound volume to '..tonumber(tell('sound volume')) + 10)
-  display(' ↑ '..tell('sound volume')..'% ♬')
+  hs.itunes.volumeUp()
+  display(' ↑ '..hs.itunes.getVolume()..'% ♬')
 end
 
 function itunes.decreaseVolume()
   if not hs.itunes.isRunning() then return end
-  tell('set sound volume to '..tonumber(tell('sound volume')) - 10)
-  display(' ↓ '..tell('sound volume')..'% ♬')
+  hs.itunes.volumeDown()
+  display(' ↓ '..hs.itunes.getVolume()..'% ♬')
 end
 
 function itunes.maxVolume()
   if not hs.itunes.isRunning() then return end
-  tell('set sound volume to 100')
+  hs.itunes.setVolume(100)
   display(' ↑ 100%')
 end
 
 function itunes.minVolume()
   if not hs.itunes.isRunning() then return end
-  tell('set sound volume to 0')
+  hs.itunes.setVolume(0)
   display(' ↓ 0%')
 end
 
 function itunes.playpause()
-  tell('playpause')
-  icon = (tell('player state as string') == 'playing') and ' ▶' or ' ◼'
+  hs.itunes.playpause()
+  icon = hs.itunes.isPlaying() and ' ▶' or ' ◼'
   display(icon)
 end
 
@@ -100,7 +95,7 @@ function itunes.display()
   artist = tell('artist of the current track as string') or ''
   album  = tell('album of the current track as string') or ''
   track  = tell('name of the current track as string') or ''
-  current = position()
+  current = hs.itunes.getPosition()
   total   = duration()
   percent = math.floor(current / total * 100 + 0.5)
   time   = formatSeconds(current)..'  ('..percent..'%)'..'\n'..formatSeconds(total)
