@@ -92,9 +92,9 @@ end
 
 function itunes.display()
   if not hs.itunes.isRunning() then return end
-  artist = tell('artist of the current track as string') or ''
-  album  = tell('album of the current track as string') or ''
-  track  = tell('name of the current track as string') or ''
+  artist = hs.itunes.getCurrentArtist() or ''
+  album  = hs.itunes.getCurrentAlbum() or ''
+  track  = hs.itunes.getCurrentTrack() or ''
   current = hs.itunes.getPosition()
   total   = duration()
   percent = math.floor(current / total * 100 + 0.5)
