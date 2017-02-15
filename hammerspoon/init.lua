@@ -75,6 +75,7 @@ hs.hotkey.bind({ 'ctrl', 'cmd' }, 'right', function() music.forward() end)
 hs.hotkey.bind({ 'ctrl', 'cmd' }, 'left', function() music.backward() end)
 hs.hotkey.bind({ 'cmd', 'alt' }, 'up', function() music.increaseVolume() end)
 hs.hotkey.bind({ 'cmd', 'alt' }, 'down', function() music.decreaseVolume() end)
+hs.hotkey.bind({ 'ctrl', 'cmd' }, 'space', function() hs.alert('space') end)
 
 -- Chrome
 
