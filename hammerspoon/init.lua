@@ -128,8 +128,9 @@ end)
 hs.hotkey.bind({'ctrl', 'alt', 'cmd'}, 'j', function()
 end)
 
--- Auto-reload configuration
+-- Reload configuration
 
+hs.hotkey.bind({'ctrl', 'cmd'}, 'delete', function() hs.reload() end)
 function reloadConfig(files) hs.reload() end
 hs.pathwatcher.new(os.getenv('HOME') .. '/.hammerspoon/', reloadConfig):start()
 
