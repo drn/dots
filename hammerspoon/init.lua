@@ -79,7 +79,7 @@ hs.hotkey.bind({ 'ctrl', 'cmd' }, 'space', function() hs.alert('space') end)
 
 -- Chrome
 
-hs.hotkey.bind({'ctrl', 'alt', 'cmd'}, 'm', function()
+hs.hotkey.bind({'ctrl', 'alt', 'cmd'}, 'l', function()
   chrome.refocus()
 end)
 hs.hotkey.bind({'ctrl', 'alt', 'cmd'}, 'n', function()
