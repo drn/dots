@@ -39,7 +39,7 @@ end
 
 function music.playpause()
   local provider = provider()
-  if provider == nil then provider = itunes end
+  if provider == nil then provider = spotify end
   provider.playpause()
 end
 
