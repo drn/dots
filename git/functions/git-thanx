@@ -24,7 +24,8 @@ REMOTES = {
       'thanx-android' => 'android'
     }
   },
-  fletch: { username: :fzf }
+  fletch: { username: :fzf },
+  cole: { username: :cjurden }
 }.freeze
 
 REPO = `git repo`.strip.freeze
