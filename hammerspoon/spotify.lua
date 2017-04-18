@@ -86,7 +86,7 @@ end
 
 function spotify.playpause()
   if not hs.spotify.isRunning() then
-    hs.spotify.play()
+    hs.application.launchOrFocus('Spotify')
     display(' ▶')
   else
     hs.spotify.playpause()
