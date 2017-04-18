@@ -8,4 +8,4 @@ else
 fi
 
 echo "Attempting to push local $branch to $remote/master..."
-git push $remote $branch:master
+git push $remote $branch:master $1
