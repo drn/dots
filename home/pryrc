@@ -113,3 +113,9 @@ def callstack
   end
   nil
 end
+
+def thanx_caller
+  caller.delete_if do |line|
+    !line.include?('thanx')
+  end
+end
