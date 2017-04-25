@@ -20,14 +20,22 @@ if [ -z "$exclusion" ]; then
   exclusion="*"
 fi
 
+base_remote="upstream"
+if [ -z "$(git remote | grep upstream)" ]; then
+  base_remote="origin"
+fi
+
 # backtrack at most 500 commits looking for the most recent ancestor branch
 # on upstream
 index=1
 while [ $index -lt 500 ]; do
+  # ensure HEAD~$index exists
+  git cat-file -e HEAD~$index 2>/dev/null
+  if [ $? -ne 0 ]; then break; fi
 
   # use upstream/master as ancestor with highest priority
-  if [ "$(git branch --remote --contains HEAD~$index | grep 'upstream/master')" ]; then
-    path="upstream/master"
+  if [ "$(git branch --remote --contains HEAD~$index | grep "$base_remote/master")" ]; then
+    path="$base_remote/master"
   fi
 
   if [ -z "$path" ]; then
@@ -35,13 +43,13 @@ while [ $index -lt 500 ]; do
     # remote branch
     #   * search remote branches containing the current ancestor commit
     #   * potentially exclude input regex from matches
-    #   * filter by commits on upstream
+    #   * filter by commits on $base_remote (upstream)
     #   * filter out upstream/HEAD branch
     #   * select the first match
     path="$(
       git branch --remote --contains HEAD~$index |
       grep -v "$exclusion" |
-      grep upstream |
+      grep $base_remote |
       sed /HEAD/d |
       head -n 1 |
       sed 's/[ ]*//'

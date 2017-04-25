@@ -5,4 +5,9 @@
 # if no remote is input.
 #
 
-git address $1 | sed 's#.*:##g' | sed 's#.git$##g'
+full=`git address $1`
+if [[ "$full" =~ "https" ]]; then
+  echo $full | sed 's#.*\.com\/##g' | sed 's#.git$##g'
+else
+  echo $full | sed 's#.*:##g' | sed 's#.git$##g'
+fi
