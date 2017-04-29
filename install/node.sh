@@ -7,3 +7,4 @@ npm install -g grunt-cli
 npm install -g underscore-cli
 npm install -g diff-so-fancy
 npm install -g git-standup
+npm install -g jshint
