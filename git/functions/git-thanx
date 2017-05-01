@@ -38,7 +38,7 @@ case ARGV[0]
 when 'add'
   REMOTES.each do |remote, info|
     repo = (info[:exceptions] || {})[REPO] || REPO
-    address = "git@github.com:#{info[:username]}/#{repo}"
+    address = "https://github.com/#{info[:username]}/#{repo}"
     `git remote add #{remote} #{address} 2>/dev/null`
   end
   puts 'Successfully added Thanx remotes'
