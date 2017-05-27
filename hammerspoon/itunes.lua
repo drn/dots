@@ -104,6 +104,10 @@ function itunes.display()
   hs.alert.show(info, 1.75)
 end
 
+function itunes.open()
+  hs.application.launchOrFocus('iTunes')
+end
+
 function itunes.addToPlaylist(playlist)
   if not hs.itunes.isRunning() then return end
   script = [[

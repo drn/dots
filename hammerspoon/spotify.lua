@@ -109,4 +109,8 @@ function spotify.display()
   hs.alert.show(info, 1.75)
 end
 
+function spotify.open()
+  hs.application.launchOrFocus('Spotify')
+end
+
 return spotify
