@@ -79,6 +79,8 @@ Plug 'zaiste/tmux.vim', { 'for': 'tmux' }
 Plug 'othree/html5.vim', { 'for': 'html'}
 Plug 'vim-scripts/indenthtml.vim', { 'for': 'html'}
 Plug 'kchmck/vim-coffee-script', { 'for': 'coffee' }
+Plug 'pangloss/vim-javascript', { 'for': 'javascript' }
+Plug 'mxw/vim-jsx', { 'for': 'javascript' }
 
 " Auto-completion
 function! BuildYCM(info)
