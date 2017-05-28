@@ -15,7 +15,7 @@ alias work='cd ~/Development/work'
 alias doc='cd ~/Documents'
 alias docs='cd ~/Documents'
 alias down='tmux rename-window downloads 2>/dev/null; cd ~/Downloads'
-alias logs="cd ~/.logs"
+alias logs='cd ~/.logs'
 alias learn='cd ~/.learn'
 
 # Command Aliases
@@ -24,7 +24,7 @@ alias orig='find . -iname "*.orig" | xargs rm'
 alias swp='find . -iname "*.swp" | xargs rm'
 alias gitx='open -a /Applications/GitX.app .'
 alias update='. update'
-alias up="update"
+alias up='update'
 alias shrink='. shrink'
 alias unshrink='. unshrink'
 alias aud='vim ~/Dropbox/To\ Audrey.txt'
@@ -44,10 +44,10 @@ alias vimdiff='mvim -d'
 alias vi='vim'
 alias g='git'
 alias vimsync="bash $DOTS/install/vim.sh"
-alias ff="fuzzy-find"
-alias fff="fuzzy-find-file"
-alias nuc="thanx nucleus"
-alias ver="thanx version"
+alias ff='fuzzy-find'
+alias fff='fuzzy-find-file'
+alias nuc='thanx nucleus'
+alias ver='thanx version'
 alias t='thanx'
 alias plane='airplane'
 
