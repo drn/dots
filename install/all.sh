@@ -43,8 +43,8 @@ fi
 
 # ensure dotfiles are up to date
 sudo rm -rf $HOME/.dots
-echo "Cloning drn/dotfiles to $HOME/.dots"
-git clone git@github.com:drn/dotfiles.git $HOME/.dots --quiet
+echo "Cloning drn/dots to $HOME/.dots"
+git clone git@github.com:drn/dots.git $HOME/.dots --quiet
 
 # install dotfiles
 bash $HOME/.dots/install/dots.sh
