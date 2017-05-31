@@ -17,6 +17,7 @@ alias docs='cd ~/Documents'
 alias down='tmux rename-window downloads 2>/dev/null; cd ~/Downloads'
 alias logs='cd ~/.logs'
 alias evergreen='cd ~/.evergreen'
+alias ev='evergreen'
 
 # Command Aliases
 alias rtest='ruby -I"lib:test"'
