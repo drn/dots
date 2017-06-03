@@ -4,7 +4,11 @@
 # Outputs the current local ip address
 #
 
-/sbin/ifconfig |
-  grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' |
+interface=$1
+if [ -z $interface ]; then
+  interface='en0'
+fi
+
+/sbin/ifconfig $interface | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' |
   grep -Eo '([0-9]*\.){3}[0-9]*' |
   grep -v '127.0.0.1'
