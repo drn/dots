@@ -36,9 +36,8 @@ let g:startify_skiplist = [
 \ ]
 
 let g:startify_bookmarks = [
-\ '~/.vimrc',
-\ '~/Development/work/thanx-core',
 \ '~/.dots',
+\ '~/.evergreen',
 \ '~/.notes'
 \ ]
 
