@@ -39,6 +39,7 @@ brew 'ffmpeg'
 brew 'cv'
 brew 'neovim/neovim/neovim'
 brew 'homebrew/dupes/less'
+brew 'yarn'
 
 # casks
 cask 'rowanj-gitx'
