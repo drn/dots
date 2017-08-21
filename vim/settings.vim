@@ -69,3 +69,6 @@ set backspace=indent,eol,start
 set nofoldenable
 " share clipboard with system
 set clipboard=unnamed
+
+" python2 interpreter path
+let g:python_host_prog = $HOME . '/.pyenv/versions/neovim2/bin/python'
