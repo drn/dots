@@ -16,3 +16,9 @@ source $DOTS/zsh/bindings.zsh
 
 # autoload tmux
 if [ "$TMUX" = "" ]; then tmux-start master; fi
+
+# load pyenv shims
+if [ -n "$TMUX" ]; then
+  eval "$(pyenv init -)"
+  eval "$(pyenv virtualenv-init -)"
+fi

@@ -3,6 +3,7 @@ brew 'brew-cask'
 brew 'rbenv'
 brew 'ruby-build'
 brew 'pyenv'
+brew 'pyenv-virtualenv'
 brew 'tmux', args: [ '--HEAD' ]
 brew 'zsh'
 brew 'memcached'

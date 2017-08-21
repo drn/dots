@@ -22,9 +22,6 @@ if [ "$ZSHENV_SOURCED" != "true" ]; then
   # Load pyenv
   export PYENV_ROOT=$HOME/.pyenv
   export PATH=$PYENV_ROOT/shims:$PATH
-  if [ -n "$TMUX" ]; then
-    eval "$(pyenv init -)"
-  fi
   # Include go dependencies in PATH
   export PATH=$HOME/go/bin:$PATH
   # Include binstubs in path
