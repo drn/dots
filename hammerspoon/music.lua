@@ -6,11 +6,11 @@ local itunes = require 'itunes'
 local spotify = require 'spotify'
 
 local function provider()
-  if app.get('iTunes') ~= nil then
-    return itunes
-  end
   if app.get('Spotify') ~= nil then
     return spotify
+  end
+  if app.get('iTunes') ~= nil then
+    return itunes
   end
   return nil
 end
