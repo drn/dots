@@ -33,4 +33,6 @@ if [ "$ZSHENV_SOURCED" != "true" ]; then
   export PGPORT=5432
   export LANG=en_US.UTF-8
   export LC_ALL=en_US.UTF-8
+  # Disable Rails DB checks on development machine
+  export DISABLE_DATABASE_ENVIRONMENT_CHECK=1
 fi
