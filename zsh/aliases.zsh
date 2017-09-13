@@ -51,6 +51,7 @@ alias nuc='thanx nucleus'
 alias ver='thanx version'
 alias t='thanx'
 alias plane='airplane'
+alias starwars='caffeinate -d telnet towel.blinkenlights.nl'
 
 # tmux-start shortcuts
 alias mxm='tmux-start master'
