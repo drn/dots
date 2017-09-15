@@ -110,6 +110,7 @@
   rpu = remote prune upstream
   rpo = remote prune origin
   expire = reflog expire --expire-unreachable=now --all
+  mt = mergetool
 
 [user]
   name = Darren Cheng
