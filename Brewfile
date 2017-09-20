@@ -36,6 +36,7 @@ brew 'ffmpeg'
 brew 'cv'
 brew 'neovim'
 brew 'yarn'
+brew 'cmake'
 
 # casks
 cask 'rowanj-gitx'
