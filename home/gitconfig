@@ -7,7 +7,7 @@
   excludesfile = ~/.gitignore
   editor = nvim -f
   preloadindex = true
-  pager = diff-highlight | diff-so-fancy | less --tabs=1,5 -R
+  pager = diff-so-fancy | less --tabs=1,5 -R
 
 [alias]
   up = upstream
