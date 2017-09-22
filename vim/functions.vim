@@ -29,13 +29,6 @@ function! CloseInactiveBuffers()
 endfunction
 nnoremap <leader>q :call CloseInactiveBuffers()<cr>
 
-" Launch TextMate
-function LaunchTextmate()
-  silent !mate %:p
-  redraw!
-endfunction
-command! Mate call LaunchTextmate()
-
 " Reindent File
 function Reindent()
   let line = line('.')
