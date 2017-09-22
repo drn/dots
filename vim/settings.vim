@@ -19,7 +19,6 @@ set scrolloff=5
 " turn on incremental searching
 set incsearch
 " speed up mappings
-set ttimeout
 set ttimeoutlen=50
 " round >> shifting
 set shiftround
@@ -70,6 +69,6 @@ set nofoldenable
 " share clipboard with system
 set clipboard=unnamed
 
-" python2 interpreter path
+" python interpreter paths
 let g:python_host_prog = $HOME . '/.pyenv/versions/neovim2/bin/python'
 let g:python3_host_prog = $HOME . '/.pyenv/versions/neovim3/bin/python'
