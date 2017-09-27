@@ -1,11 +1,12 @@
-local resize = require 'resize'
-local music  = require 'music'
-local screen = require 'screen'
-local chrome = require 'chrome'
-local osx    = require 'osx'
-local finder = require 'finder'
-local volume = require 'volume'
-local wifi   = require 'wifi'
+local resize     = require 'resize'
+local music      = require 'music'
+local screen     = require 'screen'
+local chrome     = require 'chrome'
+local osx        = require 'osx'
+local finder     = require 'finder'
+local volume     = require 'volume'
+local wifi       = require 'wifi'
+local brightness = require 'brightness'
 
 -- Window Management
 
@@ -122,6 +123,15 @@ hs.hotkey.bind({'ctrl', 'cmd'}, 'up', function()
 end)
 hs.hotkey.bind({'ctrl', 'cmd'}, 'down', function()
   volume.decrease()
+end)
+
+-- Brightness Bindings
+
+hs.hotkey.bind({'ctrl', 'alt'}, 'up', function()
+  brightness.increase()
+end)
+hs.hotkey.bind({'ctrl', 'alt'}, 'down', function()
+  brightness.decrease()
 end)
 
 -- Test Binding
