@@ -39,22 +39,24 @@ function spotify.previous()
   display(' ⇤')
 end
 
-function spotify.forward()
+function spotify.forward(delta)
   if not hs.spotify.isRunning() then return end
-  local updated = hs.spotify.getPosition() + 10
+  delta = delta or 10
+  local updated = hs.spotify.getPosition() + delta
   hs.spotify.setPosition(updated)
   message = (math.floor(hs.spotify.getPosition()) == 0) and ' ⇥' or ' → '..formatSeconds(updated)
   display(message)
 end
 
-function spotify.backward()
+function spotify.backward(delta)
   if not hs.spotify.isRunning() then return end
   local position = hs.spotify.getPosition()
   if position < 0.5 then
     spotify.previous()
     return
   end
-  local updated = position - 10
+  delta = delta or 10
+  local updated = position - delta
   if updated < 0 then updated = 0 end
   hs.spotify.setPosition(updated)
   display(' ← '..formatSeconds(updated))

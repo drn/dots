@@ -17,16 +17,18 @@ local function display(text)
   hs.alert.show(text..math.floor(device:volume() + 0.5)..'% '..icon, 0.5)
 end
 
-function volume.increase()
-  device:setVolume(device:volume() + 6)
+function volume.increase(delta)
+  delta = delta or 6
+  device:setVolume(device:volume() + delta)
   if device:muted() then
     device:setMuted(false)
   end
   display(' ↑ ')
 end
 
-function volume.decrease()
-  device:setVolume(device:volume() - 6)
+function volume.decrease(delta)
+  delta = delta or 6
+  device:setVolume(device:volume() - delta)
   if device:volume() == 0 then
     device:setMuted(true)
   end

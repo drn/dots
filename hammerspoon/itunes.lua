@@ -39,22 +39,24 @@ function itunes.previous()
   display(' ⇤')
 end
 
-function itunes.forward()
+function itunes.forward(delta)
   if not hs.itunes.isRunning() then return end
-  local updated = hs.itunes.getPosition() + 10
+  delta = delta or 10
+  local updated = hs.itunes.getPosition() + delta
   hs.itunes.setPosition(updated)
   message = (hs.itunes.getPosition() < math.floor(updated)) and ' ⇥' or ' → '..formatSeconds(updated)
   display(message)
 end
 
-function itunes.backward()
+function itunes.backward(delta)
   if not hs.itunes.isRunning() then return end
   local position = hs.itunes.getPosition()
   if position < 0.5 then
     itunes.previous()
     return
   end
-  local updated = position - 10
+  delta = delta or 10
+  local updated = position - delta
   if updated < 0 then updated = 0 end
   hs.itunes.setPosition(updated)
   display(' ← '..formatSeconds(updated))

@@ -15,9 +15,9 @@ local function provider()
   return nil
 end
 
-local function call(method)
+local function call(method, option)
   local provider = provider()
-  if provider ~= nil then provider[method]() end
+  if provider ~= nil then provider[method](option) end
 end
 
 local bindings = {
@@ -33,8 +33,8 @@ local bindings = {
   'open'
 }
 for i=1, #bindings do
-  music[bindings[i]] = function()
-    call(bindings[i])
+  music[bindings[i]] = function(option)
+    call(bindings[i], option)
   end
 end
 
