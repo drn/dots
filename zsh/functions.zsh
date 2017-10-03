@@ -10,9 +10,9 @@ function _z_wrapper() {
   _z $1
   if [[ "$TERM" = "screen"* ]] && [ -n "$TMUX" ]; then
     if [ -n "$1" ]; then
-      if [[ $PWD == *"/thanx-"* ]]; then
+      if [[ $PWD == *"/Development/thanx/"* ]]; then
         if [ "$(tmux display-message -p '#{window_panes}')" = "1" ]; then
-          tmux rename-window $(echo $PWD | sed 's/.*\/thanx-//')
+          tmux rename-window $(echo $PWD | sed 's/.*\/thanx\///')
         fi
       fi
     fi
