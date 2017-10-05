@@ -111,6 +111,7 @@
   rpo = remote prune origin
   expire = reflog expire --expire-unreachable=now --all
   mt = mergetool
+  rbc = rebase --continue
 
 [user]
   name = Darren Cheng
