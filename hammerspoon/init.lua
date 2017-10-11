@@ -155,7 +155,27 @@ end)
 
 -- Test Binding
 
+local drawing = nil
+local image = nil
+local visible = false
 hs.hotkey.bind({'ctrl', 'alt', 'cmd'}, 'j', function()
+  -- hs.dialog.textPrompt('message', 'informativeText')
+  drawing = drawing or hs.drawing.line({x=0,y=0}, {x=1000,y=1000})
+  drawing:setStrokeColor({ hex = '#6699FF' })
+  image = image or hs.drawing.image(
+    hs.geometry.rect(100, 100, 500, 500),
+    '/Users/darrencheng/Pictures/backgrounds/02965_archonthewater_2880x1800.jpg'
+  )
+  hs.alert(image)
+  -- image:setTextColor({ hex = '#6699FF' })
+  if visible then
+    drawing:hide(0.5)
+    image:hide(0.5)
+  else
+    -- drawing:show(0.5)
+    image:show(0.5)
+  end
+  visible = not visible
 end)
 
 -- Reload configuration
