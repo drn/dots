@@ -48,4 +48,7 @@ when 'remove'
     `git remote remove #{remote} 2>/dev/null`
   end
   puts 'Successfully removed Thanx remotes'
+else
+  puts 'Usage: git thanx [add/remove]'
+  exit 1
 end
