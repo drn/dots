@@ -3,20 +3,6 @@ if [[ $OSTYPE != darwin* ]]; then
   exit 0
 fi
 
-echo "Ensuring no sleepimage files are generated"
-# set hibernate mode to desktop
-sudo pmset -a hibernatemode 0
-# remove sleepimage
-sudo rm -f /private/var/vm/sleepimage
-# create immutable placeholder sleepimage
-sudo touch /private/var/vm/sleepimage
-sudo chflags uchg /private/var/vm/sleepimage
-
-echo "Disabling OS X programs"
-# disable os x dashboard
-defaults write com.apple.dashboard mcx-disabled -boolean YES
-killall Dock
-
 echo "Configuring system key press speeds"
 # disable key hold popup menu
 defaults write -g ApplePressAndHoldEnabled -bool false
