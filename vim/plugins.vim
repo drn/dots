@@ -7,7 +7,6 @@ let g:plug_window = ''
 
 Plug 'nanotech/jellybeans.vim'
 Plug 'itchyny/lightline.vim'
-Plug 'eiginn/netrw', { 'commit': '658fc41' }
 Plug 'luochen1990/rainbow'
 Plug 'mhinz/vim-startify'
 Plug 'Lokaltog/vim-easymotion'
@@ -17,7 +16,6 @@ Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-endwise'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-unimpaired'
-Plug 'tpope/vim-vinegar'
 Plug 'tpope/vim-eunuch'
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-characterize'
@@ -43,6 +41,7 @@ Plug 'benmills/vimux'
 Plug 'drn/vim-turbux'
 Plug 'wakatime/vim-wakatime'
 Plug 'machakann/vim-highlightedyank'
+Plug 'justinmk/vim-dirvish'
 
 " Lazy-load plugins
 Plug 'scrooloose/nerdtree', { 'on': [ 'NERDTreeToggle', 'NERDTreeFind' ] }

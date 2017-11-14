@@ -16,3 +16,5 @@ let g:ctrlp_max_files = 0
 highlight CtrlPMatch guifg=#E94785 ctermfg=161
 " add ctrlp-funky as an extension
 let g:ctrlp_extensions = ['funky']
+" allow ctrlp to close dirvish buffer
+let g:ctrlp_reuse_window = 'dirvish'
