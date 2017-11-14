@@ -1,2 +1,4 @@
 " file creation alias
-nmap % :e %
+nmap <buffer> % :e %
+" directory creation alias
+nmap <buffer> d :!mkdir %
