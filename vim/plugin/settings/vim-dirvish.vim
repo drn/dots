@@ -1,2 +1,2 @@
-" order folders below files
-let g:dirvish_mode = ':sort ,^.*[^\/],'
+" order files below folders
+let g:dirvish_mode = ':sort ,^.*[\/],'
