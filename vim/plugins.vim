@@ -42,6 +42,7 @@ Plug 'drn/vim-turbux'
 Plug 'wakatime/vim-wakatime'
 Plug 'machakann/vim-highlightedyank'
 Plug 'justinmk/vim-dirvish'
+Plug 'justinmk/vim-gtfo'
 
 " Lazy-load plugins
 Plug 'scrooloose/nerdtree', { 'on': [ 'NERDTreeToggle', 'NERDTreeFind' ] }
