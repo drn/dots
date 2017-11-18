@@ -14,6 +14,7 @@
   # git fetch shortcuts
   f = fetch-dynamic
   fa = fetch --all
+  fo = fetch origin
   # git status shortcut
   st = !"git --no-pager status; git --no-pager diff --stat"
   # git diff
