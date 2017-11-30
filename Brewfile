@@ -37,6 +37,7 @@ brew 'cv'
 brew 'neovim'
 brew 'yarn'
 brew 'cmake'
+brew 'tldr'
 
 # casks
 cask 'rowanj-gitx'
