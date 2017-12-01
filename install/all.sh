@@ -34,6 +34,10 @@ if [ "$SHELL" != "/usr/local/bin/zsh" ]; then
   echo "Changing shell to homebrew installed zsh"
   sudo dscl . -create $HOME UserShell /usr/local/bin/zsh
 
+  # install placeholder ~/.zshenv
+  rm -f $HOME/.zshenv
+  echo "export PATH=/usr/local/bin:/usr/local/sbin:$PATH" >> $HOME/.zshenv
+
   echo "Your shell has changed. Relaunch terminal and rerun the installation."
   exit 0
 fi
