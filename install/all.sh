@@ -33,7 +33,9 @@ if [ "$SHELL" != "/usr/local/bin/zsh" ]; then
   # change shell to homebrew zsh
   echo "Changing shell to homebrew installed zsh"
   sudo dscl . -create $HOME UserShell /usr/local/bin/zsh
-  # chsh -s $brewpath/zsh
+
+  echo "Your shell has changed. Relaunch terminal and rerun the installation."
+  exit 0
 fi
 
 # directory setup
