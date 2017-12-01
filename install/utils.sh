@@ -9,9 +9,8 @@ curl get.pow.cx | sh
 
 # install Homebrew managed dependencies
 brew bundle --file=$HOME/.dots/Brewfile
-ln -sfv /usr/local/opt/postgresql/*.plist ~/Library/LaunchAgents
-launchctl unload ~/Library/LaunchAgents/homebrew.mxcl.postgresql.plist
-launchctl load ~/Library/LaunchAgents/homebrew.mxcl.postgresql.plist
+brew services start mysql
+brew services start postgresql
 
 # install ruby and gems
 rbenv install 2.4.1 -s
