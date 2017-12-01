@@ -74,3 +74,5 @@ bash $HOME/.dots/install/vim.sh
 bash $HOME/.dots/install/osx.sh
 # install hammerspoon config
 bash $HOME/.dots/install/hammerspoon.sh
+
+echo "Install is complete. Relaunch terminal for settings to take effect."
