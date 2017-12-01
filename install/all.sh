@@ -42,6 +42,9 @@ if [ "$SHELL" != "$brewpath/zsh" ]; then
   chsh -s $brewpath/zsh
 fi
 
+# directory setup
+mkdir -p $HOME/Development
+
 # install dotfiles
 bash $HOME/.dots/install/dots.sh
 # install terminal utilites
