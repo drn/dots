@@ -1,12 +1,7 @@
 source 'http://rubygems.org'
 
-gem 'jira-cli'
 gem 'foreman'
-gem 'powder'
 gem 'cocoapods'
 gem 'pry'
-gem 'pry-remote'
-gem 'rails', '4.0.5'
+gem 'rails'
 gem 'rubocop'
-gem 'awesome_print'
-gem 'gem-browse'
