@@ -68,11 +68,11 @@ bash $HOME/.dots/install/zsh.sh
 bash $HOME/.dots/install/git.sh
 # install fonts
 bash $HOME/.dots/install/fonts.sh
-# install vim configuration
-bash $HOME/.dots/install/vim.sh
 # install os x configuration
 bash $HOME/.dots/install/osx.sh
 # install hammerspoon config
 bash $HOME/.dots/install/hammerspoon.sh
+# install vim configuration
+bash $HOME/.dots/install/vim.sh
 
 echo "Install is complete. Relaunch terminal for settings to take effect."
