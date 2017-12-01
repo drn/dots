@@ -12,6 +12,7 @@ cask 'mailplane'
 cask 'yujitach-menumeters'
 cask 'caffeine'
 cask 'quicksilver'
+cask 'discord'
 
 # formulae
 brew 'rbenv'
