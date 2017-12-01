@@ -45,15 +45,14 @@ fi
 # directory setup
 mkdir -p $HOME/Development
 
-# ensure dotfiles are up to date
+# ensure dotfiles are cloned and up-to-date
 echo "Cloning drn/dots to $HOME/.dots"
-if ! git clone https://github.com/drn/dots.git $HOME/.dots --quiet; then
-  cd $HOME/.dots
-  git remote rename origin upstream 2>/dev/null
-  git fetch
-  git reset --hard upstream/master
-  cd
-fi
+git clone https://github.com/drn/dots.git $HOME/.dots --quiet 2>/dev/null
+cd $HOME/.dots
+git remote rename origin upstream 2>/dev/null
+git fetch
+git reset --hard upstream/master
+cd
 
 # install dotfiles
 bash $HOME/.dots/install/dots.sh
