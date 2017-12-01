@@ -13,6 +13,7 @@ brew services start mysql
 brew services start postgresql
 
 # install ruby and gems
+eval "$(rbenv init -)"
 rbenv install 2.4.1 -s
 rbenv global 2.4.1
 gem install bundler
