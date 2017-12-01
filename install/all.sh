@@ -12,33 +12,30 @@ cd ~
 # ensure updated zsh is the default shell
 echo "Ensuring ZSH is the default shell"
 
-# if homebrew is installed
-if hash brew 2>/dev/null; then
+# ensure homebrew is installed
+if ! hash brew 2>/dev/null; then
+  /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+fi
 
-  # if homebrew zsh is not the current shell
-  brewpath="$(which brew | sed 's/\/brew//')"
-  if [ "$SHELL" != "$brewpath/zsh" ]; then
+# if homebrew zsh is not the current shell
+brewpath="$(which brew | sed 's/\/brew//')"
+if [ "$SHELL" != "$brewpath/zsh" ]; then
 
-    # install zsh if not already installed
-    if [ -z "$(brew list | grep zsh)" ]; then
-      echo "Installing ZSH via Homebrew"
-      brew install zsh
-    fi
-
-    # include homebrew zsh path in /etc/shells
-    if [ -z "$(grep -irn "$brewpath/zsh" /etc/shells)" ]; then
-      echo "Whitelisting Homebrew installed ZSH"
-      sudo -s "echo '$brewpath/zsh' >> /etc/shells"
-    fi
-
-    # change shell to homebrew zsh
-    echo "Changing shell to homebrew installed zsh"
-    chsh -s $brewpath/zsh
+  # install zsh if not already installed
+  if [ -z "$(brew list | grep zsh)" ]; then
+    echo "Installing ZSH via Homebrew"
+    brew install zsh
   fi
-else
-  # fallback to system zsh and display warning
-  echo "Warning: Homebrew not found. Cannot install updated zsh version. Falling back to system zsh."
-  chsh -s /bin/zsh
+
+  # include homebrew zsh path in /etc/shells
+  if [ -z "$(grep -irn "$brewpath/zsh" /etc/shells)" ]; then
+    echo "Whitelisting Homebrew installed ZSH"
+    sudo -s "echo '$brewpath/zsh' >> /etc/shells"
+  fi
+
+  # change shell to homebrew zsh
+  echo "Changing shell to homebrew installed zsh"
+  chsh -s $brewpath/zsh
 fi
 
 # ensure dotfiles are up to date
