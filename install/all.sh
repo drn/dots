@@ -22,8 +22,7 @@ if ! hash brew 2>/dev/null; then
 fi
 
 # if homebrew zsh is not the current shell
-brewpath="$(which brew | sed 's/\/brew//')"
-if [ "$SHELL" != "$brewpath/zsh" ]; then
+if [ "$SHELL" != "/usr/local/bin/zsh" ]; then
 
   # install zsh if not already installed
   if [ -z "$(brew list | grep zsh)" ]; then
@@ -31,15 +30,10 @@ if [ "$SHELL" != "$brewpath/zsh" ]; then
     brew install zsh
   fi
 
-  # include homebrew zsh path in /etc/shells
-  if [ -z "$(grep -irn "$brewpath/zsh" /etc/shells)" ]; then
-    echo "Whitelisting Homebrew installed ZSH"
-    sudo -s "echo '$brewpath/zsh' >> /etc/shells"
-  fi
-
   # change shell to homebrew zsh
   echo "Changing shell to homebrew installed zsh"
-  chsh -s $brewpath/zsh
+  sudo dscl . -create $HOME UserShell /usr/local/bin/zsh
+  # chsh -s $brewpath/zsh
 fi
 
 # directory setup
