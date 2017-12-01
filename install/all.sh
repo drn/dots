@@ -64,7 +64,5 @@ bash $HOME/.dots/install/fonts.sh
 bash $HOME/.dots/install/vim.sh
 # install os x configuration
 bash $HOME/.dots/install/osx.sh
-# install ubersicht widgets
-bash $HOME/.dots/install/ubersicht.sh
 # install hammerspoon config
 bash $HOME/.dots/install/hammerspoon.sh
