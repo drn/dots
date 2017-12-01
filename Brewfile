@@ -54,4 +54,4 @@ brew 'neovim'
 brew 'yarn'
 brew 'cmake'
 brew 'tldr'
-
+brew 'mas'
