@@ -9,6 +9,10 @@ if [ $? -ne 0 ]; then exit 1; fi
 # change directory to home, in order to avoid directory conflicts
 cd ~
 
+# ensure command line tools are installed
+echo "Ensuring OS X Command Line Tools are installed"
+xcode-select --install 2>/dev/null || true
+
 # ensure updated zsh is the default shell
 echo "Ensuring ZSH is the default shell"
 
