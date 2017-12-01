@@ -10,6 +10,7 @@ cask 'spotify'
 cask 'bartender'
 cask 'mailplane'
 cask 'yujitach-menumeters'
+cask 'caffeine'
 
 # formulae
 brew 'rbenv'
