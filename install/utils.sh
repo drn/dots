@@ -7,11 +7,6 @@ touch ~/.z
 # install pow
 curl get.pow.cx | sh
 
-# install homebrew if it is not yet installed
-if ! hash brew 2>/dev/null; then
-  ruby -e "$(curl -fsSL https://raw.github.com/Homebrew/homebrew/go/install)"
-fi
-
 # install Homebrew managed dependencies
 brew bundle --file=$HOME/.dots/Brewfile
 ln -sfv /usr/local/opt/postgresql/*.plist ~/Library/LaunchAgents
