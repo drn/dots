@@ -7,5 +7,5 @@
 
 if [ -z "$(git remote | grep upstream)" ]; then
   git remote rename origin upstream
-  git remote add origin git@github.com:drn/$(git repo).git
+  git remote add origin https://github.com/drn/$(git repo).git
 fi

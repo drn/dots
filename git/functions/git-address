@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #
-# Prints the address (git@github.com:author/repo.git) of the input remote.
+# Prints the address (https://github.com/author/repo.git) of the input remote.
 # Remote defaults to upstream, then origin if no remote is input.
 #
 
