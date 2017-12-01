@@ -42,11 +42,6 @@ if [ "$SHELL" != "$brewpath/zsh" ]; then
   chsh -s $brewpath/zsh
 fi
 
-# ensure dotfiles are up to date
-sudo rm -rf $HOME/.dots
-echo "Cloning drn/dots to $HOME/.dots"
-git clone https://github.com/drn/dots.git $HOME/.dots --quiet
-
 # install dotfiles
 bash $HOME/.dots/install/dots.sh
 # install terminal utilites
