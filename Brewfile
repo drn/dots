@@ -1,3 +1,16 @@
+# casks
+cask 'java'
+cask 'rowanj-gitx'
+cask 'jumpcut'
+cask 'google-chrome'
+cask 'slack'
+cask 'hammerspoon'
+cask '1password'
+cask 'spotify'
+cask 'bartender'
+cask 'mailplane'
+cask 'yujitach-menumeters'
+
 # formulae
 brew 'rbenv'
 brew 'ruby-build'
@@ -39,6 +52,3 @@ brew 'yarn'
 brew 'cmake'
 brew 'tldr'
 
-# casks
-cask 'rowanj-gitx'
-cask 'jumpcut'
