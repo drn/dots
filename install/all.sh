@@ -7,7 +7,7 @@ sudo -p "Enter your password: " echo "We're good to go!"
 if [ $? -ne 0 ]; then exit 1; fi
 
 # change directory to home, in order to avoid directory conflicts
-cd ~
+cd
 
 # ensure command line tools are installed
 echo "Ensuring OS X Command Line Tools are installed"
@@ -44,6 +44,16 @@ fi
 
 # directory setup
 mkdir -p $HOME/Development
+
+# ensure dotfiles are up to date
+echo "Cloning drn/dots to $HOME/.dots"
+if ! git clone https://github.com/drn/dots.git $HOME/.dots --quiet; then
+  cd $HOME/.dots
+  git remote rename origin upstream 2>/dev/null
+  git fetch
+  git reset --hard upstream/master
+  cd
+fi
 
 # install dotfiles
 bash $HOME/.dots/install/dots.sh
