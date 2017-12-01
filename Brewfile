@@ -11,6 +11,7 @@ cask 'bartender'
 cask 'mailplane'
 cask 'yujitach-menumeters'
 cask 'caffeine'
+cask 'quicksilver'
 
 # formulae
 brew 'rbenv'
