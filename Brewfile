@@ -14,6 +14,7 @@ cask 'caffeine'
 cask 'quicksilver'
 cask 'discord'
 cask 'postman'
+cask 'google-drive-file-stream'
 
 # formulae
 brew 'rbenv'
