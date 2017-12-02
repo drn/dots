@@ -13,6 +13,7 @@ cask 'yujitach-menumeters'
 cask 'caffeine'
 cask 'quicksilver'
 cask 'discord'
+cask 'postman'
 
 # formulae
 brew 'rbenv'
