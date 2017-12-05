@@ -16,6 +16,7 @@ cask 'discord'
 cask 'postman'
 cask 'google-drive-file-stream'
 cask 'cyberduck'
+cask 'sequel-pro'
 
 # formulae
 brew 'rbenv'
