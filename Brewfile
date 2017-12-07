@@ -18,6 +18,7 @@ cask 'google-drive-file-stream'
 cask 'cyberduck'
 cask 'sequel-pro'
 cask 'realm-browser'
+cask 'licecap'
 
 # formulae
 brew 'rbenv'
