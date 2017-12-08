@@ -7,7 +7,7 @@ end
 function osx.screensaver()
   hs.alert.show("Starting screensaver...")
   sleep()
-  os.execute("open /System/Library/Frameworks/ScreenSaver.framework/Versions/A/Resources/ScreenSaverEngine.app")
+  os.execute("open /System/Library/CoreServices/ScreenSaverEngine.app")
 end
 
 function osx.lock()
