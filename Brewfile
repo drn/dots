@@ -19,6 +19,7 @@ cask 'cyberduck'
 cask 'sequel-pro'
 cask 'realm-browser'
 cask 'licecap'
+cask 'dropbox'
 
 # formulae
 brew 'rbenv'
