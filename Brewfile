@@ -20,6 +20,7 @@ cask 'sequel-pro'
 cask 'realm-browser'
 cask 'licecap'
 cask 'dropbox'
+cask 'android-studio'
 
 # formulae
 brew 'rbenv'
