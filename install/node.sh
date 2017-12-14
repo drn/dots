@@ -9,3 +9,4 @@ npm install -g diff-so-fancy
 npm install -g git-standup
 npm install -g eslint
 npm install -g gtop
+npm install -g neovim
