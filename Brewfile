@@ -21,6 +21,7 @@ cask 'realm-browser'
 cask 'licecap'
 cask 'dropbox'
 cask 'android-studio'
+cask 'alarm-clock'
 
 # formulae
 brew 'rbenv'
