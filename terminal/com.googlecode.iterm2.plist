@@ -1000,8 +1000,10 @@
 		<key>TB Is Shown</key>
 		<integer>1</integer>
 	</dict>
+	<key>NSWindow Frame SessionsPreferences</key>
+	<string>269 126 606 469 0 0 1440 877 </string>
 	<key>NSWindow Frame SharedPreferences</key>
-	<string>269 166 770 429 0 0 1440 877 </string>
+	<string>269 127 937 512 0 0 1440 877 </string>
 	<key>NSWindow Frame iTerm Window 0</key>
 	<string>0 0 1440 900 0 0 1440 877 </string>
 	<key>NeverWarnAboutShortLivedSessions_9AF29456-9F86-4766-A655-19D4F17D37D4</key>
@@ -1745,6 +1747,8 @@
 			<true/>
 			<key>Shortcut</key>
 			<string></string>
+			<key>Show Mark Indicators</key>
+			<false/>
 			<key>Silence Bell</key>
 			<true/>
 			<key>Smart Cursor Color</key>
@@ -2631,6 +2635,8 @@
 	<true/>
 	<key>NoSyncInstallationId</key>
 	<string>337B29AD-9CB9-4829-9A71-071E47A05FB7</string>
+	<key>NoSyncPermissionToShowTip</key>
+	<false/>
 	<key>NoSyncTimeOfFirstLaunchOfVersionWithTip</key>
 	<real>533802539.97339797</real>
 	<key>OnlyWhenMoreTabs</key>
@@ -2707,7 +2713,7 @@
 	<key>SUHasLaunchedBefore</key>
 	<true/>
 	<key>SULastCheckTime</key>
-	<date>2017-12-01T06:30:42Z</date>
+	<date>2017-12-21T22:25:38Z</date>
 	<key>SUSendProfileInfo</key>
 	<false/>
 	<key>SavePasteHistory</key>
