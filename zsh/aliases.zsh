@@ -51,6 +51,7 @@ alias ver='thanx version'
 alias t='thanx'
 alias plane='airplane'
 alias starwars='caffeinate -d telnet towel.blinkenlights.nl'
+alias hc='heroku console'
 
 # tmux-start shortcuts
 alias mxm='tmux-start master'
