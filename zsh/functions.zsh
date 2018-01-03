@@ -19,3 +19,12 @@ function _z_wrapper() {
   fi
 }
 alias ${_Z_CMD:-z}='_z_wrapper 2>&1'
+
+function success?() {
+  if [ $? = 0 ]; then
+    echo -e "\033[0;32mSuccessful...\033[0m"
+    $@
+  else
+    echo -e "\033[0;31mUnsuccessful...\033[0m"
+  fi
+}
