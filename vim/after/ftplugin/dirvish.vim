@@ -1,2 +1,2 @@
 " unmap default clear arglist mapping
-nunmap <buffer> da.
+nunmap <buffer> dax
