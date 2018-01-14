@@ -22,6 +22,7 @@ cask 'licecap'
 cask 'dropbox'
 cask 'android-studio'
 cask 'alarm-clock'
+cask 'vlc'
 
 # formulae
 brew 'rbenv'
