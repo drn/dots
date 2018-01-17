@@ -19,7 +19,7 @@ set scrolloff=5
 " turn on incremental searching
 set incsearch
 " speed up mappings
-set ttimeoutlen=50
+set nottimeout
 " round >> shifting
 set shiftround
 " display tabs and trailing spaces visually
