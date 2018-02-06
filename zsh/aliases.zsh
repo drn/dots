@@ -53,6 +53,7 @@ alias plane='airplane'
 alias starwars='caffeinate -d telnet towel.blinkenlights.nl'
 alias hc='heroku console'
 alias notify='terminal-notifier -message'
+alias jo='jira-open'
 
 # tmux-start shortcuts
 alias mxm='tmux-start master'
