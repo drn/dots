@@ -79,6 +79,7 @@ Plug 'vim-scripts/indenthtml.vim', { 'for': 'html'}
 Plug 'kchmck/vim-coffee-script', { 'for': 'coffee' }
 Plug 'pangloss/vim-javascript', { 'for': 'javascript' }
 Plug 'mxw/vim-jsx', { 'for': 'javascript' }
+Plug 'vim-python/python-syntax', { 'for': 'python' }
 
 " Auto-completion
 function! BuildYCM(info)
