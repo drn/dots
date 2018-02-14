@@ -52,7 +52,9 @@ local units = {
   top         = { x=0,   y=0,   w=1,   h=0.5 },
   bottom      = { x=0,   y=0.5, w=1,   h=0.5 },
   -- Fullscreen
-  full        = { x=0,   y=0,   w=1,   h=1   }
+  full        = { x=0,   y=0,   w=1,   h=1   },
+  -- Fit
+  fit         = { x=0,   y=0.25, w=1,   h=0.6 }
 }
 for name,unit in pairs(units) do
   resize[name] = function() setUnit(unit) end

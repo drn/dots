@@ -20,14 +20,15 @@ local resizebindings = {
   left        = 'left',
   top         = 'up',
   bottom      = 'down',
-  full        = 'return'
+  full        = 'return',
+  fit         = "'"
 }
 for name,key in pairs(resizebindings) do
   hs.hotkey.bind(resizemod, key, function()
     resize[name]()
   end)
 end
-hs.hotkey.bind(resizemod, "'", function() resize.center() end)
+hs.hotkey.bind(resizemod, '/', function() resize.center() end)
 table.insert(resizemod, 'shift')
 hs.hotkey.bind(resizemod, 'return', function() resize.changeScreen() end)
 
