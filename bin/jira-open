@@ -1,6 +1,8 @@
 #!/usr/bin/env ruby
 
-branch = `git rev-parse --abbrev-ref HEAD`.strip
+branch = ARGV[0]
+branch = `git rev-parse --abbrev-ref HEAD`.strip if branch.nil?
+
 decorated = "\e[97m#{branch}\e[0m"
 if branch =~ /^[A-Z][A-Z]-\d+/
   puts "\e[32mOpening JIRA issue #{decorated}\e[32m...\e[0m"
