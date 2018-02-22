@@ -17,7 +17,7 @@ nnoremap <leader>b 77<Bar>i''<Esc>i<Return><Esc>kA\<Esc>j
 " Delete from beggining of current line to end of last
 nnoremap <silent> B ^d0i<BS>
 " Redraw screen mapping
-nnoremap <silent> <leader>D :redraw!<cr>
+nnoremap <silent> <leader>D :redraw! <bar> echo 'Redrawing...'<cr>
 " Visually select all
 nnoremap <leader>a ggVG
 " Echo path relative to working directory
