@@ -32,12 +32,12 @@ pyenv virtualenv 3.4.4 neovim3 || true
 # neovim python 2
 pyenv activate neovim2
 pip install --upgrade pip
-pip install neovim
+pip install --upgrade neovim
 pyenv which python
 # neovim python 3
 pyenv activate neovim3
 pip install --upgrade pip
-pip install neovim
+pip install --upgrade neovim
 pyenv which python
 # install flake8 liner
 pip install flake8
