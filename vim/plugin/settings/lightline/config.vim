@@ -8,7 +8,7 @@ let g:lightline = {
 \       [ 'fugitive', 'ctrlp', 'filename', 'zoompane' ]
 \     ],
 \     'right': [
-\       [ 'ale', 'lineinfo' ],
+\       [ 'linter_checking', 'linter_errors', 'linter_warnings', 'lineinfo' ],
 \       [ 'percent' ],
 \       [ 'fileformat', 'fileencoding', 'filetype' ]
 \     ]
@@ -36,10 +36,16 @@ let g:lightline = {
 \     'zoompane': 'LightlineZoomPaneIndicator'
 \   },
 \   'component_expand': {
-\     'ale': 'ALEGetStatusLine'
+\     'linter_checking': 'lightline#ale#checking',
+\     'linter_warnings': 'lightline#ale#warnings',
+\     'linter_errors': 'lightline#ale#errors',
+\     'linter_ok': 'lightline#ale#ok'
 \   },
 \   'component_type': {
-\     'ale': 'error'
+\     'linter_checking': 'left',
+\     'linter_warnings': 'warning',
+\     'linter_errors': 'error',
+\     'linter_ok': 'left',
 \   },
 \   'component': {
 \     'lineinfo': '⭡ %3l:%-2v'
