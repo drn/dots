@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# Usage: poll [sleep_duration] [command]
+
+n=0
+duration=$1
+cmd="${@:2}"
+[[ $# -le 1 ]] && { echo "Usage $0 <sleep duration> <command>"; }
+
+while true; do
+  $cmd && break || {
+    ((n++))
+    echo -e "\033[0;31mCommand failed... Attemping retry #$n...\033[0m"
+    sleep $duration;
+  }
+done
