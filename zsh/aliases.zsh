@@ -54,6 +54,7 @@ alias starwars='caffeinate -d telnet towel.blinkenlights.nl'
 alias hc='heroku console'
 alias notify='terminal-notifier -message'
 alias jo='jira-open'
+alias ycm='cd ~/.vim/plugged/YouCompleteMe; ./install.py'
 
 # tmux-start shortcuts
 alias mxm='tmux-start master'
