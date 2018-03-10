@@ -40,7 +40,7 @@ pip install --upgrade pip
 pip install --upgrade neovim
 pyenv which python
 # install flake8 liner
-pip install flake8
+pip install --upgrade flake8
 ln -s `pyenv which flake8` ~/bin/flake8
 # deactivate pyenv
 pyenv deactivate
