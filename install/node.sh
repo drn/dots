@@ -10,3 +10,4 @@ npm install -g git-standup
 npm install -g eslint
 npm install -g gtop
 npm install -g neovim
+npm install -g fkill-cli
