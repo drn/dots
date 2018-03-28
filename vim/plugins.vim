@@ -42,7 +42,6 @@ Plug 'wakatime/vim-wakatime'
 Plug 'machakann/vim-highlightedyank'
 Plug 'justinmk/vim-dirvish'
 Plug 'justinmk/vim-gtfo'
-Plug 'hashivim/vim-terraform'
 
 " Lazy-load plugins
 Plug 'scrooloose/nerdtree', { 'on': [ 'NERDTreeToggle', 'NERDTreeFind' ] }
@@ -82,6 +81,7 @@ Plug 'kchmck/vim-coffee-script', { 'for': 'coffee' }
 Plug 'pangloss/vim-javascript', { 'for': 'javascript' }
 Plug 'mxw/vim-jsx', { 'for': 'javascript' }
 Plug 'vim-python/python-syntax', { 'for': 'python' }
+Plug 'hashivim/vim-terraform', { 'for': 'terraform' }
 
 " Auto-completion
 function! BuildYCM(info)
