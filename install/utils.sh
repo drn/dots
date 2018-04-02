@@ -14,8 +14,8 @@ brew services start postgresql
 
 # install ruby and gems
 eval "$(rbenv init -)"
-rbenv install 2.4.1 -s
-rbenv global 2.4.1
+rbenv install 2.5.0 -s
+rbenv global 2.5.0
 gem install bundler
 bundle install --gemfile=$HOME/.dots/Gemfile
 rm -f $HOME/.dots/Gemfile.lock
