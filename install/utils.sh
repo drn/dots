@@ -17,8 +17,6 @@ eval "$(rbenv init -)"
 rbenv install 2.5.0 -s
 rbenv global 2.5.0
 gem install bundler
-bundle install --gemfile=$HOME/.dots/Gemfile
-rm -f $HOME/.dots/Gemfile.lock
 
 # configure neovim python dependencies
 eval "$(pyenv init -)"
