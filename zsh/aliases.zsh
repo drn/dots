@@ -43,6 +43,7 @@ alias v='nvim'
 alias vimdiff='mvim -d'
 alias vi='vim'
 alias g='git'
+alias tf='terraform'
 alias vimsync="bash $DOTS/install/vim.sh"
 alias ff='fuzzy-find'
 alias fff='fuzzy-find-file'
