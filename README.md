@@ -2,7 +2,9 @@
 
 > Obsessively curated dotfiles.
 
-**Dots** provides installation of a continuously maintained development setup.
+* * *
+
+[![CircleCI](https://circleci.com/gh/drn/dots.svg?style=svg)](https://circleci.com/gh/drn/dots)
 
 ## TL;DR
 

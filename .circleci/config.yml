@@ -1,0 +1,19 @@
+version: 2
+jobs:
+  build:
+    macos:
+      xcode: 9.2.0
+    steps:
+      - checkout
+      - run:
+          name: Bash Install
+          command: |
+            echo $0
+            source install/all.sh
+      - run:
+          name: ZSH Install
+          shell: /usr/local/bin/zsh
+          command: |
+            echo $0
+            SHELL=/usr/local/bin/zsh
+            ./install/all.sh
