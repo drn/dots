@@ -53,9 +53,6 @@ prompt_directory_name() {
 }
 
 # Format directory listing
-#   TODO configurable list of special directories
-#   TODO use ~ and / for root indicators. < isnt consistent
-#   TODO use symbol or . for .dir indicator
 prompt_directory() {
   case "$(prompt_directory_info)" in
     root)
