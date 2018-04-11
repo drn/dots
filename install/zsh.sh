@@ -6,9 +6,7 @@ source "$HOME/.dots/install/core.cfg"
 sudo rm -f /etc/zprofile
 
 if which brew >/dev/null 2>&1; then
-  brew untap getantibody/homebrew-antibody || true
-  brew tap getantibody/homebrew-antibody
-  brew install antibody
+  brew install getantibody/tap/antibody
 else
   curl -sL https://git.io/vwMNi | sh -s
 fi
