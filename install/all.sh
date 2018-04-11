@@ -58,12 +58,13 @@ cd
 bash $HOME/.dots/install/dots.sh
 # install terminal utilites
 bash $HOME/.dots/install/utils.sh
-# install node packages
-bash $HOME/.dots/install/node.sh
 # install bin files
 bash $HOME/.dots/install/bin.sh
 # install zsh configuration
 bash $HOME/.dots/install/zsh.sh
+# ensure zshenv and zshrc are sourced
+source $HOME/.zshenv
+source $HOME/.zshrc
 # install git configuration
 bash $HOME/.dots/install/git.sh
 # install fonts
@@ -72,6 +73,8 @@ bash $HOME/.dots/install/fonts.sh
 bash $HOME/.dots/install/osx.sh
 # install hammerspoon config
 bash $HOME/.dots/install/hammerspoon.sh
+# install node packages
+bash $HOME/.dots/install/node.sh
 # install vim configuration
 bash $HOME/.dots/install/vim.sh
 
