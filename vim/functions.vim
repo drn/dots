@@ -129,3 +129,7 @@ function! Gopen()
   endif
 endfunction
 command! Gopen call Gopen()
+
+function! PluginExists(plugin)
+  return isdirectory(g:plugs[a:plugin].dir)
+endfunction
