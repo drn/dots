@@ -23,6 +23,7 @@ cask 'dropbox'
 cask 'android-studio'
 cask 'alarm-clock'
 cask 'vlc'
+cask 'whatsapp'
 
 # formulae
 brew 'rbenv'
