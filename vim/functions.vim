@@ -97,3 +97,7 @@ function! GlobalReplace()
   execute 'argdo %s/' . find . '/' . replace . '/ge | w'
 endfunction
 command! GlobalReplace call GlobalReplace()
+
+function! PluginExists(plugin)
+  return isdirectory(g:plugs[a:plugin].dir)
+endfunction

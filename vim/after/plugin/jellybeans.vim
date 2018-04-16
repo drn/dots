@@ -31,4 +31,7 @@ let s:p.tabline.right = copy(s:p.normal.left)
 let s:p.normal.error = [ [ s:red, s:base02 ] ]
 let s:p.normal.warning = [ [ s:yellow, s:base01 ] ]
 
-let g:lightline#colorscheme#jellybeans#palette = lightline#colorscheme#flatten(s:p)
+if PluginExists('lightline.vim')
+  let palette = lightline#colorscheme#flatten(s:p)
+  let g:lightline#colorscheme#jellybeans#palette = palette
+endif

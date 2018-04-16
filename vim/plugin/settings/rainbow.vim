@@ -8,4 +8,7 @@ function! PreventRainbowConflicts()
     execute 'call rainbow#hook()'
   endif
 endfunction
-autocmd FileType,BufWinEnter * call PreventRainbowConflicts()
+
+if PluginExists('rainbow')
+  autocmd FileType,BufWinEnter * call PreventRainbowConflicts()
+endif

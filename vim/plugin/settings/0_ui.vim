@@ -12,7 +12,10 @@ let g:jellybeans_overrides = {
 \    'attr':     'bold'
 \  },
 \}
-colorscheme jellybeans
+
+if PluginExists('jellybeans.vim')
+  colorscheme jellybeans
+endif
 
 
 """ Configure UI """
