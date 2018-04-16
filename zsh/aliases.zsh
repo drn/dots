@@ -49,5 +49,5 @@ alias jo='jira-open'
 alias ycm='cd ~/.vim/plugged/YouCompleteMe; ./install.py'
 
 # tmux-start shortcuts
-alias mxm='tmux-start master'
-alias mxv='tmux-start vertical'
+alias mxm='unshrink; tmux-start master'
+alias mxv='unshrink; tmux-start vertical'
