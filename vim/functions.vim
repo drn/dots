@@ -97,3 +97,35 @@ function! GlobalReplace()
   execute 'argdo %s/' . find . '/' . replace . '/ge | w'
 endfunction
 command! GlobalReplace call GlobalReplace()
+
+function Strip(string)
+  return substitute(a:string, '\n', '', '')
+endfunction
+
+function GitUrl()
+  let url = system("git config --get remote.upstream.url")
+  if url == ""
+    let url = system("git config --get remote.origin.url")
+  endif
+  return substitute(Strip(url), '\.git$', '', '')
+endfunction
+
+function GitSha()
+  return Strip(system("git rev-parse HEAD"))
+endfunction
+
+function! Gopen()
+  " determine relative file path
+  let filepath = expand("%:p")
+  let repopath = Strip(system("git rev-parse --show-toplevel"))
+  let path = substitute(filepath, repopath, '', '')
+
+  if path[strlen(path)-1] == "/"
+    " open tree
+    call system('open ' . GitUrl(). '/tree/' . GitSha() . path)
+  else
+    " open file
+    call system('open ' . GitUrl(). '/blob/' . GitSha() . path)
+  endif
+endfunction
+command! Gopen call Gopen()
