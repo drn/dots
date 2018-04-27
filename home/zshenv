@@ -23,8 +23,8 @@ if [ "$ZSHENV_SOURCED" != "true" ]; then
   export PYENV_ROOT=$HOME/.pyenv
   export PATH=$PYENV_ROOT/shims:$PATH
   # Include go dependencies in PATH
-  export PATH=$HOME/go/bin:$PATH
   export GOPATH=$HOME/go
+  export PATH=$GOPATH/bin:$PATH
   # Include binstubs in path
   export PATH=.bundle/bin:$PATH
   # Set $DOTS
