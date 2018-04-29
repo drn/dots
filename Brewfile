@@ -24,6 +24,7 @@ cask 'android-studio'
 cask 'alarm-clock'
 cask 'vlc'
 cask 'whatsapp'
+cask 'docker'
 
 # formulae
 brew 'rbenv'
