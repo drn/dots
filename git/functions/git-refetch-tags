@@ -1,0 +1,6 @@
+#!/bin/bash
+
+# Refetch all cached tags from upstream and origin
+
+git tag -l | xargs git tag -d
+git fetch upstream --tags; git fetch --tags

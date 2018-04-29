@@ -113,6 +113,7 @@
   expire = reflog expire --expire-unreachable=now --all
   mt = mergetool
   rbc = rebase --continue
+  rf = refetch-tags
 
 [user]
   name = Darren Cheng
