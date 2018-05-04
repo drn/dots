@@ -1,5 +1,7 @@
 local wifi = {}
 
+local alert = require 'alert'
+
 local command = '/usr/sbin/networksetup '
 
 local function isOff()
@@ -8,12 +10,12 @@ end
 
 function wifi.off()
   os.execute(command..'-setairportpower en0 off')
-  hs.alert.show('Turning WiFi off...', 0.5)
+  alert.show('Turning WiFi off...')
 end
 
 function wifi.on()
   os.execute(command..'-setairportpower en0 on')
-  hs.alert.show('Turning WiFi on...', 0.5)
+  alert.show('Turning WiFi on...')
 end
 
 function wifi.toggle()

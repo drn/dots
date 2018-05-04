@@ -1,6 +1,7 @@
 local spotify = {}
 
-local as = require 'hs.applescript'
+local alert = require 'alert'
+local as    = require 'hs.applescript'
 
 local function tell(cmd)
   local _cmd = 'tell application "Spotify" to ' .. cmd
@@ -22,21 +23,16 @@ local function duration()
   return currentPosition ~= nil and currentPosition / 1000 or 0
 end
 
-local function display(message)
-  hs.alert.closeAll(0)
-  hs.alert.show(message, 0.5)
-end
-
 function spotify.next()
   if not hs.spotify.isRunning() then return end
   hs.spotify.next()
-  display(' ⇥')
+  alert.showOnly(' ⇥')
 end
 
 function spotify.previous()
   if not hs.spotify.isRunning() then return end
   hs.spotify.previous()
-  display(' ⇤')
+  alert.showOnly(' ⇤')
 end
 
 function spotify.forward(delta)
@@ -45,7 +41,7 @@ function spotify.forward(delta)
   local updated = hs.spotify.getPosition() + delta
   hs.spotify.setPosition(updated)
   message = (math.floor(hs.spotify.getPosition()) == 0) and ' ⇥' or ' → '..formatSeconds(updated)
-  display(message)
+  alert.showOnly(message)
 end
 
 function spotify.backward(delta)
@@ -59,41 +55,41 @@ function spotify.backward(delta)
   local updated = position - delta
   if updated < 0 then updated = 0 end
   hs.spotify.setPosition(updated)
-  display(' ← '..formatSeconds(updated))
+  alert.showOnly(' ← '..formatSeconds(updated))
 end
 
 function spotify.increaseVolume()
   if not hs.spotify.isRunning() then return end
   hs.spotify.volumeUp()
-  display(' ↑ '..hs.spotify.getVolume()..'% ♬')
+  alert.showOnly(' ↑ '..hs.spotify.getVolume()..'% ♬')
 end
 
 function spotify.decreaseVolume()
   if not hs.spotify.isRunning() then return end
   hs.spotify.volumeDown()
-  display(' ↓ '..hs.spotify.getVolume()..'% ♬')
+  alert.showOnly(' ↓ '..hs.spotify.getVolume()..'% ♬')
 end
 
 function spotify.maxVolume()
   if not hs.spotify.isRunning() then return end
   hs.spotify.setVolume(100)
-  display(' ↑ 100%')
+  alert.showOnly(' ↑ 100%')
 end
 
 function spotify.minVolume()
   if not hs.spotify.isRunning() then return end
   hs.spotify.setVolume(0)
-  display(' ↓ 0%')
+  alert.showOnly(' ↓ 0%')
 end
 
 function spotify.playpause()
   if not hs.spotify.isRunning() then
     hs.application.launchOrFocus('Spotify')
-    display(' ▶')
+    alert.showOnly(' ▶')
   else
     hs.spotify.playpause()
     icon = hs.spotify.isPlaying() and ' ▶' or ' ◼'
-    display(icon)
+    alert.showOnly(icon)
   end
 end
 
@@ -107,8 +103,7 @@ function spotify.display()
   percent = math.floor(current / total * 100 + 0.5)
   time   = formatSeconds(current)..'  ('..percent..'%)'..'\n'..formatSeconds(total)
   info   = track..'\n'..album..'\n'..artist..'\n'..time
-  hs.alert.closeAll(0)
-  hs.alert.show(info, { textSize = 20 }, hs.screen.mainScreen(), 1.75)
+  alert.showOnly(info, 1.75, 20)
 end
 
 function spotify.open()

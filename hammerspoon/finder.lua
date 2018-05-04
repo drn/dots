@@ -1,6 +1,7 @@
 local finder = {}
 
-local as = require 'hs.applescript'
+local as    = require 'hs.applescript'
+local alert = require 'alert'
 
 local function tell(cmd)
   local _cmd = 'tell application "Finder" to ' .. cmd
@@ -11,7 +12,7 @@ end
 function finder.refresh()
   if hs.window.focusedWindow():application():title() == 'Finder' then
     tell('tell front window to update every item')
-    hs.alert('Refreshing Finder items...')
+    alert.show('Refreshing Finder items...')
   end
 end
 

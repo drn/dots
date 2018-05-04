@@ -1,5 +1,7 @@
 local screen = {}
 
+local alert = require 'alert'
+
 local watcher = nil
 local lastCount = nil
 
@@ -14,7 +16,7 @@ local function handleCountChange(count)
       for _,win in pairs(app:allWindows()) do
         if win:title():match('vertical') then
           -- TODO
-          hs.alert('Move iTerm vertical to next screen')
+          alert.show('Move iTerm vertical to next screen')
         end
       end
     end
@@ -30,7 +32,7 @@ function screen.watch()
   watcher = hs.screen.watcher.new(function()
     local updatedCount = screenCount()
     if lastCount ~= updatedCount then
-      hs.alert('Screen count changed from '..lastCount..' -> '..updatedCount)
+      alert.show('Screen count changed from '..lastCount..' -> '..updatedCount)
       lastCount = updatedCount
     end
   end)

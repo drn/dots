@@ -7,6 +7,7 @@ local finder     = require 'finder'
 local volume     = require 'volume'
 local wifi       = require 'wifi'
 local brightness = require 'brightness'
+local alert      = require 'alert'
 
 -- Window Management
 
@@ -94,7 +95,7 @@ hs.hotkey.bind({ 'cmd', 'alt' }, 'down', function()
 end, nil, function()
   music.decreaseVolume()
 end)
-hs.hotkey.bind({ 'ctrl', 'cmd' }, 'space', function() hs.alert('space') end)
+hs.hotkey.bind({ 'ctrl', 'cmd' }, 'space', function() alert.show('space') end)
 
 -- Chrome
 
@@ -113,8 +114,8 @@ end)
 hs.hotkey.bind({'ctrl', 'cmd'}, '/', function()
   local date = os.date('%A, %h %e')
   local time = os.date('%I:%M%p'):gsub('^0',''):lower()
-  hs.alert.closeAll(0)
-  hs.alert(time..' - '..date, 2.5)
+  alert.close()
+  alert.show(time..' - '..date, 2.5)
 end)
 
 -- Open Hammerspoon Console
@@ -177,5 +178,16 @@ screen.watch()
 -- Set default alert styles
 
 hs.alert.defaultStyle['textSize'] = 24
+hs.alert.defaultStyle['radius'] = 20
+hs.alert.defaultStyle['strokeColor'] = {
+  white = 1,
+  alpha = 0
+}
+hs.alert.defaultStyle['fillColor'] = {
+  red   = 0.035,
+  green = 0.031,
+  blue  = 0.125,
+  alpha = 5
+}
 
-hs.alert('Hammerspoon Reloaded', 0.5)
+alert.show('Hammerspoon Reloaded')

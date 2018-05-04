@@ -1,7 +1,9 @@
 local volume = {}
 
+local alert = require 'alert'
+
 local function display(text)
-  hs.alert.closeAll(0)
+  alert.close()
   local device = hs.audiodevice.defaultOutputDevice()
   local icon = '🔈'
   if device:volume() > 30 then
@@ -13,10 +15,10 @@ local function display(text)
   if device:muted() then
     icon = '🔇'
   end
-  hs.alert.show(text..math.floor(device:volume() + 0.5)..'% '..icon, 0.5)
+  alert.show(text..math.floor(device:volume() + 0.5)..'% '..icon)
   local name = device:name()
   if name ~= "Built-in Output" then
-    hs.alert.show(name, { textSize = 12 }, hs.screen.mainScreen(), 0.5)
+    alert.show(name, 0.5, 12)
   end
 end
 

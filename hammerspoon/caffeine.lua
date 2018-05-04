@@ -1,9 +1,10 @@
 local caffeine = {}
 
+local alert = require 'alert'
+
 local sleepType = 'system'
 local menuItem = nil
 
-local function alert(message) hs.alert(message, 1) end
 local function isOn() return hs.caffeinate.get(sleepType) end
 local function createMenuItem()
   if menuItem ~= nil then return end
@@ -22,12 +23,12 @@ end
 
 function caffeine.toggle()
   hs.caffeinate.set(sleepType, not isOn(), true)
-  alert(isOn() and 'Caffeinating!' or 'Getting sleepy...')
+  alert.show(isOn() and 'Caffeinating!' or 'Getting sleepy...')
   toggleMenu()
 end
 
 function caffeine.display()
-  alert(isOn() and 'Caffeinated' or 'Sleepy')
+  alert.show(isOn() and 'Caffeinated' or 'Sleepy')
 end
 
 return caffeine
