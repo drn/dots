@@ -14,6 +14,10 @@ local function display(text)
     icon = '🔇'
   end
   hs.alert.show(text..math.floor(device:volume() + 0.5)..'% '..icon, 0.5)
+  local name = device:name()
+  if name ~= "Built-in Output" then
+    hs.alert.show(name, 0.5)
+  end
 end
 
 function volume.increase(delta)
