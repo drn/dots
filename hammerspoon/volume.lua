@@ -16,7 +16,7 @@ local function display(text)
   hs.alert.show(text..math.floor(device:volume() + 0.5)..'% '..icon, 0.5)
   local name = device:name()
   if name ~= "Built-in Output" then
-    hs.alert.show(name, 0.5)
+    hs.alert.show(name, { textSize = 12 }, hs.screen.mainScreen(), 0.5)
   end
 end
 

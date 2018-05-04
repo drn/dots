@@ -108,7 +108,7 @@ function spotify.display()
   time   = formatSeconds(current)..'  ('..percent..'%)'..'\n'..formatSeconds(total)
   info   = track..'\n'..album..'\n'..artist..'\n'..time
   hs.alert.closeAll(0)
-  hs.alert.show(info, 1.75)
+  hs.alert.show(info, { textSize = 20 }, hs.screen.mainScreen(), 1.75)
 end
 
 function spotify.open()

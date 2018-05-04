@@ -174,4 +174,8 @@ hs.pathwatcher.new(os.getenv('HOME') .. '/.hammerspoon/', reloadConfig):start()
 
 screen.watch()
 
+-- Set default alert styles
+
+hs.alert.defaultStyle['textSize'] = 24
+
 hs.alert('Hammerspoon Reloaded', 0.5)
