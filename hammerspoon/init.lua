@@ -68,7 +68,7 @@ for modifiers,apps in pairs(bindings) do
   end
 end
 
--- iTunes
+-- Music
 
 hs.hotkey.bind({ 'cmd', 'alt', 'shift'}, 'a', function() music.display() end)
 hs.hotkey.bind({ 'cmd', 'alt', 'shift'}, 'k', function() music.open() end)
