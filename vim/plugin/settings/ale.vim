@@ -11,3 +11,6 @@ let g:ale_linters = {
 \ 'javascript': ['flow'],
 \ 'eruby': []
 \}
+
+" disable ale in CtrlP buffers
+au BufEnter ControlP let b:ale_enabled = 0
