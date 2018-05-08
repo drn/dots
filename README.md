@@ -8,6 +8,10 @@
 
 ## TL;DR
 
+Warning: This install script destructively installs configuration and various
+tools onto your system. It does not backup existing configuration. Run at your
+own risk.
+
 Quick Installation
 
     curl -s https://raw.githubusercontent.com/drn/dots/master/install/all.sh | sh
