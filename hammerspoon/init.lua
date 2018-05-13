@@ -184,10 +184,17 @@ hs.alert.defaultStyle['strokeColor'] = {
   alpha = 0
 }
 hs.alert.defaultStyle['fillColor'] = {
-  red   = 0.035,
-  green = 0.031,
-  blue  = 0.125,
-  alpha = 5
+  red   = 9/255,
+  green = 8/255,
+  blue  = 32/255,
+  alpha = 1
 }
+hs.alert.defaultStyle['textColor'] = {
+  red   = 209/255,
+  green = 236/255,
+  blue  = 240/255,
+  alpha = 1
+}
+hs.alert.defaultStyle['textFont'] = 'Helvetica Light'
 
 alert.show('Hammerspoon Reloaded')
