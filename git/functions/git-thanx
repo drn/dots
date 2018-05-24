@@ -24,10 +24,12 @@ REMOTES = {
       'thanx-android' => 'android'
     }
   },
-  fletch: { username: :fzf },
   cole: { username: :colesteaks },
   alex: { username: :millenniumiguana },
-  qaseem: { username: 'qaseem-thx' }
+  qaseem: { username: 'qaseem-thx' },
+  aly: { username: :allisonphillips },
+  kirby: { username: :kirbydcool },
+  chris: { username: :cperera }
 }.freeze
 
 REPO = `git repo`.strip.freeze
