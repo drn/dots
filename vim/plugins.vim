@@ -47,7 +47,7 @@ Plug 'AndrewRadev/splitjoin.vim'
 " Lazy-load plugins
 Plug 'scrooloose/nerdtree', { 'on': [ 'NERDTreeToggle', 'NERDTreeFind' ] }
 Plug 'sjl/gundo.vim', { 'on': 'GundoToggle' }
-Plug 'rking/ag.vim', { 'on': 'Ag' }
+Plug 'mileszs/ack.vim', { 'on': 'Ack' }
 Plug 'airblade/vim-gitgutter', { 'on': 'GitGutterToggle' }
 Plug 'derekwyatt/vim-fswitch', { 'on': 'FSHere' }
 Plug 'junegunn/vim-easy-align', { 'on': 'EasyAlign' }
