@@ -20,10 +20,7 @@ services=(
   ipecho.net/plain
   wtfismyip.com/text
   ifconfig.me
-  ipv4.ipogre.com
-  curlmyip.com
   l2.io/ip
-  ip.appspot.com
 )
 
 # retrieval services
