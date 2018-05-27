@@ -5,7 +5,7 @@
 #
 
 if [ "$1" == "tcp" ] || [ "$1" == "udp" ]; then
-  sudo lsof -i -n -P | grep --ignore-case --color=never $1
+  sudo /usr/sbin/lsof -i -n -P | grep --ignore-case --color=never $1
   exit 1
 fi
 echo "Usage: ports [udp|tcp]"
