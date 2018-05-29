@@ -54,6 +54,8 @@ git fetch
 git reset --hard upstream/master
 cd
 
+# patch /etc files
+bash $HOME/.dots/install/etc.sh
 # install dotfiles
 bash $HOME/.dots/install/dots.sh
 # install terminal utilites
