@@ -5,7 +5,6 @@ local chrome     = require 'chrome'
 local osx        = require 'osx'
 local finder     = require 'finder'
 local volume     = require 'volume'
-local wifi       = require 'wifi'
 local brightness = require 'brightness'
 local alert      = require 'alert'
 
@@ -129,9 +128,6 @@ hs.hotkey.bind({'ctrl', 'alt', 'cmd', 'shift'}, 'l', function()
 end)
 hs.hotkey.bind({'ctrl', 'alt', 'cmd'}, 'r', function()
   finder.refresh()
-end)
-hs.hotkey.bind({'ctrl', 'alt', 'cmd'}, 'i', function()
-  wifi.toggle()
 end)
 
 -- Volume Bindings
