@@ -12,16 +12,17 @@ local alert      = require 'alert'
 
 local resizemod = {'ctrl', 'alt', 'cmd'}
 local resizebindings = {
-  topleft     = 'p',
-  topright    = '\\',
-  bottomleft  = '[',
-  bottomright = ']',
-  right       = 'right',
-  left        = 'left',
-  top         = 'up',
-  bottom      = 'down',
-  full        = 'return',
-  fit         = "'"
+  topleft       = 'p',
+  topright      = '\\',
+  bottomleft    = '[',
+  bottomright   = ']',
+  right         = 'right',
+  left          = 'left',
+  top           = 'up',
+  bottom        = 'down',
+  full          = 'return',
+  fitVertical   = "'",
+  fitHorizontal = ";"
 }
 for name,key in pairs(resizebindings) do
   hs.hotkey.bind(resizemod, key, function()
