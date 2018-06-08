@@ -31,7 +31,6 @@ Plug 'w0rp/ale'
 Plug 'junegunn/vim-pseudocl'
 " not lazyloaded to ensure ruby configuration is preloaded
 Plug 'tpope/vim-rbenv'
-Plug 'vim-ruby/vim-ruby'
 " not lazyloaded to ensure proper load order
 Plug 'kien/ctrlp.vim'
 Plug 'tacahiroy/ctrlp-funky'
@@ -70,19 +69,11 @@ Plug 'jpalardy/vim-slime', { 'on': [
 \ ] }
 
 " Language-specific plugins
+Plug 'sheerun/vim-polyglot'
 Plug 'tpope/vim-rails', { 'for': [ 'ruby', 'eruby' ] }
 Plug 'kana/vim-textobj-user', { 'for': [ 'ruby', 'eruby' ] }
 Plug 'nelstrom/vim-textobj-rubyblock', { 'for': [ 'ruby', 'eruby' ] }
-Plug 'groenewege/vim-less', { 'for': 'less' }
-Plug 'Keithbsmiley/swift.vim', { 'for': 'swift' }
-Plug 'zaiste/tmux.vim', { 'for': 'tmux' }
-Plug 'othree/html5.vim', { 'for': 'html'}
 Plug 'vim-scripts/indenthtml.vim', { 'for': 'html'}
-Plug 'kchmck/vim-coffee-script', { 'for': 'coffee' }
-Plug 'pangloss/vim-javascript', { 'for': 'javascript' }
-Plug 'mxw/vim-jsx', { 'for': 'javascript' }
-Plug 'vim-python/python-syntax', { 'for': 'python' }
-Plug 'hashivim/vim-terraform', { 'for': 'terraform' }
 
 " Auto-completion
 function! BuildYCM(info)
