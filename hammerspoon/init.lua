@@ -3,7 +3,6 @@ local music      = require 'music'
 local screen     = require 'screen'
 local chrome     = require 'chrome'
 local osx        = require 'osx'
-local finder     = require 'finder'
 local volume     = require 'volume'
 local brightness = require 'brightness'
 local alert      = require 'alert'
@@ -126,9 +125,6 @@ hs.hotkey.bind({'ctrl', 'alt', 'cmd'}, 'o', function() hs.openConsole() end)
 
 hs.hotkey.bind({'ctrl', 'alt', 'cmd', 'shift'}, 'l', function()
   osx.screensaver()
-end)
-hs.hotkey.bind({'ctrl', 'alt', 'cmd'}, 'r', function()
-  finder.refresh()
 end)
 
 -- Volume Bindings
