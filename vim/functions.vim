@@ -110,19 +110,27 @@ function GitUrl()
   return substitute(Strip(url), '\.git$', '', '')
 endfunction
 
+function LineSuffix()
+  let line = line('.')
+  if line == 1
+    return ''
+  else
+    return '#L' . line
+  endif
+endfunction
+
 function! Gopen()
   " determine relative file path
   let filepath = expand("%:p")
   let repopath = Strip(system("git rev-parse --show-toplevel"))
   let path = substitute(filepath, repopath, '', '')
-  let line = '#L' . line('.')
 
   if path[strlen(path)-1] == "/"
     " open tree
-    call system('open ' . GitUrl() . '/tree/master' . path . line)
+    call system('open ' . GitUrl() . '/tree/master' . path)
   else
     " open file
-    call system('open ' . GitUrl() . '/blob/master' . path . line)
+    call system('open ' . GitUrl() . '/blob/master' . path . LineSuffix())
   endif
 endfunction
 command! Gopen call Gopen()
