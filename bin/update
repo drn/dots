@@ -11,11 +11,6 @@ if [ "$TERM" = "screen" ] && [ -n "$TMUX" ]; then
   tmux rename-window 'update'
 fi
 
-# ensure most recent crontab is being used
-echo "\033[0;34mEnsuring cron job installation...\033[0m"
-/usr/bin/crontab ~/.dots/cron/tab
-/usr/bin/crontab -l
-
 # update ZSH plugins
 echo "\n\033[0;34mUpdating zsh plugins...\033[0m\n"
 antibody bundle < "$HOME/.dots/zsh/bundles" > ~/.bundles
