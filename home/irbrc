@@ -1,6 +1,52 @@
-class Object
-  # Return only the methods not present on basic objects
-  def interesting_methods
-    (self.methods - Object.instance_methods).sort
-  end
+colors = {
+  reset:         "\e[0m",
+  bold:          "\e[1m",
+  black:         "\e[30m",
+  red:           "\e[31m",
+  green:         "\e[32m",
+  yellow:        "\e[33m",
+  blue:          "\e[34m",
+  magenta:       "\e[35m",
+  cyan:          "\e[36m",
+  light_gray:    "\e[37m",
+  dark_gray:     "\e[90m",
+  light_red:     "\e[91m",
+  light_green:   "\e[92m",
+  light_yellow:  "\e[93m",
+  light_blue:    "\e[94m",
+  light_magenta: "\e[95m",
+  light_cyan:    "\e[96m",
+  white:         "\e[97m"
+}
+
+prompt = ''
+prompt << colors[:reset]
+prompt << colors[:bold]
+prompt << colors[:blue]
+if ENV.key?('PROMPT_NAME')
+  prompt << ENV['PROMPT_NAME']
+elsif defined?(Rails) && Rails.respond_to?(:application)
+  prompt << Rails.application.class.name.gsub('::Application','')
+else
+  prompt << RUBY_VERSION.to_s
 end
+prompt << colors[:reset]
+
+magenta = "#{colors[:bold]}#{colors[:magenta]}❯#{colors[:reset]}"
+blue = "#{colors[:bold]}#{colors[:blue]}❯#{colors[:reset]}"
+cyan = "#{colors[:bold]}#{colors[:cyan]}❯#{colors[:reset]}"
+
+prefix = magenta + blue + magenta + ' '
+suffix = ' ' + cyan + ' ' + colors[:reset]
+
+prompt = prefix + prompt + suffix
+
+IRB.conf[:PROMPT][:NUCLEUS_PROMPT] = {
+  PROMPT_I: prompt,
+  PROMPT_N: prompt,
+  PROMPT_S: nil,
+  PROMPT_C: "#{colors[:bold]}#{colors[:cyan]}❯#{colors[:reset]} ",
+  RETURN:   "#{colors[:light_yellow]}=>#{colors[:reset]} %s\n"
+}
+
+IRB.conf[:PROMPT_MODE] = :NUCLEUS_PROMPT
