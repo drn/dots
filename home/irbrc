@@ -36,10 +36,11 @@ magenta = "#{colors[:bold]}#{colors[:magenta]}❯#{colors[:reset]}"
 blue = "#{colors[:bold]}#{colors[:blue]}❯#{colors[:reset]}"
 cyan = "#{colors[:bold]}#{colors[:cyan]}❯#{colors[:reset]}"
 
+repl = "#{colors[:bold]}#{colors[:dark_gray]}irb#{colors[:reset]} "
 prefix = magenta + blue + magenta + ' '
 suffix = ' ' + cyan + ' ' + colors[:reset]
 
-prompt = prefix + prompt + suffix
+prompt = repl + prefix + prompt + suffix
 
 IRB.conf[:PROMPT][:NUCLEUS_PROMPT] = {
   PROMPT_I: prompt,
