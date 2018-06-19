@@ -6,6 +6,8 @@
 
 [![CircleCI](https://circleci.com/gh/drn/dots.svg?style=svg)](https://circleci.com/gh/drn/dots)
 
+![](screenshot.png)
+
 ## TL;DR
 
 Warning: This install script destructively installs configuration and various
