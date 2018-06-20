@@ -7,7 +7,7 @@ let g:ale_statusline_format = ['%d error(s)', '%d warning(s)', '']
 
 " Disable reek and rubocop for ruby
 let g:ale_linters = {
-\ 'ruby': ['ruby'],
+\ 'ruby': ['ruby', 'rubocop'],
 \ 'javascript': ['flow'],
 \ 'eruby': []
 \}
