@@ -32,7 +32,7 @@ Plug 'junegunn/vim-pseudocl'
 " not lazyloaded to ensure ruby configuration is preloaded
 Plug 'tpope/vim-rbenv'
 " not lazyloaded to ensure proper load order
-Plug 'kien/ctrlp.vim'
+Plug 'ctrlpvim/ctrlp.vim'
 Plug 'tacahiroy/ctrlp-funky'
 " not lazyloaded to preserve functionality
 Plug 'benmills/vimux'
