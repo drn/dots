@@ -8,7 +8,7 @@ noremap <silent> ;t :let g:ctrlp_working_path_mode = 'ra'<cr>
 noremap <silent> ;T :let g:ctrlp_working_path_mode = 'ca'<cr>
 let g:ctrlp_custom_ignore = {
   \ 'dir':  '\v[\/](\.(git|hg|svn|bundle)|coverage|tmp|vendor|node_modules)$',
-  \ 'file': '\v\.(swp|zip|DS_Store|jira-url|png|jpg|jpeg|svg|gif|eot|ttf|woff)$'
+  \ 'file': '\v\.(swp|zip|DS_Store|png|jpg|jpeg|svg|gif|eot|ttf|woff|rubocop-.*)$'
   \ }
 let g:ctrlp_max_height = 20
 let g:ctrlp_max_files = 0
