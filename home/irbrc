@@ -5,9 +5,11 @@ console_prompt = ConsolePrompt.new('irb')
 IRB.conf[:PROMPT][:SANGUINERANE] = {
   # normal prompt
   PROMPT_I: console_prompt.normal,
-  # prompt for continuated strings
-  PROMPT_S: nil,
-  # prompt for continuated statement
+  # prompt for incomplete definitions
+  PROMPT_N: console_prompt.continue,
+  # prompt for incomplete strings
+  PROMPT_S: console_prompt.continue,
+  # prompt for incomplete statements
   PROMPT_C: console_prompt.continue,
   # format to return value
   RETURN:   console_prompt.return
