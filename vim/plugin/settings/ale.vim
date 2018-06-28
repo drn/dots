@@ -12,5 +12,8 @@ let g:ale_linters = {
 \ 'eruby': []
 \}
 
-" disable ale in CtrlP buffers
+" Disable ale in CtrlP buffers
 au BufEnter ControlP let b:ale_enabled = 0
+
+" Toggle ale
+map <leader>L :ALEToggle<cr>
