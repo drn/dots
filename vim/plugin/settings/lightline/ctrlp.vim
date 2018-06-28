@@ -55,4 +55,3 @@ function! LightlineCtrlPStatusProgress(status)
   let g:lightline.ctrlp_status = a:status
   return lightline#statusline(0)
 endfunction
-
