@@ -35,6 +35,7 @@ brew 'tmux', args: [ '--HEAD' ]
 brew 'zsh'
 brew 'memcached'
 brew 'the_silver_searcher'
+brew 'rg'
 brew 'tig'
 brew 'tree'
 brew 'reattach-to-user-namespace'

@@ -1,6 +1,6 @@
 " Set ack.vim executable
-if executable('ag')
-  let g:ackprg = 'ag --vimgrep --smart-case'
+if executable('rg')
+  let g:ackprg = 'rg --vimgrep --smart-case'
 endif
 " Mapping shortcut to search via the silver search
 nnoremap <leader>F :Ack<Space>
