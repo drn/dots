@@ -25,6 +25,7 @@ cask 'alarm-clock'
 cask 'vlc'
 cask 'whatsapp'
 cask 'docker'
+cask 'sketch'
 
 # formulae
 brew 'rbenv'
