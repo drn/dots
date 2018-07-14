@@ -5,31 +5,31 @@
 #
 
 REMOTES = {
-  aaron: {
-    username: :anutron,
+  aaron:  {
+    username:   :anutron,
     exceptions: {
       'thanx-core' => 'thanx-web'
     }
   },
-  davy: {
-    username: :davywentworth,
+  davy:   {
+    username:   :davywentworth,
     exceptions: {
       'thanx-core' => 'thanx-web'
     }
   },
-  marc: {
-    username: :marcferna,
+  marc:   {
+    username:   :marcferna,
     exceptions: {
-      'thanx-core' => 'thanx-web',
+      'thanx-core'    => 'thanx-web',
       'thanx-android' => 'android'
     }
   },
-  cole: { username: :colesteaks },
-  alex: { username: :millenniumiguana },
+  cole:   { username: :colesteaks },
+  alex:   { username: :millenniumiguana },
   qaseem: { username: 'qaseem-thx' },
-  aly: { username: :allisonphillips },
-  kirby: { username: :kirbydcool },
-  chris: { username: :cperera }
+  aly:    { username: :allisonphillips },
+  kirby:  { username: :kirbydcool },
+  chris:  { username: :cperera }
 }.freeze
 
 REPO = `git repo`.strip.freeze
