@@ -10,12 +10,6 @@
 Metrics/AbcSize:
   Max: 22
 
-# Offense count: 1
-# Cop supports --auto-correct.
-Style/IfUnlessModifier:
-  Exclude:
-    - 'git/templates/hooks/prepare-commit-msg'
-
 # Offense count: 3
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle.
