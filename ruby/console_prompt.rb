@@ -50,13 +50,15 @@ private
       colors[:bold],
       colors[:blue]
     ]
-    if ENV.key?('PROMPT_NAME')
-      info << ENV['PROMPT_NAME']
-    elsif defined?(Rails) && Rails.respond_to?(:application)
-      info << Rails.application.class.name.gsub('::Application', '')
-    else
-      info << RUBY_VERSION.to_s
-    end
+    info << (
+      if ENV.key?('PROMPT_NAME')
+        ENV['PROMPT_NAME']
+      elsif defined?(Rails) && Rails.respond_to?(:application)
+        Rails.application.class.name.gsub('::Application', '')
+      else
+        RUBY_VERSION.to_s
+      end
+    )
     info << colors[:reset]
     info.join
   end
