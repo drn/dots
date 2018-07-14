@@ -47,7 +47,7 @@ brew 'irssi'
 brew 'jq'
 brew 'lua'
 brew 'm-cli'
-brew 'macvim', args: [ '--override-system-vim' ]
+brew 'macvim', args: ['--override-system-vim']
 brew 'mas'
 brew 'memcached'
 brew 'mercurial'
@@ -69,7 +69,7 @@ brew 'terminal-notifier'
 brew 'the_silver_searcher'
 brew 'tig'
 brew 'tldr'
-brew 'tmux', args: [ '--HEAD' ]
+brew 'tmux', args: ['--HEAD']
 brew 'tree'
 brew 'yarn'
 brew 'z'
