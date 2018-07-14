@@ -12,13 +12,6 @@ Metrics/AbcSize:
 
 # Offense count: 1
 # Cop supports --auto-correct.
-# Configuration parameters: AllowAsExpressionSeparator.
-Style/Semicolon:
-  Exclude:
-    - 'git/functions/git-thanx'
-
-# Offense count: 1
-# Cop supports --auto-correct.
 # Configuration parameters: AllowIfMethodIsEmpty.
 Style/SingleLineMethods:
   Exclude:

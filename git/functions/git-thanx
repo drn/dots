@@ -35,9 +35,11 @@ REMOTES = {
 
 REPO = `git repo`.strip.freeze
 
-def usage; puts 'Usage: git thanx [add/remove]' end
+if ARGV.count != 1
+  puts 'Usage: git thanx [add/remove]'
+  exit 1
+end
 
-(usage; exit) if ARGV.count != 1
 case ARGV[0]
 when 'add'
   REMOTES.each do |remote, info|
