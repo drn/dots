@@ -1,0 +1,2 @@
+inherit_gem:
+  thanx-style: rubocop.yml
