@@ -1,4 +1,2 @@
 inherit_gem:
   thanx-style: rubocop.yml
-
-inherit_from: .rubocop_todo.yml
