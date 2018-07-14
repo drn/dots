@@ -51,7 +51,7 @@ private
     if ENV.key?('PROMPT_NAME')
       info << ENV['PROMPT_NAME']
     elsif defined?(Rails) && Rails.respond_to?(:application)
-      info << Rails.application.class.name.gsub('::Application','')
+      info << Rails.application.class.name.gsub('::Application', '')
     else
       info << RUBY_VERSION.to_s
     end
@@ -63,8 +63,8 @@ private
     return '' unless defined?(Pry)
     context = Pry.view_clip(@object)
     return '' if context == 'main'
-    context = context.to_s.gsub('#<','').gsub('>','')
-    context = '*::' + context.gsub(/.*::/,'') if context.include?('::')
+    context = context.to_s.gsub('#<', '').gsub('>', '')
+    context = '*::' + context.gsub(/.*::/, '') if context.include?('::')
     [
       ' ',
       colors[:light_red],
