@@ -10,15 +10,6 @@
 Metrics/AbcSize:
   Max: 22
 
-# Offense count: 3
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: both, prefix, postfix
-Style/NegatedIf:
-  Exclude:
-    - 'git/functions/git-fetch-dynamic'
-    - 'git/functions/git-semver'
-
 # Offense count: 1
 # Cop supports --auto-correct.
 # Configuration parameters: AllowAsExpressionSeparator.

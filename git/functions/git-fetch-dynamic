@@ -5,13 +5,13 @@
 # Fetches from input remote, upstream if it exists, origin otherwise.
 #
 
-if !ARGV[0].nil?
+unless ARGV[0].nil?
   puts "Fetching #{ARGV[0]} changes..."
   system("git fetch #{ARGV[0]}")
   exit
 end
 
-if !`git remote | grep upstream`.empty?
+unless `git remote | grep upstream`.empty?
   puts "Fetching upstream changes..."
   system('git fetch upstream')
   exit

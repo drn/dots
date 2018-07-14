@@ -7,7 +7,7 @@
 # Generates a new git tag based off of the latest tag
 #
 tag = `git describe --abbrev=0 --tags 2>/dev/null`.strip
-if !tag.match(/^(v)?\d+\.\d+\.\d+$/)
+unless /^(v)?\d+\.\d+\.\d+$/.match?(tag)
   puts "Sorry, no pre-existing semver tags."
   exit 1
 end
