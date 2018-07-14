@@ -18,7 +18,7 @@ major = versions[0].to_i
 minor = versions[1].to_i
 patch = versions[2].to_i
 
-updated = ->{ "#{prefix}#{major}.#{minor}.#{patch}" }
+updated = -> { "#{prefix}#{major}.#{minor}.#{patch}" }
 
 case ARGV[0]
 when "major"
