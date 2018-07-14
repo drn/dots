@@ -8,7 +8,7 @@
 #
 tag = `git describe --abbrev=0 --tags 2>/dev/null`.strip
 unless /^(v)?\d+\.\d+\.\d+$/.match?(tag)
-  puts "Sorry, no pre-existing semver tags."
+  puts 'Sorry, no pre-existing semver tags.'
   exit 1
 end
 
@@ -22,14 +22,14 @@ patch = versions[2].to_i
 updated = -> { "#{prefix}#{major}.#{minor}.#{patch}" }
 
 case ARGV[0]
-when "major"
+when 'major'
   major += 1
   minor = 0
   patch = 0
-when "minor"
+when 'minor'
   minor += 1
   patch = 0
-when "patch"
+when 'patch'
   patch += 1
 end
 

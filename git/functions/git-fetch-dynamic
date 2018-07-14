@@ -12,10 +12,10 @@ unless ARGV[0].nil?
 end
 
 unless `git remote | grep upstream`.empty?
-  puts "Fetching upstream changes..."
+  puts 'Fetching upstream changes...'
   system('git fetch upstream')
   exit
 end
 
-puts "Fetching origin changes..."
+puts 'Fetching origin changes...'
 system('git fetch')
