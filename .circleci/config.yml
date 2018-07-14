@@ -1,6 +1,7 @@
 version: 2
+
 jobs:
-  build:
+  build-bash:
     macos:
       xcode: 9.2.0
     steps:
@@ -10,10 +11,22 @@ jobs:
           command: |
             echo $0
             source install/all.sh
+
+  build-zsh:
+    macos:
+      xcode: 9.2.0
+    steps:
+      - checkout
       - run:
           name: ZSH Install
-          shell: /usr/local/bin/zsh
           command: |
             echo $0
             SHELL=/usr/local/bin/zsh
             ./install/all.sh
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - build-bash
+      - build-zsh
