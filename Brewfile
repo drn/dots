@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # casks
 cask '1password'
 cask 'alarm-clock'

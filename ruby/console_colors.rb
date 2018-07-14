@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 CONSOLE_COLORS = {
   reset:         "\e[0m",
   bold:          "\e[1m",

@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
 #
 # If the branch matches the JIRA issue regex (TA-****) and the summary doesn't

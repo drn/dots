@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "#{ENV['HOME']}/.dots/ruby/console_colors"
 
 class ConsolePrompt
