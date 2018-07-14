@@ -26,6 +26,7 @@ cask 'vlc'
 cask 'whatsapp'
 cask 'docker'
 cask 'sketch'
+cask 'the-unarchiver'
 
 # formulae
 brew 'rbenv'
