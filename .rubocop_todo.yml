@@ -18,12 +18,6 @@ Performance/RegexpMatch:
 
 # Offense count: 1
 # Cop supports --auto-correct.
-Performance/StringReplacement:
-  Exclude:
-    - 'ruby/console_prompt.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, SingleLineConditionsOnly, IncludeTernaryExpressions.
 # SupportedStyles: assign_to_condition, assign_inside_condition
 Style/ConditionalAssignment:

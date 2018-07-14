@@ -63,7 +63,7 @@ private
     return '' unless defined?(Pry)
     context = Pry.view_clip(@object)
     return '' if context == 'main'
-    context = context.to_s.gsub('#<', '').gsub('>', '')
+    context = context.to_s.gsub('#<', '').delete('>')
     context = '*::' + context.gsub(/.*::/, '') if context.include?('::')
     [
       ' ',
