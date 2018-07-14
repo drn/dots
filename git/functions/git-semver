@@ -38,4 +38,3 @@ if updated.call != tag
 else
   puts "Current version is #{tag}"
 end
-
