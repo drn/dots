@@ -24,9 +24,31 @@ jobs:
             SHELL=/usr/local/bin/zsh
             ./install/all.sh
 
+  lint:
+    machine: true
+    steps:
+      - checkout
+      - restore_cache:
+          name: Restore Gemfile Cache
+          keys:
+            - v1-gems-{{ checksum "Gemfile.lock" }}
+            - v1-gems
+      - run:
+          name: Install Gemfile Dependencies
+          command: bundle install --path vendor/bundle
+      - save_cache:
+          name: Save Gemfile Cache
+          key: v1-gems-{{ checksum "Gemfile.lock" }}
+          paths:
+            - vendor/bundle
+      - run:
+          name: Lint
+          command: bundle exec rubocop
+
 workflows:
   version: 2
   build:
     jobs:
       - build-bash
       - build-zsh
+      - lint
