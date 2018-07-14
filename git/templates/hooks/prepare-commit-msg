@@ -10,7 +10,7 @@ summary = File.read(ARGV[0])
 branch = `git rev-parse --abbrev-ref HEAD`.strip
 regex = /^[A-Z][A-Z]-/
 if branch =~ regex && branch !~ /^no ticket/i
-  unless summary =~ regex
+  unless summary&.match?(regex)
     File.write(ARGV[0], "#{branch}. #{summary}")
   end
 end
