@@ -8,6 +8,8 @@
 
 ![](screenshot.png)
 
+**Currently Porting to Golang-based CLI - Work In Progress**
+
 ## TL;DR
 
 Warning: This install script destructively installs configuration and various
@@ -20,28 +22,16 @@ Quick Installation
 
 ## Install
 
-**Porting to Golang-based CLI - Work In Progress**
-
-Ensure homebrew is installed:
-
-    if ! hash brew 2>/dev/null; then
-      /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-    fi
-
-Ensure golang is installed:
-
-    brew install go
-    # add the following to your ~/.profile
-    export GOPATH=$HOME/go
-    export PATH=$GOPATH/bin:$PATH
-
-Install dots CLI:
-
     go get github.com/drn/dots
+    dots install all
 
-Install dependencies:
+## Dependencies
 
-    dots install
+* [Homebrew](https://brew.sh/)
+* [Go](https://golang.org/)
+  * Installed via homebrew (`brew install go`)
+  * `export GOPATH=$HOME/go`
+  * `export PATH=$GOPATH/bin:$PATH`
 
 ## Overview
 
