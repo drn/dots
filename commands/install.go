@@ -18,8 +18,17 @@ var cmdInstall = &cobra.Command{
 }
 
 func init() {
+  cmdInstall.AddCommand(cmdInstallBin)
   cmdInstall.AddCommand(cmdInstallHome)
   cmdInstall.AddCommand(cmdInstallHammerspoon)
+}
+
+var cmdInstallBin = &cobra.Command{
+  Use: "bin",
+  Short: "Installs ~/bin/* commands",
+  Run: func(cmd *cobra.Command, args []string) {
+    link("lib/bin", "bin")
+  },
 }
 
 var cmdInstallHome = &cobra.Command{
