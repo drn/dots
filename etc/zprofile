@@ -1,8 +1,0 @@
-# system-wide environment settings for zsh(1)
-# Add check for $TMUX to ensure path_helper does not mangle $PATH.
-#   source: https://pgib.me/blog/2013/10/11/macosx-tmux-zsh-rbenv/
-if [ -x /usr/libexec/path_helper ]; then
-  if [ -z "$TMUX" ]; then
-    eval `/usr/libexec/path_helper -s`
-  fi
-fi

@@ -48,8 +48,6 @@ mkdir -p $HOME/Development
 # TODO ensure dots are up-to-date
 # go get -u github.com/drn/dots
 
-# patch /etc files
-bash $DOTS/install/etc.sh
 # install terminal utilites
 bash $DOTS/install/utils.sh
 # install node packages
