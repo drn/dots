@@ -44,7 +44,7 @@ prompt_directory_info() {
 }
 
 prompt_directory_name() {
-  if [[ ${PWD##*/} == .* ]]; then
+  if [[ ${PWD##*/} == .* ]] || [[ $PWD == $DOTS ]]; then
     surround="%{$fg_bold[cyan]%}·%{$reset_color%}"
     echo "$surround%{$fg_bold[red]%}${${PWD##*/}##.}%{$reset_color%}$surround"
   else
