@@ -22,6 +22,7 @@ func init() {
   cmdInstall.AddCommand(cmdInstallBin)
   cmdInstall.AddCommand(cmdInstallGit)
   cmdInstall.AddCommand(cmdInstallHome)
+  cmdInstall.AddCommand(cmdInstallZsh)
   cmdInstall.AddCommand(cmdInstallHammerspoon)
 }
 
@@ -54,6 +55,24 @@ var cmdInstallHome = &cobra.Command{
         fmt.Sprintf(".%s", file.Name()),
       )
     }
+  },
+}
+
+var cmdInstallZsh = &cobra.Command{
+  Use: "zsh",
+  Short: "Installs zsh config files",
+  Run: func(cmd *cobra.Command, args []string) {
+    // delete /etc/zprofile - added by os x 10.11
+    // path_helper conflicts - http://www.zsh.org/mla/users/2015/msg00727.html
+    util.Run("sudo rm -f /etc/zprofile")
+
+    // ensure antibody is installed
+    if util.IsCommand("brew") {
+      util.Run("brew install getantibody/tap/antibody")
+    }
+
+    // run antibody bundle
+    util.Run("antibody bundle < \"$DOTS/zsh/bundles\" > ~/.bundles")
   },
 }
 

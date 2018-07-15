@@ -7,6 +7,12 @@ import (
   "os/exec"
 )
 
+// IsCommand - Returns true if the specified command exists.
+func IsCommand(command string) bool {
+  _, err := exec.LookPath(command)
+  return err == nil
+}
+
 // Osascript - Runs the specified osascript command, suppressing STDOUT and
 // returning it as a string.
 func Osascript(command string, args ...interface{}) string {

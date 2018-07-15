@@ -54,8 +54,6 @@ bash $DOTS/install/etc.sh
 bash $DOTS/install/utils.sh
 # install node packages
 bash $DOTS/install/node.sh
-# install zsh configuration
-bash $DOTS/install/zsh.sh
 # install fonts
 bash $DOTS/install/fonts.sh
 # install os x configuration
