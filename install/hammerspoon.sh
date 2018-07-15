@@ -1,4 +1,4 @@
 #!/bin/bash
 source "$DOTS/install/core.cfg"
 
-link "$DOTS/hammerspoon" "$HOME/.hammerspoon"
+link "$DOTS/lib/hammerspoon" "$HOME/.hammerspoon"
