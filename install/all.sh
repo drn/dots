@@ -45,36 +45,30 @@ fi
 # directory setup
 mkdir -p $HOME/Development
 
-# ensure dotfiles are cloned and up-to-date
-echo "Cloning drn/dots to $HOME/.dots"
-git clone https://github.com/drn/dots.git $HOME/.dots --quiet 2>/dev/null
-cd $HOME/.dots
-git remote rename origin upstream 2>/dev/null
-git fetch
-git reset --hard upstream/master
-cd
+# TODO ensure dots are up-to-date
+# go get -u github.com/drn/dots
 
 # patch /etc files
-bash $HOME/.dots/install/etc.sh
+bash $DOTS/install/etc.sh
 # install dotfiles
-bash $HOME/.dots/install/dots.sh
+bash $DOTS/install/dots.sh
 # install terminal utilites
-bash $HOME/.dots/install/utils.sh
+bash $DOTS/install/utils.sh
 # install node packages
-bash $HOME/.dots/install/node.sh
+bash $DOTS/install/node.sh
 # install bin files
-bash $HOME/.dots/install/bin.sh
+bash $DOTS/install/bin.sh
 # install zsh configuration
-bash $HOME/.dots/install/zsh.sh
+bash $DOTS/install/zsh.sh
 # install git configuration
-bash $HOME/.dots/install/git.sh
+bash $DOTS/install/git.sh
 # install fonts
-bash $HOME/.dots/install/fonts.sh
+bash $DOTS/install/fonts.sh
 # install os x configuration
-bash $HOME/.dots/install/osx.sh
+bash $DOTS/install/osx.sh
 # install hammerspoon config
-bash $HOME/.dots/install/hammerspoon.sh
+bash $DOTS/install/hammerspoon.sh
 # install vim configuration
-bash $HOME/.dots/install/vim.sh
+bash $DOTS/install/vim.sh
 
 echo "Install is complete. Relaunch terminal for settings to take effect."
