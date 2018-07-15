@@ -36,7 +36,7 @@ var cmdInstallGit = &cobra.Command{
   Use: "git",
   Short: "Installs git extensions",
   Run: func(cmd *cobra.Command, args []string) {
-    link("git/functions", ".git-extensions")
+    link("lib/git/functions", ".git-extensions")
   },
 }
 
