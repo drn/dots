@@ -19,6 +19,7 @@ var cmdInstall = &cobra.Command{
 
 func init() {
   cmdInstall.AddCommand(cmdInstallBin)
+  cmdInstall.AddCommand(cmdInstallGit)
   cmdInstall.AddCommand(cmdInstallHome)
   cmdInstall.AddCommand(cmdInstallHammerspoon)
 }
@@ -28,6 +29,14 @@ var cmdInstallBin = &cobra.Command{
   Short: "Installs ~/bin/* commands",
   Run: func(cmd *cobra.Command, args []string) {
     link("lib/bin", "bin")
+  },
+}
+
+var cmdInstallGit = &cobra.Command{
+  Use: "git",
+  Short: "Installs git extensions",
+  Run: func(cmd *cobra.Command, args []string) {
+    link("git/functions", ".git-extensions")
   },
 }
 
