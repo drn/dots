@@ -2,6 +2,8 @@
 
 > Obsessively curated dotfiles.
 
+Managed by a robust, extensible Go CLI.
+
 * * *
 
 [![CircleCI](https://circleci.com/gh/drn/dots.svg?style=svg)](https://circleci.com/gh/drn/dots)
