@@ -19,6 +19,7 @@ var cmdInstall = &cobra.Command{
         "git",
         "home",
         "zsh",
+        "fonts",
         "hammerspoon",
       },
     }
@@ -37,6 +38,8 @@ var cmdInstall = &cobra.Command{
       install.Home()
     case "zsh":
       install.Zsh()
+    case "fonts":
+      install.Fonts()
     case "hammerspoon":
       install.Hammerspoon()
     }
@@ -49,6 +52,7 @@ func init() {
   cmdInstall.AddCommand(cmdInstallGit)
   cmdInstall.AddCommand(cmdInstallHome)
   cmdInstall.AddCommand(cmdInstallZsh)
+  cmdInstall.AddCommand(cmdInstallFonts)
   cmdInstall.AddCommand(cmdInstallHammerspoon)
 }
 
@@ -89,6 +93,14 @@ var cmdInstallZsh = &cobra.Command{
   Short: "Installs zsh config files",
   Run: func(cmd *cobra.Command, args []string) {
     install.Zsh()
+  },
+}
+
+var cmdInstallFonts = &cobra.Command{
+  Use: "fonts",
+  Short: "Installs fonts",
+  Run: func(cmd *cobra.Command, args []string) {
+    install.Fonts()
   },
 }
 

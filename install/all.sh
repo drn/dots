@@ -52,8 +52,6 @@ mkdir -p $HOME/Development
 bash $DOTS/install/utils.sh
 # install node packages
 bash $DOTS/install/node.sh
-# install fonts
-bash $DOTS/install/fonts.sh
 # install os x configuration
 bash $DOTS/install/osx.sh
 # install vim configuration

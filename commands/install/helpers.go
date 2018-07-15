@@ -7,6 +7,24 @@ import (
   "github.com/drn/dots/log"
 )
 
+func hardlink(from string, to string) {
+  log.Info("Hard linking '$DOTS/%s' to '~/%s'", from, to)
+
+  from = fmt.Sprintf("%s/%s", dotsPath(), from)
+  to = fmt.Sprintf("%s/%s", homePath(), to)
+
+  // overwrite existing links
+  if _, err := os.Lstat(to); err == nil {
+    os.Remove(to)
+  }
+
+  // create link
+  err := os.Link(from, to)
+
+  // log errors
+  if err != nil { log.Error(err.Error()) }
+}
+
 func link(from string, to string) {
   log.Info("Linking '$DOTS/%s' to '~/%s'", from, to)
 
