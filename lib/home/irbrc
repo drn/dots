@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "#{ENV['DOTS']}/lib/ruby/console_prompt"
 
 console_prompt = ConsolePrompt.new('irb')

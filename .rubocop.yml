@@ -1,2 +1,7 @@
 inherit_gem:
   thanx-style: rubocop.yml
+
+AllCops:
+  Include:
+    - lib/home/irbrc
+    - lib/home/pryrc
