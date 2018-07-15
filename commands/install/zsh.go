@@ -7,6 +7,8 @@ import (
 
 // Zsh - Installs ZSH configuration
 func Zsh() {
+  color.Magenta("Install Zsh")
+
   // delete /etc/zprofile - added by os x 10.11
   // path_helper conflicts - http://www.zsh.org/mla/users/2015/msg00727.html
   util.Run("sudo rm -f /etc/zprofile")

@@ -14,6 +14,7 @@ var cmdInstall = &cobra.Command{
     prompt := promptui.Select{
       Label: "Select component to install",
       Items: []string{
+        "all",
         "bin",
         "git",
         "home",
@@ -26,6 +27,8 @@ var cmdInstall = &cobra.Command{
     if err != nil { os.Exit(1) }
 
     switch result {
+    case "all":
+      install.All()
     case "bin":
       install.Bin()
     case "git":
@@ -41,11 +44,20 @@ var cmdInstall = &cobra.Command{
 }
 
 func init() {
+  cmdInstall.AddCommand(cmdInstallAll)
   cmdInstall.AddCommand(cmdInstallBin)
   cmdInstall.AddCommand(cmdInstallGit)
   cmdInstall.AddCommand(cmdInstallHome)
   cmdInstall.AddCommand(cmdInstallZsh)
   cmdInstall.AddCommand(cmdInstallHammerspoon)
+}
+
+var cmdInstallAll = &cobra.Command{
+  Use: "all",
+  Short: "Runs all install scripts",
+  Run: func(cmd *cobra.Command, args []string) {
+    install.All()
+  },
 }
 
 var cmdInstallBin = &cobra.Command{

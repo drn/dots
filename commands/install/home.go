@@ -8,7 +8,7 @@ import (
 
 // Home - Symlinks ~/.* configuration
 func Home() {
-  color.Blue("Installing ~/.* files...")
+  color.Magenta("Install Home")
 
   files, _ := ioutil.ReadDir(fmt.Sprintf("%s/lib/home", dotsPath()))
   for _, file := range files {
