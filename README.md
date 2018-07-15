@@ -18,6 +18,38 @@ Quick Installation
 
     curl -s https://raw.githubusercontent.com/drn/dots/master/install/all.sh | sh
 
+## Install
+
+**Porting to Golang-based CLI - Work In Progress**
+
+Install and setup go:
+
+    brew install go
+    # add the following to your ~/.profile
+    export GOPATH=$HOME/go
+    export PATH=$GOPATH/bin:$PATH
+
+Clone the dots project:
+
+    git clone https://github.com/drn/dots.git ~/.dots
+    ln -s ~/.dots ~/go/src/github.com/drn/dots
+
+Install the dots CLI:
+
+    cd ~/go/src/github.com/drn/dots
+    export PATH=$HOME/bin:$PATH
+    go get ./...
+    go build -o ~/bin/dots github.com/drn/dots
+
+Install dependencies:
+
+    dots install
+
+Long-term install instructions (post-$DOTS transition):
+
+    go get github.com/drn/dots
+    go build -o ~/bin/dots github.com/drn/dots
+
 ## Overview
 
 These dotfiles are an ever-changing document of my development environment
