@@ -1,4 +1,4 @@
-require "#{ENV['DOTS']}/ruby/console_prompt"
+require "#{ENV['DOTS']}/lib/ruby/console_prompt"
 
 console_prompt = ConsolePrompt.new('irb')
 

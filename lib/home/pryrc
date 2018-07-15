@@ -1,5 +1,5 @@
-require "#{ENV['DOTS']}/ruby/console_prompt"
-require "#{ENV['DOTS']}/ruby/console_colors"
+require "#{ENV['DOTS']}/lib/ruby/console_prompt"
+require "#{ENV['DOTS']}/lib/ruby/console_colors"
 
 # customize pry prompt
 Pry.config.prompt = [

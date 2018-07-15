@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "#{ENV['DOTS']}/ruby/console_colors"
+require "#{ENV['DOTS']}/lib/ruby/console_colors"
 
 class ConsolePrompt
   def initialize(prefix, object=nil, level=0)
