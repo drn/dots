@@ -2736,7 +2736,7 @@
 		</dict>
 	</dict>
 	<key>PrefsCustomFolder</key>
-	<string>/Users/darrencheng/go/src/github.com/drn/dots/terminal</string>
+	<string>/Users/darrencheng/go/src/github.com/drn/dots/lib/terminal</string>
 	<key>Print In Black And White</key>
 	<true/>
 	<key>PromptOnClose</key>
