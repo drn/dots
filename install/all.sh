@@ -50,24 +50,16 @@ mkdir -p $HOME/Development
 
 # patch /etc files
 bash $DOTS/install/etc.sh
-# install dotfiles
-bash $DOTS/install/dots.sh
 # install terminal utilites
 bash $DOTS/install/utils.sh
 # install node packages
 bash $DOTS/install/node.sh
-# install bin files
-bash $DOTS/install/bin.sh
 # install zsh configuration
 bash $DOTS/install/zsh.sh
-# install git configuration
-bash $DOTS/install/git.sh
 # install fonts
 bash $DOTS/install/fonts.sh
 # install os x configuration
 bash $DOTS/install/osx.sh
-# install hammerspoon config
-bash $DOTS/install/hammerspoon.sh
 # install vim configuration
 bash $DOTS/install/vim.sh
 
