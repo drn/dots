@@ -4,11 +4,11 @@ import (
   "os"
   "fmt"
   "os/user"
-  "github.com/fatih/color"
+  "github.com/drn/dots/log"
 )
 
 func link(from string, to string) {
-  color.Blue("Linking '$DOTS/%s' to '~/%s'", from, to)
+  log.Info("Linking '$DOTS/%s' to '~/%s'", from, to)
 
   from = fmt.Sprintf("%s/%s", dotsPath(), from)
   to = fmt.Sprintf("%s/%s", homePath(), to)
@@ -22,7 +22,7 @@ func link(from string, to string) {
   err := os.Symlink(from, to)
 
   // log errors
-  if err != nil { color.Red(err.Error()) }
+  if err != nil { log.Error(err.Error()) }
 }
 
 func dotsPath() string {

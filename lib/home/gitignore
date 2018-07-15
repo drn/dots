@@ -1,7 +1,6 @@
 #rails specific
 *.sqlite3
 config/database.yml
-log/*
 tmp/*
 
 #xcode specific

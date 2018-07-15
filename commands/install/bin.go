@@ -1,11 +1,11 @@
 package install
 
 import (
-  "github.com/fatih/color"
+  "github.com/drn/dots/log"
 )
 
 // Bin - Symlinks ~/bin directory
 func Bin() {
-  color.Magenta("Install Bin")
+  log.Action("Install Bin")
   link("lib/bin", "bin")
 }

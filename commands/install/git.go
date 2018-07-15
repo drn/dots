@@ -1,11 +1,11 @@
 package install
 
 import (
-  "github.com/fatih/color"
+  "github.com/drn/dots/log"
 )
 
 // Git - Installs git configuration
 func Git() {
-  color.Magenta("Install Git")
+  log.Action("Install Git")
   link("lib/git/functions", ".git-extensions")
 }

@@ -3,12 +3,12 @@ package install
 import (
   "fmt"
   "io/ioutil"
-  "github.com/fatih/color"
+  "github.com/drn/dots/log"
 )
 
 // Home - Symlinks ~/.* configuration
 func Home() {
-  color.Magenta("Install Home")
+  log.Action("Install Home")
 
   files, _ := ioutil.ReadDir(fmt.Sprintf("%s/lib/home", dotsPath()))
   for _, file := range files {
