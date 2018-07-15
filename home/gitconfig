@@ -129,7 +129,7 @@
   ui = auto
 
 [init]
-  templatedir = ~/.dots/git/templates
+  templatedir = ~/go/src/github.com/drn/dots/git/templates
 
 [remotes]
   default = origin upstream

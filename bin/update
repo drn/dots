@@ -13,7 +13,7 @@ fi
 
 # update ZSH plugins
 echo "\n\033[0;34mUpdating zsh plugins...\033[0m\n"
-antibody bundle < "$HOME/.dots/zsh/bundles" > ~/.bundles
+antibody bundle < "$DOTS/zsh/bundles" > ~/.bundles
 
 # update and upgrade Homebrew
 echo -e '\033[0;34mUpdating Brew and any outdated packages...\033[0m'

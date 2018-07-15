@@ -1,8 +1,8 @@
 #!/bin/bash
-source "$HOME/.dots/install/core.cfg"
+source "$DOTS/install/core.cfg"
 
 # ~ files
-for location in $HOME/.dots/home/*; do
+for location in $DOTS/home/*; do
   file="${location##*/}"
   link "$location" "$HOME/.$file"
 done

@@ -1,8 +1,8 @@
 #!/bin/bash
-source "$HOME/.dots/install/core.cfg"
+source "$DOTS/install/core.cfg"
 
 # /etc files
-for location in $HOME/.dots/etc/*; do
+for location in $DOTS/etc/*; do
   file="${location##*/}"
   overwrite "$location" "/etc/$file"
 done

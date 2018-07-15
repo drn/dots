@@ -36,7 +36,6 @@ let g:startify_skiplist = [
 \ ]
 
 let g:startify_bookmarks = [
-\ '~/.dots',
 \ '~/.evergreen',
 \ '~/.notes'
 \ ]

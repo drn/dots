@@ -10,7 +10,7 @@ jobs:
           name: Bash Install
           command: |
             echo $0
-            source install/all.sh
+            echo 'TODO'
 
   build-zsh:
     macos:
@@ -22,7 +22,7 @@ jobs:
           command: |
             echo $0
             SHELL=/usr/local/bin/zsh
-            ./install/all.sh
+            echo 'TODO'
 
   lint:
     machine: true

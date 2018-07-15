@@ -22,33 +22,26 @@ Quick Installation
 
 **Porting to Golang-based CLI - Work In Progress**
 
-Install and setup go:
+Ensure homebrew is installed:
+
+    if ! hash brew 2>/dev/null; then
+      /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+    fi
+
+Ensure golang is installed:
 
     brew install go
     # add the following to your ~/.profile
     export GOPATH=$HOME/go
     export PATH=$GOPATH/bin:$PATH
 
-Clone the dots project:
+Install dots CLI:
 
-    git clone https://github.com/drn/dots.git ~/.dots
-    ln -s ~/.dots ~/go/src/github.com/drn/dots
-
-Install the dots CLI:
-
-    cd ~/go/src/github.com/drn/dots
-    export PATH=$HOME/bin:$PATH
-    go get ./...
-    go build -o ~/bin/dots github.com/drn/dots
+    go get github.com/drn/dots
 
 Install dependencies:
 
     dots install
-
-Long-term install instructions (post-$DOTS transition):
-
-    go get github.com/drn/dots
-    go build -o ~/bin/dots github.com/drn/dots
 
 ## Overview
 

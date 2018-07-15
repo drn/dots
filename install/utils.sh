@@ -1,5 +1,5 @@
 #!/bin/bash
-source "$HOME/.dots/install/core.cfg"
+source "$DOTS/install/core.cfg"
 
 # ensure z directory is available
 touch ~/.z
@@ -8,7 +8,7 @@ touch ~/.z
 curl get.pow.cx | sh
 
 # install Homebrew managed dependencies
-brew bundle --file=$HOME/.dots/Brewfile
+brew bundle --file=$DOTS/Brewfile
 brew services start mysql
 brew services start postgresql
 

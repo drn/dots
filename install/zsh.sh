@@ -1,5 +1,5 @@
 #!/bin/bash
-source "$HOME/.dots/install/core.cfg"
+source "$DOTS/install/core.cfg"
 
 # delete /etc/zprofile - added by os x 10.11
 # path_helper conflicts - http://www.zsh.org/mla/users/2015/msg00727.html
@@ -11,4 +11,4 @@ else
   curl -sL https://git.io/vwMNi | sh -s
 fi
 
-antibody bundle < "$HOME/.dots/zsh/bundles" > ~/.bundles
+antibody bundle < "$DOTS/zsh/bundles" > ~/.bundles
