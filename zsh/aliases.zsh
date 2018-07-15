@@ -8,7 +8,7 @@ alias o='open'
 alias o.='open .'
 
 # Jump Aliases
-alias dots='tmux rename-window dots 2>/dev/null; cd $DOTS'
+alias dot='tmux rename-window dots 2>/dev/null; cd $DOTS'
 alias dsk='tmux rename-window desktop 2>/dev/null; cd ~/Desktop'
 alias dev='tmux rename-window dev 2>/dev/null; cd ~/Development'
 alias doc='cd ~/Documents'
