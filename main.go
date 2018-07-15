@@ -1,9 +1,9 @@
 package main
 
 import (
-  "fmt"
+  "github.com/drn/dots/commands"
 )
 
 func main() {
-  fmt.Println("dots")
+  commands.Execute()
 }
