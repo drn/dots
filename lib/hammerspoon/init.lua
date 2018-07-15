@@ -190,4 +190,5 @@ hs.alert.defaultStyle['textColor'] = {
 }
 hs.alert.defaultStyle['textFont'] = 'Helvetica Light'
 
+hs.allowAppleScript(true)
 alert.show('Hammerspoon Reloaded')

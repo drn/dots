@@ -7,6 +7,7 @@ import (
   "io/ioutil"
   "github.com/spf13/cobra"
   "github.com/fatih/color"
+  "github.com/drn/dots/util"
 )
 
 var cmdInstall = &cobra.Command{
@@ -62,6 +63,11 @@ var cmdInstallHammerspoon = &cobra.Command{
   Short: "Installs hammerspoon configuration files",
   Run: func(cmd *cobra.Command, args []string) {
     link("lib/hammerspoon", ".hammerspoon")
+    util.Osascript(
+      "tell application \"%s\" to execute lua code \"%s\"",
+      "Hammerspoon",
+      "hs.reload()",
+    )
   },
 }
 
