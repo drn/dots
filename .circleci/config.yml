@@ -24,7 +24,7 @@ jobs:
             SHELL=/usr/local/bin/zsh
             echo 'TODO'
 
-  lint:
+  ruby-lint:
     machine: true
     steps:
       - checkout
@@ -42,8 +42,19 @@ jobs:
           paths:
             - vendor/bundle
       - run:
-          name: Lint
+          name: Ruby Lint
           command: bundle exec rubocop
+
+  go-lint:
+    machine: true
+    steps:
+      - checkout
+      - run:
+          name: Install Golint
+          command: go get -u golang.org/x/lint/golint
+      - run:
+          name: Go Lint
+          command: golint -set_exit_status ./...
 
 workflows:
   version: 2
@@ -51,4 +62,5 @@ workflows:
     jobs:
       - build-bash
       - build-zsh
-      - lint
+      - ruby-lint
+      - go-lint
