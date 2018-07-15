@@ -4,6 +4,7 @@ import (
   "os"
   "fmt"
   "os/user"
+  "io/ioutil"
   "github.com/spf13/cobra"
   "github.com/fatih/color"
 )
@@ -17,15 +18,23 @@ var cmdInstall = &cobra.Command{
 }
 
 func init() {
-  cmdInstall.AddCommand(cmdInstallDots)
+  cmdInstall.AddCommand(cmdInstallHome)
   cmdInstall.AddCommand(cmdInstallHammerspoon)
 }
 
-var cmdInstallDots = &cobra.Command{
-  Use: "dots",
-  Short: "Installs ~/.* files",
+var cmdInstallHome = &cobra.Command{
+  Use: "home",
+  Short: "Installs ~/.* config files",
   Run: func(cmd *cobra.Command, args []string) {
-    color.Green("Installing ~/.* files...")
+    color.Blue("Installing ~/.* files...")
+
+    files, _ := ioutil.ReadDir(fmt.Sprintf("%s/lib/home", dotsPath()))
+    for _, file := range files {
+      link(
+        fmt.Sprintf("lib/home/%s", file.Name()),
+        fmt.Sprintf(".%s", file.Name()),
+      )
+    }
   },
 }
 
