@@ -15,7 +15,7 @@ var root = &cobra.Command{
 }
 
 func addCommands() {
-  // TODO
+  root.AddCommand(cmdInstall)
 }
 
 // Execute - Starts the CLI.
