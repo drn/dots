@@ -8,5 +8,6 @@ func All() {
   Zsh()
   Fonts()
   Npm()
+  Vim()
   Hammerspoon()
 }
