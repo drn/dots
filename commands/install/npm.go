@@ -1,6 +1,7 @@
 package install
 
 import (
+  "strings"
   "github.com/drn/dots/log"
   "github.com/drn/dots/util"
 )
@@ -24,8 +25,12 @@ func Npm () {
 }
 
 func npm(packages []string) {
+  installed := util.Exec("npm list --global --parseable --depth=0")
+
   for _, pack := range packages {
-    log.Info("Ensuring %s is installed and up-to-date", pack)
-    util.Run("npm install -g %s", pack)
+    log.Info("Ensuring %s is installed", pack)
+    if !strings.Contains(installed, pack) {
+      util.Run("npm install -g %s", pack)
+    }
   }
 }
