@@ -10,4 +10,5 @@ func All() {
   Npm()
   Vim()
   Hammerspoon()
+  Osx()
 }

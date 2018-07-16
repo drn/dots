@@ -23,6 +23,7 @@ var cmdInstall = &cobra.Command{
         "npm",
         "vim",
         "hammerspoon",
+        "osx",
       },
     }
     _, result, err := prompt.Run()
@@ -48,6 +49,8 @@ var cmdInstall = &cobra.Command{
       install.Vim()
     case "hammerspoon":
       install.Hammerspoon()
+    case "osx":
+      install.Osx()
     }
   },
 }
@@ -62,6 +65,7 @@ func init() {
   cmdInstall.AddCommand(cmdInstallNpm)
   cmdInstall.AddCommand(cmdInstallVim)
   cmdInstall.AddCommand(cmdInstallHammerspoon)
+  cmdInstall.AddCommand(cmdInstallOsx)
 }
 
 var cmdInstallAll = &cobra.Command{
@@ -134,5 +138,13 @@ var cmdInstallHammerspoon = &cobra.Command{
   Short: "Installs hammerspoon configuration files",
   Run: func(cmd *cobra.Command, args []string) {
     install.Hammerspoon()
+  },
+}
+
+var cmdInstallOsx = &cobra.Command{
+  Use: "osx",
+  Short: "Installs OSX configuration",
+  Run: func(cmd *cobra.Command, args []string) {
+    install.Osx()
   },
 }
