@@ -8,7 +8,7 @@ touch ~/.z
 curl get.pow.cx | sh
 
 # install Homebrew managed dependencies
-brew bundle --file=$DOTS/Brewfile
+brew bundle --file=$DOTS/lib/Brewfile
 brew services start mysql
 brew services start postgresql
 
