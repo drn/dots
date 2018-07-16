@@ -14,10 +14,10 @@ func Vim() {
 }
 
 func vimLinkConfig() {
-  files, _ := ioutil.ReadDir(fmt.Sprintf("%s/vim", path.Dots()))
+  files, _ := ioutil.ReadDir(fmt.Sprintf("%s/lib/vim", path.Dots()))
   for _, file := range files {
     link(
-      fmt.Sprintf("vim/%s", file.Name()),
+      fmt.Sprintf("lib/vim/%s", file.Name()),
       fmt.Sprintf(".vim/%s", file.Name()),
     )
   }

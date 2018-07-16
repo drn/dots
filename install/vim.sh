@@ -17,7 +17,7 @@ done
 
 # recursively link all vim configuration files
 echo -e "\033[0;32mLinking all vim configuration files...\033[0m"
-rlink $DOTS/vim $vim
+rlink $DOTS/lib/vim $vim
 
 # ensure neovim directories exist
 mkdir -p ${XDG_CONFIG_HOME:=$HOME/.config}
