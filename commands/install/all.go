@@ -6,5 +6,7 @@ func All() {
   Git()
   Home()
   Zsh()
+  Fonts()
+  Npm()
   Hammerspoon()
 }
