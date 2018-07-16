@@ -17,6 +17,7 @@ func Vim() {
 }
 
 func vimLinkConfig() {
+  log.Info("Ensuring all vim configuration is linked:")
   files, _ := ioutil.ReadDir(fmt.Sprintf("%s/lib/vim", path.Dots()))
   for _, file := range files {
     link(
