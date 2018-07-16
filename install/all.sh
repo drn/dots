@@ -50,8 +50,6 @@ mkdir -p $HOME/Development
 
 # install terminal utilites
 bash $DOTS/install/utils.sh
-# install node packages
-bash $DOTS/install/node.sh
 # install os x configuration
 bash $DOTS/install/osx.sh
 # install vim configuration
