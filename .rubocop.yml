@@ -5,3 +5,4 @@ AllCops:
   Include:
     - lib/home/irbrc
     - lib/home/pryrc
+    - lib/Brewfile
