@@ -4,6 +4,7 @@ import (
   "fmt"
   "io/ioutil"
   "github.com/drn/dots/log"
+  "github.com/drn/dots/link"
   "github.com/drn/dots/path"
 )
 
@@ -13,9 +14,9 @@ func Fonts() {
 
   files, _ := ioutil.ReadDir(fmt.Sprintf("%s/lib/fonts", path.Dots()))
   for _, file := range files {
-    hardlink(
-      fmt.Sprintf("lib/fonts/%s", file.Name()),
-      fmt.Sprintf("Library/Fonts/%s", file.Name()),
+    link.Hard(
+      path.FromDots("lib/fonts/%s", file.Name()),
+      path.FromHome("Library/Fonts/%s", file.Name()),
     )
   }
 }

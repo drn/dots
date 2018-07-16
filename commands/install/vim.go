@@ -6,6 +6,7 @@ import (
   "io/ioutil"
   "github.com/drn/dots/log"
   "github.com/drn/dots/path"
+  "github.com/drn/dots/link"
   "github.com/drn/dots/util"
 )
 
@@ -20,9 +21,9 @@ func vimLinkConfig() {
   log.Info("Ensuring all vim configuration is linked:")
   files, _ := ioutil.ReadDir(fmt.Sprintf("%s/lib/vim", path.Dots()))
   for _, file := range files {
-    link(
-      fmt.Sprintf("lib/vim/%s", file.Name()),
-      fmt.Sprintf(".vim/%s", file.Name()),
+    link.Soft(
+      path.FromDots("lib/vim/%s", file.Name()),
+      path.FromHome(".vim/%s", file.Name()),
     )
   }
 }
