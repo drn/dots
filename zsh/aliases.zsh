@@ -20,7 +20,7 @@ alias ev='evergreen'
 # Command Aliases
 alias orig='find . -iname "*.orig" | xargs rm'
 alias gitx='open -a /Applications/GitX.app .'
-alias update='. update'
+alias update='dots update'
 alias up='update'
 alias shrink='. shrink'
 alias unshrink='. unshrink'
