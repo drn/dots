@@ -30,6 +30,6 @@ pyenv rehash
 
 # update VIM plugins
 echo "\n\033[0;34mUpdating vim setup...\033[0m"
-bash $DOTS/install/vim.sh
+dots install vim
 
 echo "\n\033[0;34mUpdate complete!\033[0m"

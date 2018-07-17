@@ -50,7 +50,5 @@ mkdir -p $HOME/Development
 
 # install terminal utilites
 bash $DOTS/install/utils.sh
-# install vim configuration
-bash $DOTS/install/vim.sh
 
 echo "Install is complete. Relaunch terminal for settings to take effect."
