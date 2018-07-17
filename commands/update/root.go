@@ -2,27 +2,26 @@ package update
 
 import (
   "os"
-  "github.com/drn/dots/is"
   "github.com/drn/dots/log"
   "github.com/drn/dots/run"
   "github.com/drn/dots/path"
+  "github.com/drn/dots/tmux"
   "github.com/drn/dots/commands/install"
 )
 
 // Run - Runs update scripts
 func Run() {
   log.Action("Updating dependencies")
-  window := ""
-  if is.Tmux() {
-    window = run.Capture("tmux display-message -p '#W'")
-    setWindow("update")
-  }
+  window := tmux.Window()
+  tmux.SetWindow("update")
+
   updateZsh()
   updateBrew()
   rehashRbenv()
   rehashPyenv()
   install.Vim()
-  setWindow(window)
+
+  tmux.SetWindow(window)
   log.Info("Update complete!")
 }
 
