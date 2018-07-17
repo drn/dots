@@ -6,6 +6,7 @@ import (
   "strings"
   "io/ioutil"
   "github.com/drn/dots/log"
+  "github.com/drn/dots/run"
   "github.com/drn/dots/path"
   "github.com/drn/dots/link"
   "github.com/drn/dots/util"
@@ -45,7 +46,7 @@ func vimUpdatePlug() {
   plugPath := path.FromHome(".vim/autoload/plug.vim")
   if !util.IsFileExists(plugPath) {
     url := "https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"
-    util.Run(
+    run.Verbose(
       "curl -fLo %s --create-dirs %s",
       plugPath,
       url,
@@ -57,7 +58,7 @@ func vimUpdatePlugins() {
   log.Info("Updating vim plugins:")
   tempPath := "/tmp/vim-update-result"
   os.Remove(tempPath)
-  util.RunSilent(
+  run.Silent(
     "nvim -c \"%s\"",
     strings.Join(
       []string{

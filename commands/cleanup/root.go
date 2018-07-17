@@ -4,7 +4,7 @@ import (
   "os"
   "strings"
   "github.com/drn/dots/log"
-  "github.com/drn/dots/util"
+  "github.com/drn/dots/run"
 )
 
 // Run - Runs update scripts
@@ -12,16 +12,16 @@ func Run() {
   log.Action("Cleaning up dependencies")
   window := ""
   if isTmux() {
-    window = util.Exec("tmux display-message -p '#W'")
+    window = run.Capture("tmux display-message -p '#W'")
     setWindow("cleanup")
   }
 
   log.Info("Cleaning up Homebrew dependencies")
-  util.Run("brew cleanup -s")
-  util.Run("brew cask cleanup")
+  run.Verbose("brew cleanup -s")
+  run.Verbose("brew cask cleanup")
 
   log.Info("Cleaning up vim plugins")
-  util.RunSilent("nvim -c \"PlugClean|q\"")
+  run.Silent("nvim -c \"PlugClean|q\"")
 
   setWindow(window)
   log.Info("Cleaning complete!")
@@ -35,5 +35,5 @@ func isTmux() bool {
 
 func setWindow(name string) {
   if name == "" { return }
-  util.Exec("tmux rename-window %s", name)
+  run.Capture("tmux rename-window %s", name)
 }

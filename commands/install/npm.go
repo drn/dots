@@ -3,7 +3,7 @@ package install
 import (
   "strings"
   "github.com/drn/dots/log"
-  "github.com/drn/dots/util"
+  "github.com/drn/dots/run"
 )
 
 // Npm - Installs global npm packages
@@ -25,12 +25,12 @@ func Npm () {
 }
 
 func npm(packages []string) {
-  installed := util.Exec("npm list --global --parseable --depth=0")
+  installed := run.Capture("npm list --global --parseable --depth=0")
 
   for _, pack := range packages {
     log.Info("Ensuring %s is installed", pack)
     if !strings.Contains(installed, pack) {
-      util.Run("npm install -g %s", pack)
+      run.Verbose("npm install -g %s", pack)
     }
   }
 }

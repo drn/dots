@@ -4,8 +4,8 @@ import (
   "os"
   "strings"
   "github.com/drn/dots/log"
+  "github.com/drn/dots/run"
   "github.com/drn/dots/path"
-  "github.com/drn/dots/util"
   "github.com/drn/dots/commands/install"
 )
 
@@ -14,7 +14,7 @@ func Run() {
   log.Action("Updating dependencies")
   window := ""
   if isTmux() {
-    window = util.Exec("tmux display-message -p '#W'")
+    window = run.Capture("tmux display-message -p '#W'")
     setWindow("update")
   }
   updateZsh()
@@ -34,12 +34,12 @@ func isTmux() bool {
 
 func setWindow(name string) {
   if name == "" { return }
-  util.Exec("tmux rename-window %s", name)
+  run.Capture("tmux rename-window %s", name)
 }
 
 func updateZsh() {
   log.Info("Updating ZSH plugins")
-  util.Run(
+  run.Verbose(
     "antibody bundle < \"%s\" > ~/.bundles",
     path.FromDots("zsh/bundles"),
   )
@@ -47,18 +47,18 @@ func updateZsh() {
 
 func updateBrew() {
   log.Info("Updating Homebrew and outdated packages")
-  util.Run("brew update")
-  util.Run("brew upgrade")
+  run.Verbose("brew update")
+  run.Verbose("brew upgrade")
 }
 
 func rehashRbenv() {
   log.Info("Rehashing rbenv binaries")
   os.Remove(path.FromHome(".rbenv/shims/.rbenv-shim"))
-  util.Run("rbenv rehash")
+  run.Verbose("rbenv rehash")
 }
 
 func rehashPyenv() {
   log.Info("Rehashing pyenv binaries")
   os.Remove(path.FromHome(".rbenv/shims/.rbenv-shim"))
-  util.Run("rbenv rehash")
+  run.Verbose("rbenv rehash")
 }

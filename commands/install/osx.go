@@ -4,7 +4,7 @@ import (
   "os"
   "runtime"
   "github.com/drn/dots/log"
-  "github.com/drn/dots/util"
+  "github.com/drn/dots/run"
 )
 
 // Osx - Sets OSX configuration
@@ -18,37 +18,39 @@ func Osx() {
 
   log.Info("Configuring system key press speeds")
   // disable key hold popup menu
-  util.Run("defaults write -g ApplePressAndHoldEnabled -bool false")
+  run.Verbose("defaults write -g ApplePressAndHoldEnabled -bool false")
   // set key repeat rates
-  util.Run("defaults write -g InitialKeyRepeat -int 12")
-  util.Run("defaults write -g KeyRepeat -int 3")
+  run.Verbose("defaults write -g InitialKeyRepeat -int 12")
+  run.Verbose("defaults write -g KeyRepeat -int 3")
 
   log.Info("Disabling natural scrolling")
-  util.Run(
+  run.Verbose(
     "defaults write NSGlobalDomain com.apple.swipescrolldirection -bool false",
   )
 
   log.Info("Enabling Finder status bar")
-  util.Run("defaults write com.apple.finder ShowStatusBar -bool true")
+  run.Verbose("defaults write com.apple.finder ShowStatusBar -bool true")
 
   log.Info("Setting hidden dock applications as translucent")
-  util.Run("defaults write com.apple.dock showhidden -bool true")
+  run.Verbose("defaults write com.apple.dock showhidden -bool true")
 
   log.Info("Setting Notification Center banner display time")
-  util.Run("defaults write com.apple.notificationcenterui bannerTime 2.5")
+  run.Verbose("defaults write com.apple.notificationcenterui bannerTime 2.5")
 
   log.Info("Disabling autocorrect")
-  util.Run("defaults write -g NSAutomaticSpellingCorrectionEnabled -bool false")
+  run.Verbose(
+    "defaults write -g NSAutomaticSpellingCorrectionEnabled -bool false",
+  )
 
   log.Info("Disable natural scroll")
-  util.Run(
+  run.Verbose(
     "defaults write NSGlobalDomain com.apple.swipescrolldirection -bool false",
   )
 
   log.Info("Ensuring changes take effect immediately")
-  util.Run("killall Dock")
-  util.Run("killall Finder")
-  util.Run("killall SystemUIServer")
+  run.Verbose("killall Dock")
+  run.Verbose("killall Finder")
+  run.Verbose("killall SystemUIServer")
 }
 
 func isOsx() bool {

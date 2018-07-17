@@ -2,7 +2,7 @@ package install
 
 import (
   "github.com/drn/dots/log"
-  "github.com/drn/dots/util"
+  "github.com/drn/dots/run"
   "github.com/drn/dots/link"
   "github.com/drn/dots/path"
 )
@@ -15,7 +15,7 @@ func Hammerspoon() {
     path.FromHome(".hammerspoon"),
   )
   log.Info("Reloading Hammerspoon")
-  util.Osascript(
+  run.OSA(
     "tell application \"%s\" to execute lua code \"%s\"",
     "Hammerspoon",
     "hs.reload()",
