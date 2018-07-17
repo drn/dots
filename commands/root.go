@@ -18,6 +18,7 @@ func addCommands() {
   root.AddCommand(cmdInstall)
   root.AddCommand(cmdUpdate)
   root.AddCommand(cmdCleanup)
+  root.AddCommand(cmdDoctor)
 }
 
 // Execute - Starts the CLI.
