@@ -10,17 +10,11 @@ Managed by a robust, extensible Go CLI.
 
 ![](screenshot.png)
 
-**Currently Porting to Golang-based CLI - Work In Progress**
-
-## TL;DR
+## Notice
 
 Warning: This install script destructively installs configuration and various
 tools onto your system. It does not backup existing configuration. Run at your
 own risk.
-
-Quick Installation
-
-    curl -s https://raw.githubusercontent.com/drn/dots/master/install/all.sh | sh
 
 ## Install
 
@@ -35,79 +29,62 @@ Quick Installation
   * `export GOPATH=$HOME/go`
   * `export PATH=$GOPATH/bin:$PATH`
 
-## Overview
+## Commands
 
-These dotfiles are an ever-changing document of my development environment
-configuration. I use these dotfiles and included installation scripts to
-synchronize my setup across various machines.
+Top-level commands:
 
-The above 'quick installation' script runs through the setup, configuration,
-and installation of the following sections:
+    ❯ dots
 
-  * dotfiles - basic `~/.*` config files
-  * vim - vim
-  * zsh - antibody
-  * git - custom functions, templates, hooks
-  * utilities - terminal utilities
-  * bin - custom scripts on the `$PATH`
-  * fonts - development fonts
-  * osx - os x system config
+    The dots CLI manages your development environment dependencies
 
-### Dots
+    Usage:
+      dots [flags]
+      dots [command]
 
-All files in the [home](https://github.com/drn/dots/tree/master/home)
-directory are symlinked to `$HOME` with a `.` prefix.
+    Available Commands:
+      cleanup     Cleans legacy configuration
+      help        Help about any command
+      install     Installs configuration
+      update      Updates configuration
 
-### VIM
+    Flags:
+      -h, --help   help for dots
 
-  * The [vimrc](https://github.com/drn/dots/blob/master/home/vimrc)
-    contains all non-plugin related mappings, configurations, and functions.
-    This is auto-symlinked with the other `~/.*` files
-  * The [Vimfile](https://github.com/drn/dots/blob/master/Vimfile)
-    is the canonical listing of the included 50+ vim plugins
-  * [Plugin settings](https://github.com/drn/dotfiles/tree/master/vim/plugin/settings)
-    are symlinked into the appropriate `~/.vim/*` location
-  * Binaries for installed plugins are automatically compiled
+    Use "dots [command] --help" for more information about a command.
 
-### ZSH
+Install commands:
 
-The default shell is overridden and set to Homebrew installed ZSH.
+    ❯ dots install --help
 
-  * [oh-my-zsh](https://github.com/robbyrussell/oh-my-zsh) - zsh configuration management framework
-  * [custom](https://github.com/drn/dots/tree/master/zsh) shell prompt,
-    aliases, plugins, completions are configured
+    Installs configuration
 
-### Git
+    Usage:
+      dots install [flags]
+      dots install [command]
 
-  * Default config files (`.gitconfig`, `.gitignore`)
-  * Custom [git extensions](https://github.com/drn/dots/tree/master/git/functions)
-    tailored to my workflow
+    Available Commands:
+      all         Runs all install scripts
+      bin         Installs ~/bin/* commands
+      fonts       Installs fonts
+      git         Installs git extensions
+      hammerspoon Installs hammerspoon configuration files
+      home        Installs ~/.* config files
+      homebrew    Installs Homebrew dependencies
+      npm         Installs npm packages
+      osx         Installs OSX configuration
+      vim         Installs vim config
+      zsh         Installs zsh config files
 
-### Utils
+    Flags:
+      -h, --help   help for install
 
-Terminal utilities and system tools are installed via the
-[util script](https://github.com/drn/dots/blob/master/install/utils.sh)
+    Use "dots install [command] --help" for more information about a command.
 
-  * The [Brewfile](https://github.com/drn/dots/blob/master/Brewfile)
-    is the canonical listing of Homebrew installed utilities
-  * Other utilities installed via other sources include:
-    * [pow.cx](http://pow.cx) - zero-config rack server
-    * [jira-cli](http://rubygems.org/gems/jira-cli) - JIRA workflow management
-      CLI
+## What Is Run?
 
-### Fonts
-
-  * Menlo for Powerline
-
-### OS X
-
-[OS X Configuration](https://github.com/drn/dots/blob/master/install/osx.sh)
-including:
-
-  * faster key press
-  * disable sleep image
-  * disable spotlight
-  * etc.
+Browse the files in the following directories for details:
+* [commands/install](https://github.com/drn/dots/tree/master/commands/install/)
+* [lib](https://github.com/drn/dots/tree/master/lib/)
 
 ## License
 
