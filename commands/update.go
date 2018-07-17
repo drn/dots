@@ -7,6 +7,7 @@ import (
 
 var cmdUpdate = &cobra.Command{
   Use: "update",
+  Aliases: []string{ "up" },
   Short: "Updates configuration",
   Run: func(cmd *cobra.Command, args []string) {
     update.Run()
