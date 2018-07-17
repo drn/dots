@@ -2,6 +2,7 @@ package install
 
 import (
   "github.com/drn/dots/log"
+  "github.com/drn/dots/path"
   "github.com/drn/dots/util"
 )
 
@@ -25,5 +26,8 @@ func Zsh() {
 
   // run antibody bundle
   log.Info("Bundling antibody dependencies")
-  util.Run("antibody bundle < \"$DOTS/zsh/bundles\" > ~/.bundles")
+  util.Run(
+    "antibody bundle < \"%s\" > ~/.bundles",
+    path.FromDots("zsh/bundles"),
+  )
 }
