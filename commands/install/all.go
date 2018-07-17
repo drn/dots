@@ -7,6 +7,7 @@ func All() {
   Home()
   Zsh()
   Fonts()
+  Homebrew()
   Npm()
   Vim()
   Hammerspoon()

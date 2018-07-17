@@ -20,6 +20,7 @@ var cmdInstall = &cobra.Command{
         "home",
         "zsh",
         "fonts",
+        "homebrew",
         "npm",
         "vim",
         "hammerspoon",
@@ -43,6 +44,8 @@ var cmdInstall = &cobra.Command{
       install.Zsh()
     case "fonts":
       install.Fonts()
+    case "homebrew":
+      install.Homebrew()
     case "npm":
       install.Npm()
     case "vim":
@@ -62,6 +65,7 @@ func init() {
   cmdInstall.AddCommand(cmdInstallHome)
   cmdInstall.AddCommand(cmdInstallZsh)
   cmdInstall.AddCommand(cmdInstallFonts)
+  cmdInstall.AddCommand(cmdInstallHomebrew)
   cmdInstall.AddCommand(cmdInstallNpm)
   cmdInstall.AddCommand(cmdInstallVim)
   cmdInstall.AddCommand(cmdInstallHammerspoon)
@@ -113,6 +117,15 @@ var cmdInstallFonts = &cobra.Command{
   Short: "Installs fonts",
   Run: func(cmd *cobra.Command, args []string) {
     install.Fonts()
+  },
+}
+
+var cmdInstallHomebrew = &cobra.Command{
+  Use: "homebrew",
+  Aliases: []string{ "brew" },
+  Short: "Installs Homebrew dependencies",
+  Run: func(cmd *cobra.Command, args []string) {
+    install.Homebrew()
   },
 }
 
