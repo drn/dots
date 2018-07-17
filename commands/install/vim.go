@@ -61,7 +61,6 @@ func vimUpdatePlugins() {
     strings.Join(
       []string{
         "PlugUpgrade",
-        "PlugClean",
         "PlugUpdate",
         "set modifiable",
         "4d", "2d", "2d", "1d",

@@ -49,8 +49,6 @@ func updateBrew() {
   log.Info("Updating Homebrew and outdated packages")
   util.Run("brew update")
   util.Run("brew upgrade")
-  util.Run("brew cleanup -s")
-  util.Run("brew cask cleanup")
 }
 
 func rehashRbenv() {
