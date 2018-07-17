@@ -84,21 +84,84 @@ jobs:
           name: Running Dots Root
           command: dots
 
-  dots-install:
+  install-bin:
     macos:
       xcode: 9.2.0
     environment:
-      COMMAND: 'dots install all'
+      COMMAND: 'dots install bin'
     <<: *dots_steps
 
-  dots-update:
+  install-git:
+    macos:
+      xcode: 9.2.0
+    environment:
+      COMMAND: 'dots install git'
+    <<: *dots_steps
+
+  install-home:
+    macos:
+      xcode: 9.2.0
+    environment:
+      COMMAND: 'dots install home'
+    <<: *dots_steps
+
+  install-zsh:
+    macos:
+      xcode: 9.2.0
+    environment:
+      COMMAND: 'dots install zsh'
+    <<: *dots_steps
+
+  install-fonts:
+    macos:
+      xcode: 9.2.0
+    environment:
+      COMMAND: 'dots install fonts'
+    <<: *dots_steps
+
+  install-homebrew:
+    macos:
+      xcode: 9.2.0
+    environment:
+      COMMAND: 'dots install homebrew'
+    <<: *dots_steps
+
+  install-npm:
+    macos:
+      xcode: 9.2.0
+    environment:
+      COMMAND: 'dots install npm'
+    <<: *dots_steps
+
+  install-vim:
+    macos:
+      xcode: 9.2.0
+    environment:
+      COMMAND: 'dots install vim'
+    <<: *dots_steps
+
+  install-hammerspoon:
+    macos:
+      xcode: 9.2.0
+    environment:
+      COMMAND: 'dots install hammerspoon'
+    <<: *dots_steps
+
+  install-osx:
+    macos:
+      xcode: 9.2.0
+    environment:
+      COMMAND: 'dots install osx'
+    <<: *dots_steps
+
+  update:
     macos:
       xcode: 9.2.0
     environment:
       COMMAND: 'dots update'
     <<: *dots_steps
 
-  dots-cleanup:
+  cleanup:
     macos:
       xcode: 9.2.0
     environment:
@@ -144,12 +207,39 @@ workflows:
       - build
       - ruby-lint
       - go-lint
-      - dots-install:
+      - install-bin:
           requires:
             - build
-      - dots-update:
+      - install-git:
           requires:
             - build
-      - dots-cleanup:
+      - install-home:
+          requires:
+            - build
+      - install-zsh:
+          requires:
+            - build
+      - install-fonts:
+          requires:
+            - build
+      - install-homebrew:
+          requires:
+            - build
+      - install-npm:
+          requires:
+            - build
+      - install-vim:
+          requires:
+            - build
+      - install-hammerspoon:
+          requires:
+            - build
+      - install-osx:
+          requires:
+            - build
+      - update:
+          requires:
+            - build
+      - cleanup:
           requires:
             - build
