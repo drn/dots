@@ -1,6 +1,7 @@
 package log
 
 import (
+  "fmt"
   "github.com/fatih/color"
 )
 
@@ -17,4 +18,10 @@ func Info(output string, args ...interface{}) {
 // Error - Logs error in appropriate color
 func Error(output string, args ...interface{}) {
   color.Red(output, args...)
+}
+
+// Command - Logs command in appropriate color
+func Command(output string, args ...interface{}) {
+  output = fmt.Sprintf(output, args...)
+  color.White("%s %s", color.BlueString("❯"), output)
 }

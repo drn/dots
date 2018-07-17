@@ -5,6 +5,7 @@ import (
   "fmt"
   "strings"
   "os/exec"
+  "github.com/drn/dots/log"
 )
 
 // IsCommand - Returns true if the specified command exists.
@@ -28,8 +29,18 @@ func Exec(command string, args ...interface{}) string {
   return strings.TrimSpace(string(out))
 }
 
-// Run - Runs the specified command without suppressing STDOUT.
+// Run - Logs the specified command and runs it without suppressing STDOUT.
 func Run(command string, args ...interface{}) {
+  resolvedCommand := fmt.Sprintf(command, args...)
+  log.Command(resolvedCommand)
+  cmd := exec.Command("bash", "-c", resolvedCommand)
+  cmd.Stdout = os.Stdout
+  cmd.Stderr = os.Stderr
+  cmd.Run()
+}
+
+// RunSilent - Runs the specified command without suppressing STDOUT.
+func RunSilent(command string, args ...interface{}) {
   resolvedCommand := fmt.Sprintf(command, args...)
   cmd := exec.Command("bash", "-c", resolvedCommand)
   cmd.Stdout = os.Stdout

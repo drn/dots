@@ -34,7 +34,7 @@ func isTmux() bool {
 
 func setWindow(name string) {
   if name == "" { return }
-  util.Run("tmux rename-window %s", name)
+  util.Exec("tmux rename-window %s", name)
 }
 
 func updateZsh() {
