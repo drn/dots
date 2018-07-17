@@ -2,7 +2,6 @@
 
 # casks
 cask '1password'
-cask 'alarm-clock'
 cask 'android-studio'
 cask 'bartender'
 cask 'caffeine'
