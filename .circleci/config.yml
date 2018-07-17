@@ -71,7 +71,11 @@ jobs:
     steps:
       - checkout
       - *restore_brew
-      - run: brew update
+      - run:
+          name: Brew Update
+          command: |
+            rm -rf /usr/local/Homebrew/Library/Taps
+            brew update
       - *cache_brew
       - *install_golang
       - *install_dots
