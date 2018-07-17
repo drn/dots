@@ -9,7 +9,7 @@ import (
   "github.com/drn/dots/run"
   "github.com/drn/dots/path"
   "github.com/drn/dots/link"
-  "github.com/drn/dots/util"
+  "github.com/drn/dots/is"
 )
 
 // Vim - Installs vim configuration
@@ -45,7 +45,7 @@ func vimLinkNeovim() {
 
 func vimUpdatePlug() {
   plugPath := path.FromHome(".vim/autoload/plug.vim")
-  if !util.IsFileExists(plugPath) {
+  if !is.File(plugPath) {
     url := "https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"
     run.Verbose(
       "curl -fLo %s --create-dirs %s",

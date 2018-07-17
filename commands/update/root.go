@@ -2,7 +2,7 @@ package update
 
 import (
   "os"
-  "strings"
+  "github.com/drn/dots/is"
   "github.com/drn/dots/log"
   "github.com/drn/dots/run"
   "github.com/drn/dots/path"
@@ -13,7 +13,7 @@ import (
 func Run() {
   log.Action("Updating dependencies")
   window := ""
-  if isTmux() {
+  if is.Tmux() {
     window = run.Capture("tmux display-message -p '#W'")
     setWindow("update")
   }
@@ -24,12 +24,6 @@ func Run() {
   install.Vim()
   setWindow(window)
   log.Info("Update complete!")
-}
-
-func isTmux() bool {
-  if !strings.Contains(os.Getenv("TERM"), "screen") { return false }
-  if os.Getenv("TMUX") == "" { return false }
-  return true
 }
 
 func setWindow(name string) {

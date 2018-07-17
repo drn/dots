@@ -1,8 +1,7 @@
 package cleanup
 
 import (
-  "os"
-  "strings"
+  "github.com/drn/dots/is"
   "github.com/drn/dots/log"
   "github.com/drn/dots/run"
 )
@@ -11,7 +10,7 @@ import (
 func Run() {
   log.Action("Cleaning up dependencies")
   window := ""
-  if isTmux() {
+  if is.Tmux() {
     window = run.Capture("tmux display-message -p '#W'")
     setWindow("cleanup")
   }
@@ -25,12 +24,6 @@ func Run() {
 
   setWindow(window)
   log.Info("Cleaning complete!")
-}
-
-func isTmux() bool {
-  if !strings.Contains(os.Getenv("TERM"), "screen") { return false }
-  if os.Getenv("TMUX") == "" { return false }
-  return true
 }
 
 func setWindow(name string) {

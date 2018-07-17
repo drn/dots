@@ -2,7 +2,7 @@ package install
 
 import (
   "os"
-  "runtime"
+  "github.com/drn/dots/is"
   "github.com/drn/dots/log"
   "github.com/drn/dots/run"
 )
@@ -11,7 +11,7 @@ import (
 func Osx() {
   log.Action("Installing OSX config")
 
-  if !isOsx() {
+  if !is.Osx() {
     log.Error("Cannot install OSX configuration on a non-darwin machine")
     os.Exit(0)
   }
@@ -51,8 +51,4 @@ func Osx() {
   run.Verbose("killall Dock")
   run.Verbose("killall Finder")
   run.Verbose("killall SystemUIServer")
-}
-
-func isOsx() bool {
-  return runtime.GOOS == "darwin"
 }
