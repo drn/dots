@@ -16,7 +16,6 @@ import (
 func Vim() {
   log.Action("Installing vim config")
   vimLinkConfig()
-
   vimLinkNeovim()
   vimUpdatePlug()
   vimUpdatePlugins()
@@ -40,6 +39,8 @@ func vimLinkNeovim() {
     path.FromHome(".vim"),
     path.FromHome(".config/nvim"),
   )
+  link.Soft(path.FromHome(".vim"), path.FromHome(".nvim"))
+  link.Soft(path.FromHome(".vimrc"), path.FromHome(".nvimrc"))
 }
 
 func vimUpdatePlug() {
