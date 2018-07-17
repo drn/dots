@@ -1,28 +1,105 @@
 version: 2
 
-jobs:
-  build-bash:
-    macos:
-      xcode: 9.2.0
-    steps:
-      - checkout
-      - run:
-          name: Bash Install
-          command: |
-            echo $0
-            echo 'TODO'
+references:
 
-  build-zsh:
+  ## Install Steps
+
+  install_golang: &install_golang
+    run:
+      name: Install Golang
+      command: .circleci/install/golang.sh
+
+  install_dots: &install_dots
+    run:
+      name: Installing Dots
+      command: go get -u github.com/drn/dots
+
+  ## Cache
+
+  cache_brew: &cache_brew
+    save_cache:
+      name: Cache Homebrew
+      key: v1-brew-{{ .Branch }}-{{ .Revision }}
+      paths:
+        - /usr/local/Homebrew
+
+  restore_brew: &restore_brew
+    restore_cache:
+      name: Restore Homebrew
+      keys:
+        - v1-brew-{{ .Branch }}-{{ .Revision }}
+        - v1-brew-{{ .Branch }}
+        - v1-brew
+
+  cache_go: &cache_go
+    save_cache:
+      name: Cache $GOPATH
+      key: v1-go-{{ .Branch }}-{{ .Revision }}
+      paths:
+        - ~/go
+
+  restore_go: &restore_go
+    restore_cache:
+      name: Restore $GOPATH
+      keys:
+        - v1-go-{{ .Branch }}-{{ .Revision }}
+
+  ## General
+
+  setup_path: &setup_path
+    run:
+      name: Setting Up $PATH
+      command: |
+        echo 'export PATH=$HOME/go/bin:$PATH' >> $BASH_ENV
+
+  ## Step Wrappers
+
+  dots_steps: &dots_steps
+    steps:
+      - checkout
+      - *restore_brew
+      - *restore_go
+      - *setup_path
+      - run:
+          name: Running Command
+          command: eval $COMMAND
+
+jobs:
+  build:
     macos:
       xcode: 9.2.0
     steps:
       - checkout
+      - *restore_brew
+      - run: brew update
+      - *cache_brew
+      - *install_golang
+      - *install_dots
+      - *cache_go
       - run:
-          name: ZSH Install
-          command: |
-            echo $0
-            SHELL=/usr/local/bin/zsh
-            echo 'TODO'
+          name: Running Dots Root
+          command: dots
+
+  dots-install:
+    macos:
+      xcode: 9.2.0
+    environment:
+      COMMAND: 'dots install all'
+    <<: *dots_steps
+
+  dots-update:
+    macos:
+      xcode: 9.2.0
+    environment:
+      COMMAND: 'dots update'
+    <<: *dots_steps
+
+  dots-cleanup:
+    macos:
+      xcode: 9.2.0
+    environment:
+      COMMAND: 'dots cleanup'
+    <<: *dots_steps
 
   ruby-lint:
     machine: true
@@ -60,7 +137,15 @@ workflows:
   version: 2
   build:
     jobs:
-      - build-bash
-      - build-zsh
+      - build
       - ruby-lint
       - go-lint
+      - dots-install:
+          requires:
+            - build
+      - dots-update:
+          requires:
+            - build
+      - dots-cleanup:
+          requires:
+            - build
