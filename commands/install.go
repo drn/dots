@@ -46,6 +46,10 @@ var commands = []map[string]string{
     "description": "Installs Ruby",
   },
   map[string]string{
+    "command":"python",
+    "description": "Installs Python",
+  },
+  map[string]string{
     "command":"vim",
     "description": "Installs vim config",
   },
