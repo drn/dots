@@ -24,20 +24,22 @@ func Capture(command string, args ...interface{}) string {
 }
 
 // Verbose - Logs the specified command and runs it without suppressing STDOUT.
-func Verbose(command string, args ...interface{}) {
+func Verbose(command string, args ...interface{}) bool {
   resolvedCommand := fmt.Sprintf(command, args...)
   log.Command(resolvedCommand)
   cmd := exec.Command("bash", "-c", resolvedCommand)
   cmd.Stdout = os.Stdout
   cmd.Stderr = os.Stderr
-  cmd.Run()
+  err := cmd.Run()
+  return err == nil
 }
 
 // Silent - Runs the specified command without suppressing STDOUT.
-func Silent(command string, args ...interface{}) {
+func Silent(command string, args ...interface{}) bool {
   resolvedCommand := fmt.Sprintf(command, args...)
   cmd := exec.Command("bash", "-c", resolvedCommand)
   cmd.Stdout = os.Stdout
   cmd.Stderr = os.Stderr
-  cmd.Run()
+  err := cmd.Run()
+  return err == nil
 }

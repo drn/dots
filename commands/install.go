@@ -3,6 +3,7 @@ package commands
 import (
   "os"
   "github.com/spf13/cobra"
+  "github.com/drn/dots/run"
   "github.com/drn/dots/log"
   "github.com/manifoldco/promptui"
   "github.com/drn/dots/commands/install"
@@ -126,6 +127,10 @@ func init() {
 
 func installAll() {
   log.Action("Running all install scripts...")
+
+  log.Info("Ensuring sudo access")
+  command := "sudo -p \"Enter your password: \" echo \"We're good to go!\""
+  if !run.Silent(command) { os.Exit(1) }
 
   items := make([]string, len(commands))
   i := 0
