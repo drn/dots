@@ -4,17 +4,6 @@ source "$DOTS/install/core.cfg"
 # ensure z directory is available
 touch ~/.z
 
-# install Homebrew managed dependencies
-brew bundle --file=$DOTS/lib/Brewfile
-brew services start mysql
-brew services start postgresql
-
-# install ruby and gems
-eval "$(rbenv init -)"
-rbenv install 2.5.0 -s
-rbenv global 2.5.0
-gem install bundler
-
 # configure neovim python dependencies
 eval "$(pyenv init -)"
 eval "$(pyenv virtualenv-init -)"

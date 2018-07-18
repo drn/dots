@@ -34,42 +34,45 @@ var cmdInstall = &cobra.Command{
     switch result {
     case "all":
       install.All()
-    case "bin":
-      install.Bin()
-    case "git":
-      install.Git()
     case "home":
       install.Home()
     case "zsh":
       install.Zsh()
-    case "fonts":
-      install.Fonts()
     case "homebrew":
       install.Homebrew()
-    case "npm":
-      install.Npm()
+    case "bin":
+      install.Bin()
+    case "git":
+      install.Git()
     case "vim":
       install.Vim()
-    case "hammerspoon":
-      install.Hammerspoon()
+    case "fonts":
+      install.Fonts()
+    case "ruby":
+      install.Ruby()
+    case "npm":
+      install.Npm()
     case "osx":
       install.Osx()
+    case "hammerspoon":
+      install.Hammerspoon()
     }
   },
 }
 
 func init() {
   cmdInstall.AddCommand(cmdInstallAll)
-  cmdInstall.AddCommand(cmdInstallBin)
-  cmdInstall.AddCommand(cmdInstallGit)
   cmdInstall.AddCommand(cmdInstallHome)
   cmdInstall.AddCommand(cmdInstallZsh)
-  cmdInstall.AddCommand(cmdInstallFonts)
   cmdInstall.AddCommand(cmdInstallHomebrew)
-  cmdInstall.AddCommand(cmdInstallNpm)
+  cmdInstall.AddCommand(cmdInstallBin)
+  cmdInstall.AddCommand(cmdInstallGit)
   cmdInstall.AddCommand(cmdInstallVim)
-  cmdInstall.AddCommand(cmdInstallHammerspoon)
+  cmdInstall.AddCommand(cmdInstallFonts)
+  cmdInstall.AddCommand(cmdInstallRuby)
+  cmdInstall.AddCommand(cmdInstallNpm)
   cmdInstall.AddCommand(cmdInstallOsx)
+  cmdInstall.AddCommand(cmdInstallHammerspoon)
 }
 
 var cmdInstallAll = &cobra.Command{
@@ -134,6 +137,14 @@ var cmdInstallNpm = &cobra.Command{
   Short: "Installs npm packages",
   Run: func(cmd *cobra.Command, args []string) {
     install.Npm()
+  },
+}
+
+var cmdInstallRuby = &cobra.Command{
+  Use: "ruby",
+  Short: "Installs Ruby",
+  Run: func(cmd *cobra.Command, args []string) {
+    install.Ruby()
   },
 }
 

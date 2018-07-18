@@ -2,14 +2,14 @@ package install
 
 // All - Runs all install scripts
 func All() {
-  Bin()
-  Git()
   Home()
   Zsh()
-  Fonts()
   Homebrew()
-  Npm()
+  Bin()
+  Git()
   Vim()
-  Hammerspoon()
+  Fonts()
+  Npm()
   Osx()
+  Hammerspoon()
 }
