@@ -9,10 +9,6 @@ import (
 
 var commands = []map[string]string{
   map[string]string{
-    "command": "all",
-    "description": "Runs all install scripts",
-  },
-  map[string]string{
     "command": "bin",
     "description": "Installs ~/bin/* commands",
   },
@@ -73,8 +69,9 @@ var cmdInstall = &cobra.Command{
       os.Exit(1)
     }
 
-    items := make([]string, len(commands))
-    i := 0
+    items := make([]string, len(commands)+1)
+    items[0] = "all"
+    i := 1
     for _, command := range commands {
       items[i] = command["command"]
       i++
@@ -93,6 +90,24 @@ var cmdInstall = &cobra.Command{
 }
 
 func init() {
+  items := make([]string, len(commands))
+  i := 0
+  for _, command := range commands {
+    items[i] = command["command"]
+    i++
+  }
+  cmdInstall.AddCommand(
+    &cobra.Command{
+      Use: "all",
+      Short: "Runs all install scripts",
+      Run: func(cmd *cobra.Command, args []string) {
+        for _, item := range items {
+          install.Call(item)
+        }
+      },
+    },
+  )
+
   for _, command := range commands {
     var aliases []string
     if alias, ok := command["alias"]; ok {
