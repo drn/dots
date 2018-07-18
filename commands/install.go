@@ -3,6 +3,7 @@ package commands
 import (
   "os"
   "github.com/spf13/cobra"
+  "github.com/drn/dots/log"
   "github.com/manifoldco/promptui"
   "github.com/drn/dots/commands/install"
 )
@@ -85,25 +86,21 @@ var cmdInstall = &cobra.Command{
 
     if err != nil { os.Exit(1) }
 
-    install.Call(result)
+    if result == "all" {
+      installAll()
+    } else {
+      install.Call(result)
+    }
   },
 }
 
 func init() {
-  items := make([]string, len(commands))
-  i := 0
-  for _, command := range commands {
-    items[i] = command["command"]
-    i++
-  }
   cmdInstall.AddCommand(
     &cobra.Command{
       Use: "all",
       Short: "Runs all install scripts",
       Run: func(cmd *cobra.Command, args []string) {
-        for _, item := range items {
-          install.Call(item)
-        }
+        installAll()
       },
     },
   )
@@ -124,5 +121,19 @@ func init() {
       },
     }
     cmdInstall.AddCommand(cmd)
+  }
+}
+
+func installAll() {
+  log.Action("Running all install scripts...")
+
+  items := make([]string, len(commands))
+  i := 0
+  for _, command := range commands {
+    items[i] = command["command"]
+    i++
+  }
+  for _, item := range items {
+    install.Call(item)
   }
 }
