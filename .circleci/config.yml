@@ -140,6 +140,13 @@ jobs:
       COMMAND: 'dots install vim'
     <<: *dots_steps
 
+  install-ruby:
+    macos:
+      xcode: 9.2.0
+    environment:
+      COMMAND: 'dots install ruby'
+    <<: *dots_steps
+
   install-hammerspoon:
     macos:
       xcode: 9.2.0
@@ -229,6 +236,9 @@ workflows:
           requires:
             - build
       - install-vim:
+          requires:
+            - build
+      - install-ruby:
           requires:
             - build
       - install-hammerspoon:
