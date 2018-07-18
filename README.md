@@ -43,6 +43,7 @@ Top-level commands:
 
     Available Commands:
       cleanup     Cleans legacy configuration
+      doctor      Runs system diagnostics
       help        Help about any command
       install     Installs configuration
       update      Updates configuration
@@ -67,11 +68,13 @@ Install commands:
       bin         Installs ~/bin/* commands
       fonts       Installs fonts
       git         Installs git extensions
-      hammerspoon Installs hammerspoon configuration files
+      hammerspoon Installs hammerspoon configuration
       home        Installs ~/.* config files
       homebrew    Installs Homebrew dependencies
       npm         Installs npm packages
       osx         Installs OSX configuration
+      python      Installs Python
+      ruby        Installs Ruby
       vim         Installs vim config
       zsh         Installs zsh config files
 
