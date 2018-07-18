@@ -48,7 +48,4 @@ mkdir -p $HOME/Development
 # TODO ensure dots are up-to-date
 # go get -u github.com/drn/dots
 
-# install terminal utilites
-bash $DOTS/install/utils.sh
-
 echo "Install is complete. Relaunch terminal for settings to take effect."
