@@ -1,6 +1,7 @@
 package install
 
 import (
+  "os"
   "github.com/drn/dots/log"
   "github.com/drn/dots/run"
   "github.com/drn/dots/path"
@@ -12,4 +13,6 @@ func (i Install) Homebrew() {
   run.Verbose("brew bundle --file=%s", path.FromDots("lib/Brewfile"))
   run.Verbose("brew services start mysql@5.6")
   run.Verbose("brew services start postgresql")
+  log.Info("Ensuring ~/.z exists")
+  os.OpenFile(path.FromHome("Desktop/z"), os.O_RDONLY|os.O_CREATE, 0666)
 }

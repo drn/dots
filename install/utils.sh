@@ -1,9 +1,6 @@
 #!/bin/bash
 source "$DOTS/install/core.cfg"
 
-# ensure z directory is available
-touch ~/.z
-
 # configure neovim python dependencies
 eval "$(pyenv init -)"
 eval "$(pyenv virtualenv-init -)"
