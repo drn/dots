@@ -4,9 +4,6 @@ source "$DOTS/install/core.cfg"
 # ensure z directory is available
 touch ~/.z
 
-# install pow
-curl get.pow.cx | sh
-
 # install Homebrew managed dependencies
 brew bundle --file=$DOTS/lib/Brewfile
 brew services start mysql
