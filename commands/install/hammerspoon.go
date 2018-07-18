@@ -8,7 +8,7 @@ import (
 )
 
 // Hammerspoon - Installs Hammerspoon configuration
-func Hammerspoon() {
+func (i Install) Hammerspoon() {
   log.Action("Install Hammerspoon")
   link.Soft(
     path.FromDots("lib/hammerspoon"),

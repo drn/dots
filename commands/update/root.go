@@ -19,7 +19,7 @@ func Run() {
   updateBrew()
   rehashRbenv()
   rehashPyenv()
-  install.Vim()
+  install.Call("vim")
 
   tmux.SetWindow(window)
   log.Info("Update complete!")

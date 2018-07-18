@@ -9,7 +9,7 @@ import (
 )
 
 // Fonts - Installs fonts
-func Fonts() {
+func (i Install) Fonts() {
   log.Action("Install Fonts")
 
   files, _ := ioutil.ReadDir(fmt.Sprintf("%s/lib/fonts", path.Dots()))

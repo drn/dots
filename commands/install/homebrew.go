@@ -7,7 +7,7 @@ import (
 )
 
 // Homebrew - Installs Homebrew dependencies
-func Homebrew() {
+func (i Install) Homebrew() {
   log.Action("Installing Homebrew dependencies")
   run.Verbose("brew bundle --file=%s", path.FromDots("lib/Brewfile"))
   run.Verbose("brew services start mysql@5.6")

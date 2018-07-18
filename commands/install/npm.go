@@ -7,7 +7,7 @@ import (
 )
 
 // Npm - Installs global npm packages
-func Npm () {
+func (i Install) Npm() {
   log.Action("Install npm packages")
   npm([]string{
     "json-diff",

@@ -10,7 +10,7 @@ import (
 var rubyVersion = "2.5.1"
 
 // Ruby - Configures Ruby
-func Ruby() {
+func (i Install) Ruby() {
   log.Action("Installing Ruby")
   link.Soft(
     path.FromDots("lib/bin"),

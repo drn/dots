@@ -1,15 +1,15 @@
 package install
 
 // All - Runs all install scripts
-func All() {
-  Home()
-  Zsh()
-  Homebrew()
-  Bin()
-  Git()
-  Vim()
-  Fonts()
-  Npm()
-  Osx()
-  Hammerspoon()
+func (i Install) All() {
+  i.Home()
+  i.Zsh()
+  i.Homebrew()
+  i.Bin()
+  i.Git()
+  i.Vim()
+  i.Fonts()
+  i.Npm()
+  i.Osx()
+  i.Hammerspoon()
 }

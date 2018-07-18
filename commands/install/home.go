@@ -9,7 +9,7 @@ import (
 )
 
 // Home - Symlinks ~/.* configuration
-func Home() {
+func (i Install) Home() {
   log.Action("Install Home")
 
   files, _ := ioutil.ReadDir(fmt.Sprintf("%s/lib/home", path.Dots()))
