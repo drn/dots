@@ -29,6 +29,6 @@ func (i Install) Zsh() {
   log.Info("Bundling antibody dependencies")
   run.Verbose(
     "antibody bundle < \"%s\" > ~/.bundles",
-    path.FromDots("zsh/bundles"),
+    path.FromDots("lib/zsh/bundles"),
   )
 }

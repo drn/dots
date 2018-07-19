@@ -34,7 +34,7 @@ func updateZsh() {
   log.Info("Updating ZSH plugins")
   run.Verbose(
     "antibody bundle < \"%s\" > ~/.bundles",
-    path.FromDots("zsh/bundles"),
+    path.FromDots("lib/zsh/bundles"),
   )
 }
 
