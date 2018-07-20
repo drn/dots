@@ -1,6 +1,12 @@
 [merge]
-  # opendiff is part of XCode for osx
-  tool = opendiff
+  tool = diffconflicts
+
+[mergetool "diffconflicts"]
+  cmd = nvim -c DiffConflicts \"$MERGED\" \"$BASE\" \"$LOCAL\" \"$REMOTE\"
+  trustExitCode = true
+
+[mergetool]
+  keepBackup = false
 
 [core]
   # default ignored files for OSX; see below

@@ -42,6 +42,7 @@ Plug 'machakann/vim-highlightedyank'
 Plug 'justinmk/vim-dirvish'
 Plug 'justinmk/vim-gtfo'
 Plug 'AndrewRadev/splitjoin.vim'
+Plug 'whiteinge/diffconflicts'
 
 " Lazy-load plugins
 Plug 'scrooloose/nerdtree', { 'on': [ 'NERDTreeToggle', 'NERDTreeFind' ] }
