@@ -7,6 +7,7 @@ function root() {
 . /usr/local/etc/profile.d/z.sh
 # Auto-rename tmux window
 function _z_wrapper() {
+  unset DISABLE_PROMPT
   _z $1
   if [[ "$TERM" = "screen"* ]] && [ -n "$TMUX" ]; then
     if [ -n "$1" ]; then
