@@ -13,7 +13,11 @@ var remote = baseRemote()
 var master = fmt.Sprintf("%s/master", remote)
 
 func main() {
-  for _, ancestor := range ancestors() {
+  ancestors := ancestors()
+
+  if len(ancestors) < 2 { os.Exit(1) }
+
+  for _, ancestor := range ancestors[1:] {
     branches := branches(ancestor)
     if len(branches) == 0 { continue }
 
