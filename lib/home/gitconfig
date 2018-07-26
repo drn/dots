@@ -64,7 +64,6 @@
   mm = !"git masterme"
   # delete current branch from upstream, origin, and locally
   km = !"git killme"
-  kmf = !"git killme --force"
   # shorthand for fixup
   fu = !"git fixup"
   # shorthand for commit-all
