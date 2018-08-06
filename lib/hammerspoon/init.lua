@@ -53,7 +53,7 @@ local bindings = {
     MacVim     = '.'
   },
   [{ 'cmd', 'shift'}] = {
-    [ 'Mailplane 3' ] = '/'
+    [ 'Superhuman' ] = '/'
   },
   [{ 'cmd', 'alt'}] = {
     [ 'Google Chrome' ] = 'return'
