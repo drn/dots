@@ -98,9 +98,6 @@ hs.hotkey.bind({ 'ctrl', 'cmd' }, 'space', function() alert.show('space') end)
 
 -- Chrome
 
-hs.hotkey.bind({'cmd', 'shift'}, 'l', function()
-  chrome.refocus()
-end)
 hs.hotkey.bind({'ctrl', 'alt', 'cmd'}, 'n', function()
   chrome.openProfileMenu()
 end)
