@@ -3,7 +3,6 @@
 # casks
 cask '1password'
 cask 'android-studio'
-cask 'bartender'
 cask 'caffeine'
 cask 'cyberduck'
 cask 'discord'
