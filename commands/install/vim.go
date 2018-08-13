@@ -41,6 +41,7 @@ func vimLinkNeovim() {
   )
   link.Soft(path.FromHome(".vim"), path.FromHome(".nvim"))
   link.Soft(path.FromHome(".vimrc"), path.FromHome(".nvimrc"))
+  link.Soft(path.FromHome(".vimrc"), path.FromHome(".config/nvim/init.vim"))
 }
 
 func vimUpdatePlug() {
