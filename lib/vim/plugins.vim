@@ -44,6 +44,8 @@ Plug 'justinmk/vim-gtfo'
 Plug 'AndrewRadev/splitjoin.vim'
 Plug 'whiteinge/diffconflicts'
 Plug 'junegunn/gv.vim'
+Plug 'SirVer/ultisnips'
+Plug 'ervandew/supertab'
 
 " Lazy-load plugins
 Plug 'scrooloose/nerdtree', { 'on': [ 'NERDTreeToggle', 'NERDTreeFind' ] }
