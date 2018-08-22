@@ -29,8 +29,7 @@ REMOTES = {
   alex:   { username: :millenniumiguana },
   qaseem: { username: 'qaseem-thx' },
   aly:    { username: :allisonphillips },
-  kirby:  { username: :kirbydcool },
-  chris:  { username: :cperera }
+  kirby:  { username: :kirbydcool }
 }.freeze
 
 REPO = `git repo`.strip.freeze
