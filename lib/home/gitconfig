@@ -69,7 +69,8 @@
   # shorthand for commit-all
   cma = !"git commit-all"
   # browse the current head on github
-  bro = !"hub browse -- commit/`git rev-parse HEAD`"
+  browse = !"hub browse -- commit/${1:-$(git rev-parse HEAD)}"
+  bro = !"git browse"
   # better blame
   changes = !"git log --follow -p "
   # rebase on upstream/master
