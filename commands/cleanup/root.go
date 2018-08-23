@@ -16,7 +16,7 @@ func Run() {
   run.Verbose("brew cleanup -s")
 
   log.Info("Cleaning up vim plugins")
-  run.Silent("nvim -c \"PlugClean|q\"")
+  run.Silent("nvim -c \"PlugClean!|q\"")
 
   tmux.SetWindow(window)
   log.Info("Cleaning complete!")
