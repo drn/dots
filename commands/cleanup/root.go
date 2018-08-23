@@ -14,7 +14,6 @@ func Run() {
 
   log.Info("Cleaning up Homebrew dependencies")
   run.Verbose("brew cleanup -s")
-  run.Verbose("brew cask cleanup")
 
   log.Info("Cleaning up vim plugins")
   run.Silent("nvim -c \"PlugClean|q\"")
