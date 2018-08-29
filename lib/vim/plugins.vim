@@ -46,6 +46,7 @@ Plug 'whiteinge/diffconflicts'
 Plug 'junegunn/gv.vim'
 Plug 'SirVer/ultisnips'
 Plug 'ervandew/supertab'
+Plug 'ryanoasis/vim-devicons'
 
 " Lazy-load plugins
 Plug 'scrooloose/nerdtree', { 'on': [ 'NERDTreeToggle', 'NERDTreeFind' ] }
