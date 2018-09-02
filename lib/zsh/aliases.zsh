@@ -49,6 +49,7 @@ alias hc='heroku console'
 alias notify='terminal-notifier -message'
 alias jo='jira-open'
 alias ycm='cd ~/.vim/plugged/YouCompleteMe; ./install.py'
+alias cat='bat'
 
 # tmux-start shortcuts
 alias mxm='unshrink; tmux-start master'
