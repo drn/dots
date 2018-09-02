@@ -30,6 +30,7 @@ cask 'whatsapp'
 cask 'yujitach-menumeters'
 
 # formulae
+brew 'bat'
 brew 'cmake'
 brew 'coreutils'
 brew 'cv'
