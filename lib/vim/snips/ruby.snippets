@@ -13,3 +13,7 @@ endsnippet
 snippet plist "Inject a processlist inspect statement"
 y ActiveRecord::Base.connection.select_all('show processlist').to_a.delete_if{|p| p['Command'] == 'Sleep'}
 endsnippet
+
+snippet ar "ActiveRecord::Base"
+ActiveRecord::Base
+endsnippet
