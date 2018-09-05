@@ -102,7 +102,7 @@ function Strip(string)
   return substitute(a:string, '\n', '', '')
 endfunction
 
-function GitUrl()
+function GitRepoUrl()
   let url = system("git config --get remote.upstream.url")
   if url == ""
     let url = system("git config --get remote.origin.url")
@@ -119,18 +119,31 @@ function LineSuffix()
   endif
 endfunction
 
-function! Gopen()
+function GitUrl()
   " determine relative file path
   let filepath = expand("%:p")
   let repopath = Strip(system("git rev-parse --show-toplevel"))
   let path = substitute(filepath, repopath, '', '')
 
   if path[strlen(path)-1] == "/"
-    " open tree
-    call system('open ' . GitUrl() . '/tree/master' . path)
+    " tree url
+    return GitRepoUrl() . '/tree/master' . path
   else
-    " open file
-    call system('open ' . GitUrl() . '/blob/master' . path . LineSuffix())
+    " file url
+    return GitRepoUrl() . '/blob/master' . path . LineSuffix()
   endif
 endfunction
+
+function! Gopen()
+  let url = GitUrl()
+  call system('open ' . url)
+  echomsg 'Opened ' . url
+endfunction
 command! Gopen call Gopen()
+
+function! Gcopy()
+  let url = GitUrl()
+  call system('echo ' . url . ' | pbcopy')
+  echomsg 'Copied ' . url
+endfunction
+command! Gcopy call Gcopy()
