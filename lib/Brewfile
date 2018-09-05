@@ -28,6 +28,7 @@ cask 'the-unarchiver'
 cask 'vlc'
 cask 'whatsapp'
 cask 'yujitach-menumeters'
+cask 'zeplin'
 
 # formulae
 brew 'bat'
