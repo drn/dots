@@ -140,6 +140,7 @@ function! Gopen()
   echomsg 'Opened ' . url
 endfunction
 command! Gopen call Gopen()
+command! Go call Gopen()
 
 function! Gcopy()
   let url = GitUrl()
@@ -147,3 +148,4 @@ function! Gcopy()
   echomsg 'Copied ' . url
 endfunction
 command! Gcopy call Gcopy()
+command! Gc call Gcopy()
