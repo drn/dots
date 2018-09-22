@@ -26,11 +26,22 @@ func main() {
   prune("origin", branch)
   prune("upstream", branch)
 
-  if branch == fallback { return }
-
-  if !git.Checkout(fallback) { git.Create(fallback) }
-  git.ResetHard(git.Ancestor())
-  git.Delete(branch)
+  currentBranch := git.Branch()
+  if branch == currentBranch {
+    if branch == fallback { return }
+    if !git.Checkout(fallback) { git.Create(fallback) }
+    git.ResetHard(git.Ancestor())
+    git.Delete(branch)
+  } else {
+    log.Info(
+      "Current branch %s does not match pruned branch %s.\n" +
+      "Skipping fallback branch checkout and reset.",
+      currentBranch,
+      branch,
+    )
+    if currentBranch == fallback { return }
+    git.Delete(currentBranch)
+  }
 }
 
 func prune(remote string, branch string) {
@@ -39,7 +50,7 @@ func prune(remote string, branch string) {
   if branch == "staging" { return }
   if branch == "production" { return }
 
-  if !git.RemoteHasBranch(remote, branch) { return}
+  if !git.RemoteHasBranch(remote, branch) { return }
 
   log.Info("Deleting %s from %s...", branch, remote)
   run.Verbose("git push %s :%s", remote, branch)
