@@ -149,3 +149,5 @@ function! Gcopy()
 endfunction
 command! Gcopy call Gcopy()
 command! Gc call Gcopy()
+
+command! Gb Gblame
