@@ -5,9 +5,6 @@ _git_rb() { _git_rebase }
 _git_cp() { _git_cherry_pick }
 _git_f()  { _git_fetch }
 
-# git completion
-source /usr/local/etc/bash_completion.d/git-completion.bash 2>/dev/null
-
 # zsh completion style
 zstyle ':completion:*' menu yes select
 zstyle ':completion:*' list-colors "${(@s.:.)LS_COLORS}"
@@ -17,3 +14,6 @@ zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|=*' 'l:|=* r:|=*'
 # adjust select-word-style
 autoload -U select-word-style
 select-word-style bash
+
+# force compinit on tmux split
+compinit
