@@ -17,8 +17,3 @@ zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|=*' 'l:|=* r:|=*'
 # adjust select-word-style
 autoload -U select-word-style
 select-word-style bash
-
-# heroku completion
-HEROKU_AC_ZSH_SETUP_PATH=$HOME/Library/Caches/heroku/autocomplete/zsh_setup && \
-  test -f $HEROKU_AC_ZSH_SETUP_PATH && \
-  source $HEROKU_AC_ZSH_SETUP_PATH
