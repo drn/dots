@@ -44,7 +44,7 @@ set background=dark
 " highlight search matches
 set hlsearch
 " disable syntax highlighting past specified column for long lines
-set synmaxcol=160
+set synmaxcol=500
 " hide all scrollbars in gui vim
 set guioptions-=r
 set guioptions-=l
