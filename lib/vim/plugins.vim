@@ -74,11 +74,19 @@ Plug 'jpalardy/vim-slime', { 'on': [
 \ ] }
 
 " Language-specific plugins
-Plug 'sheerun/vim-polyglot'
+Plug 'keith/rspec.vim', { 'for': 'ruby' }
+Plug 'vim-ruby/vim-ruby', { 'for': ['ruby', 'eruby'] }
+Plug 'neoclide/vim-jsx-improve', { 'for': ['javascript', 'javascript.jsx'] }
+Plug 'othree/html5.vim', { 'for': ['html', 'eruby.html'] }
+Plug 'zaiste/tmux.vim', { 'for': 'tmux' }
+Plug 'groenewege/vim-less', { 'for': 'less' }
+Plug 'Keithbsmiley/swift.vim', { 'for': 'swift' }
+Plug 'kchmck/vim-coffee-script', { 'for': 'coffee' }
+Plug 'hashivim/vim-terraform', { 'for': 'terraform' }
 Plug 'tpope/vim-rails', { 'for': [ 'ruby', 'eruby' ] }
 Plug 'kana/vim-textobj-user', { 'for': [ 'ruby', 'eruby' ] }
 Plug 'nelstrom/vim-textobj-rubyblock', { 'for': [ 'ruby', 'eruby' ] }
-Plug 'vim-scripts/indenthtml.vim', { 'for': 'html'}
+Plug 'vim-scripts/indenthtml.vim', { 'for': 'html' }
 
 " Auto-completion
 function! BuildYCM(info)
