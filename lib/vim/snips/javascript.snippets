@@ -1,0 +1,24 @@
+snippet jest "Inject Jest spec"
+import React from 'react'
+import $1 from './$1'
+import { shallow } from 'enzyme'
+import toJson from 'enzyme-to-json'
+import { get, def } from 'bdd-lazy-var/getter'
+
+describe('<$1 />', () => {
+  def('wrapper', () => shallow(<$1 {...get.props} />))
+  def('props', () => ({
+    $2
+  }))
+
+  it('renders without crashing', () => {
+    expect(toJson(get.wrapper)).toMatchSnapshot()
+  })
+})
+endsnippet
+
+snippet def "Inject empty get stub"
+def('$1', () => ({
+  $2
+}))
+endsnippet
