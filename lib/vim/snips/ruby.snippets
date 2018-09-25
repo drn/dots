@@ -17,3 +17,13 @@ endsnippet
 snippet ar "ActiveRecord::Base"
 ActiveRecord::Base
 endsnippet
+
+snippet spec "Inject RSpec spec"
+# frozen_string_literal: true
+
+require 'rails_helper'
+
+describe $1 do
+  $2
+end
+endsnippet
