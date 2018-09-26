@@ -18,9 +18,9 @@ function! test#javascript#jest#build_position(type, position) abort
     if !empty(name)
       let name = '-t '.shellescape(name, 1)
     endif
-    return ['--no-coverage', name, '--', '-u', a:position['file']]
+    return ['--no-coverage', name, '-u', a:position['file']]
   elseif a:type ==# 'file'
-    return ['--no-coverage', '--', '-u', a:position['file']]
+    return ['--no-coverage', '-u', a:position['file']]
   else
     return []
   endif
