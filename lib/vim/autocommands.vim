@@ -1,10 +1,13 @@
 " Set Missing Filetypes
-au BufRead,BufNewFile gitconfig set filetype=gitconfig
-au BufRead,BufNewFile *.cfg set filetype=sh
-au BufRead,BufNewFile pryrc set filetype=ruby
-au BufRead,BufNewFile scratch-pad set filetype=txt
-au BufRead,BufNewFile *.arb set filetype=ruby
-au BufRead,BufNewFile Fastfile set filetype=ruby
+augroup filetypedetect
+  au BufRead,BufNewFile gitconfig set filetype=gitconfig
+  au BufRead,BufNewFile *.cfg set filetype=sh
+  au BufRead,BufNewFile pryrc set filetype=ruby
+  au BufRead,BufNewFile scratch-pad set filetype=txt
+  au BufRead,BufNewFile *.arb set filetype=ruby
+  au BufRead,BufNewFile Fastfile set filetype=ruby
+  au BufRead,BufNewFile *_spec.rb set filetype=ruby.rspec
+augroup END
 
 " trim all whitespace on save
 autocmd BufWritePre * call TrimWhitespace()
