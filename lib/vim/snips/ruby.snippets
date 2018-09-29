@@ -27,3 +27,23 @@ describe $1 do
   $2
 end
 endsnippet
+
+snippet sub "Inject RSpec subject"
+subject { $1 }
+endsnippet
+
+snippet des "Inject RSpec describe"
+describe '$1' do
+  $2
+end
+endsnippet
+
+snippet con "Inject RSpec context"
+context '$1' do
+  $2
+end
+endsnippet
+
+snippet let "Inject RSpec let"
+let(:$1) { $2 }
+endsnippet
