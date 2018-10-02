@@ -87,6 +87,7 @@ Plug 'tpope/vim-rails', { 'for': [ 'ruby', 'eruby' ] }
 Plug 'kana/vim-textobj-user', { 'for': [ 'ruby', 'eruby' ] }
 Plug 'nelstrom/vim-textobj-rubyblock', { 'for': [ 'ruby', 'eruby' ] }
 Plug 'vim-scripts/indenthtml.vim', { 'for': 'html' }
+Plug 'vim-python/python-syntax', { 'for': 'python' }
 
 " Auto-completion
 function! BuildYCM(info)
