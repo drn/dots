@@ -63,6 +63,7 @@ brew 'npm'
 brew 'octave', args: ['--with-qt5']
 brew 'openssl'
 brew 'phantomjs'
+brew 'pipenv'
 brew 'postgresql'
 brew 'pow'
 brew 'pyenv'
