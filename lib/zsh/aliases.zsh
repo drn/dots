@@ -1,7 +1,8 @@
 # System Aliases
 alias history='fc -l 1'
-alias l='ls -lah'
+alias l='ls'
 alias la='ls -ah'
+alias ll='ls -lah'
 alias lr='ls -lR'
 alias ls='ls -G'
 alias o.='open .'
