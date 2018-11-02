@@ -9,6 +9,15 @@ alias o.='open .'
 alias o='open'
 alias tree='tree -C'
 
+# Navigation Aliases
+alias -g ...='../..'
+alias -g ....='../../..'
+alias -g .....='../../../..'
+alias -g ......='../../../../..'
+alias -g .......='../../../../../..'
+alias -g ........='../../../../../../..'
+alias -g .........='../../../../../../../..'
+
 # Jump Aliases
 alias dev='tmux rename-window dev 2>/dev/null; cd ~/Development'
 alias doc='cd ~/Documents'
