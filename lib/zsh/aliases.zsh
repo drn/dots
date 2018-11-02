@@ -6,6 +6,7 @@ alias lr='ls -lR'
 alias ls='ls -G'
 alias o.='open .'
 alias o='open'
+alias tree='tree -C'
 
 # Jump Aliases
 alias dev='tmux rename-window dev 2>/dev/null; cd ~/Development'
