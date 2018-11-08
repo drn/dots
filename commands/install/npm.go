@@ -21,6 +21,7 @@ func (i Install) Npm() {
     "vtop",
     "neovim",
     "fkill-cli",
+    "fx",
   })
 }
 
