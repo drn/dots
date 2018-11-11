@@ -1,8 +1,8 @@
 # System Aliases
 alias history='fc -l 1'
-alias l='nerd-ls'
-alias la='l -a'
-alias ll='l -l -a'
+alias l='nerd-ls -i'
+alias la='nerd-ls -ai'
+alias ll='nerd-ls -ail'
 alias o.='open .'
 alias o='open'
 alias tree='tree -C'
