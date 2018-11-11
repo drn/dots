@@ -1,6 +1,9 @@
 # set history size to 5000
 HISTFILESIZE=5000
 
+# disable bash session history
+SHELL_SESSION_HISTORY=0
+
 # enable terminal colors
 export CLICOLOR=1
 
