@@ -71,6 +71,8 @@
   # browse the current head on github
   browse = !"hub browse -- commit/${1:-$(git rev-parse HEAD)}"
   bro = !"git browse"
+  # open browser to current github repo
+  go = !"open \"https://github.com/$(git path)\""
   # better blame
   changes = !"git log --follow -p "
   # rebase on upstream/master
