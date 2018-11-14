@@ -47,6 +47,11 @@ func (i Install) Osx() {
     "defaults write NSGlobalDomain com.apple.swipescrolldirection -bool false",
   )
 
+  log.Info("Disable screenshot previews")
+  run.Verbose(
+    "defaults write com.apple.screencapture show-thumbnail -bool false",
+  )
+
   log.Info("Ensuring changes take effect immediately")
   run.Verbose("killall Dock")
   run.Verbose("killall Finder")
