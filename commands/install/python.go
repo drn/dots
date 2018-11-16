@@ -1,3 +1,6 @@
+// Neovim setup logic from
+// https://github.com/zchee/deoplete-jedi/wiki/Setting-up-Python-for-Neovim
+
 package install
 
 import (
