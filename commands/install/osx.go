@@ -52,6 +52,11 @@ func (i Install) Osx() {
     "defaults write com.apple.screencapture show-thumbnail -bool false",
   )
 
+  log.Info("Disable iTunes auto-start when devices are plugged in")
+  run.Verbose(
+    "defaults write com.apple.iTunesHelper ignore-devices 1",
+  )
+
   log.Info("Ensuring changes take effect immediately")
   run.Verbose("killall Dock")
   run.Verbose("killall Finder")
