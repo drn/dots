@@ -15,3 +15,6 @@ if [[ "${terminfo[kend]}" != "" ]]; then
 fi
 # delete from cursor to beginning of line
 bindkey \^U backward-kill-line
+
+# accepts and executes autosuggestion
+bindkey '^[^M' autosuggest-execute # Alt + Enter
