@@ -10,3 +10,6 @@ setopt NO_NOMATCH
 
 # Set the default PostgreSQL host
 export PGHOST=localhost
+
+# Disable r zsh builtin
+disable r
