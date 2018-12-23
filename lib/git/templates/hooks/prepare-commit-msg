@@ -7,9 +7,9 @@
 # commit summary.
 #
 
-summary = File.read(ARGV[0])
+summary = File.read(ARGV[0]).to_s
 branch = `git rev-parse --abbrev-ref HEAD`.strip
 regex = /^[A-Z][A-Z]-/
-exit unless branch.match?(regex)
-exit if summary&.match?(regex)
+exit unless regex =~ branch
+exit if regex =~ summary
 File.write(ARGV[0], "#{branch}. #{summary}")
