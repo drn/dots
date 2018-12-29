@@ -40,7 +40,7 @@ func main() {
       branch,
     )
     if currentBranch == fallback { return }
-    git.Delete(currentBranch)
+    git.Delete(branch)
   }
 }
 
