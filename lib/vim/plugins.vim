@@ -88,6 +88,10 @@ Plug 'kana/vim-textobj-user', { 'for': [ 'ruby', 'eruby' ] }
 Plug 'nelstrom/vim-textobj-rubyblock', { 'for': [ 'ruby', 'eruby' ] }
 Plug 'vim-scripts/indenthtml.vim', { 'for': 'html' }
 Plug 'vim-python/python-syntax', { 'for': 'python' }
+Plug 'iamcco/markdown-preview.nvim', {
+\ 'do': 'cd app & yarn install',
+\ 'for': 'markdown'
+\ }
 
 " Auto-completion
 function! BuildYCM(info)
