@@ -92,6 +92,7 @@ Plug 'iamcco/markdown-preview.nvim', {
 \ 'do': 'cd app & yarn install',
 \ 'for': 'markdown'
 \ }
+Plug 'udalov/kotlin-vim', { 'for': 'kotlin' }
 
 " Auto-completion
 function! BuildYCM(info)
