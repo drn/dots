@@ -5,7 +5,7 @@ import (
   "math"
   "strings"
   "strconv"
-  "github.com/drn/dots/run"
+  "github.com/drn/dots/cli/run"
 )
 
 func main() {

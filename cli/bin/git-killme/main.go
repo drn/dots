@@ -3,9 +3,9 @@ package main
 import (
   "os"
   "strings"
-  "github.com/drn/dots/git"
-  "github.com/drn/dots/run"
-  "github.com/drn/dots/log"
+  "github.com/drn/dots/cli/git"
+  "github.com/drn/dots/cli/run"
+  "github.com/drn/dots/cli/log"
 )
 
 var fallback = "root"

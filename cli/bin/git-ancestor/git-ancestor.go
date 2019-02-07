@@ -4,8 +4,8 @@ import (
   "os"
   "fmt"
   "strings"
-  "github.com/drn/dots/run"
-  "github.com/drn/dots/log"
+  "github.com/drn/dots/cli/run"
+  "github.com/drn/dots/cli/log"
 )
 
 var max = 100
