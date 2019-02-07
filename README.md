@@ -83,12 +83,6 @@ Install commands:
 
     Use "dots install [command] --help" for more information about a command.
 
-## What Is Run?
-
-Browse the files in the following directories for details:
-* [commands/install](https://github.com/drn/dots/tree/master/commands/install/)
-* [lib](https://github.com/drn/dots/tree/master/lib/)
-
 ## License
 
 This project is licensed under the [MIT License](http://opensource.org/licenses/MIT)

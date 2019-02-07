@@ -1,0 +1,18 @@
+# config
+source $DOTS/zsh/basic.zsh
+source $DOTS/zsh/colors.zsh
+source $DOTS/zsh/history.zsh
+source $DOTS/zsh/prompt.zsh
+source $DOTS/zsh/completion.zsh
+source $DOTS/zsh/aliases.zsh
+source $DOTS/zsh/functions.zsh
+
+# antibody bundles
+source ~/.bundles
+
+# bundle settings and bindings
+source $DOTS/zsh/settings.zsh
+source $DOTS/zsh/bindings.zsh
+
+# autoload tmux
+if [ "$TMUX" = "" ]; then tmux-start master; fi

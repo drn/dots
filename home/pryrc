@@ -1,0 +1,56 @@
+# frozen_string_literal: true
+
+require "#{ENV['DOTS']}/ruby/console_prompt"
+require "#{ENV['DOTS']}/ruby/console_colors"
+
+# customize pry prompt
+Pry.config.prompt = [
+  proc do |object, level, _|
+    ConsolePrompt.new(nil, object, level).normal
+  end,
+  proc do |object, level, _|
+    ConsolePrompt.new(nil, object, level).continue
+  end
+]
+
+# Legible callstack display
+# rubocop:disable Metrics/AbcSize
+# rubocop:disable Metrics/MethodLength
+def callstack
+  colors = CONSOLE_COLORS
+  files = []
+  lines = []
+  methods = []
+  caller.each do |line|
+    splits = line.gsub(/.*\//, '').split(':', 3)
+    files << splits[0]
+    lines << splits[1]
+    methods << splits[2]
+  end
+  linesize = lines.max_by(&:length).length
+  filesize = files.max_by(&:length).length
+  (1..caller.count - 1).each do |i|
+    puts [
+      colors[:bold],
+      colors[:cyan],
+      lines[i].to_s.rjust(linesize),
+      '  ',
+      colors[:bold],
+      colors[:red],
+      files[i].to_s.ljust(filesize),
+      '  ',
+      colors[:reset],
+      colors[:magenta],
+      methods[i].to_s
+    ].join
+  end
+  nil
+end
+# rubocop:enable Metrics/MethodLength
+# rubocop:enable Metrics/AbcSize
+
+def thanx_caller
+  caller.delete_if do |line|
+    !line.include?('thanx')
+  end
+end
