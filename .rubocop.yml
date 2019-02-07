@@ -3,6 +3,6 @@ inherit_gem:
 
 AllCops:
   Include:
-    - lib/home/irbrc
-    - lib/home/pryrc
-    - lib/Brewfile
+    - home/irbrc
+    - home/pryrc
+    - Brewfile
