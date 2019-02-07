@@ -8,7 +8,7 @@ import (
 
 // Soft - Creates a soft link between input from and to arguments
 func Soft(from string, to string) {
-  log.Info("Soft linking '%s' to '%s'", path.Pretty(from), path.Pretty(to))
+  log.Info("Soft link: '%s' -> '%s'", path.Pretty(to), path.Pretty(from))
 
   removeExisting(to)
 
@@ -21,7 +21,7 @@ func Soft(from string, to string) {
 
 // Hard - Creates a hard link between input from and to arguments
 func Hard(from string, to string) {
-  log.Info("Hard linking '%s' to '%s'", path.Pretty(from), path.Pretty(to))
+  log.Info("Hard link: '%s' -> '%s'", path.Pretty(to), path.Pretty(from))
 
   removeExisting(to)
 
