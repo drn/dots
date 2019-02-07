@@ -1,7 +1,6 @@
 package install
 
 import (
-  "fmt"
   "io/ioutil"
   "github.com/drn/dots/cli/log"
   "github.com/drn/dots/cli/link"
@@ -12,7 +11,7 @@ import (
 func (i Install) Fonts() {
   log.Action("Install Fonts")
 
-  files, _ := ioutil.ReadDir(fmt.Sprintf("%s/fonts", path.Dots()))
+  files, _ := ioutil.ReadDir(path.FromDots("fonts"))
   for _, file := range files {
     link.Hard(
       path.FromDots("fonts/%s", file.Name()),
