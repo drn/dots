@@ -1,8 +1,0 @@
-let g:netrw_dirhistmax  =10
-let g:netrw_dirhist_cnt =6
-let g:netrw_dirhist_1='/Users/darrencheng/go/src/github.com/drn/dots/cli'
-let g:netrw_dirhist_2='/Users/darrencheng/go/src/github.com/drn/dots/cli/commands'
-let g:netrw_dirhist_3='/Users/darrencheng/go/src/github.com/drn/dots/cli'
-let g:netrw_dirhist_4='/Users/darrencheng/go/src/github.com/drn/dots/cli/commands'
-let g:netrw_dirhist_5='/Users/darrencheng/go/src/github.com/drn/dots/cli/commands/install'
-let g:netrw_dirhist_6='/Users/darrencheng/go/src/github.com/drn/dots/cli'
