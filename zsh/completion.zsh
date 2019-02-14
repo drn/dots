@@ -4,6 +4,7 @@ autoload -U compaudit compinit
 _git_rb() { _git_rebase }
 _git_cp() { _git_cherry_pick }
 _git_f()  { _git_fetch }
+_bat()    { _cat }
 
 # zsh completion style
 zstyle ':completion:*' menu yes select
