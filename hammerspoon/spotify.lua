@@ -40,7 +40,8 @@ function spotify.forward(delta)
   delta = delta or 10
   local updated = hs.spotify.getPosition() + delta
   hs.spotify.setPosition(updated)
-  message = (math.floor(hs.spotify.getPosition()) == 0) and ' ⇥' or ' → '..formatSeconds(updated)
+  local isZeroPosition = math.floor(hs.spotify.getPosition()) == 0
+  local message = isZeroPosition and ' ⇥' or ' → '..formatSeconds(updated)
   alert.showOnly(message)
 end
 
@@ -88,21 +89,26 @@ function spotify.playpause()
     alert.showOnly(' ▶')
   else
     hs.spotify.playpause()
-    icon = hs.spotify.isPlaying() and ' ▶' or ' ◼'
+    local icon = hs.spotify.isPlaying() and ' ▶' or ' ◼'
     alert.showOnly(icon)
   end
 end
 
 function spotify.display()
   if not hs.spotify.isRunning() then return end
-  artist = hs.spotify.getCurrentArtist() or ''
-  album  = hs.spotify.getCurrentAlbum() or ''
-  track  = hs.spotify.getCurrentTrack() or ''
-  current = hs.spotify.getPosition()
-  total   = duration()
-  percent = math.floor(current / total * 100 + 0.5)
-  time   = formatSeconds(current)..'  ('..percent..'%)'..'\n'..formatSeconds(total)
-  info   = track..'\n'..album..'\n'..artist..'\n'..time
+  local artist = hs.spotify.getCurrentArtist() or ''
+  local album  = hs.spotify.getCurrentAlbum() or ''
+  local track  = hs.spotify.getCurrentTrack() or ''
+  local current = hs.spotify.getPosition()
+  local total   = duration()
+  local percent = math.floor(current / total * 100 + 0.5)
+  local time   = (
+    formatSeconds(current)..
+    '  ('..percent..'%)'..
+    '\n'..
+    formatSeconds(total)
+  )
+  local info   = track..'\n'..album..'\n'..artist..'\n'..time
   alert.showOnly(info, 1.75, 20)
 end
 
