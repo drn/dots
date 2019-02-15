@@ -51,6 +51,7 @@ brew 'imagemagick@6', link: true
 brew 'irssi'
 brew 'jq'
 brew 'lua'
+brew 'luarocks'
 brew 'm-cli'
 brew 'macvim', args: ['--override-system-vim']
 brew 'mas'
