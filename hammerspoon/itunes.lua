@@ -40,7 +40,8 @@ function itunes.forward(delta)
   delta = delta or 10
   local updated = hs.itunes.getPosition() + delta
   hs.itunes.setPosition(updated)
-  message = (hs.itunes.getPosition() < math.floor(updated)) and ' ⇥' or ' → '..formatSeconds(updated)
+  local isNextSong = hs.itunes.getPosition() < math.floor(updated)
+  local message = isNextSong and ' ⇥' or ' → '..formatSeconds(updated)
   alert.showOnly(message)
 end
 
@@ -84,20 +85,25 @@ end
 
 function itunes.playpause()
   hs.itunes.playpause()
-  icon = hs.itunes.isPlaying() and ' ▶' or ' ◼'
+  local icon = hs.itunes.isPlaying() and ' ▶' or ' ◼'
   alert.showOnly(icon)
 end
 
 function itunes.display()
   if not hs.itunes.isRunning() then return end
-  artist = hs.itunes.getCurrentArtist() or ''
-  album  = hs.itunes.getCurrentAlbum() or ''
-  track  = hs.itunes.getCurrentTrack() or ''
-  current = hs.itunes.getPosition()
-  total   = duration()
-  percent = math.floor(current / total * 100 + 0.5)
-  time   = formatSeconds(current)..'  ('..percent..'%)'..'\n'..formatSeconds(total)
-  info   = track..'\n'..album..'\n'..artist..'\n'..time
+  local artist = hs.itunes.getCurrentArtist() or ''
+  local album  = hs.itunes.getCurrentAlbum() or ''
+  local track  = hs.itunes.getCurrentTrack() or ''
+  local current = hs.itunes.getPosition()
+  local total   = duration()
+  local percent = math.floor(current / total * 100 + 0.5)
+  local time   = (
+    formatSeconds(current)..
+    '  ('..percent..'%)'..
+    '\n'..
+    formatSeconds(total)
+  )
+  local info   = track..'\n'..album..'\n'..artist..'\n'..time
   alert.showOnly(info, 1.75)
 end
 
@@ -107,7 +113,7 @@ end
 
 function itunes.addToPlaylist(playlist)
   if not hs.itunes.isRunning() then return end
-  script = [[
+  local script = [[
     tell application "iTunes"
       set trackId to (persistent ID of current track)
       set result to (tracks of playlist "]]..playlist..[[" whose persistent ID is trackId)
@@ -121,7 +127,7 @@ function itunes.addToPlaylist(playlist)
   ]]
   local _ok, result = as.applescript(script)
   if result == 'true' then
-    track = tell('name of the current track as string') or ''
+    local track = tell('name of the current track as string') or ''
     alert.show(track..' → '..playlist)
   else
     alert.show('✓', 0.3)
