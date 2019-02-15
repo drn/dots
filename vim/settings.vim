@@ -68,6 +68,9 @@ set backspace=indent,eol,start
 set nofoldenable
 " share clipboard with system
 set clipboard=unnamed
+" decrease updatetime from default 4000ms. used for swp save and cursorhold
+" time (quick-scope)
+set updatetime=500
 
 " python interpreter paths
 let g:python_host_prog = $HOME . '/.pyenv/versions/neovim2/bin/python'
