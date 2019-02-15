@@ -94,6 +94,7 @@ Plug 'iamcco/markdown-preview.nvim', {
 \ 'for': 'markdown'
 \ }
 Plug 'udalov/kotlin-vim', { 'for': 'kotlin' }
+Plug 'fatih/vim-go', { 'for': 'go', 'do': ':GoUpdateBinaries' }
 
 " Auto-completion
 function! BuildYCM(info)
