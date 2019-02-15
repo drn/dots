@@ -1,38 +1,38 @@
 package log
 
 import (
-  "fmt"
-  "github.com/fatih/color"
-  "github.com/drn/dots/cli/path"
+	"fmt"
+	"github.com/drn/dots/cli/path"
+	"github.com/fatih/color"
 )
 
 // Action - Logs command in appropriate color
 func Action(output string, args ...interface{}) {
-  color.Magenta(output, args...)
+	color.Magenta(output, args...)
 }
 
 // Info - Logs info in appropriate color
 func Info(output string, args ...interface{}) {
-  color.Blue(output, args...)
+	color.Blue(output, args...)
 }
 
 // Success - Logs error in appropriate color
 func Success(output string, args ...interface{}) {
-  color.Green(output, args...)
+	color.Green(output, args...)
 }
 
 // Error - Logs error in appropriate color
 func Error(output string, args ...interface{}) {
-  color.Red(output, args...)
+	color.Red(output, args...)
 }
 
 // Warning - Logs warning in appropriate color
 func Warning(output string, args ...interface{}) {
-  color.Yellow(output, args...)
+	color.Yellow(output, args...)
 }
 
 // Command - Logs command in appropriate color
 func Command(output string, args ...interface{}) {
-  output = path.Pretty(fmt.Sprintf(output, args...))
-  color.White("%s %s", color.BlueString("❯"), output)
+	output = path.Pretty(fmt.Sprintf(output, args...))
+	color.White("%s %s", color.BlueString("❯"), output)
 }
