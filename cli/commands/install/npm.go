@@ -22,6 +22,7 @@ func (i Install) Npm() {
 		"neovim",
 		"fkill-cli",
 		"fx",
+		"fast-cli",
 	})
 }
 
