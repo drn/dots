@@ -16,6 +16,7 @@ var cmdSpinner = &cobra.Command{
 func init() {
 	cmdSpinner.AddCommand(cmdSpinnerBraille)
 	cmdSpinner.AddCommand(cmdSpinnerDots)
+	cmdSpinner.AddCommand(cmdSpinnerCircles)
 }
 
 var cmdSpinnerBraille = &cobra.Command{
@@ -23,6 +24,14 @@ var cmdSpinnerBraille = &cobra.Command{
 	Short: "Runs the braille spinner",
 	Run: func(cmd *cobra.Command, args []string) {
 		spinner.Braille()
+	},
+}
+
+var cmdSpinnerCircles = &cobra.Command{
+	Use:   "circles",
+	Short: "Runs the circles spinner",
+	Run: func(cmd *cobra.Command, args []string) {
+		spinner.Circles()
 	},
 }
 

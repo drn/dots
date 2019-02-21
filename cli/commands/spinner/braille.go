@@ -1,6 +1,6 @@
 package spinner
 
-// Braille - Runs a braille spinner
+// Braille - Runs the braille spinner
 func Braille() {
 	Spin([]rune{
 		'⠷',

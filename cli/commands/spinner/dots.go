@@ -1,11 +1,13 @@
 package spinner
 
-// Dots - Runs a dot spinner
+// Dots - Runs the dots spinner
 func Dots() {
 	Spin([]rune{
-		'༚',
-		'༛',
-		'༜',
-		'༛',
+		'·',
+		'⸫',
+		'⸬',
+		'⸭',
+		'⸬',
+		'⸫',
 	})
 }

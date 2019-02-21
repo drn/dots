@@ -12,7 +12,7 @@ func Spin(chars []rune) {
 	for {
 		char := chars[i]
 		fmt.Printf("\r%s", string(char))
-		time.Sleep(time.Second / 8)
+		time.Sleep(time.Second / 4)
 		i++
 		if i == length {
 			i = 0
