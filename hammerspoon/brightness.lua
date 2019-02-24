@@ -11,14 +11,14 @@ local function display(text, value)
 end
 
 function brightness.increase(delta)
-  delta = delta or 15
+  delta = delta or 5
   local value = hs.brightness.get() + delta
   hs.brightness.set(value)
   display(' ↑ ', value)
 end
 
 function brightness.decrease(delta)
-  delta = delta or 15
+  delta = delta or 5
   local value = hs.brightness.get() - delta
   hs.brightness.set(value)
   display(' ↓ ', value)
