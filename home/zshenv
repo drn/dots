@@ -33,6 +33,8 @@ if [ "$ZSHENV_SOURCED" != "true" ]; then
   export PATH=$GOPATH/bin:$PATH
   # Include binstubs in path
   export PATH=.bundle/bin:$PATH
+  # Set $ANDROID_HOME
+  export ANDROID_HOME=$HOME/Library/Android/sdk
   # Set default Postgres host and port
   export PGHOST=localhost
   export PGPORT=5432
