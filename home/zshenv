@@ -35,6 +35,8 @@ if [ "$ZSHENV_SOURCED" != "true" ]; then
   export PATH=.bundle/bin:$PATH
   # Set $ANDROID_HOME
   export ANDROID_HOME=$HOME/Library/Android/sdk
+  # Set $JAVA_HOME
+  export JAVA_HOME=$(/usr/libexec/java_home -v 1.8)
   # Set default Postgres host and port
   export PGHOST=localhost
   export PGPORT=5432
