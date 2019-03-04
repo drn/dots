@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# Check the weather
+
+curl wttr.in
