@@ -48,6 +48,7 @@ Plug 'SirVer/ultisnips'
 Plug 'ervandew/supertab'
 Plug 'ryanoasis/vim-devicons'
 Plug 'unblevable/quick-scope'
+Plug 'rbong/vim-flog', { 'on': [ 'Flog', 'Flogsplit' ] }
 
 " Lazy-load plugins
 Plug 'scrooloose/nerdtree', { 'on': [ 'NERDTreeToggle', 'NERDTreeFind' ] }
