@@ -13,7 +13,9 @@ let g:ale_linters = {
 \}
 
 " Disable ale in CtrlP buffers
-au BufEnter ControlP let b:ale_enabled = 0
+let g:ale_pattern_options = {
+\ 'ControlP': {'ale_enabled': 0},
+\}
 
 " Disable ale by default in scratch-pad
 au BufEnter scratch-pad :ALEDisable
