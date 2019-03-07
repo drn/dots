@@ -151,3 +151,8 @@ command! Gcopy call Gcopy()
 command! Gc call Gcopy()
 
 command! Gb Gblame
+
+function! Gitk()
+  call system('gitk ' . expand("%:p"))
+endfunction
+command! Gitk call Gitk()
