@@ -7,6 +7,7 @@ Managed by a robust, extensible Go CLI.
 * * *
 
 [![CircleCI](https://circleci.com/gh/drn/dots.svg?style=svg)](https://circleci.com/gh/drn/dots)
+[![Go Report Card](https://goreportcard.com/badge/github.com/drn/dots)](https://goreportcard.com/report/github.com/drn/dots)
 
 ![](screenshot.png)
 
