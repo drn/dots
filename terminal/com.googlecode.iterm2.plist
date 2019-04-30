@@ -696,6 +696,13 @@
 			<key>Text</key>
 			<string></string>
 		</dict>
+		<key>0x3b-0x180000</key>
+		<dict>
+			<key>Action</key>
+			<integer>13</integer>
+			<key>Text</key>
+			<string></string>
+		</dict>
 		<key>0x3b-0x1c0000</key>
 		<dict>
 			<key>Action</key>
