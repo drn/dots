@@ -48,6 +48,7 @@ brew 'gradle'
 brew 'heroku-toolbelt'
 brew 'hr'
 brew 'hub'
+brew 'hyperfine'
 brew 'imagemagick@6', link: true
 brew 'irssi'
 brew 'jq'
