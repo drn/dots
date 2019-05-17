@@ -15,6 +15,7 @@ fi
 
 # list of ip retrieval services
 services=(
+  ifconfig.co
   bot.whatismyipaddress.com
   ipv4.icanhazip.com
   ipecho.net/plain
