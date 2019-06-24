@@ -23,6 +23,7 @@ func (i Install) Npm() {
 		"fkill-cli",
 		"fx",
 		"fast-cli",
+		"catj",
 	})
 }
 
