@@ -123,6 +123,7 @@
   rbc = rebase --continue
   rba = rebase --abort
   rf = refetch-tags
+  cf = clean --force
 
 [user]
   name = Darren Cheng
