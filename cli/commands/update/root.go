@@ -17,6 +17,7 @@ func Run() {
 
 	updateZsh()
 	updateBrew()
+	updateSolargraph()
 	rehashRbenv()
 	rehashPyenv()
 	install.Call("vim")
@@ -44,6 +45,11 @@ func updateBrew() {
 	log.Info("Updating Homebrew and outdated packages")
 	run.Verbose("brew update")
 	run.Verbose("brew upgrade")
+}
+
+func updateSolargraph() {
+	log.Info("Updating solargraph gem")
+	run.Verbose("gem update solargraph")
 }
 
 func rehashRbenv() {
