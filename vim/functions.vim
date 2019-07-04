@@ -102,6 +102,7 @@ function Strip(string)
   return substitute(a:string, '\n', '', '')
 endfunction
 
+" Return the Github URL of the current repository
 function GitRepoUrl()
   let url = system("git config --get remote.upstream.url")
   if url == ""
@@ -110,6 +111,8 @@ function GitRepoUrl()
   return substitute(Strip(url), '\.git$', '', '')
 endfunction
 
+" Return the current line number if the format '#L'. Return an empty string
+" if on the first line of the file.
 function LineSuffix()
   let line = line('.')
   if line == 1
@@ -119,6 +122,7 @@ function LineSuffix()
   endif
 endfunction
 
+" Return full Github URL of the current file on the current line
 function GitUrl()
   " determine relative file path
   let filepath = expand("%:p")
@@ -134,6 +138,7 @@ function GitUrl()
   endif
 endfunction
 
+" Opens the GitUrl() in a browser
 function! Gopen()
   let url = GitUrl()
   call system('open ' . url)
@@ -142,6 +147,7 @@ endfunction
 command! Gopen call Gopen()
 command! Go call Gopen()
 
+" Copies the GitUrl() to the clipboard
 function! Gcopy()
   let url = GitUrl()
   call system('echo ' . url . ' | pbcopy')
@@ -150,8 +156,10 @@ endfunction
 command! Gcopy call Gcopy()
 command! Gc call Gcopy()
 
+" Alias Gb to Gblame
 command! Gb Gblame
 
+" Open gitk to the current file
 function! Gitk()
   call system('gitk ' . expand("%:p"))
 endfunction
