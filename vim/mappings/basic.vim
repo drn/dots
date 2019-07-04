@@ -12,8 +12,6 @@ nnoremap <silent> mn :execute "normal! hnd" . strlen(@/) . "l"<cr>
 nnoremap <leader>C :%s//
 " Quick replace after cursor
 nnoremap <leader>c :.,$s//
-" Break long string before 80
-nnoremap <leader>b 77<Bar>i''<Esc>i<Return><Esc>kA\<Esc>j
 " Delete from beggining of current line to end of last
 nnoremap <silent> B ^d0i<BS>
 " Redraw screen mapping
