@@ -183,3 +183,28 @@ function! Gitk()
   call system('gitk ' . expand("%:p"))
 endfunction
 command! Gitk call Gitk()
+
+" Toggles Gemfile Nucleus branch between master and branch
+function! NucleusReplace()
+  let l:filename = expand('%:t')
+  " only trigger for Gemfile
+  if l:filename != 'Gemfile' | return | endif
+  " search for NUCLEUS_BRANCH line number
+  let l:line = search('NUCLEUS_BRANCH', 'n')
+  if l:line == 0 | return | endif
+  " git branch and strip whitespace
+  let l:branch = system('echo -n "$(git rev-parse --abbrev-ref HEAD 2>/dev/null)"')
+  " determine new line contents
+  let l:contents = getline(l:line)
+  let l:current = 'master'
+  let l:adjustment = l:branch
+  if l:contents !~ 'master'
+    let l:current = l:branch
+    let l:adjustment = 'master'
+  endif
+  let l:contents = substitute(l:contents, l:current, l:adjustment, '')
+  " change line contents
+  echo 'Switching Nucleus from "' . l:current . '" to "' . l:adjustment . '"'
+  call setline(l:line, l:contents)
+endfunction
+command! Nr call NucleusReplace()
