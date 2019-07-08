@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+tap 'jesseduffield/lazydocker'
+
 # casks
 cask '1password'
 cask 'android-studio'
@@ -51,6 +53,7 @@ brew 'hyperfine'
 brew 'imagemagick@6', link: true
 brew 'irssi'
 brew 'jq'
+brew 'lazydocker'
 brew 'lua'
 brew 'luarocks'
 brew 'm-cli'
