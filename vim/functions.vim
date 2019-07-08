@@ -111,14 +111,33 @@ function GitRepoUrl()
   return substitute(Strip(url), '\.git$', '', '')
 endfunction
 
+" Return the github line suffix of a standard file
+function LineSuffixStandard()
+  let line = line('.')
+  if line == 1 | return '' | endif
+  return '#L' . line
+endfunction
+
+" Return the github line suffix of a markdown file
+function LineSuffixMarkdown()
+  " backsearch to identify matching titles without changing cursor position
+  let line = search('^#\{1,4} .*$', 'bn')
+  if line == 0 | return '' | endif
+  let contents = tolower(getline(line))
+  " replace leading #s
+  let l:key = substitute(contents, '^#\{1,4} ', '', '')
+  " replace spaces with -s
+  let l:key = substitute(l:key, ' ', '-', 'g')
+  return '#' . l:key
+endfunction
+
 " Return the current line number if the format '#L'. Return an empty string
 " if on the first line of the file.
 function LineSuffix()
-  let line = line('.')
-  if line == 1
-    return ''
+  if &filetype == 'markdown'
+    return LineSuffixMarkdown()
   else
-    return '#L' . line
+    return LineSuffixStandard()
   endif
 endfunction
 
