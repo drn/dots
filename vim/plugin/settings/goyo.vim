@@ -1,1 +1,1 @@
-noremap <silent> <leader>z :Goyo<cr>
+noremap <silent> <leader>, :Goyo<cr>
