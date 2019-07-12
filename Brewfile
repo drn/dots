@@ -35,6 +35,7 @@ cask 'zeplin'
 
 # formulae
 brew 'bat'
+brew 'cloc'
 brew 'cmake'
 brew 'coreutils'
 brew 'cv'
