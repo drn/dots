@@ -139,9 +139,6 @@ hs.hotkey.bind({'ctrl', 'cmd'}, 'down', function()
 end, nil, function()
   volume.decrease(2)
 end)
-hs.hotkey.bind({'ctrl', 'cmd'}, 'return', function()
-  volume.balance()
-end)
 
 -- Brightness Bindings
 

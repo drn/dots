@@ -22,13 +22,13 @@ local function display(text)
   end
 end
 
--- Display current audio device balance
-function volume.balance()
+local function normalizeBalance()
   local device = hs.audiodevice.defaultOutputDevice()
-  alert.show('Balance: '..device:balance())
+  device:setBalance(0.5)
 end
 
 function volume.increase(delta)
+  normalizeBalance()
   delta = delta or 6
   local device = hs.audiodevice.defaultOutputDevice()
   device:setVolume(device:volume() + delta)
@@ -39,6 +39,7 @@ function volume.increase(delta)
 end
 
 function volume.decrease(delta)
+  normalizeBalance()
   delta = delta or 6
   local device = hs.audiodevice.defaultOutputDevice()
   device:setVolume(device:volume() - delta)
