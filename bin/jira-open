@@ -2,6 +2,7 @@
 
 branch = ARGV[0]
 branch = `git rev-parse --abbrev-ref HEAD`.strip if branch.nil?
+branch = branch.delete('.')
 
 decorated = "\e[97m#{branch}\e[0m"
 if branch =~ /^[A-Z][A-Z]-\d+/
