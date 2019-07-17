@@ -16,22 +16,24 @@ colorscheme jellybeans
 
 
 """ Configure UI """
-
-" sign column highlight should be clear
-highlight clear SignColumn
-" highlight and color the current line
-set cursorline
-highlight CursorLine guibg=#000070 ctermbg=17
-" configure and color the cursor
-set guicursor=n-v-c:blinkwait500-blinkoff500-blinkon500
-highlight Cursor guibg=#C92765 ctermbg=161
-" configure and color the color column
-if exists('+colorcolumn')
-  set colorcolumn=80
-  hi ColorColumn guibg=#444444
-else
-  au BufWinEnter * let w:m2=matchadd('ErrorMsg', '\%>80v.\+', -1)
-endif
+function! ConfigureUI()
+  " sign column highlight should be clear
+  highlight clear SignColumn
+  " highlight and color the current line
+  set cursorline
+  highlight CursorLine guibg=#000070 ctermbg=17
+  " configure and color the cursor
+  set guicursor=n-v-c:blinkwait500-blinkoff500-blinkon500
+  highlight Cursor guibg=#C92765 ctermbg=161
+  " configure and color the color column
+  if exists('+colorcolumn')
+    set colorcolumn=80
+    hi ColorColumn guibg=#444444
+  else
+    au BufWinEnter * let w:m2=matchadd('ErrorMsg', '\%>80v.\+', -1)
+  endif
+endfunction
+call ConfigureUI()
 
 " make inactive splits more obvious
 augroup ObviousInactiveSplit
