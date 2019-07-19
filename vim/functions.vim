@@ -180,7 +180,7 @@ command! Gb Gblame
 
 " Open gitk to the current file
 function! Gitk()
-  call system('gitk ' . expand("%:p"))
+  call system('gitk ' . expand("%:p") . '&')
 endfunction
 command! Gitk call Gitk()
 
