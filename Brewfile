@@ -34,6 +34,7 @@ cask 'yujitach-menumeters'
 cask 'zeplin'
 
 # formulae
+brew 'amazon-ecs-cli'
 brew 'bat'
 brew 'cloc'
 brew 'cmake'
