@@ -103,7 +103,7 @@ Plug 'udalov/kotlin-vim', { 'for': 'kotlin' }
 Plug 'fatih/vim-go', { 'for': 'go', 'do': ':GoUpdateBinaries' }
 
 " Auto-completion
-Plug 'neoclide/coc.nvim', {'tag': '*', 'do': './install.sh'}
+Plug 'neoclide/coc.nvim', { 'branch': 'release', 'tag': '*' }
 
 " Non-neovim plugins
 if $MYVIMRC !~ 'nvimrc'
