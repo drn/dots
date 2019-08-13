@@ -5,6 +5,7 @@ tap 'jesseduffield/lazydocker'
 # casks
 cask '1password'
 cask 'android-studio'
+cask 'box-drive'
 cask 'cyberduck'
 cask 'dash'
 cask 'discord'
