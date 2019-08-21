@@ -56,7 +56,7 @@ Plug 'junegunn/goyo.vim'
 
 " Lazy-load plugins
 Plug 'scrooloose/nerdtree', { 'on': [ 'NERDTreeToggle', 'NERDTreeFind' ] }
-Plug 'sjl/gundo.vim', { 'on': 'GundoToggle' }
+Plug 'mbbill/undotree', { 'on': 'UndotreeToggle' }
 Plug 'mileszs/ack.vim', { 'on': 'Ack' }
 Plug 'airblade/vim-gitgutter', { 'on': 'GitGutterToggle' }
 Plug 'derekwyatt/vim-fswitch', { 'on': 'FSHere' }
