@@ -58,6 +58,7 @@ brew 'imagemagick@6', link: true
 brew 'irssi'
 brew 'jq'
 brew 'lazydocker'
+brew 'lftp'
 brew 'lua'
 brew 'luarocks'
 brew 'm-cli'
