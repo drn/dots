@@ -86,7 +86,6 @@ brew 'ruby-build'
 brew 'telnet'
 brew 'terminal-notifier'
 brew 'tfenv'
-brew 'the_silver_searcher'
 brew 'tig'
 brew 'tldr'
 brew 'tmux', args: ['--HEAD']
