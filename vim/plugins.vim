@@ -27,7 +27,7 @@ Plug 'noprompt/vim-yardoc'
 Plug 'ConradIrwin/vim-bracketed-paste'
 Plug 'junegunn/vim-peekaboo'
 Plug 'junegunn/vim-oblique'
-Plug 'w0rp/ale'
+Plug 'dense-analysis/ale'
 " vim-oblique dependency
 Plug 'junegunn/vim-pseudocl'
 " not lazyloaded to ensure ruby configuration is preloaded
