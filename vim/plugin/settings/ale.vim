@@ -10,7 +10,7 @@ let g:ale_linters = {
 \ 'eruby': [],
 \ 'javascript': ['eslint', 'flow', 'prettier'],
 \ 'ruby': ['ruby', 'rubocop'],
-\ 'terraform': ['terraform']
+\ 'terraform': ['terraform', 'tflint']
 \}
 
 " Disable ale in CtrlP buffers
