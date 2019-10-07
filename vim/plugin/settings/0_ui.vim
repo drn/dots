@@ -33,6 +33,8 @@ function! ConfigureUI()
   else
     au BufWinEnter * let w:m2=matchadd('ErrorMsg', '\%>80v.\+', -1)
   endif
+  " configure identifier color (CtrlP matching)
+  highlight CtrlPMatch guifg=#E94785 ctermfg=161
 endfunction
 call ConfigureUI()
 

@@ -12,8 +12,6 @@ let g:ctrlp_custom_ignore = {
   \ }
 let g:ctrlp_max_height = 20
 let g:ctrlp_max_files = 0
-" configure identifier color (CtrlP matching)
-highlight CtrlPMatch guifg=#E94785 ctermfg=161
 " add ctrlp-funky as an extension
 let g:ctrlp_extensions = ['funky']
 " allow ctrlp to close dirvish buffer
