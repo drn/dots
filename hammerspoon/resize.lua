@@ -88,27 +88,18 @@ function resize.center()
 end
 
 function resize.changeScreen()
+  -- ensure current window exists
   local win = hs.window.focusedWindow()
   if win == nil then return end
+  -- ensure current window screen exists
   local current = win:screen()
   if current == nil then return end
+  -- exit if only one screen exists
   local next = current:next()
   if current:id() == next:id() then return end
-
-  local win = hs.window.focusedWindow()
-  if isIterm(win) and not win:isStandard() then
-    win:toggleFullScreen()
-  end
-
+  -- set the frame of current window to the next screen
   local win = hs.window.focusedWindow()
   win:setFrame(next:fullFrame(), 0)
-
-  local win = hs.window.focusedWindow()
-  if isIterm(win) and win:isStandard() then
-    win:toggleFullScreen()
-  else
-    resize.center()
-  end
 end
 
 return resize
