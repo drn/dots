@@ -63,6 +63,7 @@ references:
       - run:
           name: Running Command
           command: eval $COMMAND
+          no_output_timeout: 30m
 
 jobs:
   build:
