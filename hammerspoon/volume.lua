@@ -18,7 +18,7 @@ local function display(text)
   alert.show(text..math.floor(device:volume() + 0.5)..'% '..icon)
   local name = device:name()
   if name ~= "Built-in Output" then
-    alert.show(' '..name, 0.5, 12)
+    alert.show('   '..name, 0.5, 12)
   end
 end
 
