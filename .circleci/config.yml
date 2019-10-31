@@ -2,6 +2,9 @@ version: 2
 
 references:
 
+  xcode_version: &xcode_version
+    xcode: 11.1.0
+
   ## Install Steps
 
   install_golang: &install_golang
@@ -68,7 +71,7 @@ references:
 jobs:
   build:
     macos:
-      xcode: 9.2.0
+      *xcode_version
     steps:
       - checkout
       - *restore_brew
@@ -87,98 +90,98 @@ jobs:
 
   install-bin:
     macos:
-      xcode: 9.2.0
+      *xcode_version
     environment:
       COMMAND: 'dots install bin'
     <<: *dots_steps
 
   install-git:
     macos:
-      xcode: 9.2.0
+      *xcode_version
     environment:
       COMMAND: 'dots install git'
     <<: *dots_steps
 
   install-home:
     macos:
-      xcode: 9.2.0
+      *xcode_version
     environment:
       COMMAND: 'dots install home'
     <<: *dots_steps
 
   install-zsh:
     macos:
-      xcode: 9.2.0
+      *xcode_version
     environment:
       COMMAND: 'dots install zsh'
     <<: *dots_steps
 
   install-fonts:
     macos:
-      xcode: 9.2.0
+      *xcode_version
     environment:
       COMMAND: 'dots install fonts'
     <<: *dots_steps
 
   install-homebrew:
     macos:
-      xcode: 9.2.0
+      *xcode_version
     environment:
       COMMAND: 'dots install homebrew'
     <<: *dots_steps
 
   install-npm:
     macos:
-      xcode: 9.2.0
+      *xcode_version
     environment:
       COMMAND: 'dots install npm'
     <<: *dots_steps
 
   install-vim:
     macos:
-      xcode: 9.2.0
+      *xcode_version
     environment:
       COMMAND: 'dots install vim'
     <<: *dots_steps
 
   install-python:
     macos:
-      xcode: 9.2.0
+      *xcode_version
     environment:
       COMMAND: 'dots install python'
     <<: *dots_steps
 
   install-ruby:
     macos:
-      xcode: 9.2.0
+      *xcode_version
     environment:
       COMMAND: 'dots install ruby'
     <<: *dots_steps
 
   install-hammerspoon:
     macos:
-      xcode: 9.2.0
+      *xcode_version
     environment:
       COMMAND: 'dots install hammerspoon'
     <<: *dots_steps
 
   install-osx:
     macos:
-      xcode: 9.2.0
+      *xcode_version
     environment:
       COMMAND: 'dots install osx'
     <<: *dots_steps
 
   update:
     macos:
-      xcode: 9.2.0
+      *xcode_version
     environment:
       COMMAND: 'dots update'
     <<: *dots_steps
 
   cleanup:
     macos:
-      xcode: 9.2.0
+      *xcode_version
     environment:
       COMMAND: 'dots cleanup'
     <<: *dots_steps
