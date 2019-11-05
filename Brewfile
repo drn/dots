@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 tap 'jesseduffield/lazydocker'
+tap 'heroku/brew'
 
 # casks
 cask '1password'
@@ -52,7 +53,7 @@ brew 'go'
 brew 'gource'
 brew 'gradle'
 brew 'grpcurl'
-brew 'heroku-toolbelt'
+brew 'heroku'
 brew 'hr'
 brew 'hub'
 brew 'hyperfine'
