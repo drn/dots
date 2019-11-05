@@ -8,6 +8,7 @@ augroup filetypedetect
   au BufRead,BufNewFile Fastfile set filetype=ruby
   au BufRead,BufNewFile *_spec.rb set filetype=ruby.rspec
   au BufRead,BufNewFile *.keras set filetype=python
+  au BufNewFile,BufRead *.tsx set filetype=typescript
 augroup END
 
 " trim all whitespace on save
