@@ -100,6 +100,7 @@ Plug 'iamcco/markdown-preview.nvim', {
 \ }
 Plug 'udalov/kotlin-vim', { 'for': 'kotlin' }
 Plug 'fatih/vim-go', { 'for': 'go', 'do': ':GoUpdateBinaries' }
+Plug 'leafgarland/typescript-vim', { 'for': 'typescript' }
 
 " Auto-completion
 Plug 'neoclide/coc.nvim', { 'branch': 'release', 'tag': '*' }
