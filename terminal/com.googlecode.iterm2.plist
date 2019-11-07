@@ -1761,7 +1761,7 @@
 			<key>Non-ASCII Anti Aliased</key>
 			<true/>
 			<key>Normal Font</key>
-			<string>MenloNerdFontComplete-Regular 14</string>
+			<string>HackNerdFontComplete-Regular 14</string>
 			<key>Only The Default BG Color Uses Transparency</key>
 			<true/>
 			<key>Option Key Sends</key>
@@ -2703,19 +2703,32 @@
 	</array>
 	<key>NoSyncAllAppVersions</key>
 	<array>
-		<string>3.3.2</string>
-		<string>3.2.9</string>
-		<string>3.3.1</string>
+		<string>3.3.6</string>
 		<string>3.3.4</string>
-		<string>3.3.0</string>
+		<string>3.3.1</string>
 		<string>3.3.3</string>
+		<string>3.3.5</string>
+		<string>3.3.0</string>
+		<string>3.2.9</string>
+		<string>3.3.2</string>
+	</array>
+	<key>NoSyncBFPFavorites</key>
+	<array>
+		<string>Menlo Nerd Font</string>
+		<string>Hack Nerd Font</string>
+	</array>
+	<key>NoSyncBFPRecents</key>
+	<array>
+		<string>Menlo Nerd Font</string>
+		<string>Hack Nerd Font</string>
+		<string>Hack</string>
 	</array>
 	<key>NoSyncFrame_SharedPreferences</key>
 	<dict>
 		<key>screenFrame</key>
 		<string>{{0, 0}, {1440, 900}}</string>
 		<key>topLeft</key>
-		<string>{398, 727}</string>
+		<string>{152, 744}</string>
 	</dict>
 	<key>NoSyncHaveRequestedFullDiskAccess</key>
 	<true/>
@@ -2726,7 +2739,7 @@
 	<key>NoSyncInstallationId</key>
 	<string>337B29AD-9CB9-4829-9A71-071E47A05FB7</string>
 	<key>NoSyncLaunchExperienceControllerRunCount</key>
-	<integer>206</integer>
+	<integer>336</integer>
 	<key>NoSyncNextAnnoyanceTime</key>
 	<real>586575228.51881695</real>
 	<key>NoSyncOnboardingWindowHasBeenShown</key>
@@ -3236,9 +3249,25 @@
 			</dict>
 			<dict>
 				<key>isTerminal</key>
+				<false/>
+				<key>name</key>
+				<string>title</string>
+				<key>nonterminalContext</key>
+				<integer>1</integer>
+			</dict>
+			<dict>
+				<key>isTerminal</key>
 				<true/>
 				<key>name</key>
 				<string>tmuxWindowTitle</string>
+				<key>nonterminalContext</key>
+				<integer>0</integer>
+			</dict>
+			<dict>
+				<key>isTerminal</key>
+				<true/>
+				<key>name</key>
+				<string>title</string>
 				<key>nonterminalContext</key>
 				<integer>0</integer>
 			</dict>
@@ -3509,7 +3538,7 @@
 	<key>SUHasLaunchedBefore</key>
 	<true/>
 	<key>SULastCheckTime</key>
-	<date>2019-10-02T20:23:57Z</date>
+	<date>2019-11-07T01:42:53Z</date>
 	<key>SUSendProfileInfo</key>
 	<false/>
 	<key>SUUpdateRelaunchingMarker</key>
@@ -3577,7 +3606,7 @@
 	<key>findRegex_iTerm</key>
 	<false/>
 	<key>iTerm Version</key>
-	<string>3.3.4</string>
+	<string>3.3.6</string>
 	<key>kCPKSelectionViewPreferredModeKey</key>
 	<integer>7</integer>
 	<key>kCPKSelectionViewShowHSBTextFieldsKey</key>
