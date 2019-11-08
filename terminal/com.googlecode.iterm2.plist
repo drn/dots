@@ -717,6 +717,13 @@
 			<key>Text</key>
 			<string></string>
 		</dict>
+		<key>0x43-0x120000</key>
+		<dict>
+			<key>Action</key>
+			<integer>13</integer>
+			<key>Text</key>
+			<string></string>
+		</dict>
 		<key>0x44-0x120000</key>
 		<dict>
 			<key>Action</key>
