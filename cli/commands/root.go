@@ -20,6 +20,7 @@ func addCommands() {
 	root.AddCommand(cmdCleanup)
 	root.AddCommand(cmdDoctor)
 	root.AddCommand(cmdSpinner)
+	root.AddCommand(cmdDocker)
 }
 
 // Execute - Starts the CLI.
