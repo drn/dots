@@ -71,6 +71,8 @@ set clipboard=unnamed
 " decrease updatetime from default 4000ms. used for swp save and cursorhold
 " time (quick-scope)
 set updatetime=500
+" Increase max memory allowed for pattern matching (in Kbyte)
+set maxmempattern=10000
 
 " python interpreter paths
 let g:python_host_prog = $HOME . '/.pyenv/versions/neovim2/bin/python'
