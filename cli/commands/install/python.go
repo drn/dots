@@ -16,10 +16,10 @@ func (i Install) Python() {
 
 	log.Info("Installing python versions")
 	run.Verbose("pyenv install 2.7.11 -s")
-	run.Verbose("pyenv install 3.4.4 -s")
+	run.Verbose("pyenv install 3.7.1 -s")
 	log.Info("Creating pyenv virtualenvs")
 	run.Verbose("pyenv virtualenv 2.7.11 neovim2 || true")
-	run.Verbose("pyenv virtualenv 3.4.4 neovim3 || true")
+	run.Verbose("pyenv virtualenv 3.7.1 neovim3 || true")
 
 	log.Info("Installing python2 neovim dependencies")
 	neovim2 := "eval \"$(pyenv init -)\" && pyenv shell neovim2"
