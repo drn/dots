@@ -1,8 +1,12 @@
 package commands
 
 import (
+	"fmt"
+	spin "github.com/briandowns/spinner"
 	"github.com/drn/dots/cli/commands/spinner"
+	. "github.com/logrusorgru/aurora"
 	"github.com/spf13/cobra"
+	"time"
 )
 
 var cmdSpinner = &cobra.Command{
@@ -17,6 +21,7 @@ func init() {
 	cmdSpinner.AddCommand(cmdSpinnerBraille)
 	cmdSpinner.AddCommand(cmdSpinnerDots)
 	cmdSpinner.AddCommand(cmdSpinnerCircles)
+	cmdSpinner.AddCommand(cmdSpinnerConsole)
 }
 
 var cmdSpinnerBraille = &cobra.Command{
@@ -40,5 +45,29 @@ var cmdSpinnerDots = &cobra.Command{
 	Short: "Runs the dots spinner",
 	Run: func(cmd *cobra.Command, args []string) {
 		spinner.Dots()
+	},
+}
+
+var cmdSpinnerConsole = &cobra.Command{
+	Use:   "console",
+	Short: "Runs the console spinner",
+	Run: func(cmd *cobra.Command, args []string) {
+		s := spin.New(spin.CharSets[11], 75*time.Millisecond)
+		s.Color("magenta")
+		s.Prefix = fmt.Sprintf(
+			"Running %s on %s (%s)... ",
+			BrightCyan("console"),
+			Blue("⬢ thanx-ordering"),
+			BrightMagenta("sandbox"),
+		)
+		s.Start()
+		time.Sleep(2 * time.Second)
+		s.Suffix = " connecting, run.3734 (...)"
+		time.Sleep(2 * time.Second)
+		s.Suffix = " up, run.3734 (...)"
+		time.Sleep(2 * time.Second)
+		s.Stop()
+		fmt.Println(s.Prefix)
+		fmt.Println("...")
 	},
 }
