@@ -216,7 +216,7 @@ jobs:
           command: go get -u golang.org/x/lint/golint
       - run:
           name: Go Lint
-          command: golint -set_exit_status ./...
+          command: golint ./...
 
 workflows:
   version: 2
