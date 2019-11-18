@@ -73,6 +73,10 @@ set clipboard=unnamed
 set updatetime=500
 " Increase max memory allowed for pattern matching (in Kbyte)
 set maxmempattern=10000
+" enable live subsitution
+if exists('&inccommand')
+  set inccommand=split
+endif
 
 " python interpreter paths
 let g:python_host_prog = $HOME . '/.pyenv/versions/neovim2/bin/python'
