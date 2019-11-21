@@ -72,7 +72,7 @@ brew 'neofetch'
 brew 'neovim'
 brew 'npm'
 brew 'octave', args: ['--with-qt5']
-brew 'openssl'
+brew 'libressl'
 brew 'phantomjs'
 brew 'pipenv'
 brew 'postgresql'
