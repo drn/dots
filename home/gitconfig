@@ -118,6 +118,7 @@
   ta = tag-after
   rpu = remote prune upstream
   rpo = remote prune origin
+  rp = !"git remote prune upstream 2>/dev/null || git remote prune origin"
   expire = reflog expire --expire-unreachable=now --all
   mt = mergetool
   rbc = rebase --continue
