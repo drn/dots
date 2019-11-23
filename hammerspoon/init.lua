@@ -169,7 +169,7 @@ hs.pathwatcher.new(os.getenv('HOME') .. '/.hammerspoon/', reloadConfig):start()
 
 -- Watch for Screen changes
 
-screen.watch()
+-- screen.watch()
 
 -- Set default alert styles
 
