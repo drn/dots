@@ -44,13 +44,13 @@ end
 
 local bindings = {
   [{ 'cmd', 'alt', 'shift'}] = {
-    iTerm      = 'i',
-    Safari     = 'return',
-    Messages   = 'n',
-    Slack      = 'm',
-    Discord    = 'j',
-    Wunderlist = "'",
-    MacVim     = '.'
+    iTerm                 = 'i',
+    Safari                = 'return',
+    Messages              = 'n',
+    Slack                 = 'm',
+    Discord               = 'j',
+    [ "Microsoft To Do" ] = "'",
+    MacVim                = '.'
   },
   [{ 'cmd', 'shift'}] = {
     [ 'Superhuman' ] = '/'
