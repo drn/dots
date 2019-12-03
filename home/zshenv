@@ -55,4 +55,9 @@ if [ "$ZSHENV_SOURCED" != "true" ]; then
   export LDFLAGS="${LDFLAGS} -L/usr/local/opt/libressl/lib"
   export CPPFLAGS="${CPPFLAGS} -I/usr/local/opt/libressl/include"
   export PKG_CONFIG_PATH="${PKG_CONFIG_PATH} /usr/local/opt/libressl/lib/pkgconfig"
+  # Ensure libxml2 is in path
+  export PATH="/usr/local/opt/libxml2/bin:$PATH"
+  export LDFLAGS="${LDFLAGS} -L/usr/local/opt/libxml2/lib"
+  export CPPFLAGS="${CPPFLAGS} -I/usr/local/opt/libxml2/include"
+  export PKG_CONFIG_PATH="${PKG_CONFIG_PATH} /usr/local/opt/libxml2/lib/pkgconfig"
 fi

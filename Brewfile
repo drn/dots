@@ -73,6 +73,7 @@ brew 'neovim'
 brew 'npm'
 brew 'octave', args: ['--with-qt5']
 brew 'libressl'
+brew 'libxml2'
 brew 'phantomjs'
 brew 'pipenv'
 brew 'postgresql'
