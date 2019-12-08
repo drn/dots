@@ -53,6 +53,7 @@ Plug 'rbong/vim-flog', { 'on': [ 'Flog', 'Flogsplit' ] }
 Plug 'wellle/targets.vim'
 " distraction-free writing
 Plug 'junegunn/goyo.vim'
+Plug 'rrethy/vim-hexokinase', { 'do': 'make hexokinase' }
 
 " Lazy-load plugins
 Plug 'scrooloose/nerdtree', { 'on': [ 'NERDTreeToggle', 'NERDTreeFind' ] }
