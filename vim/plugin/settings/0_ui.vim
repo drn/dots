@@ -1,7 +1,7 @@
 """ Jellybeans.vim Colorscheme """
 
 let g:jellybeans_use_lowcolor_black = 0
-let g:jellybeans_background_color = "151535"
+let g:jellybeans_background_color = "#151535"
 let g:jellybeans_background_color_256 = "none"
 let g:jellybeans_overrides = {
 \  'Todo': {

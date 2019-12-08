@@ -77,6 +77,8 @@ set maxmempattern=10000
 if exists('&inccommand')
   set inccommand=split
 endif
+" enables 24-bit RGB color. uses gui attributes instead of cterm attributes
+set termguicolors
 
 " python interpreter paths
 let g:python_host_prog = $HOME . '/.pyenv/versions/neovim2/bin/python'
