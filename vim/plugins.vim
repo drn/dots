@@ -54,6 +54,8 @@ Plug 'wellle/targets.vim'
 " distraction-free writing
 Plug 'junegunn/goyo.vim'
 Plug 'rrethy/vim-hexokinase', { 'do': 'make hexokinase' }
+" auto-close parentheses
+Plug 'cohama/lexima.vim'
 
 " Lazy-load plugins
 Plug 'scrooloose/nerdtree', { 'on': [ 'NERDTreeToggle', 'NERDTreeFind' ] }
