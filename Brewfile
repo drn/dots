@@ -37,6 +37,7 @@ cask 'yujitach-menumeters'
 # formulae
 brew 'amazon-ecs-cli'
 brew 'bat'
+brew 'chafa'
 brew 'cloc'
 brew 'cmake'
 brew 'coreutils'
