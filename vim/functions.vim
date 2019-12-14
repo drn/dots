@@ -208,3 +208,9 @@ function! NucleusReplace()
   call setline(l:line, l:contents)
 endfunction
 command! Nr call NucleusReplace()
+
+au BufRead *.gif,*.png,*.jpg,*.jpeg :call DisplayImage()
+function! DisplayImage()
+  let filepath = expand('%:p')
+  bd! | enew | call termopen("chafa \"" . filepath . "\"")
+endfunction
