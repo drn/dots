@@ -33,7 +33,8 @@ let g:lightline = {
 \     'fileencoding': 'LightlineFileencoding',
 \     'ctrlp': 'LightlineCtrlP',
 \     'mode': 'LightlineMode',
-\     'zoompane': 'LightlineZoomPaneIndicator'
+\     'zoompane': 'LightlineZoomPaneIndicator',
+\     'percent': 'LightlinePercentIndicator'
 \   },
 \   'component_expand': {
 \     'linter_checking': 'lightline#ale#checking',
