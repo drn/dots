@@ -54,6 +54,8 @@ Plug 'junegunn/goyo.vim'
 Plug 'rrethy/vim-hexokinase', { 'do': 'make hexokinase' }
 " auto-close parentheses
 Plug 'cohama/lexima.vim'
+" auto-highlight other * matches
+Plug 'RRethy/vim-illuminate'
 
 " Lazy-load plugins
 Plug 'scrooloose/nerdtree', { 'on': [ 'NERDTreeToggle', 'NERDTreeFind' ] }
