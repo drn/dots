@@ -52,8 +52,6 @@ Plug 'wellle/targets.vim'
 " distraction-free writing
 Plug 'junegunn/goyo.vim'
 Plug 'rrethy/vim-hexokinase', { 'do': 'make hexokinase' }
-" auto-close parentheses
-Plug 'cohama/lexima.vim'
 " auto-highlight other * matches
 Plug 'RRethy/vim-illuminate'
 
