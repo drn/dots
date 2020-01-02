@@ -6,6 +6,7 @@ local osx        = require 'osx'
 local volume     = require 'volume'
 local brightness = require 'brightness'
 local alert      = require 'alert'
+local background = require 'background'
 
 -- Window Management
 
@@ -154,6 +155,16 @@ hs.hotkey.bind({'ctrl', 'alt'}, 'down', function()
   brightness.decrease()
 end, nil, function()
   brightness.decrease()
+end)
+
+-- Background Bindings
+
+hs.hotkey.bind({'ctrl', 'alt', 'cmd'}, '-', function()
+  background.backward()
+end)
+
+hs.hotkey.bind({'ctrl', 'alt', 'cmd'}, '=', function()
+  background.forward()
 end)
 
 -- Test Binding
