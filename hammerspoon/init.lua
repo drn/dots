@@ -108,9 +108,6 @@ end)
 hs.hotkey.bind({'ctrl', 'alt', 'cmd', 'shift'}, 'm', function()
   chrome.closeOtherTabs()
 end)
-hs.hotkey.bind({'ctrl', 'alt', 'cmd', 'shift'}, 'n', function()
-  chrome.copyUrl()
-end)
 
 -- Date & Time
 
