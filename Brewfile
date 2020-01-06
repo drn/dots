@@ -6,6 +6,7 @@ tap 'heroku/brew'
 # casks
 cask '1password'
 cask 'android-studio'
+cask 'bartender'
 cask 'box-drive'
 cask 'cyberduck'
 cask 'dash'
