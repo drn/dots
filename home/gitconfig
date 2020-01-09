@@ -64,6 +64,8 @@
   mm = !"git masterme"
   # delete current branch from upstream, origin, and locally
   km = !"git killme"
+  # delete current branch to upstream/master and deletes the branch on success
+  mmk = !"git masterme && git killme"
   # shorthand for fixup
   fu = !"git fixup"
   # shorthand for commit-all
