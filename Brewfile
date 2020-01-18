@@ -95,6 +95,7 @@ brew 'tig'
 brew 'tldr'
 brew 'tmux', args: ['--HEAD']
 brew 'tree'
+brew 'wakeonlan'
 brew 'watchman'
 brew 'yarn'
 brew 'z'
