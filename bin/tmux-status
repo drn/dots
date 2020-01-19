@@ -42,7 +42,7 @@ function left {
   FIRST="#S $SEP #F"
   SECOND="$(ssid | sed s/\#//g)"
   if [[ -z "$SECOND" ]]; then SECOND="[ no network ]" fi
-  THIRD="$(lip || echo "127.0.0.1")"
+  THIRD="$(local-ip || echo "127.0.0.1")"
   SEP="⮀"
   case $SIZE in
     min) echo "$COL1 $FIRST $COL1_3$SEP$COL3" ;;

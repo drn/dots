@@ -63,6 +63,7 @@ alias vimsync="dots install vim"
 alias vup='thanx version update'
 alias ycm='cd ~/.vim/plugged/YouCompleteMe; ./install.py'
 alias thanx='thanx-cli'
+alias lip='local-ip'
 
 # tmux-start shortcuts
 alias mxm='unshrink; tmux-start master'
