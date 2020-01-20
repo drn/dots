@@ -54,6 +54,8 @@ Plug 'junegunn/goyo.vim'
 Plug 'rrethy/vim-hexokinase', { 'do': 'make hexokinase' }
 " auto-highlight other * matches
 Plug 'RRethy/vim-illuminate'
+" auto-git blame current line
+Plug 'APZelos/blamer.nvim'
 
 " Lazy-load plugins
 Plug 'scrooloose/nerdtree', { 'on': [ 'NERDTreeToggle', 'NERDTreeFind' ] }
