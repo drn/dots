@@ -1,0 +1,12 @@
+#!/bin/bash
+
+#
+# Outputs the mac address for the specified network interface
+#
+
+interface=$1
+if [ -z "$interface" ]; then
+  interface='en0'
+fi
+
+/sbin/ifconfig $interface | awk '/ether/{print $2}'
