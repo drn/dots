@@ -59,6 +59,7 @@ Plug 'APZelos/blamer.nvim'
 
 " Lazy-load plugins
 Plug 'scrooloose/nerdtree', { 'on': [ 'NERDTreeToggle', 'NERDTreeFind' ] }
+Plug 'Xuyuanp/nerdtree-git-plugin', { 'on': [ 'NERDTreeToggle', 'NERDTreeFind' ] }
 Plug 'mbbill/undotree', { 'on': 'UndotreeToggle' }
 Plug 'mileszs/ack.vim', { 'on': 'Ack' }
 Plug 'airblade/vim-gitgutter', { 'on': 'GitGutterToggle' }
