@@ -122,6 +122,8 @@ Plug 'jpalardy/vim-slime', { 'on': [
 \ '<Plug>SlimeParagraphSend',
 \ '<Plug>SlimeConfig'
 \ ] }
+" text replacement operator motions
+Plug 'svermeulen/vim-subversive'
 
 " Language-specific plugins
 Plug 'keith/rspec.vim', { 'for': 'ruby' }
