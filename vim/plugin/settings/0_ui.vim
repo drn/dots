@@ -35,6 +35,8 @@ function! ConfigureUI()
   endif
   " configure identifier color (CtrlP matching)
   highlight CtrlPMatch guifg=#E94785 ctermfg=161
+  " Configure Blamer colors
+  highlight Blamer guifg=#503030
 endfunction
 call ConfigureUI()
 
