@@ -158,9 +158,13 @@ end)
 
 hs.hotkey.bind({'ctrl', 'alt', 'cmd'}, '-', function()
   background.backward()
+end, nil, function()
+  background.backward()
 end)
 
 hs.hotkey.bind({'ctrl', 'alt', 'cmd'}, '=', function()
+  background.forward()
+end, nil, function()
   background.forward()
 end)
 
