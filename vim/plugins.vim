@@ -56,6 +56,8 @@ Plug 'rrethy/vim-hexokinase', { 'do': 'make hexokinase' }
 Plug 'RRethy/vim-illuminate'
 " auto-git blame current line
 Plug 'APZelos/blamer.nvim'
+" Extended f, F, t, T movements mappings
+Plug 'rhysd/clever-f.vim'
 
 " Lazy-load plugins
 Plug 'scrooloose/nerdtree', { 'on': [ 'NERDTreeToggle', 'NERDTreeFind' ] }
