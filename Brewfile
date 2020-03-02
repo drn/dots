@@ -5,6 +5,7 @@ tap 'heroku/brew'
 
 # casks
 cask '1password'
+cask '1password-cli'
 cask 'android-studio'
 cask 'bartender'
 cask 'box-drive'
