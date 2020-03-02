@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# Send WoL packet to boot home server in case of shutdown.
+
+eval "$(op signin my)"
+data="$(op get item "Home Server" --vault Personal)"
+host="$(echo "$data" | jq -r '.details.sections[0].fields[] | select(.t=="URL").v')"
+mac="$(echo "$data" | jq -r '.details.sections[0].fields[] | select(.t=="MAC").v')"
+ip=$(host "$host" | cut -d ' ' -f 4-)
+wakeonlan -i "$ip" "$mac"
