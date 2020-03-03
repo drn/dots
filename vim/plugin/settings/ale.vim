@@ -9,7 +9,7 @@ let g:ale_statusline_format = ['%d error(s)', '%d warning(s)', '']
 let g:ale_linters = {
 \ 'eruby': [],
 \ 'javascript': ['eslint', 'flow', 'prettier'],
-\ 'ruby': ['ruby', 'rubocop'],
+\ 'ruby': ['ruby', 'rubocop', 'sorbet'],
 \ 'terraform': ['terraform', 'tflint']
 \}
 
