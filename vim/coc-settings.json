@@ -1,0 +1,29 @@
+{
+  "coc.preferences.rootPatterns": [".vim", ".git", ".hg", "tsconfig.json"],
+  "suggest.enablePreview": true,
+  "tsserver.enableJavascript": false,
+  "tsserver.log": "verbose",
+  "languageserver": {
+    "flow": {
+      "command": "npx",
+      "args": ["flow", "lsp"],
+      "filetypes": ["javascript", "javascriptreact", "javascript.jsx"],
+      "initializationOptions": {},
+      "requireRootPattern": true,
+      "settings": {},
+      "rootPatterns": [".flowconfig"]
+    },
+    "golang": {
+      "command": "gopls",
+      "filetypes": ["go"]
+    },
+    "sorbet": {
+      "command": "bundle",
+      "args": ["exec", "srb", "tc", "--lsp", "--enable-all-experimental-lsp-features"],
+      "filetypes": ["ruby"],
+      "rootPatterns": ["sorbet/config"],
+      "initializationOptions": {},
+      "settings": {}
+    }
+  }
+}
