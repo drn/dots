@@ -64,6 +64,7 @@ alias vup='thanx version update'
 alias ycm='cd ~/.vim/plugged/YouCompleteMe; ./install.py'
 alias thanx='thanx-cli'
 alias lip='local-ip'
+alias chrome="/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome"
 
 # tmux-start shortcuts
 alias mxm='unshrink; tmux-start master'
