@@ -25,5 +25,6 @@
       "initializationOptions": {},
       "settings": {}
     }
-  }
+  },
+  "snippets.ultisnips.directories": [ "~/.vim/snips" ]
 }

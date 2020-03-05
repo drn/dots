@@ -43,8 +43,6 @@ Plug 'justinmk/vim-gtfo'
 Plug 'AndrewRadev/splitjoin.vim'
 Plug 'whiteinge/diffconflicts'
 Plug 'junegunn/gv.vim'
-Plug 'SirVer/ultisnips'
-Plug 'ervandew/supertab'
 Plug 'ryanoasis/vim-devicons'
 Plug 'unblevable/quick-scope'
 Plug 'rbong/vim-flog', { 'on': [ 'Flog', 'Flogsplit' ] }
@@ -108,8 +106,9 @@ Plug 'udalov/kotlin-vim', { 'for': 'kotlin' }
 Plug 'fatih/vim-go', { 'for': 'go', 'do': ':GoUpdateBinaries' }
 Plug 'leafgarland/typescript-vim', { 'for': 'typescript' }
 
-" Auto-completion
+" Auto-completion, LSP, & snippets
 Plug 'neoclide/coc.nvim', { 'branch': 'release', 'tag': '*' }
+Plug 'neoclide/coc-snippets', {'do': 'yarn install --frozen-lockfile'}
 
 " Non-neovim plugins
 if $MYVIMRC !~ 'nvimrc'
