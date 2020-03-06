@@ -5,74 +5,124 @@ let g:plug_timeout = 180
 " Run plug commands in current split
 let g:plug_window = ''
 
+" jellybeans colorscheme
 Plug 'nanotech/jellybeans.vim'
+" statusline
 Plug 'itchyny/lightline.vim'
+" ale indicator for statusline
 Plug 'maximbaz/lightline-ale'
+" rainbow parentheses
 Plug 'luochen1990/rainbow'
+" start screen
 Plug 'mhinz/vim-startify'
+" relative and non-relative numberline toggle
 Plug 'jeffkreeftmeijer/vim-numbertoggle'
+" indent guides
 Plug 'nathanaelkane/vim-indent-guides'
+" vim git wrapper
 Plug 'tpope/vim-fugitive'
+" auto-add ending structures
 Plug 'tpope/vim-endwise'
+" modifying surroundings (parentheses, brackets, quotes, etc)
 Plug 'tpope/vim-surround'
+" [ and ] mappings
 Plug 'tpope/vim-unimpaired'
+" unix helpers (:SudoWrite)
 Plug 'tpope/vim-eunuch'
+" enable repeating of plugin commands
 Plug 'tpope/vim-repeat'
+" ga mapping to reveal decimal, octal, hex
 Plug 'tpope/vim-characterize'
+" bundler support
 Plug 'tpope/vim-bundler'
+" formatting coercion
 Plug 'tpope/vim-abolish'
+" extend % motions
 Plug 'andymass/vim-matchup'
+" yarddoc syntax highlighting
 Plug 'noprompt/vim-yardoc'
+" display register contents
 Plug 'junegunn/vim-peekaboo'
+" improved search functionality
 Plug 'junegunn/vim-slash'
+" linting engine
 Plug 'dense-analysis/ale'
-" not lazyloaded to ensure ruby configuration is preloaded
+" configure expected ruby version
 Plug 'tpope/vim-rbenv'
-" not lazyloaded to ensure proper load order
+" fuzzy file finder
 Plug 'ctrlpvim/ctrlp.vim'
+" fuzzy function finder
 Plug 'tacahiroy/ctrlp-funky'
-" not lazyloaded to preserve functionality
+" test runner
 Plug 'janko-m/vim-test'
+" send input to tmux, used by vim-test runner
 Plug 'benmills/vimux'
+" wakatime tracking
 Plug 'wakatime/vim-wakatime'
+" highlight yanked region
 Plug 'machakann/vim-highlightedyank'
+" directory viewer, netrw replacement
 Plug 'justinmk/vim-dirvish'
+" open terminal (got) & finder (gof) mappings
 Plug 'justinmk/vim-gtfo'
+" switch between single and multi-line statements
 Plug 'AndrewRadev/splitjoin.vim'
+" improved vimdiff
 Plug 'whiteinge/diffconflicts'
+" git commit browser (:GV)
 Plug 'junegunn/gv.vim'
+" file type icons
 Plug 'ryanoasis/vim-devicons'
+" additional text object selections
 Plug 'wellle/targets.vim'
 " distraction-free writing
 Plug 'junegunn/goyo.vim'
+" async inline color display
 Plug 'rrethy/vim-hexokinase', { 'do': 'make hexokinase' }
 " auto-highlight other * matches
 Plug 'RRethy/vim-illuminate'
+" Highlight f, F, t, T movement matches
+Plug 'unblevable/quick-scope'
 " Extended f, F, t, T movements mappings
 Plug 'rhysd/clever-f.vim'
 " commit messages under cursor
 Plug 'rhysd/git-messenger.vim'
-
-" Lazy-load plugins
+" Auto-completion, LSP, & snippets
+Plug 'neoclide/coc.nvim', { 'branch': 'release', 'tag': '*' }
+Plug 'neoclide/coc-snippets', {'do': 'yarn install --frozen-lockfile'}
+" tree explorer
 Plug 'scrooloose/nerdtree', { 'on': [ 'NERDTreeToggle', 'NERDTreeFind' ] }
+" display git status in nerdtree
 Plug 'Xuyuanp/nerdtree-git-plugin', { 'on': [ 'NERDTreeToggle', 'NERDTreeFind' ] }
+" undotree
 Plug 'mbbill/undotree', { 'on': 'UndotreeToggle' }
+" working directory search
 Plug 'mileszs/ack.vim', { 'on': 'Ack' }
+" display gitgutter
 Plug 'airblade/vim-gitgutter', { 'on': 'GitGutterToggle' }
+" switch between header and source
 Plug 'derekwyatt/vim-fswitch', { 'on': 'FSHere' }
+" vim alignmentalign
 Plug 'junegunn/vim-easy-align', { 'on': 'EasyAlign' }
-Plug 'milkypostman/vim-togglelist', { 'on': [] }
+" toggle quickfix
+Plug 'milkypostman/vim-togglelist', { 'on': 'ToggleQuickfix' }
+" gist plugin
 Plug 'mattn/gist-vim', { 'on': 'Gist' }
+" web api interactions
 Plug 'mattn/webapi-vim', { 'on': 'Gist' }
+" focus on specific section
 Plug 'junegunn/limelight.vim', { 'on': 'Limelight' }
+" toggle comments
 Plug 'tpope/vim-commentary', { 'on': [
 \ '<Plug>Commentary',
 \ '<Plug>CommentaryLine'
 \ ] }
+" ctrl-a (increment) ctrl-x (decrement)
 Plug 'tpope/vim-speeddating', { 'on': [
 \ '<Plug>SpeedDatingUp',
 \ '<Plug>SpeedDatingDown'
 \ ] }
+" send text to tmux
 Plug 'jpalardy/vim-slime', { 'on': [
 \ '<Plug>SlimeRegionSend',
 \ '<Plug>SlimeParagraphSend',
@@ -101,10 +151,6 @@ Plug 'iamcco/markdown-preview.nvim', {
 Plug 'udalov/kotlin-vim', { 'for': 'kotlin' }
 Plug 'fatih/vim-go', { 'for': 'go', 'do': ':GoUpdateBinaries' }
 Plug 'leafgarland/typescript-vim', { 'for': 'typescript' }
-
-" Auto-completion, LSP, & snippets
-Plug 'neoclide/coc.nvim', { 'branch': 'release', 'tag': '*' }
-Plug 'neoclide/coc-snippets', {'do': 'yarn install --frozen-lockfile'}
 
 " Non-neovim plugins
 if $MYVIMRC !~ 'nvimrc'
