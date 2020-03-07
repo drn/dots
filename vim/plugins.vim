@@ -100,8 +100,6 @@ Plug 'mbbill/undotree', { 'on': 'UndotreeToggle' }
 Plug 'mileszs/ack.vim', { 'on': 'Ack' }
 " display gitgutter
 Plug 'airblade/vim-gitgutter', { 'on': 'GitGutterToggle' }
-" switch between header and source
-Plug 'derekwyatt/vim-fswitch', { 'on': 'FSHere' }
 " vim alignmentalign
 Plug 'junegunn/vim-easy-align', { 'on': 'EasyAlign' }
 " toggle quickfix
