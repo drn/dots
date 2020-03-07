@@ -104,10 +104,6 @@ Plug 'airblade/vim-gitgutter', { 'on': 'GitGutterToggle' }
 Plug 'junegunn/vim-easy-align', { 'on': 'EasyAlign' }
 " toggle quickfix
 Plug 'milkypostman/vim-togglelist', { 'on': 'ToggleQuickfix' }
-" gist plugin
-Plug 'mattn/gist-vim', { 'on': 'Gist' }
-" web api interactions
-Plug 'mattn/webapi-vim', { 'on': 'Gist' }
 " focus on specific section
 Plug 'junegunn/limelight.vim', { 'on': 'Limelight' }
 " toggle comments
