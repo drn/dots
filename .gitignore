@@ -3,3 +3,4 @@
 *.swp
 vendor
 .bundle
+home/bundle/cache
