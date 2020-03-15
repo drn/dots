@@ -1,5 +1,4 @@
-#!/usr/bin/env ruby
-# frozen_string_literal: true
+#!/bin/bash
 
 #
 # If the branch matches the JIRA issue regex (TA-****) and the summary doesn't
@@ -7,9 +6,10 @@
 # commit summary.
 #
 
-summary = File.read(ARGV[0]).to_s
-branch = `git rev-parse --abbrev-ref HEAD`.strip
-regex = /^[A-Z][A-Z]-/
-exit unless regex =~ branch
-exit if regex =~ summary
-File.write(ARGV[0], "#{branch}. #{summary}")
+summary="$(cat "$1")"
+branch="$(git rev-parse --abbrev-ref HEAD)"
+regex="^[A-Z][A-Z]-.*"
+if [[ "$branch" =~ $regex ]] && ! [[ "$summary" =~ $regex ]]; then
+  echo -e "\033[1;34mPrepending \033[1;35m$branch\033[1;34m.\033[0m"
+  echo "$branch. $summary" > "$1"
+fi
