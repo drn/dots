@@ -146,9 +146,4 @@ Plug 'udalov/kotlin-vim', { 'for': 'kotlin' }
 Plug 'fatih/vim-go', { 'for': 'go', 'do': ':GoUpdateBinaries' }
 Plug 'leafgarland/typescript-vim', { 'for': 'typescript' }
 
-" Non-neovim plugins
-if $MYVIMRC !~ 'nvimrc'
-  " ...
-endif
-
 call plug#end()
