@@ -96,11 +96,20 @@ prompt_git_info() {
 
 # precmd is called just before the prompt is printed
 terminal_prompt_precmd() {
+  # display elapsed command time if over CMD_MAX_EXEC_TIME
   local stop=$(date +%s)
   local start=${cmd_timestamp:-$stop}
   integer elapsed=$stop-$start
   (($elapsed > ${CMD_MAX_EXEC_TIME:=5})) && prompt_human_time $elapsed
   unset cmd_timestamp
+  # rename tmux window depending on current directory
+  if [[ "$TERM" = "screen"* ]] && [ -n "$TMUX" ]; then
+    if [[ $PWD == *"/Development/thanx/"* ]]; then
+      if [ "$(tmux display-message -p '#{window_panes}')" = "1" ]; then
+        tmux rename-window $(echo $PWD | sed 's/.*\/thanx\///')
+      fi
+    fi
+  fi
 }
 
 # preexec is called just before any command is executed

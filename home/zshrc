@@ -17,3 +17,5 @@ source $DOTS/zsh/bindings.zsh
 # autoload tmux
 if [ "$TMUX" = "" ]; then tmux-start master && exit; fi
 
+# Load zoxide
+if [ -n "$TMUX" ]; then eval "$(zoxide init zsh)"; fi

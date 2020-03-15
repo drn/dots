@@ -18,6 +18,15 @@ func (i Install) Zsh() {
 		run.Verbose("sudo rm -f /etc/zprofile")
 	}
 
+	log.Info("Ensuring zoxide is installed")
+	if is.Command("zoxide") {
+		log.Info("Installing zoxide...")
+		zoxideURL := " https://raw.githubusercontent.com/ajeetdsouza/zoxide/master/install.sh"
+		run.Verbose(
+			"curl --proto '=https' --tlsv1.2 -sSf " + zoxideURL + " | sh",
+		)
+	}
+
 	// ensure antibody is installed
 	log.Info("Ensuring antibody is installed")
 	if is.Command("brew") && !is.Command("antibody") {
