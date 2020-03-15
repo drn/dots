@@ -32,12 +32,12 @@ function success?() {
 
 function colors() {
   echo -e "\033[0mNC (No Color)"
-  echo -e "\033[1;37mWHITE\t\033[0;30mBLACK"
-  echo -e "\033[0;34mBLUE\t\033[1;34mLIGHT_BLUE"
-  echo -e "\033[0;32mGREEN\t\033[1;32mLIGHT_GREEN"
-  echo -e "\033[0;36mCYAN\t\033[1;36mLIGHT_CYAN"
-  echo -e "\033[0;31mRED\t\033[1;31mLIGHT_RED"
-  echo -e "\033[0;35mPURPLE\t\033[1;35mLIGHT_PURPLE"
-  echo -e "\033[0;33mYELLOW\t\033[1;33mLIGHT_YELLOW"
-  echo -e "\033[1;30mGRAY\t\033[0;37mLIGHT_GRAY"
+  echo -e "\033[1;37mWHITE\t\033[0;30mBLACK\033[0m"
+  echo -e "\033[0;34mBLUE\t\033[1;34mLIGHT_BLUE\033[0m"
+  echo -e "\033[0;32mGREEN\t\033[1;32mLIGHT_GREEN\033[0m"
+  echo -e "\033[0;36mCYAN\t\033[1;36mLIGHT_CYAN\033[0m"
+  echo -e "\033[0;31mRED\t\033[1;31mLIGHT_RED\033[0m"
+  echo -e "\033[0;35mMAGENTA\t\033[1;35mLIGHT_MAGENTA\033[0m"
+  echo -e "\033[0;33mYELLOW\t\033[1;33mLIGHT_YELLOW\033[0m"
+  echo -e "\033[1;30mGRAY\t\033[0;37mLIGHT_GRAY\033[0m"
 }
