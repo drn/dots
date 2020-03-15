@@ -142,9 +142,6 @@
 [color]
   ui = auto
 
-[init]
-  templatedir = ~/go/src/github.com/drn/dots/git/templates
-
 [remotes]
   default = origin upstream
 
