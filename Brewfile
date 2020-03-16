@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+tap 'ajeetdsouza/zoxide'
 tap 'jesseduffield/lazydocker'
 tap 'heroku/brew'
 
@@ -101,4 +102,5 @@ brew 'wakeonlan'
 brew 'watchman'
 brew 'yarn'
 brew 'zlib'
+brew 'zoxide'
 brew 'zsh'
