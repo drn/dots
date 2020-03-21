@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# Upload to acorn host
+
+if [[ "$#" -ne 1 || ("$1" != "movies" && "$1" != "tv" && "$1" != "safe") ]]; then
+  echo "Usage: tor [movies/tv/safe]"
+  exit 1
+fi
+
+cd ~/Downloads || exit 1
+shopt -s nullglob
+torrents=(*.torrent)
+if [ ${#torrents[@]} -eq 0 ]; then
+  echo -e "\033[00;31mNo torrents found\033[0m"
+else
+  host="$ACORN_USERNAME@$ACORN_HOST"
+  destination="./downloads/torrents/$1"
+  for torrent in "${torrents[@]}"; do
+    echo -e "\033[00;34mUploading $torrent\033[0m"
+    scp "$torrent" "$host:$destination" && rm "$torrent"
+  done
+fi
