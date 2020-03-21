@@ -1,13 +1,15 @@
-#!/usr/bin/env ruby
+#!/bin/bash
 
-branch = ARGV[0]
-branch = `git rev-parse --abbrev-ref HEAD`.strip if branch.nil?
-branch = branch.delete('.')
+branch=$1
+if [ -z "$branch" ]; then
+  branch="$(git rev-parse --abbrev-ref HEAD | tr -d '\n')"
+fi
+branch=${branch//./} # strip periods
 
-decorated = "\e[97m#{branch}\e[0m"
-if branch =~ /^[A-Z][A-Z]-\d+/
-  puts "\e[32mOpening JIRA issue #{decorated}\e[32m...\e[0m"
-  system("open https://thanxapp.atlassian.net/browse/#{branch}")
+decorated="\033[01;37m$branch\033[0m"
+if [[ "$branch" =~ ^[A-Z][A-Z]-.* ]]; then
+  echo -e "\033[00;32mOpening JIRA issue $decorated\033[00;32m...\033[0m"
+  open "https://thanxapp.atlassian.net/browse/$branch"
 else
-  puts "\e[31mBranch #{decorated}\e[31m is not a JIRA issue...\e[0m"
-end
+  echo -e "\033[00;31mBranch $decorated\033[00;31m is not a JIRA issue...\033[0m"
+fi
