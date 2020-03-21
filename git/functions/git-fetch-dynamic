@@ -1,21 +1,20 @@
-#!/usr/bin/env ruby
-# frozen_string_literal: true
+#!/bin/bash
 
 #
 # Fetches from input remote, upstream if it exists, origin otherwise.
 #
 
-unless ARGV[0].nil?
-  puts "Fetching #{ARGV[0]} changes..."
-  system("git fetch #{ARGV[0]}")
+if [ -n "$1" ]; then
+  echo "Fetching $1 changes..."
+  git fetch "$1"
   exit
-end
+fi
 
-unless `git remote | grep upstream`.empty?
-  puts 'Fetching upstream changes...'
-  system('git fetch upstream')
+if git remote | grep -q upstream; then
+  echo 'Fetching upstream changes...'
+  git fetch upstream
   exit
-end
+fi
 
-puts 'Fetching origin changes...'
-system('git fetch')
+echo 'Fetching origin changes...'
+git fetch
