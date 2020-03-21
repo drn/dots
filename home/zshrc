@@ -14,6 +14,9 @@ source ~/.bundles
 source $DOTS/zsh/settings.zsh
 source $DOTS/zsh/bindings.zsh
 
+# load acorn configuration
+source $HOME/.acorn 2>/dev/null
+
 # autoload tmux
 if [ "$TMUX" = "" ]; then tmux-start master && exit; fi
 
