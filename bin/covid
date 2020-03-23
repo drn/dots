@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# display current covid stats
+
+curl "https://corona-stats.online/$1?minimal=true"
