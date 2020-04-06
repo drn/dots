@@ -15,7 +15,7 @@ source $DOTS/zsh/settings.zsh
 source $DOTS/zsh/bindings.zsh
 
 # load custom configuration
-source $HOME/.acorn 2>/dev/null
+source $HOME/.dots/env 2>/dev/null
 source $HOME/.thanx/env 2>/dev/null
 
 # autoload tmux
