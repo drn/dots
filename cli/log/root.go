@@ -2,6 +2,7 @@ package log
 
 import (
 	"fmt"
+
 	"github.com/drn/dots/cli/path"
 	"github.com/fatih/color"
 )
@@ -34,5 +35,10 @@ func Warning(output string, args ...interface{}) {
 // Command - Logs command in appropriate color
 func Command(output string, args ...interface{}) {
 	output = path.Pretty(fmt.Sprintf(output, args...))
+	color.White("%s %s", color.BlueString("❯"), output)
+}
+
+// Raw - Logs command in appropriate color
+func Raw(output string) {
 	color.White("%s %s", color.BlueString("❯"), output)
 }

@@ -2,10 +2,11 @@ package run
 
 import (
 	"fmt"
-	"github.com/drn/dots/cli/log"
 	"os"
 	"os/exec"
 	"strings"
+
+	"github.com/drn/dots/cli/log"
 )
 
 // OSA - Runs the specified osascript command, capturing STDOUT and returning
@@ -21,6 +22,17 @@ func Capture(command string, args ...interface{}) string {
 	resolvedCommand := fmt.Sprintf(command, args...)
 	out, _ := exec.Command("sh", "-c", resolvedCommand).CombinedOutput()
 	return strings.TrimSpace(string(out))
+}
+
+// Execute - Logs the specified command and runs it without escaping or
+// suppressing STDOUT.
+func Execute(command string) bool {
+	log.Raw(command)
+	cmd := exec.Command("bash", "-c", command)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	err := cmd.Run()
+	return err == nil
 }
 
 // Verbose - Logs the specified command and runs it without suppressing STDOUT.
