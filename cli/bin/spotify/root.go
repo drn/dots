@@ -8,11 +8,8 @@
 package main
 
 import (
-	"context"
-	"crypto/tls"
 	"errors"
 	"fmt"
-	"net/http"
 	"os"
 	"strings"
 
@@ -34,6 +31,7 @@ const (
 )
 
 func authorize(config *oauth2.Config) {
+	// TODO: manually generate URL
 	run.Execute(`open "` + config.AuthCodeURL("spotify") + `"`)
 }
 
@@ -54,20 +52,51 @@ func oauth() oauth2.Config {
 	}
 }
 
-func exchange(oauth *oauth2.Config, code string) (*oauth2.Token, error) {
-	// disable HTTP/2 for DefaultClient,
-	// see: https://github.com/zmb3/spotify/issues/20
-	tr := &http.Transport{
-		TLSNextProto: map[string]func(
-			authority string, c *tls.Conn,
-		) http.RoundTripper{},
+func exchangeAuthorizationCode(code string) (string, string) {
+	url := "https://accounts.spotify.com/api/token"
+
+	params := req.Param{
+		"code":          code,
+		"grant_type":    "authorization_code",
+		"client_id":     os.Getenv("SPOTIFY_CLIENT_ID"),
+		"client_secret": os.Getenv("SPOTIFY_CLIENT_SECRET"),
+		"redirect_uri":  "https://console.drn.dev/",
 	}
-	ctx := context.WithValue(
-		context.Background(),
-		oauth2.HTTPClient,
-		&http.Client{Transport: tr},
-	)
-	return oauth.Exchange(ctx, code)
+
+	response, err := req.Post(url, params)
+	handleRequestError(err)
+
+	if response.Response().StatusCode != 200 {
+		fmt.Println(string(response.Bytes()))
+		os.Exit(1)
+	}
+	accessToken := jsoniter.Get(response.Bytes(), "access_token").ToString()
+	refreshToken := jsoniter.Get(response.Bytes(), "refresh_token").ToString()
+
+	return accessToken, refreshToken
+}
+
+func exchangeRefreshToken(code string) string {
+	url := "https://accounts.spotify.com/api/token"
+
+	params := req.Param{
+		"refresh_token": code,
+		"grant_type":    "refresh_token",
+		"client_id":     os.Getenv("SPOTIFY_CLIENT_ID"),
+		"client_secret": os.Getenv("SPOTIFY_CLIENT_SECRET"),
+		"redirect_uri":  "https://console.drn.dev/",
+	}
+
+	response, err := req.Post(url, params)
+	handleRequestError(err)
+
+	if response.Response().StatusCode != 200 {
+		fmt.Println(string(response.Bytes()))
+		os.Exit(1)
+	}
+	accessToken := jsoniter.Get(response.Bytes(), "access_token").ToString()
+
+	return accessToken
 }
 
 func inputCode() string {
@@ -94,31 +123,20 @@ func validateInput(input string) error {
 func main() {
 	accessToken := config.Read("spotify.access_token")
 	refreshToken := config.Read("spotify.refresh_token")
+
 	if accessToken == "" || refreshToken == "" {
 		// configure oauth2 client
 		oauth := oauth()
 
 		// fetch access code
 		authorize(&oauth)
-
-		code := inputCode()
-
-		token, err := exchange(&oauth, code)
-
-		if err != nil {
-			log.Error("%s", err)
-			os.Exit(1)
-		}
-
-		fmt.Println()
-
-		accessToken = token.AccessToken
-		refreshToken = token.RefreshToken
-		fmt.Printf("Access Token: %s\n", accessToken)
-		fmt.Printf("Refresh Token: %s\n", refreshToken)
-
+		accessToken, refreshToken = exchangeAuthorizationCode(inputCode())
 		config.Write("spotify.access_token", accessToken)
 		config.Write("spotify.refresh_token", refreshToken)
+	} else if refreshNeeded(accessToken) {
+		// refresh access token using refresh token
+		accessToken = exchangeRefreshToken(refreshToken)
+		config.Write("spotify.access_token", accessToken)
 	}
 
 	trackID, trackName, trackArtist := currentTrackInfo(accessToken)
@@ -129,12 +147,19 @@ func main() {
 	}
 
 	if isTrackSaved(accessToken, trackID) {
-		log.Info("+\n%s\n%s", trackName, trackArtist)
+		log.Info("[−]\n%s\n%s", trackName, trackArtist)
 		removeTrack(accessToken, trackID)
 	} else {
-		log.Info("-\n%s\n%s", trackName, trackArtist)
+		log.Info("[+]\n%s\n%s", trackName, trackArtist)
 		saveTrack(accessToken, trackID)
 	}
+}
+
+func refreshNeeded(accessToken string) bool {
+	url := "https://api.spotify.com/v1/me"
+	response, err := req.Put(url, headers(accessToken))
+	handleRequestError(err)
+	return response.Response().StatusCode == 401
 }
 
 // https://developer.spotify.com/documentation/web-api/reference/library/save-tracks-user/
