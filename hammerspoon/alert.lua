@@ -18,7 +18,8 @@ function alert.show(text, duration, size)
     text,
     {
       textSize = size,
-      radius   = radius
+      radius   = radius,
+      textStyle = { paragraphStyle = { alignment = "center" } },
     },
     hs.screen.mainScreen(),
     duration
