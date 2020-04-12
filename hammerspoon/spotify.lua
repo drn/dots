@@ -1,5 +1,4 @@
 local spotify = {}
-
 local alert = require 'alert'
 local as    = require 'hs.applescript'
 
@@ -114,6 +113,11 @@ end
 
 function spotify.open()
   hs.application.launchOrFocus('Spotify')
+end
+
+function spotify.toggle()
+  local output = hs.execute("~/go/bin/spotify")
+  alert.showOnly(output:gsub('%s*$', ''), 1, 20)
 end
 
 return spotify

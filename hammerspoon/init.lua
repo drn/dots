@@ -95,7 +95,9 @@ hs.hotkey.bind({ 'cmd', 'alt' }, 'down', function()
 end, nil, function()
   music.decreaseVolume()
 end)
-hs.hotkey.bind({ 'ctrl', 'cmd' }, 'space', function() alert.show('space') end)
+hs.hotkey.bind({ 'ctrl', 'cmd' }, 'space', function()
+  music.toggle()
+end)
 
 -- Chrome
 

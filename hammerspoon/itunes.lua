@@ -134,4 +134,8 @@ function itunes.addToPlaylist(playlist)
   end
 end
 
+function itunes.toggle()
+  alert.show("Unsupported")
+end
+
 return itunes
