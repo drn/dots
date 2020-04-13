@@ -18,6 +18,16 @@ import (
 )
 
 func main() {
+	action := "toggle"
+	if len(os.Args) >= 2 {
+		if os.Args[1] == "save" || os.Args[1] == "remove" {
+			action = os.Args[1]
+		} else {
+			log.Error("Usage: slack [save|remove]?")
+			os.Exit(1)
+		}
+	}
+
 	accessToken := auth.FetchAccessToken()
 
 	trackID, trackName, trackArtist := currentTrackInfo(accessToken)
@@ -27,12 +37,21 @@ func main() {
 		os.Exit(1)
 	}
 
-	if isTrackSaved(accessToken, trackID) {
-		log.Info("[−]\n%s\n%s", trackName, trackArtist)
-		removeTrack(accessToken, trackID)
-	} else {
+	switch action {
+	case "toggle":
+		if isTrackSaved(accessToken, trackID) {
+			log.Info("[−]\n%s\n%s", trackName, trackArtist)
+			removeTrack(accessToken, trackID)
+		} else {
+			log.Info("[+]\n%s\n%s", trackName, trackArtist)
+			saveTrack(accessToken, trackID)
+		}
+	case "save":
 		log.Info("[+]\n%s\n%s", trackName, trackArtist)
 		saveTrack(accessToken, trackID)
+	case "remove":
+		log.Info("[−]\n%s\n%s", trackName, trackArtist)
+		removeTrack(accessToken, trackID)
 	}
 }
 
