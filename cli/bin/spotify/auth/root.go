@@ -126,7 +126,7 @@ func exchangeRefreshToken(code string) string {
 
 func inputCode() string {
 	prompt := promptui.Prompt{
-		Label:    "Inputs Access Code:",
+		Label:    "Authorization code",
 		Validate: validateInput,
 	}
 
