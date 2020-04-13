@@ -31,7 +31,9 @@ local bindings = {
   'minVolume',
   'display',
   'open',
-  'toggle'
+  'toggle',
+  'save',
+  'remove',
 }
 for i=1, #bindings do
   music[bindings[i]] = function(option)

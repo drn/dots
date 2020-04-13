@@ -120,4 +120,14 @@ function spotify.toggle()
   alert.showOnly(output:gsub('%s*$', ''), 1, 20)
 end
 
+function spotify.save()
+  local output = hs.execute("~/go/bin/spotify save")
+  alert.showOnly(output:gsub('%s*$', ''), 1, 20)
+end
+
+function spotify.remove()
+  local output = hs.execute("~/go/bin/spotify remove")
+  alert.showOnly(output:gsub('%s*$', ''), 1, 20)
+end
+
 return spotify

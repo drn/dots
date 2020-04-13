@@ -138,4 +138,12 @@ function itunes.toggle()
   alert.show("Unsupported")
 end
 
+function itunes.save()
+  alert.show("Unsupported")
+end
+
+function itunes.remove()
+  alert.show("Unsupported")
+end
+
 return itunes
