@@ -8,8 +8,10 @@
 package main
 
 import (
+	"bytes"
 	"errors"
 	"fmt"
+	"net/url"
 	"os"
 	"strings"
 
@@ -19,37 +21,27 @@ import (
 	"github.com/imroc/req"
 	jsoniter "github.com/json-iterator/go"
 	"github.com/manifoldco/promptui"
-	"golang.org/x/oauth2"
 )
 
-const (
-	// AuthURL is the URL to Spotify Accounts Service's OAuth2 endpoint.
-	AuthURL = "https://accounts.spotify.com/authorize"
-	// TokenURL is the URL to the Spotify Accounts Service's OAuth2
-	// token endpoint.
-	TokenURL = "https://accounts.spotify.com/api/token"
-)
-
-func authorize(config *oauth2.Config) {
-	// TODO: manually generate URL
-	run.Execute(`open "` + config.AuthCodeURL("spotify") + `"`)
-}
-
-func oauth() oauth2.Config {
-	return oauth2.Config{
-		ClientID:     os.Getenv("SPOTIFY_CLIENT_ID"),
-		ClientSecret: os.Getenv("SPOTIFY_CLIENT_SECRET"),
-		RedirectURL:  "https://console.drn.dev/",
-		Scopes: []string{
-			"user-read-currently-playing",
-			"user-library-read",
-			"user-library-modify",
+func authorize() {
+	var buffer bytes.Buffer
+	buffer.WriteString("https://accounts.spotify.com/authorize?")
+	params := url.Values{
+		"response_type": {"code"},
+		"client_id":     {os.Getenv("SPOTIFY_CLIENT_ID")},
+		"redirect_uri":  {"https://console.drn.dev/"},
+		"scope": {
+			strings.Join([]string{
+				"user-read-currently-playing",
+				"user-library-read",
+				"user-library-modify",
+			}, " "),
 		},
-		Endpoint: oauth2.Endpoint{
-			AuthURL:  AuthURL,
-			TokenURL: TokenURL,
-		},
+		"state": {"spotify"},
 	}
+	buffer.WriteString(params.Encode())
+	url := buffer.String()
+	run.Execute(`open "` + url + `"`)
 }
 
 func exchangeAuthorizationCode(code string) (string, string) {
@@ -125,11 +117,7 @@ func main() {
 	refreshToken := config.Read("spotify.refresh_token")
 
 	if accessToken == "" || refreshToken == "" {
-		// configure oauth2 client
-		oauth := oauth()
-
-		// fetch access code
-		authorize(&oauth)
+		authorize()
 		accessToken, refreshToken = exchangeAuthorizationCode(inputCode())
 		config.Write("spotify.access_token", accessToken)
 		config.Write("spotify.refresh_token", refreshToken)
