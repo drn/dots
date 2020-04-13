@@ -56,7 +56,7 @@ function background.forward()
   if index > #files then index = 1 end
   -- set background and alert
   setBackground(files[index])
-  alert.showOnly(' '..index)
+  alert.showOnly(index)
 end
 
 function background.backward()
@@ -66,7 +66,7 @@ function background.backward()
   if index < 1 then index = #files end
   -- set background and alert
   setBackground(files[index])
-  alert.showOnly(' '..index)
+  alert.showOnly(index)
 end
 
 return background

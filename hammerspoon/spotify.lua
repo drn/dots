@@ -25,13 +25,13 @@ end
 function spotify.next()
   if not hs.spotify.isRunning() then return end
   hs.spotify.next()
-  alert.showOnly(' ⇥')
+  alert.showOnly('⇥')
 end
 
 function spotify.previous()
   if not hs.spotify.isRunning() then return end
   hs.spotify.previous()
-  alert.showOnly(' ⇤')
+  alert.showOnly('⇤')
 end
 
 function spotify.forward(delta)
@@ -40,7 +40,7 @@ function spotify.forward(delta)
   local updated = hs.spotify.getPosition() + delta
   hs.spotify.setPosition(updated)
   local isZeroPosition = math.floor(hs.spotify.getPosition()) == 0
-  local message = isZeroPosition and ' ⇥' or ' → '..formatSeconds(updated)
+  local message = isZeroPosition and '⇥' or '→ '..formatSeconds(updated)
   alert.showOnly(message)
 end
 
@@ -55,40 +55,40 @@ function spotify.backward(delta)
   local updated = position - delta
   if updated < 0 then updated = 0 end
   hs.spotify.setPosition(updated)
-  alert.showOnly(' ← '..formatSeconds(updated))
+  alert.showOnly('← '..formatSeconds(updated))
 end
 
 function spotify.increaseVolume()
   if not hs.spotify.isRunning() then return end
   hs.spotify.volumeUp()
-  alert.showOnly(' ↑ '..hs.spotify.getVolume()..'% ♬')
+  alert.showOnly('↑ '..hs.spotify.getVolume()..'% ♬')
 end
 
 function spotify.decreaseVolume()
   if not hs.spotify.isRunning() then return end
   hs.spotify.volumeDown()
-  alert.showOnly(' ↓ '..hs.spotify.getVolume()..'% ♬')
+  alert.showOnly('↓ '..hs.spotify.getVolume()..'% ♬')
 end
 
 function spotify.maxVolume()
   if not hs.spotify.isRunning() then return end
   hs.spotify.setVolume(100)
-  alert.showOnly(' ↑ 100%')
+  alert.showOnly('↑ 100%')
 end
 
 function spotify.minVolume()
   if not hs.spotify.isRunning() then return end
   hs.spotify.setVolume(0)
-  alert.showOnly(' ↓ 0%')
+  alert.showOnly('↓ 0%')
 end
 
 function spotify.playpause()
   if not hs.spotify.isRunning() then
     hs.application.launchOrFocus('Spotify')
-    alert.showOnly(' ▶')
+    alert.showOnly('▶')
   else
     hs.spotify.playpause()
-    local icon = hs.spotify.isPlaying() and ' ▶' or ' ◼'
+    local icon = hs.spotify.isPlaying() and '▶' or '◼'
     alert.showOnly(icon)
   end
 end

@@ -26,13 +26,13 @@ end
 function itunes.next()
   if not hs.itunes.isRunning() then return end
   hs.itunes.next()
-  alert.showOnly(' ⇥')
+  alert.showOnly('⇥')
 end
 
 function itunes.previous()
   if not hs.itunes.isRunning() then return end
   tell('back track')
-  alert.showOnly(' ⇤')
+  alert.showOnly('⇤')
 end
 
 function itunes.forward(delta)
@@ -41,7 +41,7 @@ function itunes.forward(delta)
   local updated = hs.itunes.getPosition() + delta
   hs.itunes.setPosition(updated)
   local isNextSong = hs.itunes.getPosition() < math.floor(updated)
-  local message = isNextSong and ' ⇥' or ' → '..formatSeconds(updated)
+  local message = isNextSong and '⇥' or '→ '..formatSeconds(updated)
   alert.showOnly(message)
 end
 
@@ -56,36 +56,36 @@ function itunes.backward(delta)
   local updated = position - delta
   if updated < 0 then updated = 0 end
   hs.itunes.setPosition(updated)
-  alert.showOnly(' ← '..formatSeconds(updated))
+  alert.showOnly('← '..formatSeconds(updated))
 end
 
 function itunes.increaseVolume()
   if not hs.itunes.isRunning() then return end
   hs.itunes.volumeUp()
-  alert.showOnly(' ↑ '..hs.itunes.getVolume()..'% ♬')
+  alert.showOnly('↑ '..hs.itunes.getVolume()..'% ♬')
 end
 
 function itunes.decreaseVolume()
   if not hs.itunes.isRunning() then return end
   hs.itunes.volumeDown()
-  alert.showOnly(' ↓ '..hs.itunes.getVolume()..'% ♬')
+  alert.showOnly('↓ '..hs.itunes.getVolume()..'% ♬')
 end
 
 function itunes.maxVolume()
   if not hs.itunes.isRunning() then return end
   hs.itunes.setVolume(100)
-  alert.showOnly(' ↑ 100%')
+  alert.showOnly('↑ 100%')
 end
 
 function itunes.minVolume()
   if not hs.itunes.isRunning() then return end
   hs.itunes.setVolume(0)
-  alert.showOnly(' ↓ 0%')
+  alert.showOnly('↓ 0%')
 end
 
 function itunes.playpause()
   hs.itunes.playpause()
-  local icon = hs.itunes.isPlaying() and ' ▶' or ' ◼'
+  local icon = hs.itunes.isPlaying() and '▶' or '◼'
   alert.showOnly(icon)
 end
 
