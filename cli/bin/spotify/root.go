@@ -13,11 +13,15 @@ import (
 
 	"github.com/drn/dots/cli/bin/spotify/auth"
 	"github.com/drn/dots/cli/log"
+	"github.com/drn/dots/cli/path"
 	"github.com/imroc/req"
+	"github.com/joho/godotenv"
 	jsoniter "github.com/json-iterator/go"
 )
 
 func main() {
+	godotenv.Load(path.FromHome(".dots/env"))
+
 	action := "toggle"
 	if len(os.Args) >= 2 {
 		if os.Args[1] == "save" || os.Args[1] == "remove" {
