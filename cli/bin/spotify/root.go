@@ -51,11 +51,19 @@ func main() {
 			saveTrack(accessToken, trackID)
 		}
 	case "save":
-		log.Info("[+]\n%s\n%s", trackName, trackArtist)
-		saveTrack(accessToken, trackID)
+		if !isTrackSaved(accessToken, trackID) {
+			log.Info("[+]\n%s\n%s", trackName, trackArtist)
+			saveTrack(accessToken, trackID)
+		} else {
+			log.Info("(+)\n%s\n%s", trackName, trackArtist)
+		}
 	case "remove":
-		log.Info("[−]\n%s\n%s", trackName, trackArtist)
-		removeTrack(accessToken, trackID)
+		if isTrackSaved(accessToken, trackID) {
+			log.Info("[−]\n%s\n%s", trackName, trackArtist)
+			removeTrack(accessToken, trackID)
+		} else {
+			log.Info("(-)\n%s\n%s", trackName, trackArtist)
+		}
 	}
 }
 
