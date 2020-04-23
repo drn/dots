@@ -196,7 +196,7 @@ hs.alert.defaultStyle['fillColor'] = {
   red   = 9/255,
   green = 8/255,
   blue  = 32/255,
-  alpha = 1
+  alpha = 0.9
 }
 hs.alert.defaultStyle['textColor'] = {
   red   = 209/255,
