@@ -27,7 +27,7 @@ func main() {
 		if os.Args[1] == "save" || os.Args[1] == "remove" {
 			action = os.Args[1]
 		} else {
-			log.Error("Usage: slack [save|remove]?")
+			log.Error("Usage: spotify [save|remove]?")
 			os.Exit(1)
 		}
 	}
