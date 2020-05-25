@@ -11,7 +11,11 @@ SESSION="$1"
 tmux new-session -d -s $SESSION 2>/dev/null
 
 if [ $? -eq 0 ]; then
-  (tmux send-keys -t $SESSION "cd ~/Development/thanx/core; clear" C-m) &
+  if [ -d "~/Development/thanx/core" ]; then
+    (tmux send-keys -t $SESSION "cd ~/Development/thanx/core; clear" C-m) &
+  else
+    (tmux send-keys -t $SESSION "cd ~; clear" C-m) &
+  fi
 fi
 
 if [ -n "$TMUX" ]; then
