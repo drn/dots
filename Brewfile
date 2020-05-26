@@ -33,6 +33,7 @@ cask 'spotify'
 cask 'superhuman'
 cask 'the-unarchiver'
 cask 'vlc'
+cask 'vnc-viewer'
 cask 'whatsapp'
 cask 'yujitach-menumeters'
 
