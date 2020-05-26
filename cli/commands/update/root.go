@@ -11,10 +11,11 @@ import (
 
 // Run - Runs update scripts
 func Run() {
-	log.Action("Updating dependencies")
 	window := tmux.Window()
 	tmux.SetWindow("update")
 
+	log.Action("Updating dependencies")
+	updateDots()
 	updateZsh()
 	updateBrew()
 	updateSolargraph()
@@ -31,6 +32,14 @@ func setWindow(name string) {
 		return
 	}
 	run.Capture("tmux rename-window %s", name)
+}
+
+func updateDots() {
+	log.Info("Updating dots")
+	run.Verbose(
+		"cd %s; git fetch; git reset --hard origin/master",
+		path.Dots(),
+	)
 }
 
 func updateZsh() {
