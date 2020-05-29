@@ -10,7 +10,7 @@ let g:lightline = {
 \     'right': [
 \       [ 'linter_checking', 'linter_errors', 'linter_warnings', 'lineinfo' ],
 \       [ 'percent' ],
-\       [ 'fileformat', 'fileencoding', 'filetype' ]
+\       [ 'fileformat', 'fileencoding', 'filetype', 'filebom' ]
 \     ]
 \   },
 \   'inactive': {
@@ -31,6 +31,7 @@ let g:lightline = {
 \     'fileformat': 'LightlineFileformat',
 \     'filetype': 'LightlineFiletype',
 \     'fileencoding': 'LightlineFileencoding',
+\     'filebom': 'LightlineFilebom',
 \     'ctrlp': 'LightlineCtrlP',
 \     'mode': 'LightlineMode',
 \     'zoompane': 'LightlineZoomPaneIndicator',

@@ -49,3 +49,6 @@ function! LightlineFileencoding()
   return winwidth(0) > 70 ? (strlen(&fenc) ? &fenc : &enc) : ''
 endfunction
 
+function! LightlineFilebom()
+  return winwidth(0) > 70 ? (&bomb ? '[BOM]' : '') : ''
+endfunction
