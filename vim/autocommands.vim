@@ -16,8 +16,14 @@ autocmd BufWritePre * call TrimWhitespace()
 function TrimWhitespace()
   let line = line('.')
   let col = col('.')
+  " trim trailing whitespace
   execute('%s/\s\+$//e')
+  " preserve cursor position
   call cursor(line, col)
+  " if gitcommit, trim leading whitespace
+  if &filetype == 'gitcommit'
+    execute('%s/^\s\+//e')
+  endif
 endfunction
 
 " always display sign column
