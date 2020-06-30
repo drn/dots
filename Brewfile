@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-tap 'ajeetdsouza/zoxide'
 tap 'jesseduffield/lazydocker'
 tap 'heroku/brew'
 
