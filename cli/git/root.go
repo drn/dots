@@ -2,6 +2,8 @@ package git
 
 import (
 	"fmt"
+	"strings"
+
 	"github.com/drn/dots/cli/run"
 )
 
@@ -12,7 +14,11 @@ func IsRepo() bool {
 
 // Branch - Returns the current HEAD alias
 func Branch() string {
-	return run.Capture("git rev-parse --abbrev-ref HEAD")
+	branch := run.Capture("git rev-parse --abbrev-ref HEAD")
+	if strings.Contains(branch, "fatal") {
+		return ""
+	}
+	return branch
 }
 
 // Status - Returns the current status

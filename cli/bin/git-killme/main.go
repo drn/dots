@@ -22,6 +22,10 @@ func main() {
 	}
 
 	branch := git.Branch()
+	if branch == "" {
+		log.Error("Aborting. No branches found.")
+		os.Exit(1)
+	}
 
 	prune("origin", branch)
 	prune("upstream", branch)
@@ -34,6 +38,7 @@ func main() {
 		if !git.Checkout(fallback) {
 			git.Create(fallback)
 		}
+
 		git.ResetHard(git.Ancestor())
 		git.Delete(branch)
 	} else {
