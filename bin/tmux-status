@@ -33,8 +33,10 @@ COL1_3="#[fg=colour103,bg=colour236,nobold,nounderscore,noitalics]"
 COL2="#[fg=colour253,bg=colour239]"
 COL2_3="#[fg=colour239,bg=colour236,nobold,nounderscore,noitalics]"
 COL3="#[fg=colour244,bg=colour236]"
-COL3_BB="#[fg=colour124,bg=colour236]"
-COL3_BC="#[fg=colour130,bg=colour236]"
+COL3_BB_10="#[fg=colour160,bg=colour236]"
+COL3_BB_20="#[fg=colour124,bg=colour236]"
+COL3_BC_10="#[fg=colour166,bg=colour236]"
+COL3_BC_20="#[fg=colour130,bg=colour236]"
 COL3_2="#[fg=colour236,bg=colour239,nobold,nounderscore,noitalics]"
 COL3_1="#[fg=colour236,bg=colour103,nobold,nounderscore,noitalics]"
 
@@ -52,22 +54,34 @@ function left {
   esac
 }
 
+function battery {
+  BATTERY_PERCENT="${$(battery-percent): :-1}" # strip trailing %
+  BATTERY_STATE="$(battery-state)"
+  BATTERY_COLOR=""
+  # <= 20% colors
+  if [ "$BATTERY_PERCENT" -le 20 ]; then
+    if [ "$BATTERY_STATE" = "charging" ]; then
+      BATTERY_COLOR=$COL3_BC_20
+    else
+      BATTERY_COLOR=$COL3_BB_20
+    fi
+  fi
+  # <= 10% colors
+  if [ "$BATTERY_PERCENT" -le 10 ]; then
+    if [ "$BATTERY_STATE" = "charging" ]; then
+      BATTERY_COLOR=$COL3_BC_10
+    else
+      BATTERY_COLOR=$COL3_BB_10
+    fi
+  fi
+  echo "$BATTERY_COLOR$BATTERY_PERCENT%"
+}
+
 function right {
   SEP="⮃"
   FIRST="$(echo $(date +'%l:%M%p') | tr '[:upper:]' '[:lower:]')"
   SECOND="$(date +'%a %-d') $SEP $(date +'%b %Y')"
-  BATTERY_PERCENT="${$(battery-percent): :-1}" # strip trailing %
-  BATTERY_STATE="$(battery-state)"
-  BATTERY_COLOR=""
-  # display <= 20% battery warning; orange if charging, red if not
-  if [ "$BATTERY_PERCENT" -le 20 ]; then
-    if [ "$BATTERY_STATE" = "charging" ]; then
-      BATTERY_COLOR=$COL3_BC
-    else
-      BATTERY_COLOR=$COL3_BB
-    fi
-  fi
-  THIRD="$(cpu)c $(memory)m $BATTERY_COLOR$BATTERY_PERCENT%b"
+  THIRD="$(cpu)c $(memory)m $(battery)b"
   SEP="⮂"
   case $SIZE in
     min) echo "$COL1_3$SEP$COL1 $FIRST " ;;
