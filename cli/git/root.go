@@ -60,6 +60,5 @@ func Delete(branch string) bool {
 
 // Ancestor - Returns the ancestor of HEAD
 func Ancestor() string {
-	// TODO: rewrite git-ancestor in golang
 	return run.Capture("git ancestor")
 }
