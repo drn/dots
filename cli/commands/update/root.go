@@ -69,6 +69,5 @@ func rehashRbenv() {
 
 func rehashPyenv() {
 	log.Info("Rehashing pyenv binaries")
-	os.Remove(path.FromHome(".rbenv/shims/.rbenv-shim"))
-	run.Verbose("rbenv rehash")
+	run.Verbose("pyenv rehash")
 }
