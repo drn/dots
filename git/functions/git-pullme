@@ -1,9 +1,7 @@
 #!/bin/bash
 
-#
-# Dynamically determines and creates a pull request for the current commit
-# against the nearest ancestor branch that is not the currently pushed branch.
-#
+# Opens your browser to the github pull request creation page for the current
+# commit against the source branch.
 
 # abort if not in git directory
 if ! git rev-parse --git-dir > /dev/null 2>&1; then
@@ -12,9 +10,9 @@ if ! git rev-parse --git-dir > /dev/null 2>&1; then
 fi
 
 # specify the root url
-source="https://github.com"
+root="https://github.com"
 
-# path of ancestor's remote
+# author/repo of the default remote
 path="$(git path)"
 
 # get current branch
@@ -23,17 +21,15 @@ current_branch="$(git me)"
 current_remote="$(git remote-contains $current_branch)"
 # determine the author of the current remote
 current_author="$(git author $current_remote)"
-# set current (remote/branch) variable
-current="$current_remote/$current_branch"
+current="$current_author:$current_branch"
 
-# determine ancestor (remote:branch), excluding the current (remote/branch)
-ancestor="$(git ancestor $current | sed 's/\//:/')"
-# determine remote of ancestor
-ancestor_remote="$(echo $ancestor | sed 's/:.*//')"
-# determine branch of ancestor
-ancestor_branch="$(echo $ancestor | sed 's/.*://')"
-# determine the author of the ancestor remote
-ancestor_author="$(git author $ancestor_remote)"
+# determine source author and branch
+source_branch="master"
+if [ ! -z "$(git branch --remote | grep upstream/dev)" ]; then
+  source_branch="dev"
+fi
+source_author="$(git author)"
+source="$source_author:$source_branch"
 
 # open the web browser at the computed pull request endpoint
-open $source/$path/compare/$ancestor_author:$ancestor_branch...$current_author:$current_branch
+open "$root/$path/compare/$source...$current"
