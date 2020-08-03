@@ -1,9 +1,0 @@
-#!/bin/bash
-
-#
-# Reset the current branch on the most recent branch on upstream.
-#
-
-ancestor="$(git ancestor)"
-echo "Resetting to $ancestor"
-git reset --hard $ancestor
