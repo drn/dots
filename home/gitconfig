@@ -82,6 +82,7 @@
   rbm = rebase-master
   # hard reset to master
   rhm = reset-hard-master
+  rhr = reset-hard-root
   # git branches
   brs = branches
   # show staged diff
