@@ -80,6 +80,8 @@
   changes = !"git log --follow -p "
   # rebase on upstream/master
   rbm = rebase-master
+  # rebase on upstream/dev
+  rbd = rebase-dev
   # hard reset to master
   rhm = reset-hard-master
   rhr = reset-hard-root
