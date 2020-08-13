@@ -1,0 +1,11 @@
+#!/bin/bash
+
+branch="$(git me)"
+if [ "$(git remote | grep upstream)" ]; then
+  remote="upstream"
+else
+  remote="origin"
+fi
+
+echo "Attempting to push local $branch to $remote/dev..."
+git push $remote $branch:dev $1

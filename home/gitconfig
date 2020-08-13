@@ -63,6 +63,8 @@
   pmf = !"git pushme --force"
   # pushes current branch to upstream/master
   mm = !"git masterme"
+  # pushes current branch to upstream/dev
+  dm = devme
   # delete current branch from upstream, origin, and locally
   km = !"git killme"
   # delete current branch to upstream/master and deletes the branch on success
