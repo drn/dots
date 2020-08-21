@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# Authenticate 1pass CLI if no existing session is initialized
+
+if [ -z "$OP_SESSION_my" ]; then
+  eval "$(op signin my 2>/dev/null)"
+fi

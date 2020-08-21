@@ -67,6 +67,7 @@ alias chrome="/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome"
 alias acorn="ssh \$ACORN_USERNAME@\$ACORN_HOST"
 alias sickchill="acorn ./bin/sickchill"
 alias pi="ssh pi@192.168.0.201"
+alias 1pass=". 1pass"
 
 # tmux-start shortcuts
 alias mxm='unshrink; tmux-start master'
