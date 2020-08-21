@@ -2,7 +2,15 @@
 
 # Send WoL packet to boot home server in case of shutdown.
 
-eval "$(op signin my)"
+if [ -z "$OP_SESSION_my" ]; then
+  eval "$(op signin my 2>/dev/null)"
+fi
+
+if [ -z "$OP_SESSION_my" ]; then
+  echo -e "\033[00;31mInvalid 1pass password.\033[0m"
+  exit 1
+fi
+
 data="$(op get item "Home Server" --vault Personal)"
 host="$(echo "$data" | jq -r '.details.sections[0].fields[] | select(.t=="URL").v')"
 mac="$(echo "$data" | jq -r '.details.sections[0].fields[] | select(.t=="MAC").v')"
