@@ -13,6 +13,7 @@ end
 -- returns the filename of the current background image
 local function currentBackground()
   local path = tell('get posix path of (get desktop picture as alias)')
+  if not path then return '' end
   return path:match("^.+/(.+)$")
 end
 
