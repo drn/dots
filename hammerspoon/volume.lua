@@ -15,10 +15,10 @@ local function display(text)
   if device:muted() then
     icon = '🔇'
   end
-  alert.show(text..math.floor(device:volume() + 0.5)..'% '..icon)
+  alert.show(text..' '..math.floor(device:volume() + 0.5)..'% '..icon)
   local name = device:name()
   if name ~= "Built-in Output" then
-    alert.show('   '..name, 0.5, 12)
+    alert.show(name, 0.5, 12)
   end
 end
 
@@ -35,7 +35,7 @@ function volume.increase(delta)
   if device:muted() then
     device:setMuted(false)
   end
-  display(' ↑ ')
+  display('↑')
 end
 
 function volume.decrease(delta)
@@ -46,7 +46,7 @@ function volume.decrease(delta)
   if device:volume() == 0 then
     device:setMuted(true)
   end
-  display(' ↓ ')
+  display('↓')
 end
 
 return volume
