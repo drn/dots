@@ -61,10 +61,8 @@
   # pushes current branch to the specified remote, defaults to origin
   pm = !"git pushme"
   pmf = !"git pushme --force"
-  # pushes current branch to upstream/master
+  # pushes current branch to the canonical path
   mm = !"git masterme"
-  # pushes current branch to upstream/dev
-  dm = devme
   # delete current branch from upstream, origin, and locally
   km = !"git killme"
   # delete current branch to upstream/master and deletes the branch on success
