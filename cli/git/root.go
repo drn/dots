@@ -21,6 +21,14 @@ func Branch() string {
 	return branch
 }
 
+// Remote - Returns the primary git remote
+func Remote() string {
+	if strings.Contains(Branch(), "upstream") {
+		return "upstream"
+	}
+	return "origin"
+}
+
 // Status - Returns the current status
 func Status() string {
 	return run.Capture("git status")
