@@ -85,8 +85,6 @@
   rhr = reset-hard-root
   # git branches
   brs = branches
-  # show staged diff
-  staged = diff --staged
   # print root git directory
   root = !"pwd"
   # show the diff stats of the latest commit
