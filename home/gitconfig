@@ -76,8 +76,6 @@
   bro = !"git browse"
   # open browser to current github repo
   go = !"open \"https://github.com/$(git path)\""
-  # better blame
-  changes = !"git log --follow -p "
   # rebase on upstream/master
   rbm = rebase-master
   # rebase on upstream/dev
