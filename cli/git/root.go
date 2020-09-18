@@ -21,12 +21,48 @@ func Branch() string {
 	return branch
 }
 
-// Remote - Returns the primary git remote
-func Remote() string {
-	if strings.Contains(Branch(), "upstream") {
-		return "upstream"
+// RemoteBranches - Returns a slice of the current remote branches
+func RemoteBranches() []string {
+	branches := strings.Fields(run.Capture("git branch --remote"))
+	i := 0
+	for _, branch := range branches {
+		switch branch {
+		case "->":
+		case "origin/HEAD":
+		case "upstream/HEAD":
+		default:
+			branches[i] = branch
+			i++
+		}
+	}
+	return branches[:i]
+}
+
+// Remotes - Returns the configured remotes
+func Remotes() []string {
+	return strings.Fields(run.Capture("git remote"))
+}
+
+// CanonicalRemote - Returns the canonical git remote
+func CanonicalRemote() string {
+	for _, remote := range Remotes() {
+		if remote == "upstream" {
+			return "upstream"
+		}
 	}
 	return "origin"
+}
+
+// CanonicalBranch - Returns the canonical git remote
+func CanonicalBranch() string {
+	remote := CanonicalRemote()
+	match := fmt.Sprintf("%s/dev", remote)
+	for _, branch := range RemoteBranches() {
+		if branch == match {
+			return "dev"
+		}
+	}
+	return "master"
 }
 
 // Status - Returns the current status

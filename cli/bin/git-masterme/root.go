@@ -1,6 +1,6 @@
 package main
 
-// Pushes the current branch to the primary remote's master branch
+// Pushes the current branch to the canonical remote's canonical branch
 
 import (
 	"os"
@@ -13,18 +13,23 @@ import (
 
 func main() {
 	branch := git.Branch()
-	remote := git.Remote()
+	path := []string{
+		git.CanonicalRemote(),
+		git.CanonicalBranch(),
+	}
 
 	log.Info(
-		"Attempting to push local %s to %s/master...",
+		"Attempting to push local %s to %s/%s...",
 		branch,
-		remote,
+		path[0],
+		path[1],
 	)
 
 	run.Verbose(
-		"git push %s %s:master %s",
-		remote,
+		"git push %s %s:%s %s",
+		path[0],
 		branch,
+		path[1],
 		strings.Join(os.Args[1:], " "),
 	)
 }
