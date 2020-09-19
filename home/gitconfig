@@ -102,12 +102,6 @@
   aaa = amend-all-annotation
   # git semver alias
   ver = semver
-  # git clone --depth=1 alias
-  shallow = clone --depth=1
-  rbb = rebase-back
-  sb = show-back
-  rename = branch -m
-  rn = branch -m
   sync = !"git push origin upstream/master:master -f"
   s = !"git sync"
   pt = push --tags
