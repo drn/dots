@@ -80,7 +80,7 @@
   rbm = rebase-master
   # rebase on upstream/dev
   rbd = rebase-dev
-  # hard reset to master
+  # hard reset to canonical path
   rhm = reset-hard-master
   rhr = reset-hard-root
   # git branches

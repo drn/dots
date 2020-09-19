@@ -45,17 +45,24 @@ func Remotes() []string {
 
 // CanonicalRemote - Returns the canonical git remote
 func CanonicalRemote() string {
-	for _, remote := range Remotes() {
-		if remote == "upstream" {
-			return "upstream"
+	remotes := Remotes()
+	options := []string{"upstream", "origin"}
+	for _, option := range options {
+		for _, remote := range remotes {
+			if remote == option {
+				return option
+			}
 		}
 	}
-	return "origin"
+	return ""
 }
 
 // CanonicalBranch - Returns the canonical git remote
 func CanonicalBranch() string {
 	remote := CanonicalRemote()
+	if remote == "" {
+		return ""
+	}
 	match := fmt.Sprintf("%s/dev", remote)
 	for _, branch := range RemoteBranches() {
 		if branch == match {
