@@ -82,7 +82,6 @@
   rbd = rebase-dev
   # hard reset to canonical path
   rhm = reset-hard-master
-  rhr = reset-hard-root
   # git branches
   brs = branches
   # print root git directory
