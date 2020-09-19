@@ -76,10 +76,8 @@
   bro = !"git browse"
   # open browser to current github repo
   go = !"open \"https://github.com/$(git path)\""
-  # rebase on upstream/master
+  # rebase on top of the canonical path
   rbm = rebase-master
-  # rebase on upstream/dev
-  rbd = rebase-dev
   # hard reset to canonical path
   rhm = reset-hard-master
   # git branches
