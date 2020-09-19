@@ -1,7 +1,0 @@
-#!/bin/bash
-
-#
-# Interactive rebase the specified number of commits back from HEAD.
-#
-
-git rebase -i HEAD~$1
