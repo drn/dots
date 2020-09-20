@@ -38,10 +38,6 @@
   br = branch
   # given a username or an email address shows the name and email address of the author
   whois = "!sh -c 'git log -i -1 --pretty=\"format:%an <%ae>\n\" --author=\"$1\"' -"
-  # given a commit name shows its hash and short log (i.e. git whatis someBranchName)
-  whatis = show -s --pretty='tformat:%h (%s, %ad)' --date=short
-  # list all aliases
-  aliases = !git config --get-regexp 'alias.*' | colrm 1 6 | sed 's/[ ]/ = /'
   # sexier looking shortlog; git lg FROM..TO
   lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
   count = shortlog -s -n -e
