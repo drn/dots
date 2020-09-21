@@ -8,7 +8,7 @@
 
 summary="$(cat "$1")"
 branch="$(git rev-parse --abbrev-ref HEAD)"
-regex="^[A-Z][A-Z]-.*"
+regex="^[A-Z][A-Z][A-Z]?-.*"
 if [[ "$branch" =~ $regex ]] && ! [[ "$summary" =~ $regex ]]; then
   echo -e "\033[1;34mPrepending \033[1;35m$branch\033[1;34m.\033[0m"
   echo "$branch. $summary" > "$1"
