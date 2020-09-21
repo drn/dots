@@ -10,6 +10,7 @@ import (
 
 var max = 100
 var remote = baseRemote()
+var dev = fmt.Sprintf("%s/dev", remote)
 var master = fmt.Sprintf("%s/master", remote)
 
 func main() {
@@ -55,7 +56,10 @@ func identify(branches []string) string {
 		if identified == "" {
 			identified = branch
 		}
-		// favor master
+		// favor dev and master
+		if branch == dev {
+			return dev
+		}
 		if branch == master {
 			return master
 		}
