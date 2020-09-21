@@ -56,17 +56,20 @@ func main() {
 }
 
 func prune(remote string, branch string) {
-	if branch == "master" {
-		return
+	protectedBranches := []string{
+		"dev",
+		"master",
+		"sandbox",
+		"staging",
+		"production",
+		"ops-sandbox",
+		"ops-staging",
+		"ops-production",
 	}
-	if branch == "demo" {
-		return
-	}
-	if branch == "staging" {
-		return
-	}
-	if branch == "production" {
-		return
+	for _, protectedBranch := range protectedBranches {
+		if branch == protectedBranch {
+			return
+		}
 	}
 
 	if !git.RemoteHasBranch(remote, branch) {
