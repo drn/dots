@@ -1,0 +1,8 @@
+#!/bin/bash
+
+#
+# Converts all HEIC files in the ~/Downloads folder to JPGs
+#
+
+cd ~/Downloads
+mogrify -monitor -format jpg *.HEIC
