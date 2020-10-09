@@ -16,14 +16,6 @@
     "golang": {
       "command": "gopls",
       "filetypes": ["go"]
-    },
-    "sorbet": {
-      "command": "bundle",
-      "args": ["exec", "srb", "tc", "--lsp", "--enable-all-experimental-lsp-features"],
-      "filetypes": ["ruby"],
-      "rootPatterns": ["sorbet/config"],
-      "initializationOptions": {},
-      "settings": {}
     }
   },
   "snippets.ultisnips.directories": [ "~/.vim/snips" ]
