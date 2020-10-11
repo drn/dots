@@ -21,7 +21,7 @@ end
 local function backgroundInfo()
   -- build files table
   local files = {}
-  for file in fs.dir("~/Pictures/backgrounds") do
+  for file in fs.dir("~/Pictures/horizontal") do
     if file ~= '.' and file ~= '..' and file ~= '.DS_Store' then
       files[#files + 1] = file
     end
@@ -44,7 +44,7 @@ local function setBackground(filename)
   tell(
     'set desktop picture to posix file "' ..
     os.getenv('HOME') ..
-    '/Pictures/backgrounds/' ..
+    '/Pictures/horizontal/' ..
     filename ..
     '"'
   )
