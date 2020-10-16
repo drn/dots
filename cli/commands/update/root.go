@@ -37,7 +37,7 @@ func setWindow(name string) {
 func updateDots() {
 	log.Info("Updating dots")
 	run.Verbose(
-		"cd %s; git fetch; git reset --hard origin/master",
+		"cd %s; git fetch; git reset --hard origin/master; go install ./...",
 		path.Dots(),
 	)
 }
