@@ -1,7 +1,0 @@
-#!/bin/bash
-
-#
-# Open an SSH tunnel home
-#
-
-ssh -D 8080 -C -N SanguineRane@sanguinerane.zapto.org
