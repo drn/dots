@@ -21,7 +21,7 @@ function alert.show(text, duration, size)
       radius   = radius,
       textStyle = { paragraphStyle = { alignment = "center" } },
     },
-    hs.screen.mainScreen(),
+    hs.screen.primaryScreen(),
     duration
   )
 end
