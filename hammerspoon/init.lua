@@ -174,6 +174,12 @@ end)
 hs.hotkey.bind({'ctrl', 'alt', 'cmd'}, 'j', function()
 end)
 
+-- Open hammerspoon console
+
+hs.hotkey.bind({'ctrl', 'alt', 'cmd'}, 'delete', function()
+  hs.toggleConsole()
+end)
+
 -- Reload configuration
 
 hs.hotkey.bind({'ctrl', 'cmd'}, 'delete', function() hs.reload() end)
