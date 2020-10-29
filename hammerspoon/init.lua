@@ -177,8 +177,7 @@ end)
 -- Reload configuration
 
 hs.hotkey.bind({'ctrl', 'cmd'}, 'delete', function() hs.reload() end)
-function reloadConfig(files) hs.reload() end
-hs.pathwatcher.new(os.getenv('HOME') .. '/.hammerspoon/', reloadConfig):start()
+hs.pathwatcher.new(os.getenv('HOME') .. '/.hammerspoon/', hs.reload):start()
 
 -- Watch for Screen changes
 
