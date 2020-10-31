@@ -198,11 +198,13 @@ function! NucleusReplace()
   let l:branch = system('echo -n "$(git rev-parse --abbrev-ref HEAD 2>/dev/null)"')
   " determine new line contents
   let l:contents = getline(l:line)
-  let l:current = 'master'
+  let l:base = system('git canonical-branch')
+  let l:base = substitute(l:base, '\n\+$', '', '')
+  let l:current = l:base
   let l:adjustment = l:branch
-  if l:contents !~ 'master'
+  if l:contents !~ l:base
     let l:current = l:branch
-    let l:adjustment = 'master'
+    let l:adjustment = l:base
   endif
   let l:contents = substitute(l:contents, l:current, l:adjustment, '')
   " change line contents
