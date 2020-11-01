@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# Toggles connectivity of HD1 headphones
+
+HD1='00-1b-66-81-af-1d' # MAC of HD1 Headphones
+CMD='/usr/local/bin/blueutil'
+if [[ "$($CMD --is-connected "$HD1")" -eq 0 ]]; then
+  $CMD --connect "$HD1"
+  echo "HD1 Connected"
+else
+  $CMD --disconnect "$HD1"
+  echo "HD1 Disconnected"
+fi
