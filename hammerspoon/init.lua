@@ -1,5 +1,6 @@
 local alert      = require 'alert'
 local background = require 'background'
+local bluetooth  = require 'bluetooth'
 local brightness = require 'brightness'
 local chrome     = require 'chrome'
 local log        = require 'log'
@@ -168,6 +169,12 @@ end)
 
 hs.hotkey.bind({'ctrl', 'alt', 'cmd'}, '=', function()
   background.forward()
+end)
+
+-- Bluetooth Bindings
+
+hs.hotkey.bind({'ctrl', 'alt', 'cmd'}, '0', function()
+  bluetooth.hd1()
 end)
 
 -- Test Binding
