@@ -7,6 +7,7 @@ local volume     = require 'volume'
 local brightness = require 'brightness'
 local alert      = require 'alert'
 local background = require 'background'
+local log        = require 'log'
 
 -- Window Management
 
