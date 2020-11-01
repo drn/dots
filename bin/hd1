@@ -1,13 +1,31 @@
 #!/bin/bash
 
-# Toggles connectivity of HD1 headphones
+# Manages bluetooth connectivity of HD1 headphones
+
+if [[ "$#" -ne 1 || ("$1" != "toggle" && "$1" != "status") ]]; then
+  echo "Usage: hd1 [toggle/status]"
+  exit 1
+fi
 
 HD1='00-1b-66-81-af-1d' # MAC of HD1 Headphones
 CMD='/usr/local/bin/blueutil'
-if [[ "$($CMD --is-connected "$HD1")" -eq 0 ]]; then
-  echo "Connecting HD1..."
-  $CMD --connect "$HD1" >/dev/null 2>&1 &
-else
-  echo "Disconnecting HD1..."
-  $CMD --disconnect "$HD1" >/dev/null 2>&1 &
-fi
+
+case $1 in
+  toggle)
+    if [ "$($CMD --is-connected "$HD1")" -eq 0 ]; then
+      echo "Connecting HD1..."
+      $CMD --connect "$HD1" >/dev/null 2>&1 &
+    else
+      echo "Disconnecting HD1..."
+      $CMD --disconnect "$HD1" >/dev/null 2>&1 &
+    fi
+    ;;
+
+  status)
+    if [ "$($CMD --is-connected "$HD1")" -eq 0 ]; then
+      echo "HD1 Disconnected"
+    else
+      echo "HD1 Connected"
+    fi
+    ;;
+esac

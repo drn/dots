@@ -174,7 +174,11 @@ end)
 -- Bluetooth Bindings
 
 hs.hotkey.bind({'ctrl', 'alt', 'cmd'}, '0', function()
-  bluetooth.hd1()
+  bluetooth.hd1Status()
+end)
+
+hs.hotkey.bind({'ctrl', 'alt', 'cmd', 'shift'}, '0', function()
+  bluetooth.hd1Toggle()
 end)
 
 -- Test Binding
