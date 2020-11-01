@@ -1,13 +1,13 @@
-local resize     = require 'resize'
-local music      = require 'music'
-local screen     = require 'screen'
-local chrome     = require 'chrome'
-local osx        = require 'osx'
-local volume     = require 'volume'
-local brightness = require 'brightness'
 local alert      = require 'alert'
 local background = require 'background'
+local brightness = require 'brightness'
+local chrome     = require 'chrome'
 local log        = require 'log'
+local music      = require 'music'
+local osx        = require 'osx'
+local resize     = require 'resize'
+local screen     = require 'screen'
+local volume     = require 'volume'
 
 -- Window Management
 
