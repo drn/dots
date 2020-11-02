@@ -12,8 +12,8 @@ import (
 	"github.com/drn/dots/cli/log"
 	"github.com/drn/dots/cli/run"
 	"github.com/imroc/req"
-	"github.com/isacikgoz/promptui"
 	jsoniter "github.com/json-iterator/go"
+	"github.com/manifoldco/promptui"
 )
 
 // FetchAccessToken - Returns a valid access token for the Spotify API.
