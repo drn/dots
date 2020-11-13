@@ -61,7 +61,6 @@ brew 'hr'
 brew 'hub'
 brew 'hyperfine'
 brew 'imagemagick@6', link: true
-brew 'irssi'
 brew 'jq'
 brew 'lazydocker'
 brew 'lftp'
