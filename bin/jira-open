@@ -7,7 +7,7 @@ fi
 branch=${branch//./} # strip periods
 
 decorated="\033[01;37m$branch\033[0m"
-if [[ "$branch" =~ ^[A-Z][A-Z][A-Z]?-.* ]]; then
+if [[ "$branch" =~ ^[A-Z]+-.* ]]; then
   echo -e "\033[00;32mOpening JIRA issue $decorated\033[00;32m...\033[0m"
   open "https://thanxapp.atlassian.net/browse/$branch"
 else
