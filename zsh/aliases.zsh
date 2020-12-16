@@ -58,16 +58,16 @@ alias v='nvim'
 alias ver='thanx version'
 alias vi='vim'
 alias vimdiff='mvim -d'
-alias vimsync="dots install vim"
+alias vimsync='dots install vim'
 alias vup='thanx version update'
 alias ycm='cd ~/.vim/plugged/YouCompleteMe; ./install.py'
 alias thanx='thanx-cli'
 alias lip='local-ip'
-alias chrome="/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome"
+alias chrome='/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome'
 alias acorn="ssh \$ACORN_USERNAME@\$ACORN_HOST"
-alias sickchill="acorn ./bin/sickchill"
-alias pi="ssh pi@192.168.0.201"
-alias 1pass=". 1pass"
+alias sickchill='acorn ./bin/sickchill'
+alias pi='ssh pi@192.168.0.201'
+alias 1pass='. 1pass'
 alias heic='heic-to-jpg'
 
 # tmux-start shortcuts
