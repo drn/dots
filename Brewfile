@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
-tap 'jesseduffield/lazydocker'
+# taps
+tap 'fishtown-analytics/dbt'
 tap 'heroku/brew'
+tap 'jesseduffield/lazydocker'
 
 # casks
 cask '1password'
@@ -43,6 +45,7 @@ brew 'cloc'
 brew 'cmake'
 brew 'coreutils'
 brew 'cv'
+brew 'dbt'
 brew 'dep'
 brew 'elasticsearch'
 brew 'fd'
