@@ -2,8 +2,14 @@
 
 # Upload to acorn host
 
-if [[ "$#" -ne 1 || ("$1" != "movies" && "$1" != "tv" && "$1" != "safe") ]]; then
-  echo "Usage: tor [movies/tv/safe]"
+if [[
+  "$#" -ne 1 || (
+    "$1" != "movies" &&
+    "$1" != "tv" &&
+    "$1" != "safe" &&
+    "$1" != "misc"
+  ) ]]; then
+  echo "Usage: tor [movies/tv/safe/misc]"
   exit 1
 fi
 
