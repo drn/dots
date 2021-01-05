@@ -31,6 +31,7 @@ alias dsk='tmux rename-window desktop 2>/dev/null; cd ~/Desktop'
 # Command Aliases
 alias 1pass='. 1pass'
 alias acorn="ssh \$ACORN_USERNAME@\$ACORN_HOST"
+alias acorn-misc="mkdir -p ~/Downloads/misc; scp -r \$ACORN_USERNAME@\$ACORN_HOST:~/downloads/misc/* ~/Downloads/misc"
 alias binstubs='bundle install --binstubs .bundle/bin'
 alias cat='bat'
 alias chrome='/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome'
