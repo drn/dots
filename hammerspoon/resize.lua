@@ -77,11 +77,15 @@ function resize.touch(direction)
   win:setFrame(f, 0)
 end
 
-function resize.center()
+function resize.center(adjustFrame)
   local win = hs.window.focusedWindow()
   if win == nil then return end
   local baseframe = win:screen():fullFrame()
   local f = win:frame()
+  if adjustFrame then
+    f.w = baseframe.w / 2
+    f.h = baseframe.h / 2
+  end
   f.x = baseframe.x + ((baseframe.w / 2) - (f.w / 2))
   f.y = baseframe.y + ((baseframe.h / 2) - (f.h / 2))
   win:setFrame(f, 0)
