@@ -25,18 +25,18 @@ func (i Install) Python() {
 	neovim2 := "eval \"$(pyenv init -)\" && pyenv shell neovim2"
 	run.Verbose(
 		"%s && %s && %s",
+		neovim2,
 		"pyenv exec pip install --upgrade pip pynvim",
 		"pyenv which python",
-		neovim2,
 	)
 
 	log.Info("Installing python3 neovim dependencies")
 	neovim3 := "eval \"$(pyenv init -)\" && pyenv shell neovim3"
 	run.Verbose(
 		"%s && %s && %s",
+		neovim3,
 		"pyenv exec pip install --upgrade pip pynvim flake8",
 		"pyenv which python",
-		neovim3,
 	)
 
 	log.Info("Linking neovim3 flake8 python linter")
