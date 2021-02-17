@@ -24,6 +24,8 @@ function chrome.openProfileMenu()
   local app = hs.application.applicationsForBundleID('com.google.Chrome')[1]
   if app ~= nil then
     app:activate()
+    -- focus on menubar if auto-hidden
+    hs.eventtap.keyStroke({'fn', 'ctrl'}, 'f2')
     app:selectMenuItem({'People'})
   end
 end
