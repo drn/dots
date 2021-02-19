@@ -3,6 +3,7 @@
 # taps
 tap 'adoptopenjdk/openjdk'
 tap 'fishtown-analytics/dbt'
+tap 'goreleaser/tap'
 tap 'heroku/brew'
 tap 'jesseduffield/lazydocker'
 
@@ -57,6 +58,7 @@ brew 'git-gui'
 brew 'git-lfs'
 brew 'gnupg'
 brew 'go'
+brew 'goreleaser'
 brew 'gource'
 brew 'gradle'
 brew 'grpcurl'
