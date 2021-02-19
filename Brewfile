@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 # taps
+tap 'adoptopenjdk/openjdk'
 tap 'fishtown-analytics/dbt'
 tap 'heroku/brew'
 tap 'jesseduffield/lazydocker'
@@ -8,6 +9,7 @@ tap 'jesseduffield/lazydocker'
 # casks
 cask '1password'
 cask '1password-cli'
+cask 'adoptopenjdk8'
 cask 'android-studio'
 cask 'bartender'
 cask 'box-drive'
