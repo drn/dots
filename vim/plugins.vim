@@ -122,6 +122,8 @@ Plug 'jpalardy/vim-slime', { 'on': [
 \ '<Plug>SlimeParagraphSend',
 \ '<Plug>SlimeConfig'
 \ ] }
+" interactive scratchpad
+Plug 'metakirby5/codi.vim'
 
 " Language-specific plugins
 Plug 'keith/rspec.vim', { 'for': 'ruby' }
@@ -147,3 +149,5 @@ Plug 'fatih/vim-go', { 'for': 'go', 'do': ':GoUpdateBinaries' }
 Plug 'leafgarland/typescript-vim', { 'for': 'typescript' }
 
 call plug#end()
+
+
