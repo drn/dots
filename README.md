@@ -6,6 +6,7 @@ Managed by a robust, extensible Go CLI.
 
 * * *
 
+[![Github](https://github.com/drn/dots/actions/workflows/main.yml/badge.svg?branch=master)](https://github.com/drn/dots/actions?query=branch%3Amaster)
 [![CircleCI](https://circleci.com/gh/drn/dots.svg?style=svg)](https://circleci.com/gh/drn/dots)
 [![Go Report Card](https://goreportcard.com/badge/github.com/drn/dots)](https://goreportcard.com/report/github.com/drn/dots)
 
