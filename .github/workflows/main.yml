@@ -1,9 +1,11 @@
 name: dots
+
 on:
   push:
     branches:
       - master
   pull_request:
+
 jobs:
   setup:
     name: Setup & install drn/dots
@@ -14,8 +16,19 @@ jobs:
         with:
           go-version: '^1.16.2'
       - name: Install drn/dots
-        run: |
-          go get -u github.com/drn/dots
+        run: go get -u github.com/drn/dots
       - name: Verify installation
-        run: |
-          dots help
+        run: dots help
+
+  lint:
+    name: Lint
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-go@v2
+        with:
+          go-version: '^1.16.2'
+      - name: Install Golint
+        run: go get -u golang.org/x/lint/golint
+      - name: Go Lint
+        run: golint ./...
