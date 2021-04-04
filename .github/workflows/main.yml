@@ -15,10 +15,22 @@ jobs:
       - uses: actions/setup-go@v2
         with:
           go-version: '^1.16.2'
+      - name: Cache Go Modules
+        uses: actions/cache@v2
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
       - name: Install drn/dots
         run: go get -u github.com/drn/dots
       - name: Verify installation
         run: dots help
+      - name: Cache dots CLI
+        uses: actions/upload-artifact@v2
+        with:
+          name: dots-cli
+          path: ~/go/bin/dots
 
   lint:
     name: Lint
@@ -32,3 +44,172 @@ jobs:
         run: go get -u golang.org/x/lint/golint
       - name: Go Lint
         run: golint ./...
+
+  dots-install-bin:
+    name: dots install bin
+    needs: setup
+    runs-on: macos-latest
+    steps:
+      - name: Fetch dots CLI
+        uses: actions/download-artifact@v2
+        with:
+          name: dots-cli
+          path: ~/bin
+      - run: chmod +x ~/bin/dots
+      - run: dots install bin
+
+  dots-install-git:
+    name: dots install git
+    needs: setup
+    runs-on: macos-latest
+    steps:
+      - name: Fetch dots CLI
+        uses: actions/download-artifact@v2
+        with:
+          name: dots-cli
+          path: ~/bin
+      - run: chmod +x ~/bin/dots
+      - run: dots install git
+
+  dots-install-home:
+    name: dots install home
+    needs: setup
+    runs-on: macos-latest
+    steps:
+      - name: Fetch dots CLI
+        uses: actions/download-artifact@v2
+        with:
+          name: dots-cli
+          path: ~/bin
+      - run: chmod +x ~/bin/dots
+      - run: dots install home
+
+  dots-install-zsh:
+    name: dots install zsh
+    needs: setup
+    runs-on: macos-latest
+    steps:
+      - name: Fetch dots CLI
+        uses: actions/download-artifact@v2
+        with:
+          name: dots-cli
+          path: ~/bin
+      - run: chmod +x ~/bin/dots
+      - run: dots install zsh
+
+  dots-install-fonts:
+    name: dots install fonts
+    needs: setup
+    runs-on: macos-latest
+    steps:
+      - name: Fetch dots CLI
+        uses: actions/download-artifact@v2
+        with:
+          name: dots-cli
+          path: ~/bin
+      - run: chmod +x ~/bin/dots
+      - run: dots install fonts
+
+  dots-install-homebrew:
+    name: dots install homebrew
+    needs: setup
+    runs-on: macos-latest
+    steps:
+      - name: Fetch dots CLI
+        uses: actions/download-artifact@v2
+        with:
+          name: dots-cli
+          path: ~/bin
+      - run: chmod +x ~/bin/dots
+      - run: dots install homebrew
+
+  dots-install-npm:
+    name: dots install npm
+    needs: setup
+    runs-on: macos-latest
+    steps:
+      - name: Fetch dots CLI
+        uses: actions/download-artifact@v2
+        with:
+          name: dots-cli
+          path: ~/bin
+      - run: chmod +x ~/bin/dots
+      - run: dots install npm
+
+  dots-install-vim:
+    name: dots install vim
+    needs: setup
+    runs-on: macos-latest
+    steps:
+      - name: Fetch dots CLI
+        uses: actions/download-artifact@v2
+        with:
+          name: dots-cli
+          path: ~/bin
+      - run: chmod +x ~/bin/dots
+      - run: dots install vim
+
+  dots-install-python:
+    name: dots install python
+    needs: setup
+    runs-on: macos-latest
+    steps:
+      - name: Fetch dots CLI
+        uses: actions/download-artifact@v2
+        with:
+          name: dots-cli
+          path: ~/bin
+      - run: chmod +x ~/bin/dots
+      - run: dots install python
+
+  dots-install-ruby:
+    name: dots install ruby
+    needs: setup
+    runs-on: macos-latest
+    steps:
+      - name: Fetch dots CLI
+        uses: actions/download-artifact@v2
+        with:
+          name: dots-cli
+          path: ~/bin
+      - run: chmod +x ~/bin/dots
+      - run: dots install ruby
+
+  dots-install-hammerspoon:
+    name: dots install hammerspoon
+    needs: setup
+    runs-on: macos-latest
+    steps:
+      - name: Fetch dots CLI
+        uses: actions/download-artifact@v2
+        with:
+          name: dots-cli
+          path: ~/bin
+      - run: chmod +x ~/bin/dots
+      - run: dots install hammerspoon
+
+  dots-install-osx:
+    name: dots install osx
+    needs: setup
+    runs-on: macos-latest
+    steps:
+      - name: Fetch dots CLI
+        uses: actions/download-artifact@v2
+        with:
+          name: dots-cli
+          path: ~/bin
+      - run: chmod +x ~/bin/dots
+      - run: dots install osx
+
+  dots-update:
+    name: dots update
+    needs: setup
+    runs-on: macos-latest
+    steps:
+      - name: Fetch dots CLI
+        uses: actions/download-artifact@v2
+        with:
+          name: dots-cli
+          path: ~/bin
+      - run: chmod +x ~/bin/dots
+      - run: dots update
