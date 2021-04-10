@@ -70,8 +70,6 @@
   # browse the current head on github
   browse = !"hub browse -- commit/${1:-$(git rev-parse HEAD)}"
   bro = !"git browse"
-  # open browser to current github repo
-  go = !"open \"https://github.com/$(git path)\""
   # rebase on top of the canonical path
   rbm = rebase-master
   # hard reset to canonical path
