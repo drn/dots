@@ -1,3 +1,8 @@
+-- If backgrounds start changing inconsistently (forward & background does not
+-- result in the same picture showing up, this is likely due to the Desktop &
+-- Screen Saver System Preferences being set to Apple > Desktop Pictures instead
+-- of Folders > horizontal.
+
 local background = {}
 
 local alert = require 'alert'
