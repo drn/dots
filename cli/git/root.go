@@ -63,10 +63,10 @@ func CanonicalBranch() string {
 	if remote == "" {
 		return ""
 	}
-	match := fmt.Sprintf("%s/dev", remote)
+	match := fmt.Sprintf("%s/main", remote)
 	for _, branch := range RemoteBranches() {
 		if branch == match {
-			return "dev"
+			return "main"
 		}
 	}
 	return "master"
