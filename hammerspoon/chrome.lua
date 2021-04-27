@@ -26,7 +26,7 @@ function chrome.openProfileMenu()
     app:activate()
     -- focus on menubar if auto-hidden
     hs.eventtap.keyStroke({'fn', 'ctrl'}, 'f2')
-    app:selectMenuItem({'People'})
+    app:selectMenuItem({'Profiles'})
   end
 end
 
