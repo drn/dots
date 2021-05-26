@@ -25,7 +25,7 @@ current="$current_author:$current_branch"
 
 # determine source author and branch
 source_branch="master"
-if [ ! -z "$(git branch --remote | grep upstream/dev)" ]; then
+if [ ! -z "$(git branch --remote | grep upstream/dev$)" ]; then
   source_branch="dev"
 fi
 source_author="$(git author)"
