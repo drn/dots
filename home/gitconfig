@@ -108,6 +108,7 @@
   rba = rebase --abort
   rf = refetch-tags
   cf = clean --force
+  home = !"open https://github.com/$(git config github.user)"
 
 [user]
   name = Darren Cheng
