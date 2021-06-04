@@ -56,7 +56,7 @@ Plug 'tacahiroy/ctrlp-funky'
 " test runner
 Plug 'janko-m/vim-test'
 " send input to tmux, used by vim-test runner
-Plug 'benmills/vimux'
+Plug 'preservim/vimux'
 " wakatime tracking
 Plug 'wakatime/vim-wakatime'
 " highlight yanked region
