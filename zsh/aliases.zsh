@@ -66,6 +66,7 @@ alias v='nvim'
 alias vi='vim'
 alias vimdiff='mvim -d'
 alias vimsync='dots install vim'
+alias ver='thanx version'
 
 # tmux-start shortcuts
 alias mxm='unshrink; tmux-start master'
