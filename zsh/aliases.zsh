@@ -1,14 +1,14 @@
 # System Aliases
 alias history='fc -l 1'
 alias l='ls'
-alias ls='nerd-ls -i'
 alias la='nerd-ls -ai'
 alias ll='nerd-ls -ail'
-alias lt='nerd-ls -iT'
 alias llt='nerd-ls -ilT'
-alias sls='/bin/ls -G'
+alias ls='nerd-ls -i'
+alias lt='nerd-ls -iT'
 alias o.='open .'
 alias o='open'
+alias sls='/bin/ls -G'
 alias tree='tree -C'
 
 # Navigation Aliases
@@ -30,16 +30,16 @@ alias dsk='tmux rename-window desktop 2>/dev/null; cd ~/Desktop'
 
 # Command Aliases
 alias 1pass='. 1pass'
-alias acorn="ssh \$ACORN_USERNAME@\$ACORN_HOST"
 alias acorn-misc="mkdir -p ~/Downloads/misc; scp -r \$ACORN_USERNAME@\$ACORN_HOST:~/downloads/misc/* ~/Downloads/misc"
+alias acorn="ssh \$ACORN_USERNAME@\$ACORN_HOST"
 alias binstubs='bundle install --binstubs .bundle/bin'
 alias cat='bat'
+alias cgo='git circle-go'
 alias chrome='/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome'
 alias ff='fuzzy-find'
 alias fff='fuzzy-find-file'
 alias g='git'
 alias ggo='git go'
-alias cgo='git circle-go'
 alias gh='git home'
 alias gitx='open -a /Applications/GitX.app .'
 alias h='history'
@@ -63,10 +63,10 @@ alias unshrink='. unshrink'
 alias up='dots update'
 alias v.='nvim .'
 alias v='nvim'
+alias ver='thanx version'
 alias vi='vim'
 alias vimdiff='mvim -d'
 alias vimsync='dots install vim'
-alias ver='thanx version'
 
 # tmux-start shortcuts
 alias mxm='unshrink; tmux-start master'
