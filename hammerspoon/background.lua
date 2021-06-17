@@ -3,41 +3,51 @@
 -- Screen Saver System Preferences being set to Apple > Desktop Pictures instead
 -- of Folders > horizontal.
 
-local background = {}
+local background = {
+  primary   = {},
+  secondary = {}
+}
 
 local alert = require 'alert'
 local as    = require 'hs.applescript'
 local fs    = require 'hs.fs'
 
 local function tell(cmd)
-  local _cmd = 'tell application "Finder" to ' .. cmd
+  local _cmd = 'tell application "System Events" to ' .. cmd
   local _ok, result = as.applescript(_cmd)
   return result
 end
 
 -- returns the filename of the current background image
-local function currentBackground()
-  local path = tell('get posix path of (get desktop picture as alias)')
+local function backgroundPath(target)
+  local path = tell('get picture of '..target..' desktop')
   if not path then return '' end
   return path:match("^.+/(.+)$")
 end
 
+local function backgroundFolder(target)
+  folder = 'horizontal'
+  if target == 'second' then folder = 'vertical' end
+  return '~/Pictures/'..folder..'/'
+end
+
 -- returns a table of filenames and the index of the current background
-local function backgroundInfo()
+local function backgroundInfo(target)
   -- build files table
   local files = {}
-  for file in fs.dir("~/Pictures/horizontal") do
+  for file in fs.dir(backgroundFolder(target)) do
     if file ~= '.' and file ~= '..' and file ~= '.DS_Store' then
       files[#files + 1] = file
     end
   end
   -- sort files table
   table.sort(files, function(a,b) return a < b end)
+
   -- find index of current background
   local index = 1
-  local current = currentBackground()
+  local path = backgroundPath(target)
   for idx, file in pairs(files) do
-    if current == file then
+    if path == file then
       index = idx
     end
   end
@@ -45,34 +55,49 @@ local function backgroundInfo()
   return files, index
 end
 
-local function setBackground(filename)
+local function setBackground(filename, target)
   tell(
-    'set desktop picture to posix file "' ..
-    os.getenv('HOME') ..
-    '/Pictures/horizontal/' ..
+    'set picture of '..target..' desktop to "' ..
+    backgroundFolder(target) ..
     filename ..
     '"'
   )
 end
 
-function background.forward()
-  local files, index = backgroundInfo()
+local function forward(target)
+  local files, index = backgroundInfo(target)
   -- iterate forward
   index = index + 1
   if index > #files then index = 1 end
   -- set background and alert
-  setBackground(files[index])
+  setBackground(files[index], target)
   alert.showOnly(index)
 end
 
-function background.backward()
-  local files, index = backgroundInfo()
+local function backward(target)
+  local files, index = backgroundInfo(target)
   -- iterate backward
   index = index - 1
   if index < 1 then index = #files end
   -- set background and alert
-  setBackground(files[index])
+  setBackground(files[index], target)
   alert.showOnly(index)
+end
+
+function background.primary.forward()
+  forward('current')
+end
+
+function background.primary.backward()
+  backward('current')
+end
+
+function background.secondary.forward()
+  forward('second')
+end
+
+function background.secondary.backward()
+  backward('second')
 end
 
 return background

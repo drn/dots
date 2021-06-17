@@ -165,11 +165,19 @@ end)
 -- Background Bindings
 
 hs.hotkey.bind({'ctrl', 'alt', 'cmd'}, '-', function()
-  background.backward()
+  background.primary.backward()
 end)
 
 hs.hotkey.bind({'ctrl', 'alt', 'cmd'}, '=', function()
-  background.forward()
+  background.primary.forward()
+end)
+
+hs.hotkey.bind({'ctrl', 'alt', 'cmd', 'shift'}, '-', function()
+  background.secondary.backward()
+end)
+
+hs.hotkey.bind({'ctrl', 'alt', 'cmd', 'shift'}, '=', function()
+  background.secondary.forward()
 end)
 
 -- Bluetooth Bindings
