@@ -2,6 +2,7 @@
 
 # taps
 tap 'adoptopenjdk/openjdk'
+tap 'drn/homebrew-tap'
 tap 'fishtown-analytics/dbt'
 tap 'goreleaser/tap'
 tap 'heroku/brew'
@@ -84,6 +85,7 @@ brew 'mercurial'
 brew 'mysql@5.7'
 brew 'neofetch'
 brew 'neovim'
+brew 'nerd-ls'
 brew 'npm'
 brew 'phantomjs'
 brew 'pipenv'
