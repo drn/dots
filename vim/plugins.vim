@@ -124,6 +124,8 @@ Plug 'jpalardy/vim-slime', { 'on': [
 \ ] }
 " interactive scratchpad
 Plug 'metakirby5/codi.vim'
+" improved whitespace highlighting
+Plug 'ntpeters/vim-better-whitespace'
 
 " Language-specific plugins
 Plug 'keith/rspec.vim', { 'for': 'ruby' }
