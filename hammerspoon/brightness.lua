@@ -1,4 +1,7 @@
-local brightness = {}
+local brightness = {
+  primary = {},
+  secondary = {}
+}
 
 local alert = require 'alert'
 
@@ -10,18 +13,44 @@ local function display(text, value)
   alert.showOnly(text..(math.floor(value / 5) * 5)..'% '..icon, 0.5)
 end
 
-function brightness.increase(delta)
-  delta = delta or 5
-  local value = hs.brightness.get() + delta
-  hs.brightness.set(value)
-  display('↑ ', value)
+local function increase(screen, delta)
+  current = screen:getBrightness()
+  if not current then return end
+  delta = (delta or 5) / 100.0
+  local value = current + delta
+  screen:setBrightness(value)
+  display('↑ ', value * 100)
 end
 
-function brightness.decrease(delta)
-  delta = delta or 5
-  local value = hs.brightness.get() - delta
-  hs.brightness.set(value)
+local function decrease(screen, delta)
+  current = screen:getBrightness()
+  if not current then return end
+  delta = (delta or 5) / 100.0
+  local value = current - delta
+  screen:setBrightness(value)
   display('↓ ', value)
+end
+
+function brightness.primary.increase(delta)
+  local screen = hs.screen.primaryScreen()
+  increase(screen, delta)
+end
+
+function brightness.primary.decrease(delta)
+  local screen = hs.screen.primaryScreen()
+  decrease(screen, delta)
+end
+
+function brightness.secondary.increase(delta)
+  local screen = hs.screen.allScreens()[2]
+  if not screen then return end
+  increase(screen, delta)
+end
+
+function brightness.secondary.decrease(delta)
+  local screen = hs.screen.allScreens()[2]
+  if not screen then return end
+  decrease(screen, delta)
 end
 
 return brightness
