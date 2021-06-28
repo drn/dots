@@ -2,11 +2,12 @@ package commands
 
 import (
 	"fmt"
+	"time"
+
 	spin "github.com/briandowns/spinner"
 	"github.com/drn/dots/cli/commands/spinner"
-	. "github.com/logrusorgru/aurora"
+	color "github.com/logrusorgru/aurora"
 	"github.com/spf13/cobra"
-	"time"
 )
 
 var cmdSpinner = &cobra.Command{
@@ -56,9 +57,9 @@ var cmdSpinnerConsole = &cobra.Command{
 		s.Color("magenta")
 		s.Prefix = fmt.Sprintf(
 			"Running %s on %s (%s)... ",
-			BrightCyan("console"),
-			Blue("⬢ thanx-ordering"),
-			BrightMagenta("sandbox"),
+			color.BrightCyan("console"),
+			color.Blue("⬢ thanx-ordering"),
+			color.BrightMagenta("sandbox"),
 		)
 		s.Start()
 		time.Sleep(2 * time.Second)
