@@ -5,7 +5,7 @@
 # external ip retrieval if any services are unavailable.
 #
 
-# return cached ip if last modified is within threshold
+# return cached ip if last modified is within threshold (60s)
 last_modified="$(stat -f '%m' "$HOME/.ip" 2>/dev/null)"
 [ -z "$last_modified" ] && last_modified=0
 if (( "$last_modified" > $(($(date +%s) - 60)) )); then
@@ -18,8 +18,9 @@ services=(
   ifconfig.co
   bot.whatismyipaddress.com
   ipv4.icanhazip.com
-  ipecho.net/plain
   wtfismyip.com/text
+  # only v4
+  ipecho.net/plain
   ifconfig.me
   l2.io/ip
 )
@@ -28,7 +29,7 @@ services=(
 ip="$(dig +short myip.opendns.com @resolver1.opendns.com 2>/dev/null)"
 for service in "${services[@]}"; do
   [[ -n "$ip" ]] && break
-  ip="$(curl -s "$service" 2>/dev/null)"
+  ip="$(curl -s4 "$service" 2>/dev/null)"
 done
 
 # cache external ip
