@@ -28,7 +28,7 @@ local function decrease(screen, delta)
   delta = (delta or 5) / 100.0
   local value = current - delta
   screen:setBrightness(value)
-  display('↓ ', value)
+  display('↓ ', value * 100)
 end
 
 function brightness.primary.increase(delta)
