@@ -2,15 +2,28 @@
 
 # Usage: poll [sleep_duration] [command]
 
-n=0
-duration=$1
-cmd="${@:2}"
-[[ $# -le 1 ]] && { echo "Usage $0 <sleep duration> <command>"; }
+DURATION=$1
+CMD="${*:2}"
+USAGE="Usage poll <sleep duration> <command>"
 
+if [[ $# -le 1 ]]; then
+  echo "$USAGE" >&2
+  exit 1
+fi
+
+if ! [[ "$DURATION" =~ ^[0-9]+$ ]] ; then
+  echo "$USAGE" >&2
+  exit 1
+fi
+
+N=0
 while true; do
-  $cmd && break || {
-    ((n++))
-    echo -e "\033[0;31mCommand failed... Attemping retry #$n...\033[0m"
-    sleep $duration;
-  }
+  $CMD
+  # shellcheck disable=SC2181
+  if [ $? -eq 0 ]; then
+    break
+  fi
+  ((N++))
+  echo -e "\033[0;31mCommand failed... Attemping retry #$N...\033[0m"
+  sleep "$DURATION"
 done
