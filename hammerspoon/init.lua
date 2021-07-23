@@ -48,7 +48,7 @@ end
 
 local bindings = {
   [{ 'cmd', 'alt', 'shift'}] = {
-    iTerm                 = 'i',
+    Alacritty             = 'i',
     Safari                = 'return',
     Messages              = 'n',
     Slack                 = 'm',
