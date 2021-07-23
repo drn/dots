@@ -53,16 +53,36 @@ colors:
     text: '#000000'
     background: '#ff37a9'
 
+  vi_mode_cursor:
+    text: '#ffffff'
+    cursor: '#ff5733'
+
+  search:
+    matches:
+      foreground: '#1d1f21'
+      background: '#ff5733'
+    focused_match:
+      foreground: '#1d1f21'
+      background: '#c70039'
+    bar:
+      foreground: '#1d1f21'
+      background: '#ff5733'
+
+  line_indicator:
+    foreground: '#1d1f21'
+    background: '#ff5733'
+
 draw_bold_text_with_bright_colors: true
 
 background_opacity: 1
 
 cursor:
   style:
-    shape: Block
-    blinking: Off
-
-  vi_mode_style: Beam
+    shape: block
+    blinking: off
+  vi_mode_style:
+    shape: block
+    blinking: on
   blink_interval: 750
   unfocused_hollow: true
 
@@ -84,3 +104,5 @@ key_bindings:
   - { key: Right, mods: Command, chars: "\x1B[F" }
   # delete from cursor to beginning of line
   - { key: Back, mods: Command, chars: "\x15" }
+  # toggle vi mode
+  - { key: Space, mods: Shift|Command, mode: ~Search, action: ToggleViMode }
