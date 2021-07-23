@@ -31,4 +31,14 @@ func (i Install) Zsh() {
 		"antibody bundle < \"%s\" > ~/.bundles",
 		path.FromDots("zsh/bundles"),
 	)
+
+	// install tmux tpm
+	log.Info("Installing tmux pluin manager")
+	run.Verbose(
+		"git clone %s ~/.tmux/plugins/tpm 2>/dev/null",
+		"https://github.com/tmux-plugins/tpm",
+	)
+	run.Verbose(
+		"cd ~/.tmux/plugins/tpm; git fetch; git reset --hard origin/master",
+	)
 }
