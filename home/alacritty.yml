@@ -67,6 +67,15 @@ cursor:
 live_config_reload: true
 
 key_bindings:
+  # toggle fullscreen mode
   - { key: F, mods: Command, action: ToggleSimpleFullscreen }
+  # move cursor to one word left
   - { key: Left, mods: Alt, chars: "\x1Bb" }
+  # move cursor to one word right
   - { key: Right, mods: Alt, chars: "\x1Bf" }
+  # move cursor to the beginning of the line
+  - { key: Left, mods: Command, chars: "\x1B[H" }
+  # move cursor to the end of the line
+  - { key: Right, mods: Command, chars: "\x1B[F" }
+  # delete from cursor to beginning of line
+  - { key: Back, mods: Command, chars: "\x15" }
