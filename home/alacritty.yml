@@ -68,3 +68,5 @@ live_config_reload: true
 
 key_bindings:
   - { key: F, mods: Command, action: ToggleSimpleFullscreen }
+  - { key: Left, mods: Alt, chars: "\x1Bb" }
+  - { key: Right, mods: Alt, chars: "\x1Bf" }
