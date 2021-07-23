@@ -151,5 +151,3 @@ Plug 'fatih/vim-go', { 'for': 'go', 'do': ':GoUpdateBinaries' }
 Plug 'leafgarland/typescript-vim', { 'for': 'typescript' }
 
 call plug#end()
-
-
