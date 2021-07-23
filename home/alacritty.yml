@@ -68,6 +68,9 @@ cursor:
 
 live_config_reload: true
 
+mouse:
+  hide_when_typing: true
+
 key_bindings:
   # toggle fullscreen mode
   - { key: F, mods: Command, action: ToggleSimpleFullscreen }
