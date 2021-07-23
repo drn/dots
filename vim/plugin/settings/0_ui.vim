@@ -23,8 +23,9 @@ function! ConfigureUI()
   set cursorline
   highlight CursorLine guibg=#000070 ctermbg=17
   " configure and color the cursor
-  set guicursor=n-v-c:blinkwait500-blinkoff500-blinkon500
-  set guicursor+=i:ver25-iCursor
+  set guicursor=n-v-c:block-Cursor/lCursor-blinkon0,
+  set guicursor+=i-ci:ver25-Cursor/lCursor,
+  set guicursor+=r-cr:hor20-Cursor/lCursor
   highlight Cursor guibg=#C92765 ctermbg=161
   " configure and color the color column
   if exists('+colorcolumn')
