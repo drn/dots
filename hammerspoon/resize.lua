@@ -1,7 +1,10 @@
 local resize = {}
 
-local function isIterm(win)
-  return (win:application():title() == 'iTerm2')
+local function isTerm(win)
+  return (
+    win:application():title() == 'iTerm2' or
+    win:application():title() == 'Alacritty'
+  )
 end
 
 local function frameForUnit(baseframe, unit)
@@ -16,7 +19,7 @@ end
 local function setUnit(unit)
   local win = hs.window.focusedWindow()
   if win == nil then return end
-  if isIterm(win) and not win:isStandard() then return end
+  if isTerm(win) and not win:isStandard() then return end
 
   local screenframe = win:screen():frame()
   local expected = frameForUnit(screenframe, unit)
