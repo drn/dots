@@ -1,0 +1,70 @@
+env:
+  TERM: xterm-256color
+
+window:
+  startup_mode: SimpleFullscreen
+
+font:
+  normal:
+    family: 'Menlo Nerd Font'
+    style: RegularForPowerline
+  size: 14.0
+
+  offset:
+    x: 0
+    y: 0
+
+  glyph_offset:
+    x: 0
+    y: 0
+
+  use_thin_strokes: true
+
+colors:
+  primary:
+    background: '#08082a'
+    foreground: '#e4e4e4'
+
+  cursor:
+    text: '#feffff'
+    cursor: '#ffb472'
+
+  normal:
+    black:   '#a3a3a3'
+    red:     '#e98885'
+    green:   '#a3c38b'
+    yellow:  '#ffc68d'
+    blue:    '#a6cae2'
+    magenta: '#e7cdfb'
+    cyan:    '#00a69f'
+    white:   '#e4e4e4'
+
+  bright:
+    black:   '#c8c8c8'
+    red:     '#ffb2b0'
+    green:   '#c8e2b9'
+    yellow:  '#ffe1af'
+    blue:    '#bddff7'
+    magenta: '#fce2ff'
+    cyan:    '#0bbdb6'
+    white:   '#feffff'
+
+  selection:
+    text: '#5963a2'
+    background: '#f6f6f6'
+
+background_opacity: 0.95
+
+cursor:
+  style:
+    shape: Block
+    blinking: Off
+
+  vi_mode_style: Beam
+  blink_interval: 750
+  unfocused_hollow: true
+
+live_config_reload: true
+
+key_bindings:
+  - { key: F, mods: Command, action: ToggleSimpleFullscreen }
