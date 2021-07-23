@@ -104,9 +104,13 @@ function resize.changeScreen()
   -- exit if only one screen exists
   local next = current:next()
   if current:id() == next:id() then return end
+  -- handle full-sreen terminal screen change
+  term=isTerm(win) and not win:isMaximizable()
+  if term then hs.eventtap.keyStroke({"cmd"}, "f") end
   -- set the frame of current window to the next screen
   local win = hs.window.focusedWindow()
   win:setFrame(next:fullFrame(), 0)
+  if term then hs.eventtap.keyStroke({"cmd"}, "f") end
 end
 
 return resize
