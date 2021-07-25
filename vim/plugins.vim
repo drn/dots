@@ -109,11 +109,6 @@ Plug 'tpope/vim-commentary', { 'on': [
 \ '<Plug>Commentary',
 \ '<Plug>CommentaryLine'
 \ ] }
-" ctrl-a (increment) ctrl-x (decrement)
-Plug 'tpope/vim-speeddating', { 'on': [
-\ '<Plug>SpeedDatingUp',
-\ '<Plug>SpeedDatingDown'
-\ ] }
 " send text to tmux
 Plug 'jpalardy/vim-slime', { 'on': [
 \ '<Plug>SlimeRegionSend',
