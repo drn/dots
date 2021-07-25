@@ -33,7 +33,9 @@ for service in "${services[@]}"; do
 done
 
 # cache external ip
-echo "$ip" > "$HOME/.ip"
+if [ -n "$ip" ]; then
+  echo "$ip" > "$HOME/.ip"
+fi
 
 # echo retrieved ip
 echo "$ip"
