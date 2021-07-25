@@ -106,3 +106,6 @@ key_bindings:
   - { key: Back, mods: Command, chars: "\x15" }
   # toggle vi mode
   - { key: Space, mods: Shift|Command, mode: ~Search, action: ToggleViMode }
+  # disable quit commands
+  - { key: W, mods: Command, action: None }
+  - { key: Q, mods: Command, action: None }
