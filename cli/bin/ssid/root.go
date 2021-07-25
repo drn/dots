@@ -4,16 +4,16 @@ package main
 
 import (
 	"fmt"
-	"github.com/drn/dots/cli/run"
 	"os"
 	"strings"
+
+	"github.com/drn/dots/cli/run"
 )
 
 func main() {
 	info := run.Capture("airport -I")
 
 	if strings.Contains(info, "AirPort: Off") {
-		fmt.Println("[ disabled ]")
 		os.Exit(0)
 	}
 
