@@ -1,7 +1,5 @@
 call plug#begin('~/.vim/plugged')
 
-" Allow YCM time to compile
-let g:plug_timeout = 180
 " Run plug commands in current split
 let g:plug_window = ''
 
