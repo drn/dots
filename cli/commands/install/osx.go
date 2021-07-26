@@ -1,10 +1,11 @@
 package install
 
 import (
+	"os"
+
 	"github.com/drn/dots/cli/is"
 	"github.com/drn/dots/cli/log"
 	"github.com/drn/dots/cli/run"
-	"os"
 )
 
 // Osx - Sets OSX configuration
@@ -55,6 +56,11 @@ func (i Install) Osx() {
 	log.Info("Disable iTunes auto-start when devices are plugged in")
 	run.Verbose(
 		"defaults write com.apple.iTunesHelper ignore-devices 1",
+	)
+
+	log.Info("Display all file extensions in Finder")
+	run.Verbose(
+		"defaults write NSGlobalDomain AppleShowAllExtensions -bool true",
 	)
 
 	log.Info("Ensuring changes take effect immediately")
