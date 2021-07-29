@@ -40,7 +40,7 @@ prompt_git_info() {
   ref=$(command git rev-parse --short HEAD 2> /dev/null) || return
   local git_color="$BBlue"
   if prompt_git_dirty; then git_color="$BYellow"; fi
-  local prefix=" ${git_color}⭠ $Red"
+  local prefix=" ${git_color}\ue0a0 $Red"
   local suffix="$ColorReset"
   echo "$prefix${ref#refs/heads/}$suffix"
 }
