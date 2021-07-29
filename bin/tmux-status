@@ -40,9 +40,14 @@ COL3_BC_20="#[fg=colour130,bg=colour236]"
 COL3_2="#[fg=colour236,bg=colour239,nobold,nounderscore,noitalics]"
 COL3_1="#[fg=colour236,bg=colour103,nobold,nounderscore,noitalics]"
 
+# setup separators
+SEP_R1="\ue0b0"
+SEP_R2="\ue0b1"
+SEP_L1="\ue0b2"
+SEP_L2="\ue0b3"
+
 function left {
-  SEP="⮁"
-  FIRST="#S $SEP #F"
+  FIRST="#S $SEP_R2 #F"
   SECOND="$(ssid | sed s/\#//g)"
   THIRD=""
   if [[ -z "$SECOND" ]]; then
@@ -51,7 +56,7 @@ function left {
     SECOND="[$SECOND] $(local-ip en7 2>/dev/null || local-ip || echo "127.0.0.1")"
     THIRD="$(ip)"
   fi
-  SEP="⮀"
+  SEP=$SEP_R1
   case $SIZE in
     min) echo "$COL1 $FIRST $COL1_3$SEP$COL3" ;;
     med) echo "$COL1 $FIRST $COL1_2$SEP$COL2 $THIRD $COL2_3$SEP$COL3" ;;
@@ -83,11 +88,10 @@ function battery {
 }
 
 function right {
-  SEP="⮃"
   FIRST="$(echo $(date +'%l:%M%p') | tr '[:upper:]' '[:lower:]')"
-  SECOND="$(date +'%a %-d') $SEP $(date +'%b %Y')"
+  SECOND="$(date +'%a %-d') $SEP_L2 $(date +'%b %Y')"
   THIRD="$(cpu)c $(memory)m $(battery)b"
-  SEP="⮂"
+  SEP=$SEP_L1
   case $SIZE in
     min) echo "$COL1_3$SEP$COL1 $FIRST " ;;
     med) echo "$COL2_3$SEP$COL2 $THIRD $COL1_2$SEP$COL1 $FIRST " ;;
@@ -100,7 +104,7 @@ if [ "$SIDE" = "left" ]; then
 elif [ "$SIDE" = "right" ]; then
   right
 elif [ "$SIDE" = "center" ]; then
-  echo "${COL3_2}⮀${COL2} #I #W ${COL2_3}⮀"
+  echo "${COL3_2}$SEP_R1${COL2} #I #W ${COL2_3}$SEP_R1"
 elif [ "$SIDE" = "center-current" ]; then
-  echo "${COL3_1}⮀${COL1} #I #W ${COL1_3}⮀"
+  echo "${COL3_1}$SEP_R1${COL1} #I #W ${COL1_3}$SEP_R1"
 fi
