@@ -6,8 +6,8 @@ window:
 
 font:
   normal:
-    family: 'Menlo Nerd Font'
-    style: RegularForPowerline
+    family: 'Hack Nerd Font'
+    style: Regular
   size: 14.0
 
   offset:
