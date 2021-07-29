@@ -50,14 +50,14 @@ let g:lightline = {
 \     'linter_ok': 'left',
 \   },
 \   'component': {
-\     'lineinfo': '⭡ %3l:%-2v'
+\     'lineinfo': "\uf77a %3l:%-2v"
 \   },
 \   'separator': {
-\     'left': '⮀',
-\     'right': '⮂'
+\     'left': "\ue0b0",
+\     'right': "\ue0b2"
 \   },
 \   'subseparator': {
-\     'left': '⮁',
-\     'right': '⮃'
+\     'left': "\ue0b1",
+\     'right': "\ue0b3"
 \   }
 \ }

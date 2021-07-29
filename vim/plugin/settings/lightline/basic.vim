@@ -12,7 +12,7 @@ function! LightlineModified()
 endfunction
 
 function! LightlineReadonly()
-  return &ft !~? 'help' && &readonly ? '⭤' : ''
+  return &ft !~? 'help' && &readonly ? "\uf456" : ''
 endfunction
 
 function! LightlineFilename()
@@ -50,5 +50,5 @@ function! LightlineFileencoding()
 endfunction
 
 function! LightlineFilebom()
-  return winwidth(0) > 70 ? (&bomb ? '[BOM]' : '') : ''
+  return winwidth(0) > 70 ? (&bomb ? "[\ufb8f]" : '') : ''
 endfunction
