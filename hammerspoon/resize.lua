@@ -19,7 +19,7 @@ end
 local function setUnit(unit)
   local win = hs.window.focusedWindow()
   if win == nil then return end
-  if isTerm(win) and not win:isStandard() then return end
+  if isTerm(win) and not win:isMaximizable() then return end
 
   local screenframe = win:screen():frame()
   local expected = frameForUnit(screenframe, unit)
