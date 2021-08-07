@@ -21,7 +21,7 @@ func (i Install) Osx() {
 	// disable key hold popup menu
 	run.Verbose("defaults write -g ApplePressAndHoldEnabled -bool false")
 	// set key repeat rates
-	run.Verbose("defaults write -g InitialKeyRepeat -int 12")
+	run.Verbose("defaults write -g InitialKeyRepeat -int 15")
 	run.Verbose("defaults write -g KeyRepeat -int 3")
 
 	log.Info("Disabling natural scrolling")
