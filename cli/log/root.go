@@ -35,10 +35,10 @@ func Warning(output string, args ...interface{}) {
 // Command - Logs command in appropriate color
 func Command(output string, args ...interface{}) {
 	output = path.Pretty(fmt.Sprintf(output, args...))
-	color.White("%s %s", color.BlueString("❯"), output)
+	color.White("%s %s", color.BlueString("\u276F"), output)
 }
 
 // Raw - Logs command in appropriate color
 func Raw(output string) {
-	color.White("%s %s", color.BlueString("❯"), output)
+	color.White("%s %s", color.BlueString("\u276F"), output)
 }

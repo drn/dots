@@ -1,10 +1,5 @@
 #!/usr/local/bin/zsh
 
-# Set up console prompt
-#   dotfiles ⭠ master ❯
-#   ~ ❯
-#   ❯
-
 autoload -U add-zsh-hook
 setopt PROMPT_SUBST
 
@@ -127,7 +122,7 @@ terminal_prompt() {
   else
     indicator_color="red"
   fi
-  indicator="%{$fg_bold[$indicator_color]%}❯%{$reset_color%} "
+  indicator="%{$fg_bold[$indicator_color]%}\u276F%{$reset_color%} "
   # shrunk prompt
   if [ -z "$DISABLE_PROMPT" ]; then
     echo "$(prompt_directory)$(prompt_git_info) $indicator"

@@ -94,7 +94,7 @@ private
   end
 
   def separator(color=:magenta)
-    "#{colors[:bold]}#{colors[color]}❯#{colors[:reset]}"
+    "#{colors[:bold]}#{colors[color]}\u276F#{colors[:reset]}"
   end
 
   def colors
