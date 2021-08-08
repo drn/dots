@@ -53,9 +53,9 @@ function left {
   SECOND="$(ssid | sed s/\#//g)"
   THIRD=""
   if [[ -z "$SECOND" ]]; then
-    SECOND="[no network]"
+    SECOND="Offline"
   else
-    SECOND="[$SECOND] $(local-ip en7 2>/dev/null || local-ip || echo "127.0.0.1")"
+    SECOND="$SECOND $SEP_R2 $(local-ip en7 2>/dev/null || local-ip || echo "127.0.0.1")"
     THIRD="$(ip)"
   fi
   SEP=$SEP_R1
