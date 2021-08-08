@@ -48,8 +48,8 @@ SEP_L2="\ue0b3"
 
 function left {
   FIRST="#S"
-  FIRST+="#{?window_zoomed_flag, $SEP_R2 Z,}"
-  FIRST+="#{?window_marked_flag, $SEP_R2 M,}"
+  FIRST+="#{?window_zoomed_flag, $SEP_R2 \uf848,}"
+  FIRST+="#{?window_marked_flag, $SEP_R2 \uf041,}"
   SECOND="$(ssid | sed s/\#//g)"
   THIRD=""
   if [[ -z "$SECOND" ]]; then
