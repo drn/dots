@@ -58,8 +58,8 @@ var cmdSpinnerConsole = &cobra.Command{
 		s.Prefix = fmt.Sprintf(
 			"Running %s on %s (%s)... ",
 			color.BrightCyan("console"),
-			color.Blue("⬢ thanx-ordering"),
-			color.BrightMagenta("sandbox"),
+			color.Blue("⬢ cluster"),
+			color.BrightMagenta("env"),
 		)
 		s.Start()
 		time.Sleep(2 * time.Second)
