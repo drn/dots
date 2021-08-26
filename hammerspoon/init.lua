@@ -51,7 +51,7 @@ local bindings = {
     Alacritty             = 'i',
     Messages              = 'n',
     Slack                 = 'm',
-    [ "Microsoft To Do" ] = "'",
+    Bear                  = "'",
     Vimcal                = '/'
   },
   [{ 'cmd', 'shift'}] = {
