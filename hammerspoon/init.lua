@@ -49,12 +49,9 @@ end
 local bindings = {
   [{ 'cmd', 'alt', 'shift'}] = {
     Alacritty             = 'i',
-    Safari                = 'return',
     Messages              = 'n',
     Slack                 = 'm',
-    Discord               = 'j',
     [ "Microsoft To Do" ] = "'",
-    MacVim                = '.',
     Vimcal                = '/'
   },
   [{ 'cmd', 'shift'}] = {
