@@ -54,7 +54,8 @@ local bindings = {
     Slack                 = 'm',
     Discord               = 'j',
     [ "Microsoft To Do" ] = "'",
-    MacVim                = '.'
+    MacVim                = '.',
+    Vimcal                = '/'
   },
   [{ 'cmd', 'shift'}] = {
     [ 'Superhuman' ] = '/'
