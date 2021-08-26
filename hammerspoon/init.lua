@@ -59,6 +59,9 @@ local bindings = {
   },
   [{ 'cmd', 'alt'}] = {
     [ 'Google Chrome' ] = 'return'
+  },
+  [{ 'ctrl', 'cmd', 'alt'}] = {
+    Spotify = 'space'
   }
 }
 for modifiers,apps in pairs(bindings) do
