@@ -178,7 +178,7 @@ command! Gcopy call Gcopy()
 command! Gc call Gcopy()
 
 " Alias Gb to Gblame
-command! Gb Gblame
+command! Gb Git blame
 
 " Open gitk to the current file
 function! Gitk()
