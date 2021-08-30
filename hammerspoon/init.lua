@@ -52,7 +52,7 @@ local bindings = {
     Messages              = 'n',
     Slack                 = 'm',
     Bear                  = "'",
-    Vimcal                = '/'
+    [ 'Google Calendar' ] = '/'
   },
   [{ 'cmd', 'shift'}] = {
     [ 'Superhuman' ] = '/'
