@@ -54,8 +54,8 @@ colors:
     background: '#ff37a9'
 
   vi_mode_cursor:
-    text: '#ffffff'
-    cursor: '#ff5733'
+    text: '#000000'
+    cursor: '#ffc6ff'
 
   search:
     matches:
@@ -69,8 +69,8 @@ colors:
       background: '#ff5733'
 
   line_indicator:
-    foreground: '#1d1f21'
-    background: '#ff5733'
+    foreground: '#000000'
+    background: '#ffc6ff'
 
 draw_bold_text_with_bright_colors: true
 
