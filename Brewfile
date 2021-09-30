@@ -44,6 +44,7 @@ cask 'yujitach-menumeters'
 
 # formulae
 brew 'amazon-ecs-cli'
+brew 'asdf'
 brew 'bat'
 brew 'blueutil'
 brew 'chafa'
