@@ -52,6 +52,7 @@ local bindings = {
     Messages              = 'n',
     Slack                 = 'm',
     Bear                  = "'",
+    Notion                = ';',
     [ 'Google Calendar' ] = '/'
   },
   [{ 'cmd', 'shift'}] = {
