@@ -51,8 +51,8 @@ local bindings = {
     Alacritty             = 'i',
     Messages              = 'n',
     Slack                 = 'm',
-    Bear                  = "'",
-    Notion                = ';',
+    Notion                = "'",
+    Bear                  = ';',
     [ 'Google Calendar' ] = '/'
   },
   [{ 'cmd', 'shift'}] = {
