@@ -33,6 +33,7 @@ cask 'postman'
 cask 'quicklook-json'
 cask 'redisinsight'
 cask 'rowanj-gitx'
+cask 'securid' # Mastercard Connect Utility
 cask 'slack'
 cask 'spotify'
 cask 'superhuman'
