@@ -1,0 +1,8 @@
+#!/bin/bash
+
+#
+# Converts all WEBP files in the ~/Downloads folder to JPGs
+#
+
+cd ~/Downloads
+mogrify -monitor -format jpg *.webp

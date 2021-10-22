@@ -69,6 +69,7 @@ alias ver='thanx version'
 alias vi='vim'
 alias vimdiff='mvim -d'
 alias vimsync='dots install vim'
+alias webp='webp-to-jpg'
 
 # tmux-start shortcuts
 alias mxm='unshrink; tmux-start master'
