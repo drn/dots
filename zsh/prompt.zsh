@@ -1,4 +1,4 @@
-#!/usr/local/bin/zsh
+#!/usr/bin/env zsh
 
 autoload -U add-zsh-hook
 setopt PROMPT_SUBST
