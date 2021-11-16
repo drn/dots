@@ -74,3 +74,6 @@ alias webp='webp-to-jpg'
 # tmux-start shortcuts
 alias mxm='unshrink; tmux-start master'
 alias mxv='unshrink; tmux-start vertical'
+
+# ARM overrides
+alias brew="arch -arm64 /opt/homebrew/bin/brew"
