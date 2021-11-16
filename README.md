@@ -20,7 +20,8 @@ own risk.
 
 ## Install
 
-    go get github.com/drn/dots
+
+    GO111MODULE=off go get github.com/drn/dots
     dots install all
 
 ## Dependencies
