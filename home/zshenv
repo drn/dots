@@ -6,17 +6,18 @@ if [ "$ZSHENV_SOURCED" != "true" ]; then
   # Include ~/bin scripts in PATH
   export PATH=$HOME/bin:$PATH
   # Include Homebrew in PATH
-  export PATH=/usr/local/bin:/usr/local/sbin:$PATH
-  export PATH=/opt/homebrew/bin:$PATH
+  export BREW_PATH=/usr/local # Intel silicon
+  [ -d "/opt/homebrew" ] && export BREW_PATH=/opt/homebrew # ARM silicon
+  export PATH=$BREW_PATH/bin:$BREW_PATH/sbin:$PATH
   # Include git extensions in PATH
   export PATH=$HOME/.git-extensions:$PATH
   # Include MySQL in PATH
-  export PATH=/usr/local/opt/mysql@5.7/bin:$PATH
+  export PATH=$BREW_PATH/opt/mysql@5.7/bin:$PATH
   # Include Android tools in PATH
   export PATH=$HOME/Library/Android/sdk/platform-tools:$PATH
   export PATH=$HOME/Library/Android/sdk/tools:$PATH
   # Load rbenv
-  export PATH=$HOME/.rbenv/shims:/usr/local/opt/bin:$PATH
+  export PATH=$HOME/.rbenv/shims:$BREW_PATH/opt/bin:$PATH
   if [ -n "$TMUX" ]; then
     eval "$(rbenv init - --no-rehash)"
   fi
@@ -48,17 +49,20 @@ if [ "$ZSHENV_SOURCED" != "true" ]; then
   # Enable async autosuggestions
   export ZSH_AUTOSUGGEST_USE_ASYNC=1
   # Append zlib compiler flags
-  export LDFLAGS="${LDFLAGS} -L/usr/local/opt/zlib/lib"
-  export CPPFLAGS="${CPPFLAGS} -I/usr/local/opt/zlib/include"
-  export PKG_CONFIG_PATH="${PKG_CONFIG_PATH} /usr/local/opt/zlib/lib/pkgconfig"
+  export LDFLAGS="${LDFLAGS} -L$BREW_PATH/opt/zlib/lib"
+  export CPPFLAGS="${CPPFLAGS} -I$BREW_PATH/opt/zlib/include"
+  export PKG_CONFIG_PATH="${PKG_CONFIG_PATH} $BREW_PATH/opt/zlib/lib/pkgconfig"
   # Ensure libressl is in path
-  export PATH="/usr/local/opt/libressl/bin:$PATH"
-  export LDFLAGS="${LDFLAGS} -L/usr/local/opt/libressl/lib"
-  export CPPFLAGS="${CPPFLAGS} -I/usr/local/opt/libressl/include"
-  export PKG_CONFIG_PATH="${PKG_CONFIG_PATH} /usr/local/opt/libressl/lib/pkgconfig"
+  export PATH="$BREW_PATH/opt/libressl/bin:$PATH"
+  export LDFLAGS="${LDFLAGS} -L$BREW_PATH/opt/libressl/lib"
+  export CPPFLAGS="${CPPFLAGS} -I$BREW_PATH/opt/libressl/include"
+  export PKG_CONFIG_PATH="${PKG_CONFIG_PATH} $BREW_PATH/opt/libressl/lib/pkgconfig"
   # Ensure libxml2 is in path
-  export PATH="/usr/local/opt/libxml2/bin:$PATH"
-  export LDFLAGS="${LDFLAGS} -L/usr/local/opt/libxml2/lib"
-  export CPPFLAGS="${CPPFLAGS} -I/usr/local/opt/libxml2/include"
-  export PKG_CONFIG_PATH="${PKG_CONFIG_PATH} /usr/local/opt/libxml2/lib/pkgconfig"
+  export PATH="$BREW_PATH/opt/libxml2/bin:$PATH"
+  export LDFLAGS="${LDFLAGS} -L$BREW_PATH/opt/libxml2/lib"
+  export CPPFLAGS="${CPPFLAGS} -I$BREW_PATH/opt/libxml2/include"
+  export PKG_CONFIG_PATH="${PKG_CONFIG_PATH} $BREW_PATH/opt/libxml2/lib/pkgconfig"
+  # Ruby config options
+  export RUBY_CONFIGURE_OPTS="--with-openssl-dir=$BREW_PATH/opt/libressl"
+  export RUBY_CFLAGS="-Wno-error=implicit-function-declaration"
 fi
