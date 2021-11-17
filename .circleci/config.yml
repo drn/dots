@@ -19,21 +19,6 @@ references:
 
   ## Cache
 
-  cache_brew: &cache_brew
-    save_cache:
-      name: Cache Homebrew
-      key: v1-brew-{{ .Branch }}-{{ .Revision }}
-      paths:
-        - /usr/local/Homebrew
-
-  restore_brew: &restore_brew
-    restore_cache:
-      name: Restore Homebrew
-      keys:
-        - v1-brew-{{ .Branch }}-{{ .Revision }}
-        - v1-brew-{{ .Branch }}
-        - v1-brew
-
   cache_go: &cache_go
     save_cache:
       name: Cache $GOPATH
@@ -60,7 +45,6 @@ references:
   dots_steps: &dots_steps
     steps:
       - checkout
-      - *restore_brew
       - *restore_go
       - *setup_path
       - run:
@@ -74,13 +58,11 @@ jobs:
       *xcode_version
     steps:
       - checkout
-      - *restore_brew
       - run:
           name: Brew Update
           command: |
             rm -rf /usr/local/Homebrew/Library/Taps
             brew update
-      - *cache_brew
       - *install_golang
       - *install_dots
       - *cache_go
