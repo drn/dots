@@ -22,7 +22,7 @@ func (i Install) Zsh() {
 	log.Info("Ensuring antibody is installed")
 	if is.Command("brew") && !is.Command("antibody") {
 		log.Info("Installing antibody...")
-		run.Verbose("brew install getantibody/tap/antibody 2>/dev/null")
+		run.Verbose("brew install antibody 2>/dev/null")
 	}
 
 	// run antibody bundle
