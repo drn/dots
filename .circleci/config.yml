@@ -172,6 +172,7 @@ jobs:
     machine: true
     steps:
       - checkout
+      - run: go version
       - run:
           name: Install Golint
           command: go get -u golang.org/x/lint/golint
