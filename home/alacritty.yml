@@ -3,6 +3,7 @@ env:
 
 window:
   startup_mode: SimpleFullscreen
+  opacity: 1
 
 font:
   normal:
@@ -73,8 +74,6 @@ colors:
     background: '#ffc6ff'
 
 draw_bold_text_with_bright_colors: true
-
-background_opacity: 1
 
 cursor:
   style:
