@@ -23,3 +23,12 @@ function colors() {
   echo -e "\033[0;33mYELLOW\t\033[1;33mLIGHT_YELLOW\033[0m"
   echo -e "\033[1;30mGRAY\t\033[0;37mLIGHT_GRAY\033[0m"
 }
+
+# Dynamically switch brew between ARM and x86_64 architectures
+functions brew() {
+  if [ -d "/opt/homebrew" ]; then
+    arch -arm64 /opt/homebrew/bin/brew $@
+  else
+    /usr/local/bin/brew $@
+  fi
+}
