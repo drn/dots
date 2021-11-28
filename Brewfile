@@ -30,6 +30,7 @@ cask 'loom'
 cask 'notion'
 cask 'postman'
 cask 'quicklook-json'
+cask 'radicle-upstream'
 cask 'redisinsight'
 cask 'rowanj-gitx'
 cask 'securid' # Mastercard Connect Utility
