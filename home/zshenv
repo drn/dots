@@ -35,6 +35,8 @@ if [ "$ZSHENV_SOURCED" != "true" ]; then
   export PATH=$HOME/.cargo/bin:$PATH
   # Include binstubs in path
   export PATH=.bundle/bin:$PATH
+  # Include Radicle Upstream bin in PATH
+  export PATH="$HOME/.radicle/bin:$PATH"
   # Set $ANDROID_HOME
   export ANDROID_HOME=$HOME/Library/Android/sdk
   # Set $JAVA_HOME
