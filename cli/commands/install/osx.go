@@ -63,6 +63,11 @@ func (i Install) Osx() {
 		"defaults write NSGlobalDomain AppleShowAllExtensions -bool true",
 	)
 
+	log.Info("Set screenshot directory to ~/Downloads")
+	run.Verbose(
+		"defaults write com.apple.screencapture location ~/Downloads",
+	)
+
 	log.Info("Ensuring changes take effect immediately")
 	run.Verbose("killall Dock")
 	run.Verbose("killall Finder")
