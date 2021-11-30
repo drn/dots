@@ -1,29 +1,31 @@
 package install
 
 import (
+	"strings"
+
 	"github.com/drn/dots/cli/log"
 	"github.com/drn/dots/cli/run"
-	"strings"
 )
 
 // Npm - Installs global npm packages
 func (i Install) Npm() {
 	log.Action("Install npm packages")
 	npm([]string{
-		"json-diff",
-		"semver",
 		"bower",
-		"grunt-cli",
-		"underscore-cli",
+		"catj",
 		"diff-so-fancy",
-		"git-standup",
 		"eslint",
-		"vtop",
-		"neovim",
+		"fast-cli",
 		"fkill-cli",
 		"fx",
-		"fast-cli",
-		"catj",
+		"git-standup",
+		"grunt-cli",
+		"json-diff",
+		"neovim",
+		"semver",
+		"underscore-cli",
+		"vtop",
+		"yarn",
 	})
 }
 
