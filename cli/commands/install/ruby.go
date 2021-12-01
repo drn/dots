@@ -21,4 +21,5 @@ func (i Install) Ruby() {
 	run.Verbose("rbenv install %s -s", rubyVersion)
 	run.Verbose("rbenv global %s", rubyVersion)
 	run.Verbose("gem install bundler")
+	run.Verbose("gem install neovim")
 }
