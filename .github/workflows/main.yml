@@ -118,7 +118,10 @@ jobs:
     needs: setup
     runs-on: macos-latest
     if: github.ref == 'refs/heads/master'
+    env:
+      DOTS: /Users/runner/work/dots/dots
     steps:
+      - uses: actions/checkout@v2
       - name: Fetch dots CLI
         uses: actions/download-artifact@v2
         with:
