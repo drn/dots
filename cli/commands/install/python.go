@@ -1,5 +1,6 @@
 // Neovim setup logic from
 // https://github.com/zchee/deoplete-jedi/wiki/Setting-up-Python-for-Neovim
+// Requires pyenv and pyenv-virtualenv to be installed via Homebrew
 
 package install
 
