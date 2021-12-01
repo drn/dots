@@ -160,6 +160,7 @@ jobs:
           name: dots-cli
           path: ~/bin
       - run: chmod +x ~/bin/dots
+      - run: brew install pyenv pyenv-virtualenv
       - run: dots install python
 
   dots-install-ruby:
