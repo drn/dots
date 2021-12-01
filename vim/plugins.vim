@@ -86,7 +86,7 @@ Plug 'rhysd/clever-f.vim'
 " commit messages under cursor
 Plug 'rhysd/git-messenger.vim'
 " Auto-completion, LSP, & snippets
-Plug 'neoclide/coc.nvim', { 'branch': 'release', 'tag': '*' }
+Plug 'neoclide/coc.nvim', { 'branch': 'master', 'do': 'yarn install --frozen-lockfile' }
 Plug 'neoclide/coc-snippets', {'do': 'yarn install --frozen-lockfile'}
 " tree explorer
 Plug 'scrooloose/nerdtree', { 'on': [ 'NERDTreeToggle', 'NERDTreeFind' ] }
