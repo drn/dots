@@ -2,14 +2,15 @@ package install
 
 import (
 	"fmt"
+	"io/ioutil"
+	"os"
+	"strings"
+
 	"github.com/drn/dots/cli/is"
 	"github.com/drn/dots/cli/link"
 	"github.com/drn/dots/cli/log"
 	"github.com/drn/dots/cli/path"
 	"github.com/drn/dots/cli/run"
-	"io/ioutil"
-	"os"
-	"strings"
 )
 
 // Vim - Installs vim configuration
@@ -48,7 +49,7 @@ func vimUpdatePlug() {
 	plugPath := path.FromHome(".vim/autoload/plug.vim")
 	if !is.File(plugPath) {
 		url := "https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"
-		run.Verbose(
+		exec(
 			"curl -fLo %s --create-dirs %s",
 			plugPath,
 			url,

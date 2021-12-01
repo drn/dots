@@ -35,7 +35,7 @@ func npm(packages []string) {
 	for _, pack := range packages {
 		log.Info("Ensuring %s is installed", pack)
 		if !strings.Contains(installed, pack) {
-			run.Verbose("npm install -g %s", pack)
+			exec("npm install -g %s", pack)
 		}
 	}
 }

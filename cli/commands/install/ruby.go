@@ -4,7 +4,6 @@ import (
 	"github.com/drn/dots/cli/link"
 	"github.com/drn/dots/cli/log"
 	"github.com/drn/dots/cli/path"
-	"github.com/drn/dots/cli/run"
 )
 
 var rubyVersion = "2.5.1"
@@ -17,9 +16,9 @@ func (i Install) Ruby() {
 		path.FromHome("bin"),
 	)
 	log.Info("Ensuring Ruby %s is installed", rubyVersion)
-	run.Verbose("eval \"$(rbenv init -)\"")
-	run.Verbose("rbenv install %s -s", rubyVersion)
-	run.Verbose("rbenv global %s", rubyVersion)
-	run.Verbose("gem install bundler")
-	run.Verbose("gem install neovim")
+	exec("eval \"$(rbenv init -)\"")
+	exec("rbenv install %s -s", rubyVersion)
+	exec("rbenv global %s", rubyVersion)
+	exec("gem install bundler")
+	exec("gem install neovim")
 }
