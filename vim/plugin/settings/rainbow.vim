@@ -8,4 +8,7 @@ function! PreventRainbowConflicts()
     execute 'call rainbow_main#load()'
   endif
 endfunction
-autocmd FileType,BufWinEnter * call PreventRainbowConflicts()
+
+if exists("rainbow_main#load")
+  autocmd FileType,BufWinEnter * call PreventRainbowConflicts()
+endif
