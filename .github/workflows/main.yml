@@ -132,6 +132,7 @@ jobs:
           name: dots-cli
           path: ~/bin
       - run: chmod +x ~/bin/dots
+      - run: rm /usr/local/bin/aws # remove existing awscli binary
       - run: dots install homebrew
 
   dots-install-npm:
