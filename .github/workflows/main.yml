@@ -166,6 +166,7 @@ jobs:
           path: ~/bin
       - run: chmod +x ~/bin/dots
       - run: brew install neovim
+      - run: dots install home # symlinks ~/.vimrc
       - run: dots install vim
 
   dots-install-python:
