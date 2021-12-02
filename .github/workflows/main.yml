@@ -6,6 +6,10 @@ on:
       - master
   pull_request:
 
+concurrency:
+  group: ${{ github.actor }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   setup:
     name: Setup & install drn/dots
