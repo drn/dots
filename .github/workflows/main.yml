@@ -114,6 +114,7 @@ jobs:
     name: dots install homebrew
     needs: setup
     runs-on: macos-latest
+    if: github.ref == 'refs/heads/master'
     steps:
       - name: Fetch dots CLI
         uses: actions/download-artifact@v2
