@@ -2,6 +2,7 @@ package path
 
 import (
 	"fmt"
+	"os"
 	"os/user"
 	"strings"
 )
@@ -15,7 +16,11 @@ func Pretty(path string) string {
 
 // Dots - Returns $DOTS path
 func Dots() string {
-	return fmt.Sprintf("%s/go/src/github.com/drn/dots", Home())
+	path := os.Getenv("DOTS")
+	if path == "" {
+		path = fmt.Sprintf("%s/go/src/github.com/drn/dots", Home())
+	}
+	return path
 }
 
 // FromDots - Returns path relative to $DOTS
