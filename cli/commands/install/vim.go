@@ -80,5 +80,8 @@ func vimUpdatePlugins() {
 	bytes, err := ioutil.ReadFile(tempPath)
 	if err == nil {
 		fmt.Println(string(bytes))
+	} else {
+		log.Error("Failed to update vim plugins")
+		os.Exit(1)
 	}
 }
