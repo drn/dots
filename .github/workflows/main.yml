@@ -88,7 +88,10 @@ jobs:
     name: dots install zsh
     needs: setup
     runs-on: macos-latest
+    env:
+      DOTS: /Users/runner/work/dots/dots
     steps:
+      - uses: actions/checkout@v2
       - name: Fetch dots CLI
         uses: actions/download-artifact@v2
         with:
