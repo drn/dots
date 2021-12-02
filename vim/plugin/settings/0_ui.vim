@@ -12,8 +12,11 @@ let g:jellybeans_overrides = {
 \    'attr':     'bold'
 \  },
 \}
-colorscheme jellybeans
 
+try " Suppress errors on fresh installation
+  colorscheme jellybeans
+catch
+endtry
 
 """ Configure UI """
 function! ConfigureUI()
