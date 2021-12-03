@@ -135,7 +135,7 @@ jobs:
       - name: Handle CI brew installation conflicts
         run: |
           rm /usr/local/bin/aws* # awscli
-          rm /usr/local/bin/go # go
+          rm /usr/local/bin/go* # go, gofmt
       - run: dots install homebrew
 
   dots-install-npm:
