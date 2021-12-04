@@ -16,13 +16,6 @@ if [ "$ZSHENV_SOURCED" != "true" ]; then
   # Include Android tools in PATH
   export PATH=$HOME/Library/Android/sdk/platform-tools:$PATH
   export PATH=$HOME/Library/Android/sdk/tools:$PATH
-  # Load pyenv
-  export PYENV_ROOT=$HOME/.pyenv
-  export PATH=$PYENV_ROOT/shims:$PATH
-  if [ -n "$TMUX" ]; then
-    eval "$(pyenv init -)"
-    eval "$(pyenv virtualenv-init -)"
-  fi
   # Include go dependencies in PATH
   export GOPATH=$HOME/go
   export PATH=$GOPATH/bin:$PATH

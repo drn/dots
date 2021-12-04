@@ -169,20 +169,6 @@ jobs:
       - run: dots install home # symlinks ~/.vimrc
       - run: dots install vim
 
-  dots-install-python:
-    name: dots install python
-    needs: setup
-    runs-on: macos-latest
-    steps:
-      - name: Fetch dots CLI
-        uses: actions/download-artifact@v2
-        with:
-          name: dots-cli
-          path: ~/bin
-      - run: chmod +x ~/bin/dots
-      - run: brew install pyenv pyenv-virtualenv
-      - run: dots install python
-
   dots-install-asdf:
     name: dots install asdf
     needs: setup
@@ -194,7 +180,7 @@ jobs:
           name: dots-cli
           path: ~/bin
       - run: chmod +x ~/bin/dots
-      - run: dots install ruby
+      - run: dots install asdf
 
   dots-install-hammerspoon:
     name: dots install hammerspoon

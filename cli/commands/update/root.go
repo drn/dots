@@ -19,7 +19,6 @@ func Run() {
 	updateBrew()
 	updateSolargraph()
 	reshimAsdf()
-	rehashPyenv()
 	install.Call("vim")
 
 	tmux.SetWindow(window)
@@ -63,9 +62,4 @@ func updateSolargraph() {
 func reshimAsdf() {
 	log.Info("Reshiming asdf binaries")
 	run.Verbose("asdf reshim")
-}
-
-func rehashPyenv() {
-	log.Info("Rehashing pyenv binaries")
-	run.Verbose("pyenv rehash")
 }

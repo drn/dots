@@ -76,7 +76,6 @@ Install commands:
       homebrew    Installs Homebrew dependencies
       npm         Installs npm packages
       osx         Installs OSX configuration
-      python      Installs Python
       vim         Installs vim config
       zsh         Installs zsh config files
 
