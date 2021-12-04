@@ -24,5 +24,9 @@ source $HOME/.thanx/env 2>/dev/null
 # autoload tmux
 if [ "$TMUX" = "" ]; then tmux-start master && exit; fi
 
-# Load zoxide
-if [ -n "$TMUX" ]; then eval "$(zoxide init zsh)"; fi
+if [ -n "$TMUX" ]; then
+  # Load zoxide
+  eval "$(zoxide init zsh)"
+  # Load asdf
+  . /opt/homebrew/opt/asdf/libexec/asdf.sh
+fi
