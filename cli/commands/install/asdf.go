@@ -9,9 +9,10 @@ import (
 
 // versions - installed language versions
 var versions = map[string]string{
-	"ruby":    "2.5.1",
-	"python2": "2.7.18",
-	"python3": "3.9.1",
+	"ruby":      "2.5.1",
+	"python2":   "2.7.18",
+	"python3":   "3.9.1",
+	"terraform": "1.0.11",
 }
 
 // Asdf - Configures asdf
@@ -21,6 +22,7 @@ func (i Install) Asdf() {
 	exec("brew install asdf")
 	ruby()
 	python()
+	terraform()
 }
 
 func ruby() {
@@ -42,6 +44,11 @@ func python() {
 	log.Info("Linking flake8 linter")
 	exec("asdf reshim python")
 	link.Soft(run.Capture("asdf which flake8"), path.FromHome("bin/flake8"))
+}
+
+func terraform() {
+	asdfPlugin("terraform", "asdf-community/asdf-hashicorp")
+	asdfVersion("terraform", versions["terraform"])
 }
 
 func asdfVersion(language string, version string) {
