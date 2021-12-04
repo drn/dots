@@ -28,5 +28,5 @@ if [ -n "$TMUX" ]; then
   # Load zoxide
   eval "$(zoxide init zsh)"
   # Load asdf
-  . /opt/homebrew/opt/asdf/libexec/asdf.sh
+  . $BREW_PATH/opt/asdf/libexec/asdf.sh
 fi
