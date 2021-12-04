@@ -16,11 +16,6 @@ if [ "$ZSHENV_SOURCED" != "true" ]; then
   # Include Android tools in PATH
   export PATH=$HOME/Library/Android/sdk/platform-tools:$PATH
   export PATH=$HOME/Library/Android/sdk/tools:$PATH
-  # Load rbenv
-  export PATH=$HOME/.rbenv/shims:$BREW_PATH/opt/bin:$PATH
-  if [ -n "$TMUX" ]; then
-    eval "$(rbenv init - --no-rehash)"
-  fi
   # Load pyenv
   export PYENV_ROOT=$HOME/.pyenv
   export PATH=$PYENV_ROOT/shims:$PATH

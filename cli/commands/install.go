@@ -1,12 +1,13 @@
 package commands
 
 import (
+	"os"
+
 	"github.com/drn/dots/cli/commands/install"
 	"github.com/drn/dots/cli/log"
 	"github.com/drn/dots/cli/run"
 	"github.com/manifoldco/promptui"
 	"github.com/spf13/cobra"
-	"os"
 )
 
 var commands = []map[string]string{
@@ -40,8 +41,8 @@ var commands = []map[string]string{
 		"description": "Installs npm packages",
 	},
 	{
-		"command":     "ruby",
-		"description": "Installs Ruby",
+		"command":     "asdf",
+		"description": "Installs asdf",
 	},
 	{
 		"command":     "python",

@@ -45,8 +45,6 @@ Plug 'junegunn/vim-peekaboo'
 Plug 'junegunn/vim-slash'
 " linting engine
 Plug 'dense-analysis/ale'
-" configure expected ruby version
-Plug 'tpope/vim-rbenv'
 " fuzzy file finder
 Plug 'ctrlpvim/ctrlp.vim'
 " fuzzy function finder

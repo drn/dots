@@ -6,7 +6,6 @@ import (
 	"github.com/drn/dots/cli/path"
 	"github.com/drn/dots/cli/run"
 	"github.com/drn/dots/cli/tmux"
-	"os"
 )
 
 // Run - Runs update scripts
@@ -19,7 +18,7 @@ func Run() {
 	updateZsh()
 	updateBrew()
 	updateSolargraph()
-	rehashRbenv()
+	reshimAsdf()
 	rehashPyenv()
 	install.Call("vim")
 
@@ -61,10 +60,9 @@ func updateSolargraph() {
 	run.Verbose("gem update solargraph")
 }
 
-func rehashRbenv() {
-	log.Info("Rehashing rbenv binaries")
-	os.Remove(path.FromHome(".rbenv/shims/.rbenv-shim"))
-	run.Verbose("rbenv rehash")
+func reshimAsdf() {
+	log.Info("Reshiming asdf binaries")
+	run.Verbose("asdf reshim")
 }
 
 func rehashPyenv() {

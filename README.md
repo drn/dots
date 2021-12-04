@@ -67,6 +67,7 @@ Install commands:
 
     Available Commands:
       all         Runs all install scripts
+      asdf        Installs asdf
       bin         Installs ~/bin/* commands
       fonts       Installs fonts
       git         Installs git extensions
@@ -76,7 +77,6 @@ Install commands:
       npm         Installs npm packages
       osx         Installs OSX configuration
       python      Installs Python
-      ruby        Installs Ruby
       vim         Installs vim config
       zsh         Installs zsh config files
 
