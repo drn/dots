@@ -45,9 +45,11 @@ Top-level commands:
 
     Available Commands:
       cleanup     Cleans legacy configuration
+      docker      Docker command aliases
       doctor      Runs system diagnostics
       help        Help about any command
       install     Installs configuration
+      spinner     Runs simple CLI spinners
       update      Updates configuration
 
     Flags:
@@ -67,13 +69,13 @@ Install commands:
 
     Available Commands:
       all         Runs all install scripts
-      asdf        Installs asdf
       bin         Installs ~/bin/* commands
       fonts       Installs fonts
       git         Installs git extensions
       hammerspoon Installs hammerspoon configuration
       home        Installs ~/.* config files
       homebrew    Installs Homebrew dependencies
+      languages   Installs asdf & languages
       npm         Installs npm packages
       osx         Installs OSX configuration
       vim         Installs vim config

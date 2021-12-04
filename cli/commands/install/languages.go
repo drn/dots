@@ -15,8 +15,8 @@ var versions = map[string]string{
 	"terraform": "1.0.11",
 }
 
-// Asdf - Configures asdf
-func (i Install) Asdf() {
+// Languages - Installs asdf & languages
+func (i Install) Languages() {
 	log.Action("Installing asdf")
 	log.Info("Ensuring asdf is installed")
 	exec("brew install asdf")

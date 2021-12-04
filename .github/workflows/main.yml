@@ -169,8 +169,8 @@ jobs:
       - run: dots install home # symlinks ~/.vimrc
       - run: dots install vim
 
-  dots-install-asdf:
-    name: dots install asdf
+  dots-install-languages:
+    name: dots install languages
     needs: setup
     runs-on: macos-latest
     steps:
@@ -180,7 +180,7 @@ jobs:
           name: dots-cli
           path: ~/bin
       - run: chmod +x ~/bin/dots
-      - run: dots install asdf
+      - run: dots install languages
 
   dots-install-hammerspoon:
     name: dots install hammerspoon

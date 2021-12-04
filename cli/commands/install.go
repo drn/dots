@@ -41,8 +41,8 @@ var commands = []map[string]string{
 		"description": "Installs npm packages",
 	},
 	{
-		"command":     "asdf",
-		"description": "Installs asdf",
+		"command":     "languages",
+		"description": "Installs asdf & languages",
 	},
 	{
 		"command":     "vim",
