@@ -13,6 +13,7 @@ var versions = map[string]string{
 	"python2":   "2.7.18",
 	"python3":   "3.9.1",
 	"terraform": "1.0.11",
+	"nodejs":    "17.2.0",
 }
 
 // Languages - Installs asdf & languages
@@ -23,6 +24,7 @@ func (i Install) Languages() {
 	ruby()
 	python()
 	terraform()
+	nodejs()
 }
 
 func ruby() {
@@ -49,6 +51,11 @@ func python() {
 func terraform() {
 	asdfPlugin("terraform", "asdf-community/asdf-hashicorp")
 	asdfVersion("terraform", versions["terraform"])
+}
+
+func nodejs() {
+	asdfPlugin("nodejs", "asdf-vm/asdf-nodejs")
+	asdfVersion("nodejs", versions["nodejs"])
 }
 
 func asdfVersion(language string, version string) {
