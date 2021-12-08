@@ -16,5 +16,12 @@ zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|=*' 'l:|=* r:|=*'
 autoload -U select-word-style
 select-word-style bash
 
+# load bashcomp completion support
+autoload -U bashcompinit
+bashcompinit
+
 # force compinit on tmux split
 compinit
+
+# load asdf completion
+source $BREW_PATH/opt/asdf/etc/bash_completion.d/asdf.bash
