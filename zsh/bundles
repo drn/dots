@@ -3,3 +3,4 @@ zsh-users/zsh-syntax-highlighting
 zsh-users/zsh-history-substring-search
 junegunn/fzf
 wbinglee/zsh-wakatime
+zsh-users/zsh-completions
