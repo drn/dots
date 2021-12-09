@@ -44,7 +44,7 @@ func python() {
 	log.Info("Installing python3 neovim dependencies")
 	exec("pip install --upgrade pip pynvim flake8 wakatime")
 	log.Info("Linking flake8 linter")
-	exec("asdf reshim python")
+	exec("asdf reshim")
 	link.Soft(run.Capture("asdf which flake8"), path.FromHome("bin/flake8"))
 }
 
