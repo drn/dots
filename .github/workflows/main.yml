@@ -180,7 +180,10 @@ jobs:
           name: dots-cli
           path: ~/bin
       - run: chmod +x ~/bin/dots
-      - run: dots install languages
+      - run: |
+          brew install asdf
+          source $(brew --prefix)/opt/asdf/libexec/asdf.sh
+          dots install languages
 
   dots-install-hammerspoon:
     name: dots install hammerspoon
