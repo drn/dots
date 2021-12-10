@@ -71,7 +71,6 @@ brew 'gradle'
 brew 'grpcurl'
 brew 'heroku'
 brew 'hr'
-brew 'hub'
 brew 'hyperfine'
 brew 'imagemagick@6', link: true
 brew 'jq'

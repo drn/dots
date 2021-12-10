@@ -22,9 +22,9 @@ fi
 
 if [ -z "$remote" ]; then
   # default to browsing master on either upstream or origin
-  hub browse $(git path) tree/master
+  open "https://github.com/$(git path)/tree/master"
 else
   # determine full remote path
   remote="$(git remote -v | grep $remote | awk '{print $2}' | uniq | sed 's#.*:##g' | sed 's#.git$##g')"
-  hub browse $remote tree/$branch
+  open "https://$remote/tree/$branch"
 fi
