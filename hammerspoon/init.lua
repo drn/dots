@@ -1,6 +1,7 @@
 local alert      = require 'alert'
 local background = require 'background'
 local bluetooth  = require 'bluetooth'
+local brave      = require 'brave'
 local brightness = require 'brightness'
 local chrome     = require 'chrome'
 local log        = require 'log'
@@ -53,7 +54,8 @@ local bindings = {
     Slack                 = 'm',
     Notion                = "'",
     Things3               = ';',
-    [ 'Google Calendar' ] = '/'
+    [ 'Google Calendar' ] = '/',
+    [ 'Brave Browser' ]   = 'return'
   },
   [{ 'cmd', 'shift'}] = {
     [ 'Superhuman' ] = '/'
