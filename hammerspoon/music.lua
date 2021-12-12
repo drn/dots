@@ -2,8 +2,8 @@ local music = {}
 
 local app = require "hs.application"
 
-local itunes = require 'itunes'
-local spotify = require 'spotify'
+local itunes = require 'music/itunes'
+local spotify = require 'music/spotify'
 
 local function provider()
   if app.get('Spotify') ~= nil then
