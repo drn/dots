@@ -1,9 +1,8 @@
 local alert      = require 'alert'
 local background = require 'background'
 local bluetooth  = require 'bluetooth'
-local brave      = require 'brave'
 local brightness = require 'brightness'
-local chrome     = require 'chrome'
+local browser    = require 'browser'
 local log        = require 'log'
 local music      = require 'music'
 local osx        = require 'osx'
@@ -109,16 +108,13 @@ hs.hotkey.bind({ 'ctrl', 'cmd' }, '=', function()
   music.save()
 end)
 
--- Chrome
+-- Browser
 
-hs.hotkey.bind({'ctrl', 'alt', 'cmd'}, 'l', function()
-  chrome.refocus()
-end)
 hs.hotkey.bind({'ctrl', 'alt', 'cmd'}, 'n', function()
-  chrome.openProfileMenu()
+  browser.openProfileMenu()
 end)
 hs.hotkey.bind({'ctrl', 'alt', 'cmd', 'shift'}, 'm', function()
-  chrome.closeOtherTabs()
+  browser.closeOtherTabs()
 end)
 
 -- Date & Time
