@@ -54,13 +54,13 @@ local bindings = {
     Notion                = "'",
     Things3               = ';',
     [ 'Google Calendar' ] = '/',
-    [ 'Brave Browser' ]   = 'return'
+    [ 'Google Chrome' ]   = 'return'
   },
   [{ 'cmd', 'shift'}] = {
     [ 'Superhuman' ] = '/'
   },
   [{ 'cmd', 'alt'}] = {
-    [ 'Google Chrome' ] = 'return'
+    [ 'Brave Browser' ] = 'return'
   },
   [{ 'ctrl', 'cmd', 'alt'}] = {
     Spotify = 'space'
