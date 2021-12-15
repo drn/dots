@@ -117,6 +117,8 @@ Plug 'jpalardy/vim-slime', { 'on': [
 Plug 'metakirby5/codi.vim'
 " improved whitespace highlighting
 Plug 'ntpeters/vim-better-whitespace'
+" expanded wildmenu support
+Plug 'gelguy/wilder.nvim', { 'do': ':UpdateRemotePlugins' }
 
 " Language-specific plugins
 Plug 'keith/rspec.vim', { 'for': 'ruby' }
