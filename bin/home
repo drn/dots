@@ -5,7 +5,7 @@
 # the current network name.
 #
 
-if [ "$(ssid)" = "Popo Minx" ]; then
+if [ "$(ip)" == "$(dig +short ip.drn.dev)" ]; then
   ssh SanguineRane@192.168.50.200 $1
 else
   ssh SanguineRane@ip.drn.dev $1
