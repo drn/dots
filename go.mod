@@ -7,6 +7,7 @@ require (
 	github.com/fatih/color v1.10.0
 	github.com/go-ini/ini v1.62.0
 	github.com/imroc/req v0.3.0
+	github.com/jessevdk/go-flags v1.5.0
 	github.com/joho/godotenv v1.3.0
 	github.com/json-iterator/go v1.1.10
 	github.com/logrusorgru/aurora v2.0.3+incompatible

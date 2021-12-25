@@ -55,7 +55,7 @@ function left {
   if [[ -z "$SECOND" ]]; then
     SECOND="Offline"
   else
-    SECOND="$SECOND $SEP_R2 $(local-ip en7 2>/dev/null || local-ip || echo "127.0.0.1")"
+    SECOND="$SECOND $SEP_R2 $(ip --local en7 2>/dev/null || ip --local || echo "127.0.0.1")"
     THIRD="$(ip)"
   fi
   SEP=$SEP_R1
