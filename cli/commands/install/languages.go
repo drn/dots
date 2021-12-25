@@ -14,6 +14,7 @@ var versions = map[string]string{
 	"python3":   "3.9.1",
 	"terraform": "1.0.11",
 	"nodejs":    "17.2.0",
+	"golang":    "1.17.5",
 }
 
 // Languages - Installs asdf & languages
@@ -25,6 +26,7 @@ func (i Install) Languages() {
 	python()
 	terraform()
 	nodejs()
+	golang()
 }
 
 func ruby() {
@@ -56,6 +58,11 @@ func terraform() {
 func nodejs() {
 	asdfPlugin("nodejs", "asdf-vm/asdf-nodejs")
 	asdfVersion("nodejs", versions["nodejs"])
+}
+
+func golang() {
+	asdfPlugin("golang", "kennyp/asdf-golang")
+	asdfVersion("golang", versions["golang"])
 }
 
 func asdfVersion(language string, version string) {
