@@ -1,3 +1,8 @@
+" Extensions
+let g:coc_global_extensions = ['coc-snippets']
+
+" Snippets
+
 " Use <tab> for trigger completion, completion confirm, snippet expand, and jump
 " See https://github.com/neoclide/coc-snippets#examples for source
 
