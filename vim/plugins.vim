@@ -83,42 +83,42 @@ let g:plug_window = ''
 " Plug 'rhysd/clever-f.vim'
 " " commit messages under cursor
 " Plug 'rhysd/git-messenger.vim'
-" " Auto-completion, LSP, & snippets
-" Plug 'neoclide/coc.nvim', { 'branch': 'master', 'do': 'yarn install --frozen-lockfile' }
-" Plug 'neoclide/coc-snippets', {'do': 'yarn install --frozen-lockfile'}
-" " tree explorer
-" Plug 'scrooloose/nerdtree', { 'on': [ 'NERDTreeToggle', 'NERDTreeFind' ] }
-" " display git status in nerdtree
-" Plug 'Xuyuanp/nerdtree-git-plugin', { 'on': [ 'NERDTreeToggle', 'NERDTreeFind' ] }
-" " undotree
-" Plug 'mbbill/undotree', { 'on': 'UndotreeToggle' }
-" " working directory search
-" Plug 'mileszs/ack.vim', { 'on': 'Ack' }
-" " display gitgutter
-" Plug 'airblade/vim-gitgutter', { 'on': 'GitGutterToggle' }
-" " vim alignmentalign
-" Plug 'junegunn/vim-easy-align', { 'on': 'EasyAlign' }
-" " toggle quickfix
-" Plug 'milkypostman/vim-togglelist', { 'on': 'ToggleQuickfix' }
-" " focus on specific section
-" Plug 'junegunn/limelight.vim', { 'on': 'Limelight' }
-" " toggle comments
-" Plug 'tpope/vim-commentary', { 'on': [
-" \ '<Plug>Commentary',
-" \ '<Plug>CommentaryLine'
-" \ ] }
-" " send text to tmux
-" Plug 'jpalardy/vim-slime', { 'on': [
-" \ '<Plug>SlimeRegionSend',
-" \ '<Plug>SlimeParagraphSend',
-" \ '<Plug>SlimeConfig'
-" \ ] }
-" " interactive scratchpad
-" Plug 'metakirby5/codi.vim'
-" " improved whitespace highlighting
-" Plug 'ntpeters/vim-better-whitespace'
-" " expanded wildmenu support
-" Plug 'gelguy/wilder.nvim', { 'do': ':UpdateRemotePlugins' }
+" Auto-completion, LSP, & snippets
+Plug 'neoclide/coc.nvim', { 'branch': 'master', 'do': 'yarn install --frozen-lockfile' }
+Plug 'neoclide/coc-snippets', {'do': 'yarn install --frozen-lockfile'}
+" tree explorer
+Plug 'scrooloose/nerdtree', { 'on': [ 'NERDTreeToggle', 'NERDTreeFind' ] }
+" display git status in nerdtree
+Plug 'Xuyuanp/nerdtree-git-plugin', { 'on': [ 'NERDTreeToggle', 'NERDTreeFind' ] }
+" undotree
+Plug 'mbbill/undotree', { 'on': 'UndotreeToggle' }
+" working directory search
+Plug 'mileszs/ack.vim', { 'on': 'Ack' }
+" display gitgutter
+Plug 'airblade/vim-gitgutter', { 'on': 'GitGutterToggle' }
+" vim alignmentalign
+Plug 'junegunn/vim-easy-align', { 'on': 'EasyAlign' }
+" toggle quickfix
+Plug 'milkypostman/vim-togglelist', { 'on': 'ToggleQuickfix' }
+" focus on specific section
+Plug 'junegunn/limelight.vim', { 'on': 'Limelight' }
+" toggle comments
+Plug 'tpope/vim-commentary', { 'on': [
+\ '<Plug>Commentary',
+\ '<Plug>CommentaryLine'
+\ ] }
+" send text to tmux
+Plug 'jpalardy/vim-slime', { 'on': [
+\ '<Plug>SlimeRegionSend',
+\ '<Plug>SlimeParagraphSend',
+\ '<Plug>SlimeConfig'
+\ ] }
+" interactive scratchpad
+Plug 'metakirby5/codi.vim'
+" improved whitespace highlighting
+Plug 'ntpeters/vim-better-whitespace'
+" expanded wildmenu support
+Plug 'gelguy/wilder.nvim', { 'do': ':UpdateRemotePlugins' }
 
 " Language-specific plugins
 Plug 'keith/rspec.vim', { 'for': 'ruby' }
