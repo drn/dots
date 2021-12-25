@@ -5,6 +5,9 @@ on:
     branches:
       - master
   pull_request:
+  schedule:
+    # midnight and noon PT
+    - cron: '0 8,20 * * *'
 
 concurrency:
   group: ${{ github.actor }}-${{ github.ref }}
