@@ -44,7 +44,7 @@ Top-level commands:
       dots [command]
 
     Available Commands:
-      cleanup     Cleans legacy configuration
+      clean       Cleans legacy configuration
       docker      Docker command aliases
       doctor      Runs system diagnostics
       help        Help about any command

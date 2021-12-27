@@ -18,7 +18,7 @@ var root = &cobra.Command{
 func addCommands() {
 	root.AddCommand(cmdInstall)
 	root.AddCommand(cmdUpdate)
-	root.AddCommand(cmdCleanup)
+	root.AddCommand(cmdClean)
 	root.AddCommand(cmdDoctor)
 	root.AddCommand(cmdSpinner)
 	root.AddCommand(cmdDocker)

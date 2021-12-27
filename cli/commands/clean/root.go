@@ -1,4 +1,4 @@
-package cleanup
+package clean
 
 import (
 	"github.com/drn/dots/cli/log"
@@ -10,12 +10,12 @@ import (
 func Run() {
 	log.Action("Cleaning up dependencies")
 	window := tmux.Window()
-	tmux.SetWindow("cleanup")
+	tmux.SetWindow("clean")
 
-	log.Info("Cleaning up Homebrew dependencies")
+	log.Info("Cleaning Homebrew dependencies")
 	run.Verbose("brew cleanup -s")
 
-	log.Info("Cleaning up vim plugins")
+	log.Info("Cleaning vim plugins")
 	run.Silent("nvim -c \"PlugClean!|q\"")
 
 	tmux.SetWindow(window)
