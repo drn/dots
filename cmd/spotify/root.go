@@ -11,9 +11,9 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/drn/dots/cli/bin/spotify/auth"
 	"github.com/drn/dots/cli/log"
 	"github.com/drn/dots/cli/path"
+	"github.com/drn/dots/cmd/spotify/auth"
 	"github.com/imroc/req"
 	"github.com/joho/godotenv"
 	jsoniter "github.com/json-iterator/go"
