@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
+	"time"
 
 	col "github.com/drn/dots/cmd/tmux-status/color"
 	sep "github.com/drn/dots/cmd/tmux-status/separator"
@@ -12,6 +13,12 @@ import (
 
 // Position -
 type Position struct{}
+
+var now time.Time
+
+func init() {
+	now = time.Now()
+}
 
 // Min - 1/3 display
 func (pos Position) Min() {
@@ -57,15 +64,15 @@ func (pos Position) Max() {
 }
 
 func first() string {
-	return run.Capture("echo $(date +'%%l:%%M%%p') | tr '[:upper:]' '[:lower:]'")
+	return now.Format("3:04pm")
 }
 
 func second() string {
 	return fmt.Sprintf(
 		"%s %s %s",
-		run.Capture("date +'%%a %%-d'"),
+		now.Format("Mon 2"),
 		sep.L2,
-		run.Capture("date +'%%b %%Y'"),
+		now.Format("Jan 2006"),
 	)
 }
 
