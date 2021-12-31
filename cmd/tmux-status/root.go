@@ -24,46 +24,33 @@ type Position interface {
 }
 
 func main() {
-	if !processArgs() {
-		log.Error("Usage: tmux-status [left/right/center/center-current] [width]")
-		os.Exit(1)
+	if len(os.Args) < 2 {
+		invalidUsage()
 	}
 
+	side = os.Args[1]
 	switch side {
 	case "center":
 		center.Other()
 	case "center-current":
 		center.Current()
-	default:
+	case "left", "right":
 		sides()
-	}
-}
-
-func processArgs() bool {
-	if len(os.Args) != 3 {
-		return false
-	}
-
-	side = os.Args[1]
-	switch side {
-	case "left":
-	case "right":
-	case "center":
-	case "center-current":
 	default:
-		return false
+		invalidUsage()
 	}
-
-	var err error
-	width, err = strconv.Atoi(os.Args[2])
-	if err != nil {
-		return false
-	}
-
-	return true
 }
 
 func sides() {
+	if len(os.Args) < 3 {
+		invalidUsage()
+	}
+
+	width, err := strconv.Atoi(os.Args[2])
+	if err != nil {
+		invalidUsage()
+	}
+
 	var position Position
 	switch side {
 	case "left":
@@ -81,4 +68,9 @@ func sides() {
 	default:
 		position.Max()
 	}
+}
+
+func invalidUsage() {
+	log.Error("Usage: tmux-status left|right|center|center-current [width]")
+	os.Exit(1)
 }
