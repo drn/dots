@@ -24,9 +24,7 @@ func init() {
 func (pos Position) Min() {
 	fmt.Printf(
 		"%s%s%s %s \n",
-		col.C1_3,
-		sep.L1,
-		col.C1,
+		col.C1_3, sep.L1, col.C1,
 		first(),
 	)
 }
@@ -35,13 +33,9 @@ func (pos Position) Min() {
 func (pos Position) Med() {
 	fmt.Printf(
 		"%s%s%s %s %s%s%s %s \n",
-		col.C2_3,
-		sep.L1,
-		col.C2,
+		col.C2_3, sep.L1, col.C2,
 		third(),
-		col.C1_2,
-		sep.L1,
-		col.C1,
+		col.C1_2, sep.L1, col.C1,
 		first(),
 	)
 }
@@ -52,13 +46,9 @@ func (pos Position) Max() {
 		"%s %s %s%s%s %s %s%s%s %s \n",
 		col.C3,
 		third(),
-		col.C2_3,
-		sep.L1,
-		col.C2,
+		col.C2_3, sep.L1, col.C2,
 		second(),
-		col.C1_2,
-		sep.L1,
-		col.C1,
+		col.C1_2, sep.L1, col.C1,
 		first(),
 	)
 }

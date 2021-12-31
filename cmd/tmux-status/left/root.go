@@ -17,9 +17,7 @@ func (pos Position) Min() {
 		"%s %s %s%s%s\n",
 		col.C1,
 		first(),
-		col.C1_3,
-		sep.R1,
-		col.C3,
+		col.C1_3, sep.R1, col.C3,
 	)
 }
 
@@ -29,13 +27,9 @@ func (pos Position) Med() {
 		"%s %s %s%s%s %s %s%s%s\n",
 		col.C1,
 		first(),
-		col.C1_2,
-		sep.R1,
-		col.C2,
+		col.C1_2, sep.R1, col.C2,
 		externalIP(),
-		col.C2_3,
-		sep.R1,
-		col.C3,
+		col.C2_3, sep.R1, col.C3,
 	)
 }
 
@@ -51,13 +45,9 @@ func (pos Position) Max() {
 		"%s %s %s%s%s %s %s%s%s %s\n",
 		col.C1,
 		first(),
-		col.C1_2,
-		sep.R1,
-		col.C2,
+		col.C1_2, sep.R1, col.C2,
 		second,
-		col.C2_3,
-		sep.R1,
-		col.C3,
+		col.C2_3, sep.R1, col.C3,
 		third,
 	)
 }
