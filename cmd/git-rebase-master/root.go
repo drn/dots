@@ -3,10 +3,11 @@ package main
 // Rebase on top of the canonical path
 
 import (
-	"github.com/drn/dots/cli/git"
-	"github.com/drn/dots/cli/run"
 	"os"
 	"strings"
+
+	"github.com/drn/dots/cli/git"
+	"github.com/drn/dots/pkg/run"
 )
 
 func main() {

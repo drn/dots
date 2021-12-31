@@ -3,7 +3,7 @@ package log
 import (
 	"fmt"
 
-	"github.com/drn/dots/cli/path"
+	"github.com/drn/dots/pkg/path"
 	"github.com/fatih/color"
 )
 

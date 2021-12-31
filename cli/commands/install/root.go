@@ -5,7 +5,7 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/drn/dots/cli/run"
+	"github.com/drn/dots/pkg/run"
 )
 
 // Install - Struct containing all install commands

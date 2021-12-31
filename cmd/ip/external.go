@@ -6,9 +6,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/drn/dots/cli/log"
-	"github.com/drn/dots/cli/path"
-	"github.com/drn/dots/cli/run"
+	"github.com/drn/dots/pkg/log"
+	"github.com/drn/dots/pkg/path"
+	"github.com/drn/dots/pkg/run"
 )
 
 func external() {

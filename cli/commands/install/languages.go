@@ -2,9 +2,9 @@ package install
 
 import (
 	"github.com/drn/dots/cli/link"
-	"github.com/drn/dots/cli/log"
-	"github.com/drn/dots/cli/path"
-	"github.com/drn/dots/cli/run"
+	"github.com/drn/dots/pkg/log"
+	"github.com/drn/dots/pkg/path"
+	"github.com/drn/dots/pkg/run"
 )
 
 // versions - installed language versions

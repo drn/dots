@@ -1,9 +1,10 @@
 package link
 
 import (
-	"github.com/drn/dots/cli/log"
-	"github.com/drn/dots/cli/path"
 	"os"
+
+	"github.com/drn/dots/pkg/log"
+	"github.com/drn/dots/pkg/path"
 )
 
 // Soft - Creates a soft link between input from and to arguments

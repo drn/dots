@@ -2,11 +2,12 @@ package doctor
 
 import (
 	"fmt"
-	"github.com/drn/dots/cli/is"
-	"github.com/drn/dots/cli/log"
-	"github.com/drn/dots/cli/run"
 	"os"
 	"strings"
+
+	"github.com/drn/dots/cli/is"
+	"github.com/drn/dots/pkg/log"
+	"github.com/drn/dots/pkg/run"
 )
 
 // Run - Runs diagnostic commands

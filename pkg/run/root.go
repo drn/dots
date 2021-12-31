@@ -6,7 +6,7 @@ import (
 	"os/exec"
 	"strings"
 
-	"github.com/drn/dots/cli/log"
+	"github.com/drn/dots/pkg/log"
 )
 
 // OSA - Runs the specified osascript command, capturing STDOUT and returning

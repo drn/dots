@@ -2,8 +2,8 @@ package install
 
 import (
 	"github.com/drn/dots/cli/is"
-	"github.com/drn/dots/cli/log"
-	"github.com/drn/dots/cli/path"
+	"github.com/drn/dots/pkg/log"
+	"github.com/drn/dots/pkg/path"
 )
 
 // Zsh - Installs ZSH configuration

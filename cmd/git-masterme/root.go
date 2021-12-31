@@ -7,8 +7,8 @@ import (
 	"strings"
 
 	"github.com/drn/dots/cli/git"
-	"github.com/drn/dots/cli/log"
-	"github.com/drn/dots/cli/run"
+	"github.com/drn/dots/pkg/log"
+	"github.com/drn/dots/pkg/run"
 )
 
 func main() {

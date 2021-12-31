@@ -3,8 +3,8 @@ package install
 import (
 	"strings"
 
-	"github.com/drn/dots/cli/log"
-	"github.com/drn/dots/cli/run"
+	"github.com/drn/dots/pkg/log"
+	"github.com/drn/dots/pkg/run"
 )
 
 // Npm - Installs global npm packages

@@ -2,10 +2,11 @@ package main
 
 import (
 	"fmt"
-	"github.com/drn/dots/cli/run"
 	"math"
 	"strconv"
 	"strings"
+
+	"github.com/drn/dots/pkg/run"
 )
 
 func main() {

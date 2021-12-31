@@ -9,8 +9,8 @@ import (
 	"strings"
 
 	"github.com/drn/dots/cli/config"
-	"github.com/drn/dots/cli/log"
-	"github.com/drn/dots/cli/run"
+	"github.com/drn/dots/pkg/log"
+	"github.com/drn/dots/pkg/run"
 	"github.com/imroc/req"
 	jsoniter "github.com/json-iterator/go"
 	"github.com/manifoldco/promptui"

@@ -6,8 +6,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/drn/dots/cli/log"
-	"github.com/drn/dots/cli/path"
+	"github.com/drn/dots/pkg/log"
+	"github.com/drn/dots/pkg/path"
 	"github.com/go-ini/ini"
 	"github.com/manifoldco/promptui"
 )

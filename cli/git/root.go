@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/drn/dots/cli/run"
+	"github.com/drn/dots/pkg/run"
 )
 
 // IsRepo - Returns true if currently in a git repository

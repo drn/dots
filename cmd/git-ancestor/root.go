@@ -2,10 +2,11 @@ package main
 
 import (
 	"fmt"
-	"github.com/drn/dots/cli/log"
-	"github.com/drn/dots/cli/run"
 	"os"
 	"strings"
+
+	"github.com/drn/dots/pkg/log"
+	"github.com/drn/dots/pkg/run"
 )
 
 var max = 100

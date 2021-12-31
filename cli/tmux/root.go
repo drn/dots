@@ -2,7 +2,7 @@ package tmux
 
 import (
 	"github.com/drn/dots/cli/is"
-	"github.com/drn/dots/cli/run"
+	"github.com/drn/dots/pkg/run"
 )
 
 // Window - Returns tmux window name
