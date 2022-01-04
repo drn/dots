@@ -7,8 +7,9 @@ if [ "$ZSHENV_SOURCED" != "true" ]; then
   export PATH=$HOME/bin:$PATH
   # Include Homebrew in PATH
   export BREW_PATH=/usr/local # Intel silicon
-  [ -d "/opt/homebrew" ] && export BREW_PATH=/opt/homebrew # ARM silicon
-  export PATH=$BREW_PATH/bin:$BREW_PATH/sbin:$PATH
+  [ -d "/opt/homebrew" ] && export BREW_PATH=/opt/homebrew # Apple silicon
+  export PATH=/usr/local/bin:/usr/local/sbin:$PATH # Intel Homebrew Formula
+  export PATH=/opt/homebrew/bin:/opt/homebrew/sbin:$PATH # Apple Homebrew Formula
   # Include git extensions in PATH
   export PATH=$HOME/.git-extensions:$PATH
   # Include MySQL in PATH
