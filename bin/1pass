@@ -2,6 +2,11 @@
 
 # Authenticate 1pass CLI if no existing session is initialized
 
+if ! command -v op > /dev/null; then
+  echo -e '\033[1;31m1password-cli is not installed\033[0m'
+  return 1
+fi
+
 if [ -z "$OP_SESSION_my" ]; then
   eval "$(op signin my 2>/dev/null)"
 fi
