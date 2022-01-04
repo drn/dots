@@ -40,6 +40,9 @@ cask 'the-unarchiver'
 cask 'vlc'
 cask 'vnc-viewer'
 
+# app store
+mas 'com.culturedcode.ThingsMac', id: 904280696
+
 # formulae
 brew 'amazon-ecs-cli'
 brew 'apache-spark'
