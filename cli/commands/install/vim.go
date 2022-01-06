@@ -66,7 +66,8 @@ func vimUpdatePlugins() {
 		strings.Join(
 			[]string{
 				"PlugUpgrade",
-				"PlugUpdate",
+				"PlugUpdate --sync",
+				"UpdateRemotePlugins",
 				"set modifiable",
 				"4d", "2d", "2d", "1d",
 				"execute line('$')",
