@@ -8,7 +8,9 @@ if [[ "$#" -ne 1 || ("$1" != "toggle" && "$1" != "status") ]]; then
 fi
 
 HD1='00-1b-66-81-af-1d' # MAC of HD1 Headphones
-CMD='/usr/local/bin/blueutil'
+BREW_PATH=/usr/local # Intel silicon
+[ -d "/opt/homebrew" ] && BREW_PATH=/opt/homebrew # Apple silicon
+CMD="$BREW_PATH/bin/blueutil"
 
 case $1 in
   toggle)
@@ -17,7 +19,7 @@ case $1 in
       $CMD --connect "$HD1" >/dev/null 2>&1 &
     else
       echo "Disconnecting HD1..."
-      $CMD --disconnect "$HD1" >/dev/null 2>&1 &
+      $CMD --disconnect "$HD1" --info "$HD1" >/dev/null 2>&1 &
     fi
     ;;
 
