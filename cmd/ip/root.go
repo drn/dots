@@ -20,7 +20,8 @@ var services = []string{
 
 // Options - Parsed input flags schema
 var opts struct {
-	Local bool `short:"l" long:"local" description:"Return local IP of the specified interface (defaults to en0)"`
+	Local  bool `short:"l" long:"local" description:"Return local IP of the specified interface (defaults to en0)"`
+	Router bool `short:"r" long:"router" description:"Return IP of LAN router"`
 }
 
 func main() {
@@ -40,6 +41,8 @@ func main() {
 		} else {
 			local("en0")
 		}
+	} else if opts.Router {
+		router()
 	} else {
 		external()
 	}
