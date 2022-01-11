@@ -13,6 +13,14 @@ let g:ale_linters = {
 \ 'terraform': ['terraform', 'tflint']
 \}
 
+let g:ale_fixers = {
+\ 'javascript': ['prettier'],
+\ 'solidity': ['prettier'],
+\ 'css': ['prettier'],
+\}
+
+let g:ale_fix_on_save = 1
+
 " Disable ale in CtrlP buffers
 let g:ale_pattern_options = {
 \ 'ControlP': {'ale_enabled': 0},
