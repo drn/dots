@@ -27,6 +27,4 @@ if [ "$TMUX" = "" ]; then tmux-start master && exit; fi
 if [ -n "$TMUX" ]; then
   # Load zoxide
   eval "$(zoxide init zsh)"
-  # Load asdf
-  . $BREW_PATH/opt/asdf/libexec/asdf.sh
 fi
