@@ -11,7 +11,8 @@ let g:ale_linters = {
 \ 'javascript': ['eslint'],
 \ 'typescript': ['tslint'],
 \ 'ruby': ['ruby', 'rubocop', 'sorbet'],
-\ 'terraform': ['terraform', 'tflint']
+\ 'terraform': ['terraform', 'tflint'],
+\ 'solidity': []
 \}
 
 let g:ale_fixers = {
