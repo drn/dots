@@ -118,6 +118,8 @@ Plug 'metakirby5/codi.vim'
 Plug 'ntpeters/vim-better-whitespace'
 " expanded wildmenu support
 Plug 'gelguy/wilder.nvim', { 'do': ':UpdateRemotePlugins' }
+" code minimap - depends on `brew code-minimap`
+Plug 'wfxr/minimap.vim'
 
 " Language-specific plugins
 Plug 'keith/rspec.vim', { 'for': 'ruby' }
