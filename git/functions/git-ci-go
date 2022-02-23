@@ -5,10 +5,10 @@
 gitpath=$(git path 2>/dev/null)
 if [ -z "$gitpath" ]; then exit 1; fi
 
-if [ -f ".circleci/config.yml" ]; then
-  open "https://app.circleci.com/pipelines/github/$gitpath"
-fi
-
 if [ -d ".github/workflows" ]; then
   open "https://github.com/$gitpath/actions"
+fi
+
+if [ -f ".circleci/config.yml" ]; then
+  open "https://app.circleci.com/pipelines/github/$gitpath"
 fi
