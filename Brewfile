@@ -2,9 +2,9 @@
 
 # taps
 tap 'adoptopenjdk/openjdk'
+tap 'dbt-labs/dbt'
 tap 'drn/homebrew-tap'
 tap 'ethereum/ethereum'
-tap 'fishtown-analytics/dbt'
 tap 'goreleaser/tap'
 tap 'heroku/brew'
 tap 'jesseduffield/lazydocker'
