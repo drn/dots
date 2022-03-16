@@ -2,12 +2,10 @@
 
 # taps
 tap 'adoptopenjdk/openjdk'
-tap 'dbt-labs/dbt'
 tap 'drn/homebrew-tap'
 tap 'ethereum/ethereum'
 tap 'goreleaser/tap'
 tap 'heroku/brew'
-tap 'jesseduffield/lazydocker'
 
 # casks
 cask '1password'
@@ -55,7 +53,6 @@ brew 'cmake'
 brew 'code-minimap'
 brew 'coreutils'
 brew 'croc'
-brew 'dbt'
 brew 'elasticsearch@6'
 brew 'fd'
 brew 'ffmpeg'
