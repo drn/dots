@@ -45,7 +45,7 @@ prompt_directory_name() {
   else
     local parent=$(basename $(dirname $PWD))
     local suffix="%{$fg_bold[red]%}$(basename $PWD)%{$reset_color%}"
-    if [[ ${#parent} -gt 5 ]]; then
+    if [[ ${#parent} -gt 5 ]] || [[ ${#parent} -lt 2 ]]; then
       echo $suffix
     else
       echo "%{$fg_bold[red]%}$parent%{$fg[grey]%}/$suffix"
