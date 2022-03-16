@@ -43,7 +43,13 @@ prompt_directory_name() {
     surround="%{$fg_bold[cyan]%}\u00b7%{$reset_color%}"
     echo "$surround%{$fg_bold[red]%}${${PWD##*/}##.}%{$reset_color%}$surround"
   else
-    echo "%{$fg_bold[red]%}${${PWD##*/}##.}%{$reset_color%}"
+    local parent=$(basename $(dirname $PWD))
+    local suffix="%{$fg_bold[red]%}$(basename $PWD)%{$reset_color%}"
+    if [[ ${#parent} -gt 5 ]]; then
+      echo $suffix
+    else
+      echo "%{$fg_bold[red]%}$parent%{$fg[grey]%}/$suffix"
+    fi
   fi
 }
 
