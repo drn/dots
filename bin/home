@@ -5,8 +5,8 @@
 # the current network name.
 #
 
-if [ "$(ip)" == "$(dig +short ip.drn.dev)" ]; then
-  ssh SanguineRane@192.168.50.200 $1
+if [ "$(ip)" == "$(dig +short $HOME_WAN)" ]; then
+  ssh $HOME_USER@$HOME_LAN $1
 else
-  ssh SanguineRane@ip.drn.dev $1
+  ssh $HOME_USER@$HOME_WAN $1
 fi
