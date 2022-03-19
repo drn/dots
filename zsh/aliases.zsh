@@ -55,6 +55,7 @@ alias plane='airplane'
 alias shrink='. shrink'
 alias sickchill='acorn ./bin/sickchill'
 alias starwars='caffeinate -d telnet towel.blinkenlights.nl'
+alias stash-cert="scp ~/Downloads/cert_key.tar $HOME_USER@$HOME_WAN:~; home ./bin/stash-cert"
 alias stash-stop='home ./bin/stash-stop'
 alias stash='home ./bin/stash'
 alias t='thanx'
