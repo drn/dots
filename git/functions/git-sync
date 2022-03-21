@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# Syncs canonical branch of origin and upstream remotes
+
+source_branch="master"
+if [ ! -z "$(git branch --remote | grep upstream/main$)" ]; then
+  source_branch="main"
+fi
+
+git push origin upstream/$source_branch:$source_branch -f
