@@ -25,11 +25,13 @@ func main() {
 		path[1],
 	)
 
-	run.Verbose(
+	if !run.Verbose(
 		"git push %s %s:%s %s",
 		path[0],
 		branch,
 		path[1],
 		strings.Join(os.Args[1:], " "),
-	)
+	) {
+		os.Exit(1)
+	}
 }
