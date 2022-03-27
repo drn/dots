@@ -46,6 +46,7 @@ alias gitx='open -a /Applications/GitX.app .'
 alias h='history'
 alias hcp='home-scp'
 alias heic='heic-to-jpg'
+alias home="ssh $HOME_USER@$HOME_WAN"
 alias jo='jira-open'
 alias lip='ip --local'
 alias notify='terminal-notifier -message'
