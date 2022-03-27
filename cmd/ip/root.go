@@ -3,7 +3,10 @@ package main
 import (
 	"fmt"
 	"os"
+	"regexp"
 
+	"github.com/drn/dots/pkg/cache"
+	"github.com/drn/dots/pkg/log"
 	"github.com/jessevdk/go-flags"
 )
 
@@ -48,4 +51,18 @@ func main() {
 	} else {
 		external()
 	}
+}
+
+// Read IP from input cache file if less than 5min TTL
+func cacheRead(cachePath string) {
+	ip := cache.Read(cachePath, 5)
+	if ip != "" {
+		log.Info(ip)
+		os.Exit(0)
+	}
+}
+
+func isValid(data string) bool {
+	result, _ := regexp.MatchString("^\\d+.\\d+.\\d+.\\d+$", data)
+	return result
 }

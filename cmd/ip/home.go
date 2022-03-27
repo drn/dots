@@ -3,6 +3,7 @@ package main
 import (
 	"os"
 
+	"github.com/drn/dots/pkg/cache"
 	"github.com/drn/dots/pkg/log"
 	"github.com/drn/dots/pkg/path"
 	"github.com/drn/dots/pkg/run"
@@ -10,11 +11,11 @@ import (
 
 func home() {
 	cachePath := path.FromHome(".dots/ip-home")
-	checkCache(cachePath)
+	cacheRead(cachePath)
 	ip := run.Capture("dig +short %s +tries=1 +time=1", os.Getenv("HOME_WAN"))
 	if !isValid(ip) {
 		os.Exit(1)
 	}
-	cache(cachePath, ip)
+	cache.Write(cachePath, ip)
 	log.Info(ip)
 }

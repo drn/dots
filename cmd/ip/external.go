@@ -4,13 +4,14 @@ import (
 	"os"
 	"strings"
 
+	"github.com/drn/dots/pkg/cache"
 	"github.com/drn/dots/pkg/log"
 	"github.com/drn/dots/pkg/path"
 	"github.com/drn/dots/pkg/run"
 )
 
 func external() {
-	checkCache(path.FromHome(".dots/ip-external"))
+	cacheRead(path.FromHome(".dots/ip-external"))
 	check(google())
 	check(opendns())
 	for _, service := range services {
@@ -22,7 +23,7 @@ func external() {
 func check(ip string) {
 	if isValid(ip) {
 		log.Info(ip)
-		cache(path.FromHome(".dots/ip-external"), ip)
+		cache.Write(path.FromHome(".dots/ip-external"), ip)
 		os.Exit(0)
 	}
 }
