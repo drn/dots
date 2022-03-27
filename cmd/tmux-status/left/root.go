@@ -73,5 +73,11 @@ func localIP() string {
 }
 
 func externalIP() string {
-	return run.Capture("ip")
+	externalIP := run.Capture("ip")
+	homeIP := run.Capture("ip --home")
+	symbol := '\uf7b6' // globe
+	if externalIP == homeIP {
+		symbol = '\ufccf' // home
+	}
+	return fmt.Sprintf("%s %c", externalIP, symbol)
 }
