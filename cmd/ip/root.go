@@ -22,6 +22,7 @@ var services = []string{
 var opts struct {
 	Local  bool `short:"l" long:"local" description:"Return local IP of the specified interface (defaults to en0)"`
 	Router bool `short:"r" long:"router" description:"Return IP of LAN router"`
+	Home   bool `short:"h" long:"home" description:"Return IP of home network"`
 }
 
 func main() {
@@ -43,6 +44,8 @@ func main() {
 		}
 	} else if opts.Router {
 		router()
+	} else if opts.Home {
+		home()
 	} else {
 		external()
 	}
