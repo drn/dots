@@ -10,8 +10,8 @@ import (
 	"github.com/drn/dots/pkg/path"
 )
 
-// Log - logs data from input cache key if less than specified TTL and exits
-// with a successful status, otherwise returns
+// Log - logs data from input cache key if less than specified TTL (in minutes)
+// and exits with a successful status, otherwise returns
 func Log(key string, ttl float64) {
 	data := Read(key, 5)
 	if data != "" {
@@ -20,7 +20,26 @@ func Log(key string, ttl float64) {
 	}
 }
 
-// Read - returns data from input cache key if less than specified TTL
+// Warm - returns true if the last write to the cache key less than the
+// specified TTL(in minutes). False if the cache key doesn't exist or is older
+// than the specified TTL
+func Warm(key string, ttl float64) bool {
+	cachePath := path.FromCache(key)
+	info, err := os.Stat(cachePath)
+	if err != nil {
+		return false
+	}
+	age := time.Now().Sub(info.ModTime())
+	return age.Minutes() <= ttl
+}
+
+// Touch - writes an empty string to the cache key
+func Touch(key string) {
+	Write(key, "")
+}
+
+// Read - returns data from input cache key if less than specified TTL (in
+// minutes)
 func Read(key string, ttl float64) string {
 	cachePath := path.FromCache(key)
 	info, err := os.Stat(cachePath)
