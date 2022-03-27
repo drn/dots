@@ -68,10 +68,12 @@ func second() string {
 
 func third() string {
 	return fmt.Sprintf(
-		"%sc %sm %sb",
+		"%sc %sm %sb %s %s",
 		run.Capture("cpu"),
 		run.Capture("memory"),
 		battery(),
+		sep.L2,
+		run.Capture("weather"),
 	)
 }
 
