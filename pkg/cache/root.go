@@ -4,7 +4,19 @@ import (
 	"io/ioutil"
 	"os"
 	"time"
+
+	"github.com/drn/dots/pkg/log"
 )
+
+// Log - logs data from input cache file if less than specified TTL and exits
+// with a successful status, otherwise returns
+func Log(cachePath string, ttl float64) {
+	data := Read(cachePath, 5)
+	if data != "" {
+		log.Info(data)
+		os.Exit(0)
+	}
+}
 
 // Read - returns data from input cache file if less than specified TTL
 func Read(cachePath string, ttl float64) string {

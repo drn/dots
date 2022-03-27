@@ -1,14 +1,20 @@
 package main
 
 import (
+	"fmt"
 	"os"
 	"strings"
 
+	"github.com/drn/dots/pkg/cache"
 	"github.com/drn/dots/pkg/log"
+	"github.com/drn/dots/pkg/path"
 	"github.com/drn/dots/pkg/run"
 )
 
 func main() {
+	cachePath := path.FromHome(".dots/weather")
+	cache.Log(cachePath, 15)
+
 	weather := run.Capture("curl -s wttr.in?format=%%t+%%x")
 	parts := strings.Split(weather, " ")
 	if len(parts) < 2 {
@@ -17,7 +23,9 @@ func main() {
 	temp := parts[0]
 	condition := parts[1]
 
-	log.Info("%c %s", conditionSymbol(condition), formatTemp(temp))
+	output := fmt.Sprintf("%c %s", conditionSymbol(condition), formatTemp(temp))
+	cache.Write(cachePath, output)
+	log.Info(output)
 }
 
 func formatTemp(temp string) string {
