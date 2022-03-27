@@ -6,7 +6,7 @@ import (
 
 	spin "github.com/briandowns/spinner"
 	"github.com/drn/dots/cli/commands/spinner"
-	color "github.com/logrusorgru/aurora"
+	"github.com/fatih/color"
 	"github.com/spf13/cobra"
 )
 
@@ -57,9 +57,9 @@ var cmdSpinnerConsole = &cobra.Command{
 		s.Color("magenta")
 		s.Prefix = fmt.Sprintf(
 			"Running %s on %s (%s)... ",
-			color.BrightCyan("console"),
-			color.Blue("⬢ cluster"),
-			color.BrightMagenta("env"),
+			color.New(color.FgCyan, color.Bold).Sprint("console"),
+			color.BlueString("⬢ cluster"),
+			color.New(color.FgMagenta, color.Bold).Sprint("env"),
 		)
 		s.Start()
 		time.Sleep(2 * time.Second)

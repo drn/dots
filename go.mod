@@ -10,7 +10,6 @@ require (
 	github.com/jessevdk/go-flags v1.5.0
 	github.com/joho/godotenv v1.3.0
 	github.com/json-iterator/go v1.1.10
-	github.com/logrusorgru/aurora v2.0.3+incompatible
 	github.com/manifoldco/promptui v0.8.0
 	github.com/spf13/cobra v1.1.1
 )
