@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"os"
-	"regexp"
 
 	"github.com/jessevdk/go-flags"
 )
@@ -49,9 +48,4 @@ func main() {
 	} else {
 		external()
 	}
-}
-
-func isValid(data string) bool {
-	result, _ := regexp.MatchString("^\\d+.\\d+.\\d+.\\d+$", data)
-	return result
 }

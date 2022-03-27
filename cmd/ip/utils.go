@@ -3,6 +3,7 @@ package main
 import (
 	"io/ioutil"
 	"os"
+	"regexp"
 	"time"
 
 	"github.com/drn/dots/pkg/log"
@@ -27,4 +28,9 @@ func cache(cachePath string, ip string) {
 	file, _ := os.Create(cachePath)
 	file.WriteString(ip)
 	file.Close()
+}
+
+func isValid(data string) bool {
+	result, _ := regexp.MatchString("^\\d+.\\d+.\\d+.\\d+$", data)
+	return result
 }
