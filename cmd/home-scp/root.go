@@ -3,7 +3,6 @@ package main
 // home-scp sends the specified file home via scp
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/drn/dots/pkg/log"
@@ -25,20 +24,5 @@ func main() {
 		destination = os.Args[2]
 	}
 
-	run.Verbose("scp %s %s:%s", source, address(), destination)
-}
-
-// returns local or remote address user@endpoint if laptop is on home network
-// or not
-func address() string {
-	endpoint := homeWAN
-	// compare current IP to home network IP
-	if run.Capture("ip") == run.Capture("dig +short %s", homeWAN) {
-		endpoint = homeLAN
-	}
-	return fmt.Sprintf(
-		"%s@%s",
-		homeUser,
-		endpoint,
-	)
+	run.Verbose("scp %s %s@%s:%s", source, homeUser, homeWAN, destination)
 }
