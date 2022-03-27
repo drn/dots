@@ -1,10 +1,8 @@
 package main
 
 import (
-	"io/ioutil"
 	"os"
 	"strings"
-	"time"
 
 	"github.com/drn/dots/pkg/log"
 	"github.com/drn/dots/pkg/path"
@@ -12,7 +10,7 @@ import (
 )
 
 func external() {
-	checkCache()
+	checkCache(path.FromHome(".dots/ip-external"))
 	check(google())
 	check(opendns())
 	for _, service := range services {
@@ -24,34 +22,9 @@ func external() {
 func check(ip string) {
 	if isValid(ip) {
 		log.Info(ip)
-		cache(ip)
+		cache(path.FromHome(".dots/ip-external"), ip)
 		os.Exit(0)
 	}
-}
-
-// Read IP from ~/.ip cache if less than 5min TTL
-func checkCache() {
-	info, err := os.Stat(cachePath())
-	if err != nil {
-		return
-	}
-	age := time.Now().Sub(info.ModTime())
-	if age.Minutes() > 5 {
-		return
-	}
-	data, _ := ioutil.ReadFile(cachePath())
-	log.Info(string(data))
-	os.Exit(0)
-}
-
-func cache(ip string) {
-	file, _ := os.Create(cachePath())
-	file.WriteString(ip)
-	file.Close()
-}
-
-func cachePath() string {
-	return path.FromHome(".ip")
 }
 
 func google() string {
