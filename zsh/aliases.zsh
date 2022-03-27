@@ -9,7 +9,6 @@ alias lt='nerd-ls -iT'
 alias o.='open .'
 alias o='open'
 alias sls='/bin/ls -G'
-alias tree='tree -C'
 
 # Navigation Aliases
 alias -g ...='../..'
