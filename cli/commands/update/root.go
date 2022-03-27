@@ -1,8 +1,10 @@
 package update
 
 import (
+	"github.com/drn/dots/cli/commands/clean"
 	"github.com/drn/dots/cli/commands/install"
 	"github.com/drn/dots/cli/tmux"
+	"github.com/drn/dots/pkg/cache"
 	"github.com/drn/dots/pkg/log"
 	"github.com/drn/dots/pkg/path"
 	"github.com/drn/dots/pkg/run"
@@ -11,8 +13,9 @@ import (
 // Run - Runs update scripts
 func Run() {
 	window := tmux.Window()
-	tmux.SetWindow("update")
+	checkClean()
 
+	tmux.SetWindow("update")
 	log.Action("Updating dependencies")
 	updateDots()
 	updateZsh()
@@ -30,6 +33,14 @@ func setWindow(name string) {
 		return
 	}
 	run.Capture("tmux rename-window %s", name)
+}
+
+func checkClean() {
+	if cache.Warm("dots-clean", 10080) { // 7 days
+		return
+	}
+	clean.Run()
+	cache.Touch("dots-clean")
 }
 
 func updateDots() {
