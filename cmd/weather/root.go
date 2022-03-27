@@ -7,14 +7,11 @@ import (
 
 	"github.com/drn/dots/pkg/cache"
 	"github.com/drn/dots/pkg/log"
-	"github.com/drn/dots/pkg/path"
 	"github.com/drn/dots/pkg/run"
 )
 
 func main() {
-	cachePath := path.FromCache("weather")
-	cache.Log(cachePath, 15)
-
+	cache.Log("weather", 15)
 	weather := run.Capture("curl -s wttr.in?format=%%t+%%x")
 	parts := strings.Split(weather, " ")
 	if len(parts) < 2 {
@@ -24,7 +21,7 @@ func main() {
 	condition := parts[1]
 
 	output := fmt.Sprintf("%c %s", conditionSymbol(condition), formatTemp(temp))
-	cache.Write(cachePath, output)
+	cache.Write("weather", output)
 	log.Info(output)
 }
 
