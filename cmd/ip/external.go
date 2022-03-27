@@ -11,7 +11,7 @@ import (
 )
 
 func external() {
-	cacheRead(path.FromHome(".dots/ip-external"))
+	cacheRead(path.FromCache("ip-external"))
 	check(google())
 	check(opendns())
 	for _, service := range services {
@@ -23,7 +23,7 @@ func external() {
 func check(ip string) {
 	if isValid(ip) {
 		log.Info(ip)
-		cache.Write(path.FromHome(".dots/ip-external"), ip)
+		cache.Write(path.FromCache("ip-external"), ip)
 		os.Exit(0)
 	}
 }

@@ -3,6 +3,7 @@ package cache
 import (
 	"io/ioutil"
 	"os"
+	"path"
 	"time"
 
 	"github.com/drn/dots/pkg/log"
@@ -34,6 +35,8 @@ func Read(cachePath string, ttl float64) string {
 
 // Write - stores input string at specified cache path
 func Write(cachePath string, data string) {
+	// create directory hierarchy if it doesn't exist
+	os.MkdirAll(path.Dir(cachePath), os.ModePerm)
 	file, _ := os.Create(cachePath)
 	file.WriteString(data)
 	file.Close()

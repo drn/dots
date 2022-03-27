@@ -38,3 +38,13 @@ func Home() string {
 func FromHome(path string, args ...interface{}) string {
 	return fmt.Sprintf("%s/%s", Home(), fmt.Sprintf(path, args...))
 }
+
+// Cache - Returns $HOME/.dots/cache path
+func Cache() string {
+	return fmt.Sprintf("%s/.dots/cache", Home())
+}
+
+// FromCache - Returns path to cache
+func FromCache(path string, args ...interface{}) string {
+	return fmt.Sprintf("%s/%s", Cache(), fmt.Sprintf(path, args...))
+}

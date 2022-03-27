@@ -12,7 +12,7 @@ import (
 )
 
 func main() {
-	cachePath := path.FromHome(".dots/weather")
+	cachePath := path.FromCache("weather")
 	cache.Log(cachePath, 15)
 
 	weather := run.Capture("curl -s wttr.in?format=%%t+%%x")

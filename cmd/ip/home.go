@@ -10,7 +10,7 @@ import (
 )
 
 func home() {
-	cachePath := path.FromHome(".dots/ip-home")
+	cachePath := path.FromCache("ip-home")
 	cacheRead(cachePath)
 	ip := run.Capture("dig +short %s +tries=1 +time=1", os.Getenv("HOME_WAN"))
 	if !isValid(ip) {
