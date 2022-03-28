@@ -3,6 +3,7 @@ package doctor
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/drn/dots/cli/is"
@@ -28,7 +29,7 @@ func tools() {
 }
 
 func shell() {
-	if os.Getenv("SHELL") == "/usr/local/bin/zsh" {
+	if filepath.Base(os.Getenv("SHELL")) == "zsh" {
 		log.Success("ZSH is the default shell")
 	} else {
 		log.Error("ZSH is not the default shell")
