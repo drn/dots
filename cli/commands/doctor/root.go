@@ -17,6 +17,7 @@ func Run() {
 	tools()
 	shell()
 	homebrew()
+	zprofile()
 }
 
 func tools() {
@@ -50,6 +51,15 @@ func homebrew() {
 			"https://raw.githubusercontent.com/Homebrew/install/master/install",
 		)
 		resolve([]string{command})
+	}
+}
+
+func zprofile() {
+	if !is.File("/etc/zprofile") {
+		log.Success("/etc/zprofile is removed")
+	} else {
+		log.Error("/etc/zprofile exists")
+		resolve([]string{"sudo rm -f /etc/zprofile"})
 	}
 }
 
