@@ -8,10 +8,28 @@ import (
 	"github.com/drn/dots/pkg/cache"
 	"github.com/drn/dots/pkg/log"
 	"github.com/drn/dots/pkg/run"
+	"github.com/jessevdk/go-flags"
 )
 
+// Options - Parsed input flags schema
+var opts struct {
+	SkipCache bool `short:"x" long:"skip-cache" description:"Bypasses cache"`
+}
+
 func main() {
-	cache.Log("weather", 15)
+	_, err := flags.ParseArgs(&opts, os.Args)
+	if flags.WroteHelp(err) {
+		return
+	}
+	if err != nil {
+		fmt.Println()
+		flags.ParseArgs(&opts, []string{"--help"})
+		os.Exit(1)
+	}
+
+	if !opts.SkipCache {
+		cache.Log("weather", 15)
+	}
 	weather := run.Capture("curl -s wttr.in?format=%%t+%%x")
 	parts := strings.Split(weather, " ")
 	if len(parts) < 2 {
