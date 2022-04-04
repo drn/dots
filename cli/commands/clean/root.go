@@ -9,8 +9,8 @@ import (
 // Run - Runs update scripts
 func Run() {
 	log.Action("Cleaning up dependencies")
-	window := tmux.Window()
-	tmux.SetWindow("clean")
+	winName, winNum := tmux.Window()
+	tmux.SetWindow("clean", winNum)
 
 	log.Info("Cleaning Homebrew dependencies")
 	run.Verbose("brew cleanup -s")
@@ -18,6 +18,6 @@ func Run() {
 	log.Info("Cleaning vim plugins")
 	run.Silent("nvim -c \"PlugClean!|q\"")
 
-	tmux.SetWindow(window)
+	tmux.SetWindow(winName, winNum)
 	log.Info("Cleaning complete!")
 }

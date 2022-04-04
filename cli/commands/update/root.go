@@ -12,10 +12,10 @@ import (
 
 // Run - Runs update scripts
 func Run() {
-	window := tmux.Window()
+	winName, winNum := tmux.Window()
 	checkClean()
 
-	tmux.SetWindow("update")
+	tmux.SetWindow("update", winNum)
 	log.Action("Updating dependencies")
 	updateDots()
 	updateZsh()
@@ -24,7 +24,7 @@ func Run() {
 	reshimAsdf()
 	install.Call("vim")
 
-	tmux.SetWindow(window)
+	tmux.SetWindow(winName, winNum)
 	log.Info("Update complete!")
 }
 
