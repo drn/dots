@@ -108,3 +108,5 @@ key_bindings:
   # disable quit commands
   - { key: W, mods: Command, action: None }
   - { key: Q, mods: Command, action: None }
+  # open new window
+  - { key: N, mods: Command, action: CreateNewWindow }
