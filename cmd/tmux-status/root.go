@@ -63,7 +63,7 @@ func sides() {
 	switch {
 	case width < 90:
 		position.Min()
-	case width < 121:
+	case width < 150:
 		position.Med()
 	default:
 		position.Max()
