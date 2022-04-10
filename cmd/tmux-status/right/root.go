@@ -32,9 +32,10 @@ func (pos Position) Min() {
 // Med - 2/3 display
 func (pos Position) Med() {
 	fmt.Printf(
-		"%s%s%s %s %s%s%s %s \n",
+		"%sb%s %s%s%s %s %s%s%s %s ",
+		battery(), col.C3,
 		col.C2_3, sep.L1, col.C2,
-		third(),
+		run.Capture("weather"),
 		col.C1_2, sep.L1, col.C1,
 		first(),
 	)
@@ -43,7 +44,7 @@ func (pos Position) Med() {
 // Max - full display
 func (pos Position) Max() {
 	fmt.Printf(
-		"%s %s %s%s%s %s %s%s%s %s \n",
+		"%s%s %s%s%s %s %s%s%s %s \n",
 		col.C3,
 		third(),
 		col.C2_3, sep.L1, col.C2,
@@ -68,10 +69,10 @@ func second() string {
 
 func third() string {
 	return fmt.Sprintf(
-		"%sc %sm %sb %s %s",
+		"%sc %sm %sb%s %s %s",
 		run.Capture("cpu"),
 		run.Capture("memory"),
-		battery(),
+		battery(), col.C3,
 		sep.L2,
 		run.Capture("weather"),
 	)
