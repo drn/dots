@@ -31,11 +31,15 @@ func (pos Position) Min() {
 
 // Med - 2/3 display
 func (pos Position) Med() {
+	weather := run.Capture("weather")
+	if weather == "" {
+		weather = "\ue348"
+	}
 	fmt.Printf(
 		"%sb%s %s%s%s %s %s%s%s %s ",
 		battery(), col.C3,
 		col.C2_3, sep.L1, col.C2,
-		run.Capture("weather"),
+		weather,
 		col.C1_2, sep.L1, col.C1,
 		first(),
 	)
