@@ -68,13 +68,22 @@ func second() string {
 }
 
 func third() string {
+	weather := run.Capture("weather")
+	if weather == "" {
+		return fmt.Sprintf(
+			"%sc %sm %sb%s",
+			run.Capture("cpu"),
+			run.Capture("memory"),
+			battery(), col.C3,
+		)
+	}
 	return fmt.Sprintf(
 		"%sc %sm %sb%s %s %s",
 		run.Capture("cpu"),
 		run.Capture("memory"),
 		battery(), col.C3,
 		sep.L2,
-		run.Capture("weather"),
+		weather,
 	)
 }
 
