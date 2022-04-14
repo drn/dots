@@ -30,7 +30,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-go-
       - name: Install drn/dots
-        run: go get -u github.com/drn/dots
+        run: go install github.com/drn/dots
+      - run: ls ~/go/bin
+      - run: echo $PATH
       - name: Verify installation
         run: dots help
       - name: Cache dots CLI
@@ -48,7 +50,7 @@ jobs:
         with:
           go-version: '^1.17.5'
       - name: Install Golint
-        run: go get -u golang.org/x/lint/golint
+        run: go install github.com/golang/lint/golint
       - name: Go Lint
         run: golint ./...
 
