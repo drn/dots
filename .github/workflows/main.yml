@@ -30,7 +30,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-go-
       - name: Install drn/dots
-        run: go get -u github.com/drn/dots
+        run: go install github.com/drn/dots
       - name: Verify installation
         run: dots help
       - name: Cache dots CLI
