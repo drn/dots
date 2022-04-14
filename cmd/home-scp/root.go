@@ -9,9 +9,9 @@ import (
 	"github.com/drn/dots/pkg/run"
 )
 
-var homeUser string = os.Getenv("HOME_USER")
-var homeWAN string = os.Getenv("HOME_WAN")
-var homeLAN string = os.Getenv("HOME_LAN")
+var homeUser = os.Getenv("HOME_USER")
+var homeWAN = os.Getenv("HOME_WAN")
+var homeLAN = os.Getenv("HOME_LAN")
 
 func main() {
 	if len(os.Args) < 2 {
