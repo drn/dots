@@ -1,8 +1,0 @@
-inherit_gem:
-  thanx-style: rubocop.yml
-
-AllCops:
-  Include:
-    - home/irbrc
-    - home/pryrc
-    - Brewfile
