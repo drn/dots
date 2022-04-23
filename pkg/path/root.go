@@ -41,7 +41,7 @@ func FromHome(path string, args ...interface{}) string {
 
 // Cache - Returns $HOME/.dots/cache path
 func Cache() string {
-	return fmt.Sprintf("%s/.dots/cache", Home())
+	return fmt.Sprintf("%s/.dots/sys/cache", Home())
 }
 
 // FromCache - Returns path to cache
