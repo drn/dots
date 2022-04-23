@@ -19,8 +19,8 @@ own risk.
 
 ## Install
 
-    git clone https://github.com ~/go/src/github.com/drn/dots
-    cd ~/go/src/github.com/drn/dots
+    git clone https://github.com ~/.dots
+    cd ~/dots
     go install ./...
     dots install all
 

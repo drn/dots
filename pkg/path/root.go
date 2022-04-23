@@ -18,7 +18,7 @@ func Pretty(path string) string {
 func Dots() string {
 	path := os.Getenv("DOTS")
 	if path == "" {
-		path = fmt.Sprintf("%s/go/src/github.com/drn/dots", Home())
+		path = fmt.Sprintf("%s/.dots", Home())
 	}
 	return path
 }
