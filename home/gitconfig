@@ -14,7 +14,7 @@
   editor = nvim -f
   preloadindex = true
   pager = diff-so-fancy | less --tabs=1,5 -R
-  hooksPath = ~/go/src/github.com/drn/dots/git/hooks
+  hooksPath = ~/.dots/git/hooks
 
 [alias]
   up = upstream

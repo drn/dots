@@ -126,7 +126,7 @@ func parsePath(key string) (*string, *string) {
 }
 
 func save(config *ini.File) {
-	os.Mkdir(path.FromHome(".dots"), os.ModePerm)
+	os.Mkdir(path.FromHome(".dots/sys"), os.ModePerm)
 	config.SaveTo(configPath())
 }
 
@@ -139,5 +139,5 @@ func config() *ini.File {
 }
 
 func configPath() string {
-	return path.FromHome(".dots/config")
+	return path.FromHome(".dots/sys/config")
 }
