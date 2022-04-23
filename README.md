@@ -19,7 +19,9 @@ own risk.
 
 ## Install
 
-    go install github.com/drn/dots
+    git clone https://github.com ~/go/src/github.com/drn/dots
+    cd ~/go/src/github.com/drn/dots
+    go install ./...
     dots install all
 
 ## Dependencies
