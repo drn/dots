@@ -34,7 +34,6 @@ alias acorn="ssh \$ACORN_USERNAME@\$ACORN_HOST"
 alias binstubs='bundle install; bundle binstubs --path .bundle/bin --all'
 alias cat='bat'
 alias cgo='git ci-go'
-alias chrome='/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome'
 alias clean='dots cleanup'
 alias ff='fuzzy-find'
 alias fff='fuzzy-find-file'
