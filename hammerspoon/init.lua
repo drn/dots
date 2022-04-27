@@ -50,8 +50,9 @@ local bindings = {
   [{ 'cmd', 'alt', 'shift'}] = {
     Alacritty             = 'i',
     Messages              = 'n',
-    Slack                 = 'm',
     Notion                = "'",
+    Slack                 = 'm',
+    Spotify               = 'space',
     Things3               = ';',
     [ 'Google Calendar' ] = '/',
     [ 'Google Chrome' ]   = 'return'
@@ -61,9 +62,6 @@ local bindings = {
   },
   [{ 'cmd', 'alt'}] = {
     [ 'Brave Browser' ] = 'return'
-  },
-  [{ 'ctrl', 'cmd', 'alt'}] = {
-    Spotify = 'space'
   }
 }
 for modifiers,apps in pairs(bindings) do
