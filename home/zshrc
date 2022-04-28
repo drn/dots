@@ -27,4 +27,7 @@ if [ "$TMUX" = "" ]; then tmux-start master && exit; fi
 if [ -n "$TMUX" ]; then
   # Load zoxide
   eval "$(zoxide init zsh)"
+
+  # Load atuin
+  ATUIN_NOBIND=true eval "$(atuin init zsh)"
 fi

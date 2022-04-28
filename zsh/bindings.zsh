@@ -18,3 +18,6 @@ bindkey \^U backward-kill-line
 
 # accepts and executes autosuggestion
 bindkey '^[^M' autosuggest-execute # Alt + Enter
+
+# atuin interactive search
+bindkey '^r' _atuin_search_widget
