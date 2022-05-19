@@ -54,8 +54,7 @@ local bindings = {
     Slack                 = 'm',
     Spotify               = 'space',
     Things3               = ';',
-    [ 'Google Calendar' ] = '/',
-    [ 'Google Chrome' ]   = 'return'
+    [ 'Google Calendar' ] = '/'
   },
   [{ 'cmd', 'shift'}] = {
     [ 'Superhuman' ] = '/'
