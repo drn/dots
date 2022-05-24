@@ -30,7 +30,7 @@ func main() {
 	if !opts.SkipCache {
 		cache.Log("weather", 15)
 	}
-	weather := run.Capture("curl -s wttr.in?format=%%t+%%x")
+	weather := run.Capture("curl -s 'wttr.in?u&format=%%t+%%x'")
 	parts := strings.Split(weather, " ")
 	if len(parts) < 2 {
 		os.Exit(1)
