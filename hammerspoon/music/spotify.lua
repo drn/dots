@@ -22,6 +22,14 @@ local function duration()
   return currentPosition ~= nil and currentPosition / 1000 or 0
 end
 
+local function spotifyExec(command)
+  command = command or ''
+  local output = hs.execute(
+    'source ~/.dots/sys/env; ~/go/bin/spotify '..command
+  )
+  alert.showOnly(output:gsub('%s*$', ''), 1, 20)
+end
+
 function spotify.next()
   if not hs.spotify.isRunning() then return end
   hs.spotify.next()
@@ -116,18 +124,15 @@ function spotify.open()
 end
 
 function spotify.toggle()
-  local output = hs.execute("~/go/bin/spotify")
-  alert.showOnly(output:gsub('%s*$', ''), 1, 20)
+  spotifyExec()
 end
 
 function spotify.save()
-  local output = hs.execute("~/go/bin/spotify save")
-  alert.showOnly(output:gsub('%s*$', ''), 1, 20)
+  spotifyExec("save")
 end
 
 function spotify.remove()
-  local output = hs.execute("~/go/bin/spotify remove")
-  alert.showOnly(output:gsub('%s*$', ''), 1, 20)
+  spotifyExec("remove")
 end
 
 return spotify
