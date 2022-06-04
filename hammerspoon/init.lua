@@ -174,17 +174,25 @@ end)
 
 hs.hotkey.bind({'ctrl', 'alt', 'cmd'}, '-', function()
   background.primary.backward()
+end, nil, function()
+  background.primary.backward()
 end)
 
 hs.hotkey.bind({'ctrl', 'alt', 'cmd'}, '=', function()
+  background.primary.forward()
+end, nil, function()
   background.primary.forward()
 end)
 
 hs.hotkey.bind({'ctrl', 'alt', 'cmd', 'shift'}, '-', function()
   background.secondary.backward()
+end, nil, function()
+  background.secondary.backward()
 end)
 
 hs.hotkey.bind({'ctrl', 'alt', 'cmd', 'shift'}, '=', function()
+  background.secondary.forward()
+end, nil, function()
   background.secondary.forward()
 end)
 
