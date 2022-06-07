@@ -83,3 +83,6 @@ set termguicolors
 " python interpreter paths
 let g:python_host_prog = $HOME . '/.asdf/installs/python/2.7.18/bin/python'
 let g:python3_host_prog = $HOME . '/.asdf/installs/python/3.9.1/bin/python'
+
+" disable perl provider
+let g:loaded_perl_provider = 0
