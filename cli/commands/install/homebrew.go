@@ -10,6 +10,7 @@ import (
 // Homebrew - Installs Homebrew dependencies
 func (i Install) Homebrew() {
 	log.Action("Installing Homebrew dependencies")
+	exec("brew update")
 	exec("brew bundle --file=%s", path.FromDots("Brewfile"))
 	exec("brew services start mysql@5.7")
 	exec("brew services start postgresql")
