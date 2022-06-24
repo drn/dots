@@ -19,6 +19,7 @@ func Run() {
 	log.Action("Updating dependencies")
 	updateDots()
 	updateZsh()
+	updateTmux()
 	updateBrew()
 	updateSolargraph()
 	reshimAsdf()
@@ -56,6 +57,13 @@ func updateZsh() {
 	run.Verbose(
 		"source $(brew --prefix)/opt/zinit/zinit.zsh; " +
 			"zinit self-update; zinit update --parallel 10",
+	)
+}
+
+func updateTmux() {
+	log.Info("Updating tmux plugins")
+	run.Verbose(
+		"cd ~/.tmux/plugins/tpm; git fetch; git reset --hard origin/master",
 	)
 }
 
