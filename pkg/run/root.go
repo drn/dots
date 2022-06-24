@@ -20,7 +20,7 @@ func OSA(command string, args ...interface{}) string {
 // string.
 func Capture(command string, args ...interface{}) string {
 	resolvedCommand := fmt.Sprintf(command, args...)
-	out, _ := exec.Command("sh", "-c", resolvedCommand).CombinedOutput()
+	out, _ := exec.Command("zsh", "-c", resolvedCommand).CombinedOutput()
 	return strings.TrimSpace(string(out))
 }
 
@@ -28,7 +28,7 @@ func Capture(command string, args ...interface{}) string {
 // suppressing STDOUT.
 func Execute(command string) bool {
 	log.Raw(command)
-	cmd := exec.Command("bash", "-c", command)
+	cmd := exec.Command("zsh", "-c", command)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	err := cmd.Run()
@@ -39,7 +39,7 @@ func Execute(command string) bool {
 func Verbose(command string, args ...interface{}) bool {
 	resolvedCommand := fmt.Sprintf(command, args...)
 	log.Command(resolvedCommand)
-	cmd := exec.Command("bash", "-c", resolvedCommand)
+	cmd := exec.Command("zsh", "-c", resolvedCommand)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	err := cmd.Run()
@@ -49,7 +49,7 @@ func Verbose(command string, args ...interface{}) bool {
 // Silent - Runs the specified command without suppressing STDOUT.
 func Silent(command string, args ...interface{}) bool {
 	resolvedCommand := fmt.Sprintf(command, args...)
-	cmd := exec.Command("bash", "-c", resolvedCommand)
+	cmd := exec.Command("zsh", "-c", resolvedCommand)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	err := cmd.Run()

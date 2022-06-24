@@ -54,8 +54,8 @@ func updateDots() {
 func updateZsh() {
 	log.Info("Updating ZSH plugins")
 	run.Verbose(
-		"antibody bundle < \"%s\" > ~/.bundles",
-		path.FromDots("zsh/bundles"),
+		"source $(brew --prefix)/opt/zinit/zinit.zsh; " +
+			"zinit self-update; zinit update --parallel 10",
 	)
 }
 

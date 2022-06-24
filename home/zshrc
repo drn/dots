@@ -1,5 +1,6 @@
-# antibody bundles
-source ~/.bundles
+# load zinit
+source $(brew --prefix)/opt/zinit/zinit.zsh
+source $DOTS/zsh/plugins.zsh
 
 # config
 source $DOTS/zsh/basic.zsh

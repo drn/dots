@@ -3,7 +3,6 @@ package install
 import (
 	"github.com/drn/dots/cli/is"
 	"github.com/drn/dots/pkg/log"
-	"github.com/drn/dots/pkg/path"
 )
 
 // Zsh - Installs ZSH configuration
@@ -16,20 +15,6 @@ func (i Install) Zsh() {
 	if is.File("/etc/zprofile") {
 		exec("sudo rm -f /etc/zprofile")
 	}
-
-	// ensure antibody is installed
-	log.Info("Ensuring antibody is installed")
-	if is.Command("brew") && !is.Command("antibody") {
-		log.Info("Installing antibody...")
-		exec("brew install antibody 2>/dev/null")
-	}
-
-	// run antibody bundle
-	log.Info("Bundling antibody dependencies")
-	exec(
-		"antibody bundle < \"%s\" > ~/.bundles",
-		path.FromDots("zsh/bundles"),
-	)
 
 	// install tmux tpm
 	log.Info("Installing tmux pluin manager")
