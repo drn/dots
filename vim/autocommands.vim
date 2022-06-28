@@ -20,9 +20,9 @@ function TrimWhitespace()
   execute('%s/\s\+$//e')
   " preserve cursor position
   call cursor(line, col)
-  " if gitcommit, trim leading whitespace
+  " if gitcommit, trim leading whitespace of first line
   if &filetype == 'gitcommit'
-    execute('%s/^\s\+//e')
+    execute('0s/^\s\+//e')
   endif
 endfunction
 
