@@ -67,6 +67,14 @@ func (i Install) Osx() {
 		"defaults write com.apple.screencapture location ~/Downloads",
 	)
 
+	log.Info("Disable Handoff (Continuity)")
+	exec(
+		"defaults -currentHost write com.apple.coreservices.useractivityd ActivityAdvertisingAllowed -bool false",
+	)
+	exec(
+		"defaults -currentHost write com.apple.coreservices.useractivityd ActivityReceivingAllowed -bool false",
+	)
+
 	log.Info("Ensuring changes take effect immediately")
 	exec("killall Dock")
 	exec("killall Finder")
