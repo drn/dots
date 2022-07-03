@@ -9,7 +9,7 @@ import (
 
 // versions - installed language versions
 var versions = map[string]string{
-	"ruby":      "2.5.1",
+	"ruby":      "2.7.5",
 	"python2":   "2.7.18",
 	"python3":   "3.9.1",
 	"terraform": "1.0.11",
