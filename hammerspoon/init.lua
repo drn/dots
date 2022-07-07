@@ -118,7 +118,7 @@ end)
 -- Date & Time
 
 hs.hotkey.bind({'ctrl', 'cmd'}, '/', function()
-  local date = os.date('%A, %h %e')
+  local date = os.date('%A, %B %d'):gsub(' 0', ' ')
   local time = os.date('%I:%M%p'):gsub('^0',''):lower()
   alert.close()
   alert.show(time..' - '..date, 2.5)
