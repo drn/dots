@@ -32,3 +32,8 @@ if [ -n "$TMUX" ]; then
   # Load atuin
   ATUIN_NOBIND=true eval "$(atuin init zsh)"
 fi
+
+export VIRTUALENVWRAPPER_PYTHON=`which python3`
+# source `which virtualenvwrapper.sh`
+
+source $HOME/.asdf/installs/python/3.9.1/bin/virtualenvwrapper.sh

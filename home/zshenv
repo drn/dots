@@ -22,6 +22,8 @@ if [ "$ZSHENV_SOURCED" != "true" ]; then
   export PATH=$GOPATH/bin:$PATH
   # Include rust dependencies in PATH
   export PATH=$HOME/.cargo/bin:$PATH
+  # Add python3 bin to path
+  export PATH=$HOME/.asdf/installs/python/3.9.1/bin:$PATH
   # Load asdf
   . $BREW_PATH/opt/asdf/libexec/asdf.sh
   # Include binstubs in path
