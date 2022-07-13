@@ -18,23 +18,16 @@
 
 [alias]
   up = upstream
-  # git fetch shortcuts
   f = fetch-dynamic
   fa = fetch --all
   fo = fetch origin
-  # git status shortcut
   st = !"git --no-pager status; git --no-pager diff --stat"
-  # git diff
   d = diff
-  # git checkout shortcut
   co = checkout
-  # git rebase shortcut
   rb = rebase
-  # git cherry-pick shortcut
   cp = cherry-pick
-  # git commit shortcut
   cm = commit
-  # git branch shortcut
+  cme = commit --allow-empty
   br = branch
   # given a username or an email address shows the name and email address of the author
   whois = "!sh -c 'git log -i -1 --pretty=\"format:%an <%ae>\n\" --author=\"$1\"' -"
