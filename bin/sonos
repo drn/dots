@@ -1,0 +1,33 @@
+#!/bin/bash
+
+# Manages bluetooth connectivity of Sonos roam speakers
+
+if [[ "$#" -ne 1 || ("$1" != "toggle" && "$1" != "status") ]]; then
+  echo "Usage: hd1 [toggle/status]"
+  exit 1
+fi
+
+SONOS='54-2a-1b-4d-ee-d6' # MAC of HD1 Headphones
+BREW_PATH=/usr/local # Intel silicon
+[ -d "/opt/homebrew" ] && BREW_PATH=/opt/homebrew # Apple silicon
+CMD="$BREW_PATH/bin/blueutil"
+
+case $1 in
+  toggle)
+    if [ "$($CMD --is-connected "$SONOS")" -eq 0 ]; then
+      echo "Connecting Sonos..."
+      $CMD --connect "$SONOS" >/dev/null 2>&1 &
+    else
+      echo "Disconnecting Sonos..."
+      $CMD --disconnect "$SONOS" --info "$HD1" >/dev/null 2>&1 &
+    fi
+    ;;
+
+  status)
+    if [ "$($CMD --is-connected "$SONOS")" -eq 0 ]; then
+      echo "Sonos Disconnected"
+    else
+      echo "Sonos Connected"
+    fi
+    ;;
+esac
