@@ -61,8 +61,6 @@ Plug 'machakann/vim-highlightedyank'
 Plug 'justinmk/vim-dirvish'
 " open terminal (got) & finder (gof) mappings
 Plug 'justinmk/vim-gtfo'
-" switch between single and multi-line statements
-Plug 'AndrewRadev/splitjoin.vim'
 " improved vimdiff
 Plug 'whiteinge/diffconflicts'
 " git commit browser (:GV)
