@@ -1,3 +1,9 @@
+// `git killme`. Used to clean up the current working branch after active work
+// on branch has finalized (merged or abandoned).
+// Deletes the current branch from `origin` and `upstream` remotes. If the
+// current branch is a protected branch, skip remote pruning. After remote
+// pruning, checkout the default fallback branch (`root`), delete the local
+// branch, and resets the fallback branch to the current ancestor commit.
 package main
 
 import (
