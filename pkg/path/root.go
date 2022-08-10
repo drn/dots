@@ -1,3 +1,4 @@
+// Package path returns path-related helper functions
 package path
 
 import (

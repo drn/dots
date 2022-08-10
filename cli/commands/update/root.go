@@ -1,3 +1,4 @@
+// Package update manages system update logic
 package update
 
 import (

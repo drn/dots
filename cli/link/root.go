@@ -1,3 +1,4 @@
+// Package link provides functions to create soft and hard links
 package link
 
 import (

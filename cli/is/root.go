@@ -1,3 +1,4 @@
+// Package is manages helper functions that return booleans
 package is
 
 import (

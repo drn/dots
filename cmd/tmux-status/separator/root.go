@@ -1,3 +1,4 @@
+// Package separator provides tmux-status separator constants
 package separator
 
 // Separator -

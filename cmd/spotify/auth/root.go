@@ -1,3 +1,4 @@
+// Package auth manages Spotify API auth
 package auth
 
 import (

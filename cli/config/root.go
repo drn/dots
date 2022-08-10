@@ -1,3 +1,5 @@
+// Package config provides functionality to interact with and modify dots
+// configuration stored as an INI file located at ~/.dots/sys/config
 package config
 
 import (
@@ -12,7 +14,7 @@ import (
 	"github.com/manifoldco/promptui"
 )
 
-// All - Returns a mapping of all the config stored in ~/.thanx/config.
+// All - Returns a mapping of all the config stored in ~/.dots/sys/config
 func All() map[string]map[string]string {
 	var all = map[string]map[string]string{}
 	for _, section := range config().Sections() {

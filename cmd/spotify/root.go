@@ -5,6 +5,8 @@
 //   SPOTIFY_CLIENT_ID
 //   SPOTIFY_CLIENT_SECRET
 
+// This package provides a Spotify CLI to toggle, save, and remove the current
+// song
 package main
 
 import (

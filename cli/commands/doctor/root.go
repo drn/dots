@@ -1,3 +1,4 @@
+// Package doctor runs system diagnostic commands
 package doctor
 
 import (

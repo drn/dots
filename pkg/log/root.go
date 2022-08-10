@@ -1,3 +1,4 @@
+// Package log provides various colorized logging functions
 package log
 
 import (

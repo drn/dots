@@ -1,3 +1,4 @@
+// Package center outputs configuration for the tmux-status center section
 package center
 
 import (

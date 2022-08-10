@@ -1,3 +1,4 @@
+// Package left outputs configuration for the tmux-status left section
 package left
 
 import (

@@ -1,3 +1,5 @@
+// Package cache provides functionality to manage basic file-based caching
+// located at ~/.dots/sys/cache
 package cache
 
 import (

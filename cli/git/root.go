@@ -1,3 +1,4 @@
+// Package git provides git-releated helper functions
 package git
 
 import (

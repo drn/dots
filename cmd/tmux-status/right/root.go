@@ -1,3 +1,4 @@
+// Package right outputs configuration for the tmux-status right section
 package right
 
 import (

@@ -1,3 +1,4 @@
+// Package install contains all environment bootstrapping logic
 package install
 
 import (

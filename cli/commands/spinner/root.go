@@ -1,3 +1,4 @@
+// Package spinner provides CLI spinner functions
 package spinner
 
 import (

@@ -1,3 +1,4 @@
+// Package color contains tmux-status color constants
 package color
 
 // Color -

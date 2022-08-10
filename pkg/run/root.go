@@ -1,3 +1,4 @@
+// Package run triggers system commands
 package run
 
 import (

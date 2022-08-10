@@ -1,3 +1,4 @@
+// Package tmux contains integration with tmux CLI
 package tmux
 
 import (

@@ -1,3 +1,4 @@
+// Package commands manages all top-level CLI commands
 package commands
 
 import (
