@@ -1,3 +1,4 @@
+// Determines the most recent ancestor branch and remote of current git `HEAD`
 package main
 
 import (

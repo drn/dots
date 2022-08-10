@@ -1,6 +1,5 @@
-package main
-
 // Pushes the current branch to the canonical remote's canonical branch
+package main
 
 import (
 	"os"

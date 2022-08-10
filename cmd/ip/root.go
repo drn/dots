@@ -1,3 +1,4 @@
+// Outputs the machine's LAN IP, the router's IP, or the network's WAN IP
 package main
 
 import (

@@ -1,6 +1,5 @@
-package main
-
 // Rebase on top of the canonical path
+package main
 
 import (
 	"os"

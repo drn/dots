@@ -1,6 +1,5 @@
-package main
-
 // Writes the canonical branch to STDOUT
+package main
 
 import (
 	"github.com/drn/dots/cli/git"

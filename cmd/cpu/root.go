@@ -1,3 +1,4 @@
+// Outputs the current laptop battery %
 package main
 
 import (

@@ -1,5 +1,4 @@
 // Prints the current battery remaining percentage
-
 package main
 
 import (

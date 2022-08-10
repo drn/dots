@@ -1,6 +1,5 @@
 // Outputs tmux statusline configurations for the given input position & screen
 // width
-
 package main
 
 import (

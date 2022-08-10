@@ -1,3 +1,4 @@
+// Outputs the current weather and temperature for use with status lines.
 package main
 
 import (

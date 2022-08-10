@@ -1,6 +1,5 @@
-package main
-
 // home-scp sends the specified file home via scp
+package main
 
 import (
 	"os"

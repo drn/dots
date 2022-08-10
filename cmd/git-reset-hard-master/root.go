@@ -1,6 +1,5 @@
-package main
-
 // Resets hard to canonical remote & branch
+package main
 
 import (
 	"os"

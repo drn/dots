@@ -1,5 +1,4 @@
 // If available, prints out WiFi SSID currently connected to.
-
 package main
 
 import (
