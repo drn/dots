@@ -51,7 +51,6 @@ local bindings = {
     Alacritty             = 'i',
     Messages              = 'n',
     Notion                = "'",
-    Obsidian              = 'return',
     Slack                 = 'm',
     Spotify               = 'space',
     Things3               = ';',
