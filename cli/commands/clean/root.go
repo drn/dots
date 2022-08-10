@@ -1,3 +1,4 @@
+// Package clean cleans up homebrew and vim plugin artifacts
 package clean
 
 import (
@@ -6,7 +7,7 @@ import (
 	"github.com/drn/dots/pkg/run"
 )
 
-// Run - Runs update scripts
+// Run - Runs cleanup scripts
 func Run() {
 	log.Action("Cleaning up dependencies")
 	winName, winNum := tmux.Window()
