@@ -6,6 +6,7 @@ tap 'drn/homebrew-tap'
 tap 'ethereum/ethereum'
 tap 'goreleaser/tap'
 tap 'heroku/brew'
+tap 'homebrew/cask-drivers'
 tap 'puma/puma'
 
 # casks
@@ -34,6 +35,7 @@ cask 'quip'
 cask 'rowanj-gitx'
 cask 'securid' # Mastercard Connect Utility
 cask 'slack'
+cask 'sonos'
 cask 'spotify'
 cask 'superhuman'
 cask 'tableplus'
