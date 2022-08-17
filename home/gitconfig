@@ -120,3 +120,6 @@
 
 [push]
   default = matching
+
+[advice]
+  skippedCherryPicks = false
