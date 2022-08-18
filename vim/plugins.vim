@@ -118,6 +118,8 @@ Plug 'ntpeters/vim-better-whitespace'
 Plug 'gelguy/wilder.nvim', { 'do': ':UpdateRemotePlugins' }
 " code minimap - depends on `brew code-minimap`
 Plug 'wfxr/minimap.vim'
+" github copilot - ML-based pair programming
+Plug 'github/copilot.vim'
 
 " Language-specific plugins
 Plug 'keith/rspec.vim', { 'for': 'ruby' }
