@@ -8,6 +8,7 @@ Managed by a robust, extensible Go CLI.
 
 [![Github](https://github.com/drn/dots/actions/workflows/main.yml/badge.svg?branch=master)](https://github.com/drn/dots/actions?query=branch%3Amaster)
 [![Go Report Card](https://goreportcard.com/badge/github.com/drn/dots)](https://goreportcard.com/report/github.com/drn/dots)
+[![Maintainability](https://api.codeclimate.com/v1/badges/8ab4197b56ac54ce9321/maintainability)](https://codeclimate.com/github/drn/dots/maintainability)
 
 ![](screenshot.png)
 
