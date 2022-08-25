@@ -128,8 +128,8 @@ function LineSuffixMarkdown()
   let l:key = substitute(contents, '^#\{1,4} ', '', '')
   " replace spaces with -s
   let l:key = substitute(l:key, ' ', '-', 'g')
-  " strip & symbols
-  let l:key = substitute(l:key, '&', '', 'g')
+  " strip &, (, ) symbols
+  let l:key = substitute(l:key, '[&()]', '', 'g')
   return '#' . l:key
 endfunction
 
