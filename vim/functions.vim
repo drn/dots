@@ -150,13 +150,18 @@ function GitUrl()
   let repopath = Strip(system("git rev-parse --show-toplevel"))
   let path = substitute(filepath, repopath, '', '')
 
+  " tree url
   if path[strlen(path)-1] == "/"
-    " tree url
     return GitRepoUrl() . '/tree/master' . path
-  else
-    " file url
+  end
+
+  " file url
+  if path != '/README.md'
     return GitRepoUrl() . '/blob/master' . path . LineSuffix()
-  endif
+  end
+
+  " base readme
+  return GitRepoUrl() . LineSuffix()
 endfunction
 
 " Opens the GitUrl() in a browser
