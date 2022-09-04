@@ -30,7 +30,6 @@ cask 'notion'
 cask 'obsidian'
 cask 'postman'
 cask 'quicklook-json'
-cask 'quip'
 cask 'rowanj-gitx'
 cask 'securid' # Mastercard Connect Utility
 cask 'slack'
