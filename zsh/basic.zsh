@@ -8,6 +8,9 @@ export LESS="-R"
 # Disable need to escape ^ characters
 setopt NO_NOMATCH
 
+# Override default WORDCHARS to exclude /
+export WORDCHARS='*?_-.[]~=&;!#$%^(){}<>'
+
 # Set the default PostgreSQL host
 export PGHOST=localhost
 
