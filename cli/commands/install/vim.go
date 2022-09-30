@@ -69,7 +69,7 @@ func vimUpdatePlugins() {
 				"PlugUpdate --sync",
 				"UpdateRemotePlugins", // gelguy/wilder.nvim support
 				"set modifiable",
-				"4d", "2d", "2d", "1d",
+				"2,4d", "1d",
 				"execute line('$')",
 				"put=''", "pu",
 				fmt.Sprintf("w %s", tempPath),
