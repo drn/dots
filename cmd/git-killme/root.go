@@ -65,6 +65,7 @@ func main() {
 func prune(remote string, branch string) {
 	protectedBranches := []string{
 		"dev",
+		"main",
 		"master",
 		"sandbox",
 		"staging",
