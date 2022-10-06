@@ -19,6 +19,7 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v2
+      - run: sudo rm /usr/bin/go
       - uses: actions/setup-go@v2
         with:
           go-version: '^1.17.5'
@@ -44,6 +45,7 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v2
+      - run: sudo rm /usr/bin/go
       - uses: actions/setup-go@v2
         with:
           go-version: '^1.17.5'
@@ -162,6 +164,7 @@ jobs:
       DOTS: /Users/runner/work/dots/dots
     steps:
       - uses: actions/checkout@v2
+      - run: sudo rm /usr/bin/go
       - uses: actions/setup-go@v2
         with:
           go-version: '^1.17.5'
