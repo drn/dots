@@ -19,9 +19,9 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-go@v2
+      - uses: actions/setup-go@v3
         with:
-          go-version: '^1.17.5'
+          go-version: '1.17.5'
       - name: Cache Go Modules
         uses: actions/cache@v2
         with:
@@ -39,120 +39,120 @@ jobs:
           name: dots-cli
           path: ~/go/bin/dots
 
-  lint:
-    name: Lint
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-go@v2
-        with:
-          go-version: '^1.17.5'
-      - name: Install Golint
-        run: go install github.com/mgechev/revive@latest
-      - name: Go Lint
-        run: revive -set_exit_status ./...
+#   lint:
+#     name: Lint
+#     runs-on: macos-latest
+#     steps:
+#       - uses: actions/checkout@v2
+#       - uses: actions/setup-go@v3
+#         with:
+#           go-version: '1.19.2'
+#       - name: Install Golint
+#         run: go install github.com/mgechev/revive@latest
+#       - name: Go Lint
+#         run: revive -set_exit_status ./...
 
-  dots-install-bin:
-    name: dots install bin
-    needs: setup
-    runs-on: macos-latest
-    steps:
-      - name: Fetch dots CLI
-        uses: actions/download-artifact@v2
-        with:
-          name: dots-cli
-          path: ~/bin
-      - run: chmod +x ~/bin/dots
-      - run: dots install bin
+#   dots-install-bin:
+#     name: dots install bin
+#     needs: setup
+#     runs-on: macos-latest
+#     steps:
+#       - name: Fetch dots CLI
+#         uses: actions/download-artifact@v2
+#         with:
+#           name: dots-cli
+#           path: ~/bin
+#       - run: chmod +x ~/bin/dots
+#       - run: dots install bin
 
-  dots-install-git:
-    name: dots install git
-    needs: setup
-    runs-on: macos-latest
-    steps:
-      - name: Fetch dots CLI
-        uses: actions/download-artifact@v2
-        with:
-          name: dots-cli
-          path: ~/bin
-      - run: chmod +x ~/bin/dots
-      - run: dots install git
+#   dots-install-git:
+#     name: dots install git
+#     needs: setup
+#     runs-on: macos-latest
+#     steps:
+#       - name: Fetch dots CLI
+#         uses: actions/download-artifact@v2
+#         with:
+#           name: dots-cli
+#           path: ~/bin
+#       - run: chmod +x ~/bin/dots
+#       - run: dots install git
 
-  dots-install-home:
-    name: dots install home
-    needs: setup
-    runs-on: macos-latest
-    steps:
-      - name: Fetch dots CLI
-        uses: actions/download-artifact@v2
-        with:
-          name: dots-cli
-          path: ~/bin
-      - run: chmod +x ~/bin/dots
-      - run: dots install home
+#   dots-install-home:
+#     name: dots install home
+#     needs: setup
+#     runs-on: macos-latest
+#     steps:
+#       - name: Fetch dots CLI
+#         uses: actions/download-artifact@v2
+#         with:
+#           name: dots-cli
+#           path: ~/bin
+#       - run: chmod +x ~/bin/dots
+#       - run: dots install home
 
-  dots-install-zsh:
-    name: dots install zsh
-    needs: setup
-    runs-on: macos-latest
-    env:
-      DOTS: /Users/runner/work/dots/dots
-    steps:
-      - uses: actions/checkout@v2
-      - name: Fetch dots CLI
-        uses: actions/download-artifact@v2
-        with:
-          name: dots-cli
-          path: ~/bin
-      - run: chmod +x ~/bin/dots
-      - run: dots install zsh
+#   dots-install-zsh:
+#     name: dots install zsh
+#     needs: setup
+#     runs-on: macos-latest
+#     env:
+#       DOTS: /Users/runner/work/dots/dots
+#     steps:
+#       - uses: actions/checkout@v2
+#       - name: Fetch dots CLI
+#         uses: actions/download-artifact@v2
+#         with:
+#           name: dots-cli
+#           path: ~/bin
+#       - run: chmod +x ~/bin/dots
+#       - run: dots install zsh
 
-  dots-install-fonts:
-    name: dots install fonts
-    needs: setup
-    runs-on: macos-latest
-    steps:
-      - name: Fetch dots CLI
-        uses: actions/download-artifact@v2
-        with:
-          name: dots-cli
-          path: ~/bin
-      - run: chmod +x ~/bin/dots
-      - run: dots install fonts
+#   dots-install-fonts:
+#     name: dots install fonts
+#     needs: setup
+#     runs-on: macos-latest
+#     steps:
+#       - name: Fetch dots CLI
+#         uses: actions/download-artifact@v2
+#         with:
+#           name: dots-cli
+#           path: ~/bin
+#       - run: chmod +x ~/bin/dots
+#       - run: dots install fonts
 
-  dots-install-homebrew:
-    name: dots install homebrew
-    needs: setup
-    runs-on: macos-latest
-    if: github.ref == 'refs/heads/master'
-    env:
-      DOTS: /Users/runner/work/dots/dots
-    steps:
-      - uses: actions/checkout@v2
-      - name: Fetch dots CLI
-        uses: actions/download-artifact@v2
-        with:
-          name: dots-cli
-          path: ~/bin
-      - run: chmod +x ~/bin/dots
-      - name: Handle CI brew installation conflicts
-        run: |
-          rm /usr/local/bin/aws* # awscli
-          rm /usr/local/bin/go* # go, gofmt
-      - run: dots install homebrew
+#   dots-install-homebrew:
+#     name: dots install homebrew
+#     needs: setup
+#     runs-on: macos-latest
+#     if: github.ref == 'refs/heads/master'
+#     env:
+#       DOTS: /Users/runner/work/dots/dots
+#     steps:
+#       - uses: actions/checkout@v2
+#       - name: Fetch dots CLI
+#         uses: actions/download-artifact@v2
+#         with:
+#           name: dots-cli
+#           path: ~/bin
+#       - run: chmod +x ~/bin/dots
+#       - name: Handle CI brew installation conflicts
+#         run: |
+#           rm /usr/local/bin/aws* # awscli
+#           rm /usr/local/bin/go* # go, gofmt
+#       - run: dots install homebrew
 
-  dots-install-npm:
-    name: dots install npm
-    needs: setup
-    runs-on: macos-latest
-    steps:
-      - name: Fetch dots CLI
-        uses: actions/download-artifact@v2
-        with:
-          name: dots-cli
-          path: ~/bin
-      - run: chmod +x ~/bin/dots
-      - run: dots install npm
+#   dots-install-npm:
+#     name: dots install npm
+#     needs: setup
+#     runs-on: macos-latest
+#     steps:
+#       - name: Fetch dots CLI
+#         uses: actions/download-artifact@v2
+#         with:
+#           name: dots-cli
+#           path: ~/bin
+#       - run: chmod +x ~/bin/dots
+#       - run: dots install npm
 
   dots-install-vim:
     name: dots install vim
@@ -162,9 +162,9 @@ jobs:
       DOTS: /Users/runner/work/dots/dots
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-go@v2
+      - uses: actions/setup-go@v3
         with:
-          go-version: '^1.17.5'
+          go-version: '1.17.5'
       - name: Fetch dots CLI
         uses: actions/download-artifact@v2
         with:
@@ -173,66 +173,68 @@ jobs:
       - run: chmod +x ~/bin/dots
       - run: brew install neovim
       - run: dots install home # symlinks ~/.vimrc
+      # See https://github.com/fatih/vim-go/issues/3446#issuecomment-1236186562
+      - run: go get github.com/golangci/golangci-lint@latest
       - run: dots install vim
 
-  dots-install-languages:
-    name: dots install languages
-    needs: setup
-    runs-on: macos-latest
-    steps:
-      - name: Fetch dots CLI
-        uses: actions/download-artifact@v2
-        with:
-          name: dots-cli
-          path: ~/bin
-      - run: chmod +x ~/bin/dots
-      - run: |
-          brew install asdf
-          source $(brew --prefix)/opt/asdf/libexec/asdf.sh
-          dots install languages
-        env:
-          OPENSSL_CFLAGS: -Wno-error=implicit-function-declaration
+#   dots-install-languages:
+#     name: dots install languages
+#     needs: setup
+#     runs-on: macos-latest
+#     steps:
+#       - name: Fetch dots CLI
+#         uses: actions/download-artifact@v2
+#         with:
+#           name: dots-cli
+#           path: ~/bin
+#       - run: chmod +x ~/bin/dots
+#       - run: |
+#           brew install asdf
+#           source $(brew --prefix)/opt/asdf/libexec/asdf.sh
+#           dots install languages
+#         env:
+#           OPENSSL_CFLAGS: -Wno-error=implicit-function-declaration
 
-  dots-install-hammerspoon:
-    name: dots install hammerspoon
-    needs: setup
-    runs-on: macos-latest
-    steps:
-      - name: Fetch dots CLI
-        uses: actions/download-artifact@v2
-        with:
-          name: dots-cli
-          path: ~/bin
-      - run: chmod +x ~/bin/dots
-      - run: dots install hammerspoon
+#   dots-install-hammerspoon:
+#     name: dots install hammerspoon
+#     needs: setup
+#     runs-on: macos-latest
+#     steps:
+#       - name: Fetch dots CLI
+#         uses: actions/download-artifact@v2
+#         with:
+#           name: dots-cli
+#           path: ~/bin
+#       - run: chmod +x ~/bin/dots
+#       - run: dots install hammerspoon
 
-  dots-install-osx:
-    name: dots install osx
-    needs: setup
-    runs-on: macos-latest
-    steps:
-      - name: Fetch dots CLI
-        uses: actions/download-artifact@v2
-        with:
-          name: dots-cli
-          path: ~/bin
-      - run: chmod +x ~/bin/dots
-      - run: dots install osx
+#   dots-install-osx:
+#     name: dots install osx
+#     needs: setup
+#     runs-on: macos-latest
+#     steps:
+#       - name: Fetch dots CLI
+#         uses: actions/download-artifact@v2
+#         with:
+#           name: dots-cli
+#           path: ~/bin
+#       - run: chmod +x ~/bin/dots
+#       - run: dots install osx
 
-  dots-update:
-    name: dots update
-    needs: setup
-    runs-on: macos-latest
-    env:
-      DOTS: /Users/runner/work/dots/dots
-    steps:
-      - uses: actions/checkout@v2
-      - name: Fetch dots CLI
-        uses: actions/download-artifact@v2
-        with:
-          name: dots-cli
-          path: ~/bin
-      - run: chmod +x ~/bin/dots
-      - run: brew install neovim
-      - run: dots install home # symlinks ~/.vimrc
-      - run: dots update
+#   dots-update:
+#     name: dots update
+#     needs: setup
+#     runs-on: macos-latest
+#     env:
+#       DOTS: /Users/runner/work/dots/dots
+#     steps:
+#       - uses: actions/checkout@v2
+#       - name: Fetch dots CLI
+#         uses: actions/download-artifact@v2
+#         with:
+#           name: dots-cli
+#           path: ~/bin
+#       - run: chmod +x ~/bin/dots
+#       - run: brew install neovim
+#       - run: dots install home # symlinks ~/.vimrc
+#       - run: dots update

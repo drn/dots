@@ -141,7 +141,7 @@ Plug 'iamcco/markdown-preview.nvim', {
 Plug 'udalov/kotlin-vim', { 'for': 'kotlin' }
 " Skip due to CI issue:
 "   Error installing github.com/golangci/golangci-lint/cmd/golangci-lint@latest
-" Plug 'fatih/vim-go', { 'for': 'go', 'do': ':GoUpdateBinaries' }
+Plug 'fatih/vim-go', { 'for': 'go', 'do': ':GoUpdateBinaries' }
 Plug 'leafgarland/typescript-vim', { 'for': 'typescript' }
 Plug 'TovarishFin/vim-solidity', { 'for': 'solidity' }
 
