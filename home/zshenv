@@ -57,8 +57,4 @@ if [ "$ZSHENV_SOURCED" != "true" ]; then
   # Ruby config options
   export RUBY_CONFIGURE_OPTS="--with-openssl-dir=$BREW_PATH/opt/openssl@3"
   export RUBY_CFLAGS="-Wno-error=implicit-function-declaration"
-  # Constants
-  export HOME_USER='SanguineRane'
-  export HOME_WAN='ip.drn.dev'
-  export HOME_LAN='192.168.50.200'
 fi
