@@ -19,8 +19,6 @@ font:
     x: 0
     y: 0
 
-  use_thin_strokes: true
-
 colors:
   primary:
     background: '#08082a'
@@ -65,9 +63,10 @@ colors:
     focused_match:
       foreground: '#1d1f21'
       background: '#c70039'
-    bar:
-      foreground: '#1d1f21'
-      background: '#ff5733'
+
+  footer_bar:
+    foreground: '#1d1f21'
+    background: '#ff5733'
 
   line_indicator:
     foreground: '#000000'
