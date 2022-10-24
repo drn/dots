@@ -13,6 +13,7 @@ info = {}
 Dir.glob("#{ENV['TMPDIR']}/lftp.log*").each do |logfile|
   File.foreach(logfile) do |line|
     parts = line.split(' ')
+    next if parts[2].include?('/downloads/safe') && ARGV[0] != '--full'
     filename = CGI.unescape(File.basename(parts[2]))
     datetime = Time.parse("#{parts[0]} #{parts[1]}")
     info[filename] ||= { min: datetime, max: datetime }
