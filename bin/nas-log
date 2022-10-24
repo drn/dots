@@ -1,0 +1,31 @@
+#!/usr/bin/env ruby
+
+# frozen_string_literal: true
+
+require 'cgi'
+require 'time'
+require 'pry'
+
+`scp -P 10 $HOME_USER@$HOME_WAN:/volume1/System/logs/lftp.log* $TMPDIR`
+
+info = {}
+
+Dir.glob("#{ENV['TMPDIR']}/lftp.log*").each do |logfile|
+  File.foreach(logfile) do |line|
+    parts = line.split(' ')
+    filename = CGI.unescape(File.basename(parts[2]))
+    datetime = Time.parse("#{parts[0]} #{parts[1]}")
+    info[filename] ||= { min: datetime, max: datetime }
+    info[filename][:min] = datetime if info[filename][:min] > datetime
+    info[filename][:max] = datetime if info[filename][:max] < datetime
+  end
+end
+
+info.sort_by do |_, times|
+  times[:min]
+end.each do |filename, times|
+  timestamp = times[:min].strftime('%Y-%m-%d %H:%M')
+  duration = (times[:max].to_i - times[:min].to_i)
+  duration = "#{duration}s".rjust(4)
+  puts "#{timestamp} - #{duration} - #{filename}"
+end
