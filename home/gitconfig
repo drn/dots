@@ -61,7 +61,7 @@
   # shorthand for commit-all
   cma = !"git commit-all"
   # browse the current head on github
-  browse = !"open https://github.com/$(git path)/commit/${1:-$(git rev-parse HEAD)} #"
+  browse = !"open https://github.com/$(git path)/commit/$(git rev-parse ${1:-$(echo HEAD)}) #"
   bro = !"git browse"
   # rebase on top of the canonical path
   rbm = rebase-master
