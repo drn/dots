@@ -23,7 +23,7 @@ if [ "$ZSHENV_SOURCED" != "true" ]; then
   # Include rust dependencies in PATH
   export PATH=$HOME/.cargo/bin:$PATH
   # Load asdf
-  . $BREW_PATH/opt/asdf/libexec/asdf.sh
+  source $BREW_PATH/opt/asdf/libexec/asdf.sh 2>/dev/null
   # Include binstubs in path
   export PATH=.bundle/bin:$PATH
   # Set $ANDROID_HOME

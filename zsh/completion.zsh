@@ -24,4 +24,4 @@ bashcompinit
 compinit
 
 # load asdf completion
-source $BREW_PATH/opt/asdf/etc/bash_completion.d/asdf.bash
+source $BREW_PATH/opt/asdf/etc/bash_completion.d/asdf.bash 2>/dev/null
