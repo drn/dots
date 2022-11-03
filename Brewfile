@@ -37,6 +37,7 @@ cask 'spotify'
 cask 'superhuman'
 cask 'tableplus'
 cask 'the-unarchiver'
+cask 'timemachineeditor'
 cask 'vlc'
 cask 'vnc-viewer'
 
