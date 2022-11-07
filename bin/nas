@@ -4,7 +4,7 @@
 
 tailscale=/Applications/Tailscale.app/Contents/MacOS/Tailscale
 
-if [[ "$(ip --home)" == "$(ip)" ]]; then
+if [[ "$(ip --home)" == "$(ip --uncached)" ]]; then
   ssh $HOME_USER@$HOME_LAN -p 10
 else
   $tailscale up && sleep 1
