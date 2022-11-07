@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# Open browser to NAS DSM
+
+tailscale=/Applications/Tailscale.app/Contents/MacOS/Tailscale
+
+if [[ "$(ip --home)" == "$(ip --uncached)" ]]; then
+  open "http://$HOME_HOST.local"
+else
+  $tailscale up && sleep 1
+  open "http://$($tailscale ip -4 $HOME_HOST):5000"
+  echo -e "Run \033[0;34mtailscale down\033[0m when done"
+fi
