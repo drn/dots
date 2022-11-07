@@ -48,7 +48,6 @@ alias heic='heic-to-jpg'
 alias home="ssh $HOME_USER@$HOME_WAN"
 alias jo='jira-open'
 alias lip='ip --local'
-alias nas="ssh $HOME_USER@$HOME_WAN -p 10"
 alias notify='terminal-notifier -message'
 alias nuc='thanx nucleus'
 alias orig='find . -iname "*.orig" | xargs rm'

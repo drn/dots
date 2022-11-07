@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# Connect to NAS directly or via tailscalea
+
+tailscale=/Applications/Tailscale.app/Contents/MacOS/Tailscale
+
+if [[ "$(ip --home)" == "$(ip)" ]]; then
+  ssh $HOME_USER@$HOME_LAN -p 10
+else
+  $tailscale up && sleep 1
+  ssh $HOME_USER@"$($tailscale ip -4 $HOME_HOST)" -p 10
+  $tailscale down
+fi
