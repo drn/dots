@@ -9,8 +9,10 @@ import (
 	"github.com/drn/dots/pkg/run"
 )
 
-func external() {
-	cache.Log("ip-external", 5)
+func external(useCache bool) {
+	if useCache {
+		cache.Log("ip-external", 5)
+	}
 	check(google())
 	check(opendns())
 	for _, service := range services {
