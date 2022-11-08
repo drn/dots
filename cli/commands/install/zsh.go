@@ -19,8 +19,18 @@ func (i Install) Zsh() {
 	// install tmux tpm
 	log.Info("Installing tmux pluin manager")
 	exec(
-		"git clone %s ~/.tmux/plugins/tpm 2>/dev/null",
+		"git clone %s ~/.tmux/plugins/tpm 2>/dev/null || true",
 		"https://github.com/tmux-plugins/tpm",
 	)
 	exec("cd ~/.tmux/plugins/tpm; git fetch; git reset --hard origin/master")
+
+	// install zinit
+	log.Info("Installing ZSH plugin manager")
+	zinitPath := "~/.local/share/zinit"
+	exec("mkdir -p %s", zinitPath)
+	exec(
+		"git clone %s %s 2>/dev/null || true",
+		"https://github.com/zdharma-continuum/zinit.git",
+		zinitPath,
+	)
 }

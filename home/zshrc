@@ -1,5 +1,5 @@
-# load zinit
-source $(brew --prefix)/opt/zinit/zinit.zsh
+# load zinit and plugins
+source "$HOME/.local/share/zinit/zinit.git/zinit.zsh"
 source $DOTS/zsh/plugins.zsh
 
 # config
