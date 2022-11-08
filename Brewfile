@@ -46,6 +46,7 @@ brew 'amazon-ecs-cli'
 brew 'apache-spark'
 brew 'asdf'
 brew 'atuin'
+brew 'avifquicklook' # Finder QuickLook support for .avif files
 brew 'awscli'
 brew 'bat'
 brew 'blueutil'
