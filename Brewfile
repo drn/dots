@@ -43,7 +43,6 @@ cask 'vnc-viewer'
 
 # formulae
 brew 'amazon-ecs-cli'
-brew 'apache-spark'
 brew 'asdf'
 brew 'atuin'
 brew 'avifquicklook' # Finder QuickLook support for .avif files
