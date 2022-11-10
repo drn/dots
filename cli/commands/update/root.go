@@ -56,7 +56,7 @@ func updateDots() {
 func updateZsh() {
 	log.Info("Updating ZSH plugins")
 	run.Verbose(
-		"source ~/.local/share/zinit/zinit.zsh; " +
+		"source ~/.local/share/zinit/zinit.git/zinit.zsh; " +
 			"zinit self-update; zinit update --parallel 10",
 	)
 }
