@@ -50,10 +50,10 @@ local bindings = {
   [{ 'cmd', 'alt', 'shift'}] = {
     Alacritty             = 'i',
     Messages              = 'n',
-    Notion                = "'",
+    Notion                = ';',
     Slack                 = 'm',
     Spotify               = 'space',
-    Things3               = ';',
+    Things3               = "'",
     [ 'Google Calendar' ] = '/'
   },
   [{ 'cmd', 'shift'}] = {
