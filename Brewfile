@@ -60,6 +60,7 @@ brew 'elasticsearch@6'
 brew 'fd'
 brew 'ffmpeg'
 brew 'fswatch'
+brew 'fx' # Terminal JSON viewer
 brew 'git-gui'
 brew 'git-lfs'
 brew 'gnupg'
