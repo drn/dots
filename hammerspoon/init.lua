@@ -73,8 +73,8 @@ end
 
 -- Music
 
-hs.hotkey.bind({ 'cmd', 'alt', 'shift'}, 'a', function() music.display() end)
-hs.hotkey.bind({ 'cmd', 'alt', 'shift'}, 'k', function() music.open() end)
+hs.hotkey.bind({ 'cmd', 'alt', 'shift' }, 'a', function() music.display() end)
+hs.hotkey.bind({ 'ctrl', 'alt' }, 'space', function() music.open() end)
 hs.hotkey.bind({ 'ctrl' }, 'space', function() music.playpause() end)
 hs.hotkey.bind({ 'cmd', 'alt' }, 'left', function() music.previous() end)
 hs.hotkey.bind({ 'cmd', 'alt' }, 'right', function() music.next() end)
