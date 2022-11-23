@@ -59,6 +59,10 @@ func updateZsh() {
 		"source ~/.local/share/zinit/zinit.git/zinit.zsh; " +
 			"zinit self-update; zinit update --parallel 10",
 	)
+	log.Info("Prune broken zinit completion symlinks")
+	run.Verbose(
+		"find -L ~/.local/share/zinit/completions -type l -exec rm -f {} \\;",
+	)
 }
 
 func updateTmux() {
