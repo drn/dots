@@ -7,15 +7,19 @@ if [[
     "$1" != "movies" &&
     "$1" != "tv" &&
     "$1" != "safe" &&
-    "$1" != "misc"
+    "$1" != "misc" &&
+    "$1" != "hole"
   ) ]]; then
-  echo "Usage: tor [movies/tv/safe/misc]"
+  echo "Usage: tor [movies/tv/safe/misc/hole]"
   exit 1
 fi
 
 target=$1
 if [ "$target" = "tv" ]; then
   target="pre-processed-tv"
+fi
+if [ "$target" = "hole" ]; then
+  target="blackhole"
 fi
 
 cd ~/Downloads || exit 1
