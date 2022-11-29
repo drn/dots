@@ -176,7 +176,7 @@ command! Go call Gopen()
 " Copies the GitUrl() to the clipboard
 function! Gcopy()
   let url = GitUrl()
-  call system('echo ' . url . ' | pbcopy')
+  call system('echo -n ' . url . ' | pbcopy')
   echomsg 'Copied ' . url
 endfunction
 command! Gcopy call Gcopy()
