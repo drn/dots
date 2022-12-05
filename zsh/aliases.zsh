@@ -75,6 +75,7 @@ alias vimdiff='nvim -d'
 alias vimsync='dots install vim'
 alias webp='webp-to-jpg'
 alias wordle='ssh clidle.ddns.net -p 3000'
+alias deck="ssh deck@$DECK_LAN"
 
 # tmux-start shortcuts
 alias mxm='unshrink; tmux-start master'
