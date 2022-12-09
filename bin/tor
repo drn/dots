@@ -15,9 +15,6 @@ if [[
 fi
 
 target=$1
-if [ "$target" = "tv" ]; then
-  target="pre-processed-tv"
-fi
 if [ "$target" = "hole" ]; then
   target="blackhole"
 fi
