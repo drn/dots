@@ -5,9 +5,15 @@
 tailscale=/Applications/Tailscale.app/Contents/MacOS/Tailscale
 
 if [[ "$(ip --home)" == "$(ip --uncached)" ]]; then
-  open "http://$HOME_HOST.local"
+  if [[ -z "$1" ]]; then
+    open "http://$HOME_HOST.local"
+  else
+    open "http://$HOME_LAN:$1"
+  fi
 else
   $tailscale up && sleep 1
-  open "http://$($tailscale ip -4 $HOME_HOST):5000"
+  PORT=5000
+  if [[ -n "$1" ]]; then PORT=$1; fi
+  open "http://$($tailscale ip -4 $HOME_HOST):$PORT"
   echo -e "Run \033[0;34mtailscale down\033[0m when done"
 fi
