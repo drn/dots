@@ -81,6 +81,7 @@ alias wordle='ssh clidle.ddns.net -p 3000'
 alias jackett="nas-web 9117"
 alias overseerr="nas-web 5055"
 alias radarr="nas-web 7878"
+alias sabnzbd="nas-web 8080"
 alias sonarr="nas-web 8989"
 alias tautulli="nas-web 8181"
 
