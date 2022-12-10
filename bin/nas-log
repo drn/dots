@@ -6,7 +6,7 @@ require 'cgi'
 require 'time'
 require 'pry'
 
-`scp -P 10 $HOME_USER@$HOME_LAN:/volume2/System/logs/lftp.log* $TMPDIR`
+`scp -P 10 $HOME_USER@$HOME_LAN:/volume2/system/logs/lftp.log* $TMPDIR`
 
 info = {}
 
