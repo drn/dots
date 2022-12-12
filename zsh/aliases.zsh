@@ -79,7 +79,7 @@ alias wordle='ssh clidle.ddns.net -p 3000'
 
 # NAS
 alias overseerr='nas-web 5055'
-alias prowl='nas-web 9696 search'
+alias prowl='nas-web 9898 search'
 alias prowlarr='nas-web 9696'
 alias radarr='nas-web 7878'
 alias sabnzbd='nas-web 8080'
