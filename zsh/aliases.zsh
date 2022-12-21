@@ -78,6 +78,7 @@ alias webp='webp-to-jpg'
 alias wordle='ssh clidle.ddns.net -p 3000'
 
 # NAS
+alias bridge='nas-web 8581'
 alias overseerr='nas-web 5055'
 alias prowl='nas-web 9898 search'
 alias prowlarr='nas-web 9696'
