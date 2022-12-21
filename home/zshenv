@@ -54,6 +54,10 @@ if [ "$ZSHENV_SOURCED" != "true" ]; then
   export LDFLAGS="${LDFLAGS} -L$BREW_PATH/opt/libxml2/lib"
   export CPPFLAGS="${CPPFLAGS} -I$BREW_PATH/opt/libxml2/include"
   export PKG_CONFIG_PATH="${PKG_CONFIG_PATH} $BREW_PATH/opt/libxml2/lib/pkgconfig"
+  # Ensure libffi is in path
+  export LDFLAGS="-L$BREW_PATH/opt/libffi/lib"
+  export CPPFLAGS="-I$BREW_PATH/opt/libffi/include"
+  export PKG_CONFIG_PATH="$BREW_PATH/opt/libffi/lib/pkgconfig"
   # Ruby config options
   export RUBY_CONFIGURE_OPTS="--with-openssl-dir=$OPENSSL_PATH"
   export RUBY_CFLAGS="-Wno-error=implicit-function-declaration"
