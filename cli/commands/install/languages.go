@@ -14,7 +14,7 @@ var versions = map[string]string{
 	"python3":   "3.9.1",
 	"terraform": "1.0.11",
 	"nodejs":    "17.2.0",
-	"golang":    "1.17.5",
+	"golang":    "1.19.2",
 }
 
 // Languages - Installs asdf & languages
