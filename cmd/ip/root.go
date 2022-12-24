@@ -10,10 +10,10 @@ import (
 )
 
 var services = []string{
+	fmt.Sprintf("ipinfo.io/ip?token=%s", os.Getenv("IPINFO_API_KEY")),
 	"ipv4.icanhazip.com",
 	"wtfismyip.com/text",
 	"ipecho.net/plain",
-	"ipinfo.io/ip",
 	"ifconfig.me",
 	"ifconfig.co",
 	"l2.io/ip",
