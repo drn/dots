@@ -2,7 +2,6 @@ package wttr
 
 import (
 	"fmt"
-	"os"
 	"strings"
 
 	"github.com/drn/dots/pkg/run"
@@ -14,7 +13,7 @@ func Info() string {
 	weather := run.Capture("curl -s -m 0.5 'wttr.in?u&format=%%t+%%x'")
 	parts := strings.Split(weather, " ")
 	if len(parts) < 2 {
-		os.Exit(1)
+		return ""
 	}
 	temp := parts[0]
 	condition := parts[1]

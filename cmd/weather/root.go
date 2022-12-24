@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/drn/dots/cmd/weather/openweather"
 	"github.com/drn/dots/cmd/weather/wttr"
 	"github.com/drn/dots/pkg/cache"
 	"github.com/drn/dots/pkg/log"
@@ -31,7 +32,20 @@ func main() {
 		cache.Log("weather", 15)
 	}
 
-	weather := wttr.Info()
+	weather := weather()
 	cache.Write("weather", weather)
 	log.Info(weather)
+}
+
+func weather() string {
+	weather := openweather.Info()
+	if weather != "" {
+		return weather
+	}
+	weather = wttr.Info()
+	if weather != "" {
+		return weather
+	}
+	os.Exit(1)
+	return ""
 }
