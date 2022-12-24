@@ -48,7 +48,6 @@ alias h='history'
 alias hcp='home-scp'
 alias heic='heic-to-jpg'
 alias home="ssh $HOME_USER@$HOME_WAN"
-alias install-cert="scp -P 10 ~/Downloads/cert_key.tar $HOME_USER@$HOME_LAN:~; nas ./bin/install-cert"
 alias jo='jira-open'
 alias lip='ip --local'
 alias notify='terminal-notifier -message'
