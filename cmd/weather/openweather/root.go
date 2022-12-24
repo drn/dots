@@ -52,6 +52,9 @@ func conditions(json string) string {
 		return "\ue351 "
 	case 800:
 		// Clear
+		if isNight(json) {
+			return "\ufa93"
+		}
 		return "\ufa98"
 	case 801, 802, 803, 804:
 		// Clouds
@@ -59,6 +62,11 @@ func conditions(json string) string {
 	}
 	// Unknown
 	return "\ue348 "
+}
+
+func isNight(json string) bool {
+	icon := jsoniter.Get([]byte(json), "weather", 0, "icon").ToString()
+	return icon[len(icon)-1:] == "n"
 }
 
 func json() string {
