@@ -14,7 +14,8 @@ import (
 
 // Options - Parsed input flags schema
 var opts struct {
-	SkipCache bool `short:"x" long:"skip-cache" description:"Bypasses cache"`
+	SkipCache bool   `short:"x" long:"skip-cache" description:"Bypasses cache"`
+	Provider  string `long:"provider" default:"openweather" description:"Specify provider to use (defaults to openweather. options: wttr, openweather)"`
 }
 
 func main() {
@@ -38,14 +39,15 @@ func main() {
 }
 
 func weather() string {
-	weather := openweather.Info()
-	if weather != "" {
-		return weather
+	weather := ""
+	switch opts.Provider {
+	case "wttr":
+		weather = wttr.Info()
+	default:
+		weather = openweather.Info()
 	}
-	weather = wttr.Info()
-	if weather != "" {
-		return weather
+	if weather == "" {
+		os.Exit(1)
 	}
-	os.Exit(1)
-	return ""
+	return weather
 }
