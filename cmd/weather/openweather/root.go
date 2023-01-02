@@ -1,3 +1,4 @@
+// Package openweather - https://openweathermap.org/
 package openweather
 
 import (

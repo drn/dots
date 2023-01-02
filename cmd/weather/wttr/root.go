@@ -1,3 +1,4 @@
+// Package wttr - https://github.com/chubin/wttr.in
 package wttr
 
 import (
