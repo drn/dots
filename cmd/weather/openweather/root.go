@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"math"
 	"os"
+	"strings"
 
 	"github.com/drn/dots/pkg/run"
 	jsoniter "github.com/json-iterator/go"
@@ -71,11 +72,17 @@ func isNight(json string) bool {
 }
 
 func json() string {
+	coords := gps()
 	return run.Capture(
 		"curl -s 'https://%s?lat=%s&lon=%s&appid=%s&units=imperial'",
 		"api.openweathermap.org/data/2.5/weather",
-		"37.8485069",
-		"-122.2511103",
+		coords[0],
+		coords[1],
 		os.Getenv("OPEN_WEATHER_API_KEY"),
 	)
+}
+
+func gps() []string {
+	coords := run.Capture("gps")
+	return strings.Split(coords, ",")
 }
