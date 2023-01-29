@@ -161,6 +161,7 @@ jobs:
     env:
       DOTS: /Users/runner/work/dots/dots
     steps:
+      - run: brew uninstall go@1.17 && brew cleanup || true
       - uses: actions/checkout@v2
       - uses: actions/setup-go@v2
         with:
