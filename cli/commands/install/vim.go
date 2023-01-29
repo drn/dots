@@ -67,7 +67,6 @@ func vimUpdatePlugins() {
 			[]string{
 				"PlugUpgrade",
 				"PlugUpdate --sync",
-				"UpdateRemotePlugins", // gelguy/wilder.nvim support
 				"set modifiable",
 				"g/Already up to date/d",
 				"2,4d", "1d",
