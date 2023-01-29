@@ -78,6 +78,7 @@ func vimUpdatePlugins() {
 			"|",
 		),
 	)
+	run.Capture("cat /tmp/vim-update-result")
 	bytes, err := ioutil.ReadFile(tempPath)
 	if err == nil {
 		fmt.Println(string(bytes))
