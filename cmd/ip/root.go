@@ -9,16 +9,6 @@ import (
 	"github.com/jessevdk/go-flags"
 )
 
-var services = []string{
-	fmt.Sprintf("ipinfo.io/ip?token=%s", os.Getenv("IPINFO_API_KEY")),
-	"ipv4.icanhazip.com",
-	"wtfismyip.com/text",
-	"ipecho.net/plain",
-	"ifconfig.me",
-	"ifconfig.co",
-	"l2.io/ip",
-}
-
 // Options - Parsed input flags schema
 var opts struct {
 	Local    bool `short:"l" long:"local" description:"Return local IP of the specified interface (defaults to en0)"`
