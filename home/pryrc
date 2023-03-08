@@ -4,14 +4,18 @@ require "#{ENV['DOTS']}/ruby/console_prompt"
 require "#{ENV['DOTS']}/ruby/console_colors"
 
 # customize pry prompt
-Pry.config.prompt = [
-  proc do |object, level, _|
-    ConsolePrompt.new(nil, object, level).normal
-  end,
-  proc do |object, level, _|
-    ConsolePrompt.new(nil, object, level).continue
-  end
-]
+Pry.config.prompt = Pry::Prompt.new(
+  'rane',
+  'Custom pry prompt',
+  [
+    proc do |object, level, _|
+      ConsolePrompt.new(nil, object, level).normal
+    end,
+    proc do |object, level, _|
+      ConsolePrompt.new(nil, object, level).continue
+    end
+  ]
+)
 
 # Legible callstack display
 # rubocop:disable Metrics/AbcSize
