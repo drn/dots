@@ -15,7 +15,7 @@ import (
 // Log - logs data from input cache key if less than specified TTL (in minutes)
 // and exits with a successful status, otherwise returns
 func Log(key string, ttl float64) {
-	data := Read(key, 5)
+	data := Read(key, ttl)
 	if data != "" {
 		log.Info(data)
 		os.Exit(0)
