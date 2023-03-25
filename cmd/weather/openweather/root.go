@@ -73,6 +73,9 @@ func isNight(json string) bool {
 
 func json() string {
 	coords := gps()
+	if len(coords) != 2 {
+		return ""
+	}
 	return run.Capture(
 		"curl -s 'https://%s?lat=%s&lon=%s&appid=%s&units=imperial'",
 		"api.openweathermap.org/data/2.5/weather",
