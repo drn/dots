@@ -61,6 +61,8 @@ if [ "$ZSHENV_SOURCED" != "true" ]; then
   # Ruby config options
   export RUBY_CONFIGURE_OPTS="--with-openssl-dir=$OPENSSL_PATH"
   export RUBY_CFLAGS="-Wno-error=implicit-function-declaration"
+  # Resolve https://github.com/rails/rails/issues/38560#issuecomment-1025999712
+  export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
   # raise default file descriptor limit
   ulimit -n 10240
 fi
