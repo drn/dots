@@ -89,6 +89,9 @@ alias sabnzbd='nas-web 8080'
 alias sonarr='nas-web 8989'
 alias tautulli='nas-web 8181'
 
+# Mini
+alias mini="ssh $MINI_USER@$MINI_HOST"
+
 # tmux-start shortcuts
 alias mxm='unshrink; tmux-start master'
 alias mxv='unshrink; tmux-start vertical'
