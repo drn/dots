@@ -22,8 +22,10 @@ source $DOTS/zsh/bindings.zsh
 source $HOME/.dots/sys/env 2>/dev/null
 source $HOME/.thanx/env 2>/dev/null
 
-# autoload tmux
-if [ "$TMUX" = "" ]; then tmux-start master && exit; fi
+# autoload tmux if on main dev machine
+if [[ "$TMUX" = "" && "$HOST" != "sanguinemini" ]]; then
+  tmux-start master && exit
+fi
 
 if [ -n "$TMUX" ]; then
   # Load zoxide
