@@ -8,7 +8,7 @@ CMD_MAX_EXEC_TIME=5
 ### Format Helpers
 
 prompt_host() {
-  if [[ $HOST == 'sanguinemini' ]]; then
+  if [[ $HOST == 'sanguinemini'* ]]; then
     echo "($fg_no_bold[magenta]mini$reset_color) "
   fi
 }
