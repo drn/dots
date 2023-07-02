@@ -7,6 +7,12 @@ CMD_MAX_EXEC_TIME=5
 
 ### Format Helpers
 
+prompt_host() {
+  if [[ $HOST == 'sanguinemini' ]]; then
+    echo "($fg_no_bold[magenta]mini$reset_color) "
+  fi
+}
+
 # make input time human readable
 #   thanks to https://github.com/sindresorhus/pure
 prompt_human_time() {
@@ -131,7 +137,7 @@ terminal_prompt() {
   indicator="%{$fg_bold[$indicator_color]%}\u276F%{$reset_color%} "
   # shrunk prompt
   if [ -z "$DISABLE_PROMPT" ]; then
-    echo "$(prompt_directory)$(prompt_git_info) $indicator"
+    echo "$(prompt_host)$(prompt_directory)$()$(prompt_git_info) $indicator"
   else
     echo $indicator
   fi
