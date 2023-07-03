@@ -1,0 +1,11 @@
+#!/bin/bash
+
+if [[ "$(hostname)" != "sanguinemini"* ]]; then
+  echo "Must be run on sanguinemini"
+  exit 1
+fi
+
+cd ~/Development/sanguinemini
+git fetch
+git reset --hard origin/master
+docker compose up -d
