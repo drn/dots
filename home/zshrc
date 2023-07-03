@@ -27,7 +27,7 @@ if [[ "$TMUX" = "" && "$HOST" != "sanguinemini"* ]]; then
   tmux-start master && exit
 fi
 
-if [ -n "$TMUX" ]; then
+if [[ -n "$TMUX" || "$HOST" == "sanguinemini"* ]]; then
   # Load zoxide
   eval "$(zoxide init zsh)"
 
