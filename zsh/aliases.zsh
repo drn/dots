@@ -79,18 +79,19 @@ alias webp='webp-to-jpg'
 alias wordle='ssh clidle.ddns.net -p 3000'
 
 # NAS
-alias bazarr='nas-web 6767'
 alias bridge='nas-web 8581'
-alias overseerr='nas-web 5055'
-alias prowl='nas-web 9898 search'
-alias prowlarr='nas-web 9696'
-alias radarr='nas-web 7878'
-alias sabnzbd='nas-web 8080'
-alias sonarr='nas-web 8989'
-alias tautulli='nas-web 8181'
 
 # Mini
 alias mini="ssh $MINI_USER@$MINI_HOST"
+alias bazarr='mini-web 6767'
+alias overseerr='mini-web 5055'
+alias prowl='mini-web 9898'
+alias prowlarr='mini-web 9696'
+alias radarr='mini-web 7878'
+alias readarr='mini-web 8787'
+alias sabnzbd='mini-web 8080'
+alias sonarr='mini-web 8989'
+alias tautulli='mini-web 8181'
 
 # tmux-start shortcuts
 alias mxm='unshrink; tmux-start master'

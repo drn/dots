@@ -1,0 +1,9 @@
+#!/bin/bash
+
+# Open mini web
+
+if [[ -z "$1" ]]; then
+  open "vnc://$MINI_HOST"
+else
+  open "http://$MINI_HOST:$1/$2"
+fi
