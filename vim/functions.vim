@@ -108,7 +108,10 @@ function GitRepoUrl()
   if url == ""
     let url = system("git config --get remote.origin.url")
   endif
-  return substitute(Strip(url), '\.git$', '', '')
+  let url = substitute(Strip(url), '\.git$', '', '')
+  let url = substitute(url, 'git@github.com:', '', '')
+  let url = substitute(url, 'https://github.com/', '', '')
+  return 'https://github.com/' . url
 endfunction
 
 " Return the github line suffix of a standard file
