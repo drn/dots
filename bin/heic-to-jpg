@@ -6,3 +6,4 @@
 
 cd ~/Downloads
 mogrify -monitor -format jpg *.HEIC
+mogrify -monitor -format jpg *.heic
