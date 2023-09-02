@@ -9,9 +9,10 @@ if [[
     "$1" != "safe" &&
     "$1" != "misc" &&
     "$1" != "hole" &&
-    "$1" != "books"
+    "$1" != "books" &&
+    "$1" != "manga"
   ) ]]; then
-  echo "Usage: tor [movies/tv/safe/misc/hole/books]"
+  echo "Usage: tor [movies/tv/safe/misc/hole/books/manga]"
   exit 1
 fi
 
