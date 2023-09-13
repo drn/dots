@@ -1,0 +1,26 @@
+#!/bin/bash
+
+# move to nzb watch
+
+if [[
+  "$#" -ne 1 || (
+    "$1" != "movies" &&
+    "$1" != "tv" &&
+    "$1" != "safe"
+  ) ]]; then
+  echo "Usage: nzb [movies/tv/safe]"
+  exit 1
+fi
+
+target=$1
+
+cd ~/Downloads || exit 1
+shopt -s nullglob
+nzbs=(*.nzb)
+if [ ${#nzbs[@]} -eq 0 ]; then
+  echo -e "\033[00;31mNo nzbs found\033[0m"
+else
+  for nzb in "${nzbs[@]}"; do
+    mv $nzb "/Volumes/data/incoming/usenet/watched/$target"
+  done
+fi
