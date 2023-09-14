@@ -21,6 +21,6 @@ if [ ${#nzbs[@]} -eq 0 ]; then
   echo -e "\033[00;31mNo nzbs found\033[0m"
 else
   for nzb in "${nzbs[@]}"; do
-    mv $nzb "/Volumes/data/incoming/usenet/watched/$target"
+    mv "$nzb" "/Volumes/data/incoming/usenet/watched/$target"
   done
 fi
