@@ -28,6 +28,7 @@ cask 'licecap'
 cask 'loom'
 cask 'notion'
 cask 'postman'
+cask 'qlvideo'
 cask 'quicklook-json'
 cask 'rowanj-gitx'
 cask 'securid' # Mastercard Connect Utility
