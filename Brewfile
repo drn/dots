@@ -33,7 +33,6 @@ cask 'quicklook-json'
 cask 'rowanj-gitx'
 cask 'securid' # Mastercard Connect Utility
 cask 'slack'
-cask 'sonos'
 cask 'spotify'
 cask 'superhuman'
 cask 'tableplus'
