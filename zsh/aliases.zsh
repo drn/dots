@@ -28,6 +28,7 @@ alias dot='tmux rename-window dots 2>/dev/null; cd $DOTS'
 alias down='tmux rename-window downloads 2>/dev/null; cd ~/Downloads'
 alias dsk='tmux rename-window desktop 2>/dev/null; cd ~/Desktop'
 alias safe='tmux rename-window safe 2>/dev/null; cd /Volumes/system/etc/safe'
+alias data='tmux rename-window data 2>/dev/null; cd /Volumes/data'
 
 # Command Aliases
 alias 1pass='. 1pass'
