@@ -84,10 +84,12 @@ alias bridge='nas-web 8581'
 
 # Mini
 alias mini="ssh $MINI_USER@$MINI_HOST"
+alias 4k='mini-web 7979'
 alias bazarr='mini-web 6767'
 alias overseerr='mini-web 5055'
 alias prowl='mini-web 9898'
 alias prowlarr='mini-web 9696'
+alias radarr4k='mini-web 7979'
 alias radarr='mini-web 7878'
 alias readarr='mini-web 8787'
 alias sabnzbd='mini-web 8080'
