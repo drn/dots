@@ -10,9 +10,10 @@ if [[
     "$1" != "misc" &&
     "$1" != "hole" &&
     "$1" != "books" &&
-    "$1" != "manga"
+    "$1" != "manga" &&
+    "$1" != "4k"
   ) ]]; then
-  echo "Usage: tor [movies/tv/safe/misc/hole/books/manga]"
+  echo "Usage: tor [movies/tv/safe/misc/hole/books/manga/4k]"
   exit 1
 fi
 
@@ -22,6 +23,9 @@ if [ "$target" = "hole" ]; then
 fi
 if [ "$target" = "books" ]; then
   target="audiobooks"
+fi
+if [ "$target" = "4k" ]; then
+  target="movies-4k"
 fi
 
 cd ~/Downloads || exit 1
