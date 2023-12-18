@@ -4,16 +4,17 @@
 
 if [[
   "$#" -ne 1 || (
-    "$1" != "movies" &&
-    "$1" != "tv" &&
-    "$1" != "safe" &&
-    "$1" != "misc" &&
-    "$1" != "hole" &&
+    "$1" != "4k" &&
     "$1" != "books" &&
+    "$1" != "hole" &&
     "$1" != "manga" &&
-    "$1" != "4k"
+    "$1" != "misc" &&
+    "$1" != "movies" &&
+    "$1" != "music" &&
+    "$1" != "safe" &&
+    "$1" != "tv"
   ) ]]; then
-  echo "Usage: tor [movies/tv/safe/misc/hole/books/manga/4k]"
+  echo "Usage: tor [movies/tv/safe/misc/hole/books/manga/4k/music]"
   exit 1
 fi
 
