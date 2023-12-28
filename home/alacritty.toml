@@ -1,0 +1,154 @@
+live_config_reload = true
+
+[colors]
+draw_bold_text_with_bright_colors = true
+
+[colors.bright]
+black = "#676767"
+blue = "#00a6ff"
+cyan = "#5af0f2"
+green = "#49f911"
+magenta = "#ffa1ff"
+red = "#ff6d67"
+white = "#feffff"
+yellow = "#ffec96"
+
+[colors.cursor]
+cursor = "#d54078"
+text = "#feffff"
+
+[colors.footer_bar]
+background = "#ff5733"
+foreground = "#1d1f21"
+
+[colors.line_indicator]
+background = "#ffc6ff"
+foreground = "#000000"
+
+[colors.normal]
+black = "#000000"
+blue = "#53a0ff"
+cyan = "#00c5c7"
+green = "#00c300"
+magenta = "#ff37a8"
+red = "#c91b00"
+white = "#c7c7c7"
+yellow = "#c7c400"
+
+[colors.primary]
+background = "#08082a"
+foreground = "#c7c7c7"
+
+[colors.search.focused_match]
+background = "#c70039"
+foreground = "#1d1f21"
+
+[colors.search.matches]
+background = "#ff5733"
+foreground = "#1d1f21"
+
+[colors.selection]
+background = "#ff37a9"
+text = "#000000"
+
+[colors.vi_mode_cursor]
+cursor = "#ffc6ff"
+text = "#000000"
+
+[cursor]
+blink_interval = 750
+unfocused_hollow = true
+
+[cursor.style]
+blinking = "off"
+shape = "block"
+
+[cursor.vi_mode_style]
+blinking = "on"
+shape = "block"
+
+[env]
+TERM = "xterm-256color"
+
+[font]
+size = 14.0
+
+[font.glyph_offset]
+x = 0
+y = 0
+
+[font.normal]
+family = "Hack Nerd Font"
+style = "Regular"
+
+[font.offset]
+x = 0
+y = 0
+
+# toggle fullscreen mode
+[[keyboard.bindings]]
+action = "ToggleSimpleFullscreen"
+key = "F"
+mods = "Command"
+
+# move cursor to one word left
+[[keyboard.bindings]]
+chars = "\u001Bb"
+key = "Left"
+mods = "Alt"
+
+# move cursor to one word right
+[[keyboard.bindings]]
+chars = "\u001Bf"
+key = "Right"
+mods = "Alt"
+
+# move cursor to the beginning of the line
+[[keyboard.bindings]]
+chars = "\u001B[H"
+key = "Left"
+mods = "Command"
+
+# move cursor to the end of the line
+[[keyboard.bindings]]
+chars = "\u001B[F"
+key = "Right"
+mods = "Command"
+
+# delete from cursor to beginning of line
+[[keyboard.bindings]]
+chars = "\u0015"
+key = "Back"
+mods = "Command"
+
+# toggle vi mode
+[[keyboard.bindings]]
+action = "ToggleViMode"
+key = "Space"
+mode = "~Search"
+mods = "Shift|Command"
+
+# disable close command
+[[keyboard.bindings]]
+action = "None"
+key = "W"
+mods = "Command"
+
+# disable quit command
+[[keyboard.bindings]]
+action = "None"
+key = "Q"
+mods = "Command"
+
+# open new window
+[[keyboard.bindings]]
+action = "CreateNewWindow"
+key = "N"
+mods = "Command"
+
+[mouse]
+hide_when_typing = true
+
+[window]
+opacity = 1
+startup_mode = "SimpleFullscreen"
