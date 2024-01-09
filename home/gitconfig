@@ -101,6 +101,7 @@
   rf = refetch-tags
   cf = clean --force
   home = !"open https://github.com/$(git config github.user)"
+  cpa = cherry-pick --abort
 
 [user]
   name = Darren Cheng
