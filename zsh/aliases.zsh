@@ -90,11 +90,12 @@ alias lidarr='mini-web 8686'
 alias overseerr='mini-web 5055'
 alias prowl='mini-web 9898'
 alias prowlarr='mini-web 9696'
-alias radarr4k='mini-web 7979'
+alias radarr-4k='mini-web 7979'
 alias radarr='mini-web 7878'
 alias readarr='mini-web 8787'
 alias sabnzbd='mini-web 8080'
 alias sonarr='mini-web 8989'
+alias sonarr-4k='mini-web 8888'
 alias tautulli='mini-web 8181'
 
 # tmux-start shortcuts

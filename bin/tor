@@ -4,7 +4,8 @@
 
 if [[
   "$#" -ne 1 || (
-    "$1" != "4k" &&
+    "$1" != "movies-4k" &&
+    "$1" != "tv-4k" &&
     "$1" != "books" &&
     "$1" != "hole" &&
     "$1" != "manga" &&
@@ -14,7 +15,7 @@ if [[
     "$1" != "safe" &&
     "$1" != "tv"
   ) ]]; then
-  echo "Usage: tor [movies/tv/safe/misc/hole/books/manga/4k/music]"
+  echo "Usage: tor [movies/tv/safe/misc/hole/books/manga/movies-4k/tv-4k/music]"
   exit 1
 fi
 
@@ -24,9 +25,6 @@ if [ "$target" = "hole" ]; then
 fi
 if [ "$target" = "books" ]; then
   target="audiobooks"
-fi
-if [ "$target" = "4k" ]; then
-  target="movies-4k"
 fi
 
 cd ~/Downloads || exit 1
