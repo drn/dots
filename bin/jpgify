@@ -1,0 +1,8 @@
+#!/bin/bash
+
+#
+# Converts all WEBP,HEIC,AVIF files in the ~/Downloads folder to JPGs
+#
+
+cd ~/Downloads
+mogrify -monitor -format jpg *.avif *.AVIF *.heic *.HEIC *.webp *.WEBP

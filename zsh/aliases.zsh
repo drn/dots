@@ -48,7 +48,6 @@ alias gh='git home'
 alias gitx='open -a /Applications/GitX.app .'
 alias h='history'
 alias hcp='home-scp'
-alias heic='heic-to-jpg'
 alias home="ssh $HOME_USER@$HOME_WAN"
 alias jo='jira-open'
 alias lip='ip --local'
@@ -76,7 +75,6 @@ alias ver='thanx version'
 alias vi='vim'
 alias vimdiff='nvim -d'
 alias vimsync='dots install vim'
-alias webp='webp-to-jpg'
 alias wordle='ssh clidle.ddns.net -p 3000'
 
 # NAS
