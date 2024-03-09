@@ -13,7 +13,7 @@ import (
 var cmdSpinner = &cobra.Command{
 	Use:   "spinner",
 	Short: "Runs simple CLI spinners",
-	Run: func(cmd *cobra.Command, args []string) {
+	Run: func(cmd *cobra.Command, _ []string) {
 		cmd.Help()
 	},
 }
@@ -28,7 +28,7 @@ func init() {
 var cmdSpinnerBraille = &cobra.Command{
 	Use:   "braille",
 	Short: "Runs the braille spinner",
-	Run: func(cmd *cobra.Command, args []string) {
+	Run: func(_ *cobra.Command, _ []string) {
 		spinner.Braille()
 	},
 }
@@ -36,7 +36,7 @@ var cmdSpinnerBraille = &cobra.Command{
 var cmdSpinnerCircles = &cobra.Command{
 	Use:   "circles",
 	Short: "Runs the circles spinner",
-	Run: func(cmd *cobra.Command, args []string) {
+	Run: func(_ *cobra.Command, _ []string) {
 		spinner.Circles()
 	},
 }
@@ -44,7 +44,7 @@ var cmdSpinnerCircles = &cobra.Command{
 var cmdSpinnerDots = &cobra.Command{
 	Use:   "dots",
 	Short: "Runs the dots spinner",
-	Run: func(cmd *cobra.Command, args []string) {
+	Run: func(_ *cobra.Command, _ []string) {
 		spinner.Dots()
 	},
 }
@@ -52,7 +52,7 @@ var cmdSpinnerDots = &cobra.Command{
 var cmdSpinnerConsole = &cobra.Command{
 	Use:   "console",
 	Short: "Runs the console spinner",
-	Run: func(cmd *cobra.Command, args []string) {
+	Run: func(_ *cobra.Command, _ []string) {
 		s := spin.New(spin.CharSets[11], 75*time.Millisecond)
 		s.Color("magenta")
 		s.Prefix = fmt.Sprintf(

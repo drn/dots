@@ -99,7 +99,7 @@ func init() {
 		&cobra.Command{
 			Use:   "all",
 			Short: "Runs all install scripts",
-			Run: func(cmd *cobra.Command, args []string) {
+			Run: func(_ *cobra.Command, _ []string) {
 				installAll()
 			},
 		},
@@ -116,7 +116,7 @@ func init() {
 			Use:     command["command"],
 			Aliases: aliases,
 			Short:   command["description"],
-			Run: func(cmd *cobra.Command, args []string) {
+			Run: func(cmd *cobra.Command, _ []string) {
 				install.Call(cmd.Use)
 			},
 		}

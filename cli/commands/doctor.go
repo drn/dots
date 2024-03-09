@@ -8,7 +8,7 @@ import (
 var cmdDoctor = &cobra.Command{
 	Use:   "doctor",
 	Short: "Runs system diagnostics",
-	Run: func(cmd *cobra.Command, args []string) {
+	Run: func(_ *cobra.Command, _ []string) {
 		doctor.Run()
 	},
 }

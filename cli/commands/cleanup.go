@@ -8,7 +8,7 @@ import (
 var cmdClean = &cobra.Command{
 	Use:   "clean",
 	Short: "Cleans legacy configuration",
-	Run: func(cmd *cobra.Command, args []string) {
+	Run: func(_ *cobra.Command, _ []string) {
 		clean.Run()
 	},
 }
