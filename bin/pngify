@@ -5,4 +5,7 @@
 #
 
 cd ~/Downloads
-mogrify -monitor -format png *.avif *.AVIF *.heic *.HEIC *.webp *.WEBP
+mogrify -monitor -format png \
+  *.avif *.AVIF *.heic *.HEIC *.webp *.WEBP *.svg *.SVG \
+  2>/dev/null
+exit 0
