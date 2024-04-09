@@ -6,6 +6,7 @@ tap 'drn/homebrew-tap'
 tap 'ethereum/ethereum'
 tap 'goreleaser/tap'
 tap 'puma/puma'
+tap 'qmk/qmk'
 
 # casks
 cask '1password'
@@ -83,6 +84,7 @@ brew 'openssl@1.1'
 brew 'postgresql'
 brew 'progress'
 brew 'puma-dev'
+brew 'qmk' # keyboard firmware
 brew 'reattach-to-user-namespace'
 brew 'redis'
 brew 'rg'
