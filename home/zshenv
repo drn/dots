@@ -58,6 +58,10 @@ if [ "$ZSHENV_SOURCED" != "true" ]; then
   export LDFLAGS="-L$BREW_PATH/opt/libffi/lib"
   export CPPFLAGS="-I$BREW_PATH/opt/libffi/include"
   export PKG_CONFIG_PATH="$BREW_PATH/opt/libffi/lib/pkgconfig"
+  # Ensure zstd is in path
+  export LDFLAGS="-L$BREW_PATH/opt/zstd/lib"
+  export CPPFLAGS="-I$BREW_PATH/opt/zstd/include"
+  export PKG_CONFIG_PATH="$BREW_PATH/opt/zstd/lib/pkgconfig"
   # Ruby config options
   export RUBY_CONFIGURE_OPTS="--with-openssl-dir=$OPENSSL_PATH"
   export RUBY_CFLAGS="-Wno-error=implicit-function-declaration"
