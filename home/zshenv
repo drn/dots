@@ -44,7 +44,7 @@ if [ "$ZSHENV_SOURCED" != "true" ]; then
   export CPPFLAGS="${CPPFLAGS} -I$BREW_PATH/opt/zlib/include"
   export PKG_CONFIG_PATH="${PKG_CONFIG_PATH} $BREW_PATH/opt/zlib/lib/pkgconfig"
   # Ensure openssl is in path
-  export OPENSSL_PATH="$BREW_PATH/opt/openssl@1.1"
+  export OPENSSL_PATH="$BREW_PATH/opt/openssl@3"
   export PATH="$OPENSSL_PATH/bin:$PATH"
   export LDFLAGS="${LDFLAGS} -L$OPENSSL_PATH/lib"
   export CPPFLAGS="${CPPFLAGS} -I$OPENSSL_PATH/include"
