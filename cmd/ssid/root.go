@@ -10,18 +10,18 @@ import (
 )
 
 func main() {
-	info := run.Capture("airport -I")
+	info := run.Capture("networksetup -getairportnetwork en0")
 
-	if strings.Contains(info, "AirPort: Off") {
+	if strings.Contains(info, "Wi-Fi power is currently off") {
 		os.Exit(0)
 	}
 
 	lines := strings.Split(info, "\n")
 
 	for _, line := range lines {
-		if strings.Contains(line, " SSID: ") {
+		if strings.Contains(line, "Current Wi-Fi Network: ") {
 
-			ssid := strings.Replace(line, " SSID: ", "", 1)
+			ssid := strings.Replace(line, "Current Wi-Fi Network: ", "", 1)
 			ssid = strings.TrimSpace(ssid)
 
 			fmt.Println(ssid)
