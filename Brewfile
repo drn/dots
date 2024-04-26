@@ -85,6 +85,7 @@ brew 'postgresql'
 brew 'progress'
 brew 'puma-dev'
 brew 'qmk' # keyboard firmware
+brew 'rdfind' # eliminate duplicates
 brew 'reattach-to-user-namespace'
 brew 'redis'
 brew 'rg'
