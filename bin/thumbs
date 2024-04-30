@@ -1,0 +1,26 @@
+#!/bin/bash
+
+# Given the input directory, generates thumbnails for all mp4s in the specified
+# directory under a /thumbs subdirectory.
+
+if [ "$#" -ne 1 ]; then
+  echo "Usage: thumbs [directory]"
+  exit 1
+fi
+
+directory=$1
+if [ ! -d "$directory" ]; then
+  echo "Input directory does not exist"
+  exit 1
+fi
+
+if ! command -v vcsi &>/dev/null; then
+  echo "vsci is missing. pip install vcsi"
+  exit 1
+fi
+
+cd "$directory"
+mkdir -p "$directory/thumbs"
+for filename in *.mp4; do
+  vcsi "$filename" -o "thumbs/$filename.jpg"
+done
