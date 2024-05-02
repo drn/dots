@@ -13,7 +13,7 @@ if [ "$ZSHENV_SOURCED" != "true" ]; then
   # Include git extensions in PATH
   export PATH=$HOME/.git-extensions:$PATH
   # Include MySQL in PATH
-  export PATH=$BREW_PATH/opt/mysql@5.7/bin:$PATH
+  export PATH=$BREW_PATH/opt/mysql@8.0/bin:$PATH
   # Include Android tools in PATH
   export PATH=$HOME/Library/Android/sdk/platform-tools:$PATH
   export PATH=$HOME/Library/Android/sdk/tools:$PATH
