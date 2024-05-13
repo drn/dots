@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # Given the input directory, generates thumbnails for all mp4s in the specified
-# directory under a /thumbs subdirectory.
+# directory under a /screenshots subdirectory.
 
 if [ "$#" -ne 1 ]; then
-  echo "Usage: thumbs [directory]"
+  echo "Usage: screenshots [directory]"
   exit 1
 fi
 
@@ -20,7 +20,7 @@ if ! command -v vcsi &>/dev/null; then
 fi
 
 cd "$directory"
-mkdir -p "$directory/thumbs"
+mkdir -p "$directory/screenshots"
 for filename in *.mp4; do
-  vcsi "$filename" -o "thumbs/$filename.jpg"
+  vcsi "$filename" -o "screenshots/$filename.jpg"
 done
