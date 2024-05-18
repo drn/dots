@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 # taps
-tap 'adoptopenjdk/openjdk'
 tap 'drn/homebrew-tap'
 tap 'ethereum/ethereum'
 tap 'goreleaser/tap'
