@@ -77,13 +77,11 @@ alias vimdiff='nvim -d'
 alias vimsync='dots install vim'
 alias wordle='ssh clidle.ddns.net -p 3000'
 
-# NAS
-alias bridge='nas-web 8581'
-
 # Mini
 alias mini="ssh $MINI_USER@$MINI_HOST"
 alias 4k='mini-web 7979'
 alias bazarr='mini-web 6767'
+alias bridge='mini-web 8581'
 alias lidarr='mini-web 8686'
 alias overseerr='mini-web 5055'
 alias prowl='mini-web 9898'
@@ -92,8 +90,8 @@ alias radarr-4k='mini-web 7979'
 alias radarr='mini-web 7878'
 alias readarr='mini-web 8787'
 alias sabnzbd='mini-web 8080'
-alias sonarr='mini-web 8989'
 alias sonarr-4k='mini-web 8888'
+alias sonarr='mini-web 8989'
 alias tautulli='mini-web 8181'
 
 # tmux-start shortcuts
