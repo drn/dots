@@ -128,18 +128,23 @@ terminal_prompt_preexec() {
 
 # terminal prompt
 terminal_prompt() {
-  # success / failure indicator color
+  # success / failure indicator
   if [ $? -eq 0 ]; then
     indicator_color="blue"
   else
     indicator_color="red"
   fi
   indicator="%{$fg_bold[$indicator_color]%}\u276F%{$reset_color%} "
+  # incognito indicator
+  incognito=""
+  if [[ ! -v HISTFILE ]]; then
+    incognito="%{$fg_bold[magenta]%}\u276F%{$reset_color%}"
+  fi
   # shrunk prompt
   if [ -z "$DISABLE_PROMPT" ]; then
-    echo "$(prompt_host)$(prompt_directory)$()$(prompt_git_info) $indicator"
+    echo "$(prompt_host)$(prompt_directory)$()$(prompt_git_info) $incognito$indicator"
   else
-    echo $indicator
+    echo $incognito$indicator
   fi
 }
 
