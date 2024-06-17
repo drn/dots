@@ -37,7 +37,7 @@ func (pos Position) Med() {
 // Max - full display
 func (pos Position) Max() {
 	second := second()
-	third := ""
+	third := string('\ufaa9')
 	if second != "Offline" {
 		third = externalIP()
 	}
@@ -75,7 +75,13 @@ func localIP() string {
 
 func externalIP() string {
 	externalIP := run.Capture("ip")
+	if externalIP == "" {
+		return string('\ufaa9')
+	}
 	homeIP := run.Capture("ip --home")
+	if homeIP == "" {
+		return string('\ufaa9')
+	}
 	symbol := '\uf7b6' // globe
 	if externalIP == homeIP {
 		symbol = '\ufccf' // home

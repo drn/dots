@@ -48,15 +48,20 @@ func (pos Position) Med() {
 
 // Max - full display
 func (pos Position) Max() {
-	fmt.Printf(
-		"%s%s %s%s%s %s %s%s%s %s \n",
-		col.C3,
-		third(),
-		col.C2_3, sep.L1, col.C2,
-		second(),
-		col.C1_2, sep.L1, col.C1,
-		first(),
-	)
+	ssid := run.Capture("ssid")
+	if ssid == "" {
+		pos.Med()
+	} else {
+		fmt.Printf(
+			"%s%s %s%s%s %s %s%s%s %s \n",
+			col.C3,
+			third(),
+			col.C2_3, sep.L1, col.C2,
+			second(),
+			col.C1_2, sep.L1, col.C1,
+			first(),
+		)
+	}
 }
 
 func first() string {
