@@ -62,7 +62,7 @@ func first() string {
 }
 
 func second() string {
-	ssid := run.Capture("ssid")
+	ssid := run.Capture("ssid --short")
 	if ssid == "" {
 		return "Offline"
 	}
