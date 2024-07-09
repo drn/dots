@@ -226,3 +226,9 @@ function! DisplayImage()
   let filepath = expand('%:p')
   bd! | enew | call termopen("chafa \"" . filepath . "\"")
 endfunction
+
+" Auto-format JSON in file using jq
+function! JQ()
+  :%!jq .
+endfunction
+command! JQ call JQ()
