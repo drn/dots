@@ -232,3 +232,4 @@ function! JQ()
   :%!jq .
 endfunction
 command! JQ call JQ()
+command! Jq call JQ()
