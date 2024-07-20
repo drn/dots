@@ -56,3 +56,6 @@ function! AdjustWindowHeight(minheight, maxheight)
   endw
   exe max([min([n_lines, a:maxheight]), a:minheight]) . "wincmd _"
 endfunction
+
+" Automatically format json files using jq on save
+autocmd FileType json autocmd BufWritePre <buffer> call JQ()
