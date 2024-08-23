@@ -2,18 +2,8 @@
 
 # Open browser to NAS DSM
 
-tailscale=/Applications/Tailscale.app/Contents/MacOS/Tailscale
-
-if [[ "$(ip --home)" == "$(ip --uncached)" ]]; then
-  if [[ -z "$1" ]]; then
-    open "http://$HOME_HOST.local"
-  else
-    open "http://$HOME_LAN:$1/$2"
-  fi
+if [[ -z "$1" ]]; then
+  open "http://$HOME_HOST.local"
 else
-  $tailscale up && sleep 1
-  PORT=5000
-  if [[ -n "$1" ]]; then PORT=$1; fi
-  open "http://$($tailscale ip -4 $HOME_HOST):$PORT/$2"
-  echo -e "Run \033[0;34mtailscale down\033[0m when done"
+  open "http://$HOME_LAN:$1/$2"
 fi

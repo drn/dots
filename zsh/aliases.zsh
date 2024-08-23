@@ -64,7 +64,6 @@ alias sickchill='acorn ./bin/sickchill'
 alias st="search-github thanx"
 alias starwars='caffeinate -d telnet towel.blinkenlights.nl'
 alias t='thanx'
-alias tailscale="/Applications/Tailscale.app/Contents/MacOS/Tailscale"
 alias tf='terraform'
 alias thanx='thanx-cli'
 alias top='vtop'
