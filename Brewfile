@@ -54,6 +54,7 @@ brew 'fd'
 brew 'ffmpeg'
 brew 'fswatch'
 brew 'fx' # Terminal JSON viewer
+brew 'git'
 brew 'git-gui'
 brew 'git-lfs'
 brew 'gnupg'
