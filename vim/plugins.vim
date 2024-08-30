@@ -138,7 +138,7 @@ Plug 'iamcco/markdown-preview.nvim', {
 \ }
 Plug 'udalov/kotlin-vim', { 'for': 'kotlin' }
 Plug 'fatih/vim-go', { 'for': 'go', 'do': ':GoUpdateBinaries' }
-Plug 'leafgarland/typescript-vim', { 'for': 'typescript' }
+Plug 'HerringtonDarkholme/yats.vim', { 'for': 'typescript' }
 Plug 'TovarishFin/vim-solidity', { 'for': 'solidity' }
 
 call plug#end()
