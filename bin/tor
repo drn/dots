@@ -2,8 +2,10 @@
 
 # Upload to acorn host
 
+usage="Usage: tor [movies|tv|safe|misc|hole|books|manga|movies-4k|tv-4k|music] (briareus|ananke)"
+
 if [[
-  "$#" -ne 1 || (
+  "$#" -lt 1 || (
     "$1" != "movies-4k" &&
     "$1" != "tv-4k" &&
     "$1" != "books" &&
@@ -15,7 +17,7 @@ if [[
     "$1" != "safe" &&
     "$1" != "tv"
   ) ]]; then
-  echo "Usage: tor [movies/tv/safe/misc/hole/books/manga/movies-4k/tv-4k/music]"
+  echo "$usage"
   exit 1
 fi
 
@@ -27,19 +29,37 @@ if [ "$target" = "books" ]; then
   target="audiobooks"
 fi
 
+host=""
+if [ "$#" -eq 2 ]; then
+  if [[ "$2" = "briareus" ]]; then
+    host="$ACORN_HOST"
+  fi
+  if [[ "$2" = "ananke" ]]; then
+    host="$ACORN2_HOST"
+  fi
+else
+  if [ "$target" = "safe" ]; then
+    host="$ACORN2_HOST"
+  else
+    host="$ACORN_HOST"
+  fi
+fi
+
+if [ -z "$host" ]; then
+  echo "$usage"
+  exit 1
+fi
+
 cd ~/Downloads || exit 1
 shopt -s nullglob
 torrents=(*.torrent)
 if [ ${#torrents[@]} -eq 0 ]; then
   echo -e "\033[00;31mNo torrents found\033[0m"
 else
-  host="$ACORN_USERNAME@$ACORN_HOST"
-  if [ "$target" = "safe" ]; then
-    host="$ACORN_USERNAME@$ACORN2_HOST"
-  fi
+  address="$ACORN_USERNAME@$host"
   destination="./downloads/torrents/$target"
   for torrent in "${torrents[@]}"; do
     echo -e "\033[00;34mUploading $torrent\033[0m"
-    scp "$torrent" "$host:$destination" && rm "$torrent"
+    scp "$torrent" "$address:$destination" && rm "$torrent"
   done
 fi
