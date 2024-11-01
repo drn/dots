@@ -34,6 +34,7 @@ alias data='tmux rename-window data 2>/dev/null; cd /Volumes/data'
 alias 1pass='. 1pass'
 alias acorn-misc="mkdir -p ~/Downloads/misc; scp -r \$ACORN_USERNAME@\$ACORN_HOST:~/downloads/misc/* ~/Downloads/misc"
 alias acorn="ssh \$ACORN_USERNAME@\$ACORN_HOST"
+alias acorn2="ssh \$ACORN_USERNAME@\$ACORN2_HOST"
 alias binstubs='bundle install; bundle binstubs --path .bundle/bin --all'
 alias cat='bat'
 alias cgo='git ci-go'

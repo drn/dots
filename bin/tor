@@ -34,6 +34,9 @@ if [ ${#torrents[@]} -eq 0 ]; then
   echo -e "\033[00;31mNo torrents found\033[0m"
 else
   host="$ACORN_USERNAME@$ACORN_HOST"
+  if [ "$target" = "safe" ]; then
+    host="$ACORN_USERNAME@$ACORN2_HOST"
+  fi
   destination="./downloads/torrents/$target"
   for torrent in "${torrents[@]}"; do
     echo -e "\033[00;34mUploading $torrent\033[0m"
