@@ -13,25 +13,13 @@ import (
 )
 
 func main() {
-	info := run.Capture("networksetup -getairportnetwork en0")
+	info := run.Capture("ipconfig getsummary en0 | awk -F ' SSID : '  '/ SSID : / {print $2}'")
 
-	if strings.Contains(info, "Wi-Fi power is currently off") {
+	if len(info) == 0 {
 		os.Exit(0)
 	}
 
-	lines := strings.Split(info, "\n")
-
-	for _, line := range lines {
-		if strings.Contains(line, "Current Wi-Fi Network: ") {
-
-			ssid := strings.Replace(line, "Current Wi-Fi Network: ", "", 1)
-			ssid = strings.TrimSpace(ssid)
-
-			printSSID(ssid)
-
-			os.Exit(0)
-		}
-	}
+	printSSID(info)
 }
 
 func printSSID(ssid string) {
