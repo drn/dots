@@ -130,7 +130,7 @@ hs.hotkey.bind({'ctrl', 'alt', 'cmd'}, 'o', function() hs.openConsole() end)
 -- OS Bindings
 
 hs.hotkey.bind({'ctrl', 'alt', 'cmd', 'shift'}, 'l', function()
-  osx.screensaver()
+  osx.sleep()
 end)
 
 -- Volume Bindings
