@@ -45,20 +45,22 @@ end
 
 local units = {
   -- Quadrants
-  topleft       = { x=0,   y=0,    w=0.5, h=0.5 },
-  topright      = { x=0.5, y=0,    w=0.5, h=0.5 },
-  bottomleft    = { x=0,   y=0.5,  w=0.5, h=0.5 },
-  bottomright   = { x=0.5, y=0.5,  w=0.5, h=0.5 },
+  topleft       = { x=0,    y=0,    w=0.5, h=0.5 },
+  topright      = { x=0.5,  y=0,    w=0.5, h=0.5 },
+  bottomleft    = { x=0,    y=0.5,  w=0.5, h=0.5 },
+  bottomright   = { x=0.5,  y=0.5,  w=0.5, h=0.5 },
   -- Halves
-  right         = { x=0.5, y=0,    w=0.5, h=1   },
-  left          = { x=0,   y=0,    w=0.5, h=1   },
-  top           = { x=0,   y=0,    w=1,   h=0.5 },
-  bottom        = { x=0,   y=0.5,  w=1,   h=0.5 },
+  right         = { x=0.5,  y=0,    w=0.5, h=1   },
+  left          = { x=0,    y=0,    w=0.5, h=1   },
+  top           = { x=0,    y=0,    w=1,   h=0.5 },
+  bottom        = { x=0,    y=0.5,  w=1,   h=0.5 },
   -- Fullscreen
-  full          = { x=0,   y=0,    w=1,   h=1   },
+  full          = { x=0,    y=0,    w=1,   h=1   },
   -- Fit
-  fitVertical   = { x=0,   y=0.25, w=1,   h=0.6 },
-  fitHorizontal = { x=0.2, y=0,    w=0.6, h=1   }
+  fitVertical   = { x=0,    y=0.25, w=1,   h=0.5 },
+  fitHorizontal = { x=0.22, y=0,   w=0.56, h=1   },
+  fitTop        = { x=0.22, y=0,   w=0.56, h=0.5 },
+  fitBottom     = { x=0.22, y=0.5, w=0.56, h=0.5 },
 }
 for name,unit in pairs(units) do
   resize[name] = function() setUnit(unit) end
