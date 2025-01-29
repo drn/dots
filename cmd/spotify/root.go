@@ -26,7 +26,7 @@ func main() {
 
 	action := "toggle"
 	if len(os.Args) >= 2 {
-		if os.Args[1] == "save" || os.Args[1] == "remove" {
+		if os.Args[1] == "save" || os.Args[1] == "remove" || os.Args[1] == "transfer" {
 			action = os.Args[1]
 		} else {
 			log.Error("Usage: spotify [save|remove]?")
@@ -66,6 +66,48 @@ func main() {
 		} else {
 			log.Info("(-)\n%s\n%s", trackName, trackArtist)
 		}
+	case "transfer":
+		currentDeviceID := currentDevice(accessToken)
+		transferPlayback(accessToken, alternateDeviceID(currentDeviceID))
+	}
+}
+
+func alternateDeviceID(currentDeviceID string) string {
+	// if laptop, transfer to iphone
+	if currentDeviceID == "ffac8fe2389bf5536633fec4320117105a77d45f" {
+		return "010a8a7f027d31cd55b229dd11a8f4f3e32cc9e5"
+	}
+	// default to laptop
+	return "ffac8fe2389bf5536633fec4320117105a77d45f"
+}
+
+func currentDevice(accessToken string) string {
+	url := "https://api.spotify.com/v1/me/player/devices"
+
+	response, err := req.Get(url, headers(accessToken))
+	handleRequestError(err)
+
+	i := 0
+	for i < 10 {
+		id := jsoniter.Get(response.Bytes(), "devices", i, "id").ToString()
+		isActive := jsoniter.Get(response.Bytes(), "devices", i, "is_active").ToBool()
+		if isActive {
+			return id
+		}
+		i += 1
+	}
+	return ""
+}
+
+func transferPlayback(accessToken string, deviceID string) {
+	url := "https://api.spotify.com/v1/me/player"
+	json := req.BodyJSON(map[string]interface{}{"device_ids": []string{deviceID}})
+	response, err := req.Put(url, headers(accessToken), json)
+	handleRequestError(err)
+	if response.Response().StatusCode != 204 {
+		println(response.Dump())
+		log.Error("Failed to transfer device")
+		os.Exit(1)
 	}
 }
 

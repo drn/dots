@@ -135,4 +135,8 @@ function spotify.remove()
   spotifyExec("remove")
 end
 
+function spotify.transfer()
+  spotifyExec("transfer")
+end
+
 return spotify

@@ -146,4 +146,8 @@ function itunes.remove()
   alert.show("Unsupported")
 end
 
+function itunes.transfer()
+  alert.show("Unsupported")
+end
+
 return itunes

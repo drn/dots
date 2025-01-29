@@ -34,6 +34,7 @@ local bindings = {
   'toggle',
   'save',
   'remove',
+  'transfer',
 }
 for i=1, #bindings do
   music[bindings[i]] = function(option)
