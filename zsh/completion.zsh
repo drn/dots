@@ -1,3 +1,6 @@
+# include asdf completions
+fpath=(${ASDF_DATA_DIR:-$HOME/.asdf}/completions $fpath)
+
 autoload -U compaudit compinit
 
 # completion delegation
