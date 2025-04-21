@@ -81,7 +81,6 @@ alias ver='thanx version'
 alias vi='vim'
 alias vimdiff='nvim -d'
 alias vimsync='dots install vim'
-alias wordle='ssh clidle.ddns.net -p 3000'
 
 # Mini
 alias mini="ssh $MINI_USER@$MINI_HOST"
