@@ -10,7 +10,7 @@ let g:ale_linters = {
 \ 'eruby': [],
 \ 'javascript': ['eslint'],
 \ 'typescript': ['tslint'],
-\ 'ruby': ['ruby', 'rubocop', 'sorbet'],
+\ 'ruby': ['ruby', 'rubocop'],
 \ 'terraform': ['terraform', 'tflint'],
 \ 'solidity': []
 \}
