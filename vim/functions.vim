@@ -233,3 +233,9 @@ function! JQ()
 endfunction
 command! JQ call JQ()
 command! Jq call JQ()
+
+" Open Cursor to current repo
+function! Cursor()
+  call system('cursor ' . system("git rev-parse --show-toplevel"))
+endfunction
+command! Cursor call Cursor()
