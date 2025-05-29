@@ -86,4 +86,5 @@ func prune(remote string, branch string) {
 
 	log.Info("Deleting %s from %s...", branch, remote)
 	run.Verbose("git push %s :%s", remote, branch)
+	run.Verbose("git remote prune %s", remote)
 }
