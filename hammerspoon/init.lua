@@ -49,7 +49,6 @@ end
 local bindings = {
   [{ 'cmd', 'alt', 'shift'}] = {
     Alacritty             = 'i',
-    Cursor                = 'u',
     Granola               = 'l',
     Messages              = 'n',
     Notion                = ';',
