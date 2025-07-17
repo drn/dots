@@ -56,3 +56,5 @@ terminal_prompt() {
 }
 
 PROMPT_COMMAND=terminal_prompt
+
+. "$HOME/.local/bin/env"
