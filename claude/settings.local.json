@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(*)",
+      "Search(*)",
+      "Edit(*)",
+      "Write(*)"
+    ],
+    "deny": []
+  }
+}

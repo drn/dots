@@ -21,10 +21,18 @@ dots install <component> # Install specific component (bin, git, home, zsh, font
 dots update             # Update configuration
 dots clean              # Clean legacy configuration
 dots doctor             # Run system diagnostics
+dots docker stop-all    # Stop all Docker containers
+dots spinner            # Display spinner demos
+```
+
+### Linting
+```bash
+go install github.com/mgechev/revive@latest
+revive -set_exit_status ./...
 ```
 
 ### Development Dependencies
-- Go 1.15+
+- Go 1.19+ (go.mod specifies 1.15 but CI uses 1.19.5)
 - Homebrew (for managing system dependencies)
 - GOPATH and GOBIN properly configured
 
@@ -35,6 +43,7 @@ dots doctor             # Run system diagnostics
 - **`cli/commands/`**: All CLI command implementations using Cobra framework
 - **`cmd/`**: Individual utility commands that can be installed as standalone binaries
 - **`pkg/`**: Shared utility packages (log, run, cache, path)
+- **`cli/is/`**: Helper package for checking commands and files
 
 ### Key Components
 
@@ -42,19 +51,26 @@ dots doctor             # Run system diagnostics
 - **`root.go`**: Main Cobra command setup and execution
 - **`install.go`**: Installation orchestration with interactive prompts
 - **`install/`**: Individual installation modules for each component type
-- **`update.go`**, **`clean.go`**, **`doctor.go`**: Other main commands
+- **`update.go`**: Updates configuration
+- **`clean.go`**: Cleans legacy configuration
+- **`doctor.go`**: Runs system diagnostics:
+  - Checks Xcode Command Line Tools
+  - Verifies ZSH as default shell
+  - Confirms Homebrew installation
+  - Checks for /etc/zprofile removal
+- **`docker.go`**: Docker command aliases
 - **`spinner.go`**: CLI spinner utilities
 
 #### Utility Commands (`cmd/`)
-Contains standalone utility commands like:
+Contains 22 standalone utility commands including:
 - Git utilities: `git-ancestor`, `git-canonical-branch`, `git-killme`, `git-masterme`, `git-rebase-master`
 - System utilities: `battery-percent`, `cpu`, `gps`, `ip`, `router`, `ssid`
 - Development tools: `search-github`, `home-scp`, `spotify`
 - Tmux status components: `tmux-status/*`
 
 #### Shared Packages (`pkg/`)
-- **`log/`**: Logging utilities with different levels (Info, Action, etc.)
-- **`run/`**: Command execution utilities (Verbose, Silent modes)
+- **`log/`**: Logging utilities with different levels (Info, Action, Raw, Command)
+- **`run/`**: Command execution utilities (Verbose, Silent, Capture, Execute)
 - **`cache/`**: Caching functionality
 - **`path/`**: Path manipulation utilities
 
@@ -81,3 +97,14 @@ Most functionality uses the `pkg/run` package for executing shell commands with 
 - Use `pkg/run.Verbose()` for commands that should show output
 - Use `pkg/run.Silent()` for commands that should run quietly
 - Use `exec()` helper in install modules for commands that must succeed
+- Use `cli/is` for checking command existence and file presence
+
+### Environment Variables
+- `DOTS`: Can specify the dots directory location (used in CI)
+- `OPENSSL_CFLAGS`: May be needed for language installations on some systems
+
+### Testing
+The project uses integration testing through GitHub Actions CI/CD:
+- Tests each installation component individually
+- Verifies update command functionality
+- No unit tests currently exist in the codebase
