@@ -5,3 +5,4 @@ vendor
 .bundle
 home/bundle/cache
 sys
+.claude/settings.local.json
