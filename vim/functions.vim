@@ -185,6 +185,17 @@ endfunction
 command! Gcopy call Gcopy()
 command! Gc call Gcopy()
 
+" Copies the current filepath and line number to the clipboard
+function! Pcopy()
+  let filepath = expand("%:p")
+  let line_num = line('.')
+  let path_line = filepath . ':' . line_num
+  call system('echo -n ' . shellescape(path_line) . ' | pbcopy')
+  echomsg 'Copied ' . path_line
+endfunction
+command! Pcopy call Pcopy()
+command! Pc call Pcopy()
+
 " Alias Gb to Gblame
 command! Gb Git blame
 
