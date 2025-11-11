@@ -8,6 +8,7 @@ if [ "$ZSHENV_SOURCED" != "true" ]; then
   # Include Homebrew in PATH
   export BREW_PATH=/usr/local # Intel silicon
   [ -d "/opt/homebrew" ] && export BREW_PATH=/opt/homebrew # Apple silicon
+  export PATH="$HOME/.local/bin:$PATH" # xdg-user-dirs spec
   export PATH=/usr/local/bin:/usr/local/sbin:$PATH # Intel Homebrew Formula
   export PATH=/opt/homebrew/bin:/opt/homebrew/sbin:$PATH # Apple Homebrew Formula
   # Include git extensions in PATH
