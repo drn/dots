@@ -68,7 +68,7 @@ func golang() {
 func asdfVersion(language string, version string) {
 	log.Info("Installing %s %s", language, version)
 	exec("asdf install %s %s", language, version)
-	exec("asdf global %s %s", language, version)
+	exec("asdf set %s %s", language, version)
 }
 
 func asdfPlugin(language string, path string) {
