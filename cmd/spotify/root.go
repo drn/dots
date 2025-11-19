@@ -94,7 +94,7 @@ func currentDevice(accessToken string) string {
 		if isActive {
 			return id
 		}
-		i += 1
+		i++
 	}
 	return ""
 }
