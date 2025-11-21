@@ -9,12 +9,12 @@ import (
 
 // versions - installed language versions
 var versions = map[string]string{
-	"ruby":      "2.7.5",
+	"ruby":      "3.4.7",
 	"python2":   "2.7.18",
 	"python3":   "3.9.1",
 	"terraform": "1.0.11",
-	"nodejs":    "17.2.0",
-	"golang":    "1.19.2",
+	"nodejs":    "24.2.0",
+	"golang":    "1.24.10",
 }
 
 // Languages - Installs asdf & languages
