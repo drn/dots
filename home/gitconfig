@@ -110,9 +110,6 @@
 [github]
   user = drn
 
-[credential]
-  helper = osxkeychain
-
 [color]
   ui = auto
 
