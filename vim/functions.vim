@@ -189,7 +189,11 @@ command! Gc call Gcopy()
 function! Pcopy()
   let filepath = expand("%:p")
   let line_num = line('.')
-  let path_line = filepath . ':' . line_num
+  if line_num == 1
+    let path_line = filepath
+  else
+    let path_line = filepath . ':' . line_num
+  endif
   call system('echo -n ' . shellescape(path_line) . ' | pbcopy')
   echomsg 'Copied ' . path_line
 endfunction
