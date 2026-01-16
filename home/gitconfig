@@ -28,7 +28,7 @@
   cp = cherry-pick
   cm = commit
   cme = commit --allow-empty
-  cw = clean-worktrees
+  vkc = vk-clean
   br = branch
   # given a username or an email address shows the name and email address of the author
   whois = "!sh -c 'git log -i -1 --pretty=\"format:%an <%ae>\n\" --author=\"$1\"' -"

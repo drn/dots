@@ -1,0 +1,50 @@
+#!/bin/bash
+
+#
+# Removes worktrees and branches that start with "vk/" prefix.
+# These are artifacts from vibe kanban iteration.
+# By default, runs in dry-run mode showing what would be deleted.
+# Use -f or --force to actually delete the worktrees and branches.
+#
+
+force=false
+if [[ "$1" == "-f" ]] || [[ "$1" == "--force" ]]; then
+  force=true
+fi
+
+echo "==> Cleaning up vk/ worktrees..."
+# Find and remove vk/ worktrees
+git worktree list --porcelain |
+  awk '/^worktree/ {wt=$2} /^branch/ {br=$2; gsub(/refs\/heads\//, "", br)} /^branch/ && wt && br {print wt"|"br; wt=""; br=""}' |
+  while IFS='|' read -r worktree branch; do
+    if [[ "$branch" == vk/* ]]; then
+      if [ "$force" = true ]; then
+        echo "Removing worktree: $worktree (branch: $branch)"
+        git worktree remove "$worktree" 2>/dev/null || git worktree remove --force "$worktree"
+      else
+        echo "Would remove worktree: $worktree (branch: $branch)"
+      fi
+    fi
+  done
+
+echo ""
+echo "==> Cleaning up vk/ branches..."
+# Find and remove vk/ branches (local only, skip if it's the current branch)
+current_branch=$(git rev-parse --abbrev-ref HEAD)
+git for-each-ref --format='%(refname:short)' refs/heads/ | grep '^vk/' | while read -r branch; do
+  if [[ "$branch" != "$current_branch" ]]; then
+    if [ "$force" = true ]; then
+      echo "Deleting branch: $branch"
+      git branch -D "$branch"
+    else
+      echo "Would delete branch: $branch"
+    fi
+  else
+    echo "Skipping current branch: $branch"
+  fi
+done
+
+if [ "$force" = false ]; then
+  echo ""
+  echo "Run 'git vk-clean -f' to actually remove these worktrees and branches"
+fi
