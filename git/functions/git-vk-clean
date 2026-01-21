@@ -3,6 +3,7 @@
 #
 # Removes worktrees and branches that start with "vk/" prefix.
 # These are artifacts from vibe kanban iteration.
+# Also prunes remote-tracking branches that no longer exist upstream.
 # By default, runs in dry-run mode showing what would be deleted.
 # Use -f or --force to actually delete the worktrees and branches.
 #
@@ -11,6 +12,16 @@ force=false
 if [[ "$1" == "-f" ]] || [[ "$1" == "--force" ]]; then
   force=true
 fi
+
+echo "==> Pruning remote-tracking branches..."
+# Prune remote-tracking branches that no longer exist on the remote
+if [ "$force" = true ]; then
+  git fetch --prune
+  echo "Pruned stale remote-tracking branches"
+else
+  echo "Would run: git fetch --prune"
+fi
+echo ""
 
 echo "==> Cleaning up vk/ worktrees..."
 # Find and remove vk/ worktrees
