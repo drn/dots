@@ -1,10 +1,10 @@
 local resize = {}
 
 local function isTerm(win)
-  return (
-    win:application():title() == 'iTerm2' or
-    win:application():title() == 'Alacritty'
-  )
+  local app = win:application()
+  if app == nil then return false end
+  local title = app:title()
+  return title == 'iTerm2' or title == 'Alacritty'
 end
 
 local function frameForUnit(baseframe, unit)
