@@ -26,4 +26,9 @@ func (i Install) Claude() {
 		path.FromDots("claude/settings.json"),
 		path.FromHome(".claude/settings.json"),
 	)
+
+	link.Soft(
+		path.FromDots("claude/commands"),
+		path.FromHome(".claude/commands"),
+	)
 }
