@@ -45,29 +45,32 @@ You do NOT write code yourself. You coordinate teammates, route feedback, and pr
 
 ## Phase 0: Setup
 
-1. **Parse the task** from `$ARGUMENTS`. If unclear, ask the user for clarification before proceeding.
+1. **Clean working tree:** If there are uncommitted changes, commit them with message `"WIP: pre-dev-session state"` before proceeding. This ensures clean diffs during the session.
 
-2. **Detect the project context** from the Context section above:
+2. **Parse the task** from `$ARGUMENTS`. If unclear, ask the user for clarification before proceeding.
+
+3. **Detect the project context** from the Context section above:
    - Language/framework (Go, Ruby, Node, Python, Rust, Java, etc.)
    - Test framework (go test, rspec, jest, pytest, cargo test, etc.)
    - Build tool (go build, make, npm, bundle, etc.)
    - Linter (revive, rubocop, eslint, ruff, clippy, etc.)
 
-3. **Create the team:**
+4. **Create the team** (clean up stale session first if needed):
    ```
+   TeamDelete() -- ignore if no existing team
    TeamCreate(team_name: "dev-session", description: "Iterative dev: {brief task summary}")
    ```
 
-4. **Create the task list** with TaskCreate:
+5. **Create the task list** with TaskCreate:
    - "Plan: {task}" -- for implementer
    - "Validate plan" -- for reviewer, blocked by plan
    - "Implement: {task}" -- for implementer, blocked by plan validation
    - "Test implementation" -- for tester, blocked by implementation
    - "Code review" -- for reviewer, blocked by implementation
 
-5. **Spawn all 3 teammates** in a single message with 3 Task tool calls. Use the agent briefings below for each teammate's prompt. Use `model: "sonnet"` for the tester.
+6. **Spawn all 3 teammates** in a single message with 3 Task tool calls. Use the agent briefings below for each teammate's prompt. Use `model: "sonnet"` for the tester.
 
-6. **Initialize state:**
+7. **Initialize state:**
    ```
    iteration_round = 0
    max_rounds = 3
@@ -260,7 +263,10 @@ List each with: category, description.
 
 ```
 IF no BLOCKING issues AND tests PASS:
-  → Proceed to Phase 6 (adversarial hardening)
+  IF diff is substantial (>50 lines changed OR touches auth/crypto/input-handling):
+    → Proceed to Phase 6 (adversarial hardening)
+  ELSE:
+    → Skip to Phase 7 (done -- hardening unnecessary for small changes)
 
 IF BLOCKING issues exist AND iteration_round < max_rounds:
   → Proceed to Phase 5 (iteration)
@@ -318,9 +324,9 @@ Report results to me (the lead).
 
 ---
 
-## Phase 6: Adversarial Hardening (optional)
+## Phase 6: Adversarial Hardening
 
-This phase runs when all tests pass and the reviewer found no blocking issues. The goal is to stress-test the implementation before declaring it done.
+This phase runs when tests pass, review is clean, AND the changes are substantial. Skip for trivial changes.
 
 Send to the reviewer:
 
@@ -401,6 +407,7 @@ If a test fails (i.e., the reviewer found a real bug), report the details.
 | Clarity | APPROVED / CONCERNS | {1-line summary} |
 
 ### Adversarial Hardening
+- **Status:** PERFORMED / SKIPPED (change too small)
 - **Attack vectors tested:** {count}
 - **Bugs found:** {count} -- {brief descriptions, or "None"}
 

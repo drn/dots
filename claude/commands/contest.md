@@ -26,6 +26,7 @@ If no arguments are provided, ask the user what they want implemented.
 
 - Current branch: !`git branch --show-current`
 - Git status: !`git status --short`
+- Default branch: !`git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@' || echo "master"`
 - Project root: !`pwd`
 - Project type: !`ls -1 go.mod Gemfile package.json Cargo.toml pyproject.toml setup.py requirements.txt pom.xml build.gradle Makefile 2>/dev/null | head -5`
 - Recent commits: !`git log --oneline -5`
@@ -33,7 +34,7 @@ If no arguments are provided, ask the user what they want implemented.
 
 ## Overview
 
-You are the **contest coordinator**. Your job is to frame the problem, assign it to multiple implementers working on separate branches, and have a judge pick the winner.
+You are the **contest coordinator**. Your job is to frame the problem, assign it to multiple implementers working in separate worktrees, and have a judge pick the winner.
 
 **Problem:** $ARGUMENTS
 
@@ -45,7 +46,9 @@ You do NOT implement or judge yourself. You coordinate the contest.
 
 ## Phase 0: Setup
 
-1. **Analyze the problem** and define evaluation criteria. If the user didn't specify criteria, propose them:
+1. **Clean working tree:** If there are uncommitted changes, commit them with message `"WIP: pre-contest state"` before proceeding.
+
+2. **Analyze the problem** and define evaluation criteria. If the user didn't specify criteria, propose them:
    - Correctness (tests pass)
    - Readability / maintainability
    - Performance (if relevant)
@@ -54,31 +57,32 @@ You do NOT implement or judge yourself. You coordinate the contest.
 
    Present criteria to the user for approval.
 
-2. **Define 2-3 distinct approaches.** Each should be:
+3. **Define 2-3 distinct approaches.** Each should be:
    - A genuinely different solution strategy (not minor variations)
    - Viable given the codebase and constraints
 
    Present approaches to the user before proceeding.
 
-3. **Create branches** for each contestant:
+4. **Create worktrees** for each contestant (avoids branch checkout conflicts):
    ```bash
-   git branch contest/approach-1
-   git branch contest/approach-2
-   git branch contest/approach-3  # if 3 approaches
+   git worktree add /tmp/contest-approach-1 -b contest/approach-1
+   git worktree add /tmp/contest-approach-2 -b contest/approach-2
+   git worktree add /tmp/contest-approach-3 -b contest/approach-3  # if 3 approaches
    ```
 
-4. **Create the team:**
+5. **Create the team** (clean up stale session first if needed):
    ```
+   TeamDelete() -- ignore if no existing team
    TeamCreate(team_name: "contest-session", description: "Contest: {brief problem summary}")
    ```
 
-5. **Create the task list** with TaskCreate:
+6. **Create the task list** with TaskCreate:
    - "Implement approach 1: {brief}" -- for contestant-1
    - "Implement approach 2: {brief}" -- for contestant-2
    - "Implement approach 3: {brief}" -- for contestant-3 (if applicable)
    - "Judge implementations" -- for judge, blocked by all implementation tasks
 
-6. **Spawn all agents** in a single message. Use `model: "sonnet"` for contestants.
+7. **Spawn all agents** in a single message. Use `model: "sonnet"` for contestants.
 
 ---
 
@@ -90,7 +94,7 @@ Send each contestant their assignment via SendMessage:
 PROBLEM: {full problem description from $ARGUMENTS}
 
 YOUR APPROACH: {the specific approach assigned to this contestant}
-YOUR BRANCH: contest/{approach-name}
+YOUR WORKTREE: /tmp/contest-approach-{N}
 
 OTHER APPROACHES (for awareness -- do NOT look at their code):
 {list the other approaches and their contestants}
@@ -99,20 +103,20 @@ EVALUATION CRITERIA (in priority order):
 {numbered list of criteria}
 
 INSTRUCTIONS:
-1. Switch to your branch: git checkout contest/{approach-name}
+1. Work ONLY in your worktree directory: /tmp/contest-approach-{N}
 2. Explore the codebase to understand the current state.
 3. Implement your approach. Keep it focused.
 4. Run existing tests to ensure nothing breaks.
 5. Write new tests for your implementation.
 6. Run a sanity check (compile, lint).
-7. Commit your changes to your branch.
+7. Commit your changes on your branch.
 8. When done, message me (the lead) with:
    - Summary of your approach
    - Trade-offs you chose
    - Test results
    - Why you think your approach is best
 
-DO NOT look at other contestants' branches or code.
+DO NOT look at other contestants' worktrees or branches.
 
 Mark your task as completed.
 ```
@@ -128,8 +132,8 @@ Once all contestants complete:
 1. **Gather all implementations:**
    For each branch, run:
    ```bash
-   git diff main...contest/{approach-name}
-   git diff main...contest/{approach-name} --stat
+   git diff {default branch}...contest/approach-{N}
+   git diff {default branch}...contest/approach-{N} --stat
    ```
    Read the changed files on each branch.
 
@@ -172,10 +176,9 @@ Test results: {pass/fail from contestant-2's report}
 INSTRUCTIONS:
 1. Review each implementation against EVERY evaluation criterion.
 2. Score each criterion 1-5 for each implementation.
-3. Run the test suite on each branch if you can.
-4. Identify the WINNER and explain why.
-5. Note any ideas worth cherry-picking from losing implementations.
-6. Message each contestant DIRECTLY with feedback on their approach:
+3. Identify the WINNER and explain why.
+4. Note any ideas worth cherry-picking from losing implementations.
+5. Message each contestant DIRECTLY with feedback on their approach:
    - What was strong
    - What was weak
    - What you'd change
@@ -201,8 +204,11 @@ Mark your task as completed.
    - Apply targeted changes manually
    - Run tests to verify
 
-3. **Clean up contest branches:**
+3. **Clean up worktrees and branches:**
    ```bash
+   git worktree remove /tmp/contest-approach-1
+   git worktree remove /tmp/contest-approach-2
+   git worktree remove /tmp/contest-approach-3  # if applicable
    git branch -d contest/approach-1
    git branch -d contest/approach-2
    git branch -d contest/approach-3  # if applicable
@@ -275,8 +281,8 @@ YOUR TEAMMATES:
 - Judge: will evaluate all implementations after you finish.
 
 RULES:
-1. Work ONLY on your assigned branch.
-2. Do NOT look at other contestants' branches.
+1. Work ONLY in your assigned worktree directory.
+2. Do NOT look at other contestants' worktrees or branches.
 3. Implement the BEST version of your assigned approach.
 4. Write tests. Run existing tests.
 5. Commit to your branch when done.
@@ -297,10 +303,9 @@ YOUR TEAMMATES:
 YOUR APPROACH:
 1. Review each implementation against every evaluation criterion.
 2. Score fairly -- no bias toward complexity or simplicity.
-3. Run tests on each branch if possible.
-4. Pick a WINNER with clear justification.
-5. Message each contestant DIRECTLY with constructive feedback.
-6. Note any ideas worth cherry-picking from losing implementations.
+3. Pick a WINNER with clear justification.
+4. Message each contestant DIRECTLY with constructive feedback.
+5. Note any ideas worth cherry-picking from losing implementations.
 
 Be specific: cite file paths, line numbers, and concrete examples.
 
@@ -317,5 +322,6 @@ Always use TaskUpdate to mark tasks completed.
 | Contestant's tests fail | Note in judge's input. Judge can still evaluate the approach even if tests fail. |
 | Contestant stuck | Give a nudge. If still stuck after a second nudge, proceed with remaining contestants. |
 | Judge can't decide | Lead asks the judge to re-evaluate with tiebreaker criteria. If still tied, present both options to the user. |
+| Worktree creation fails | Fall back to sequential implementation on branches (contestants take turns). |
 | Branch conflict on merge | Resolve conflicts manually and re-run tests. |
 | Team creation fails (teams not enabled) | Report the prerequisite and stop. |

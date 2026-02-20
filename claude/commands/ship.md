@@ -38,7 +38,8 @@ Repeat the following until CI is fully green **and** there are no unresolved rev
 
 #### 4a: Wait for CI checks to complete
 
-- Run `gh pr checks <pr-number> --watch --fail-fast` to wait for CI.
+- Run `timeout 1800 gh pr checks <pr-number> --watch --fail-fast` to wait for CI (30 minute timeout).
+- If the timeout is hit, report to the user: "CI hasn't completed after 30 minutes. Check the CI dashboard manually." and stop.
 - If all checks pass and there are no pending review comments, you are done — go to Step 5.
 
 #### 4b: If CI fails — diagnose and fix

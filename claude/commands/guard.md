@@ -20,6 +20,20 @@ Fast safety check before committing. Scans for secrets, security antipatterns, t
 
 Run these checks against all staged files (or all changed files if nothing is staged). Be fast -- this is a pre-commit gate, not a full review.
 
+### Check 0: Gitignore Violations
+
+Scan staged/changed files for common files that should not be committed:
+
+- `.env`, `.env.*` files (environment/secrets)
+- `node_modules/` contents
+- Build artifacts (`dist/`, `build/`, `*.o`, `*.pyc`, `__pycache__/`)
+- IDE files (`.idea/`, `.vscode/settings.json`)
+- OS files (`.DS_Store`, `Thumbs.db`)
+- Log files (`*.log`)
+- Credential files (`credentials.json`, `*.pem`, `*.key`)
+
+**Report:** WARNING if any found (FAIL in --strict mode).
+
 ### Check 1: Secrets Detection
 
 Scan staged/changed files for:
@@ -90,6 +104,7 @@ Format:
 
 | Check | Status | Details |
 |-------|--------|---------|
+| Gitignore | PASS/WARN | {brief or "Clean"} |
 | Secrets | PASS/FAIL | {brief or "Clean"} |
 | Security | PASS/FAIL | {brief or "Clean"} |
 | Tests | PASS/FAIL/SKIP | {brief or "All passing"} |

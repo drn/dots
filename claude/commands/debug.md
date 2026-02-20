@@ -45,26 +45,29 @@ You do NOT investigate yourself. You formulate hypotheses, assign them, moderate
 
 ## Phase 0: Setup
 
-1. **Analyze the problem** from `$ARGUMENTS` and the context above.
+1. **Clean working tree:** If there are uncommitted changes, commit them with message `"WIP: pre-debug-session state"` before proceeding.
 
-2. **Formulate 3 hypotheses** for what might be causing the bug. Each hypothesis should be:
+2. **Analyze the problem** from `$ARGUMENTS` and the context above.
+
+3. **Formulate 3 hypotheses** for what might be causing the bug. Each hypothesis should be:
    - Plausible given the symptoms
    - Distinct from the others (different root causes, not variations of the same idea)
    - Testable (there's a way to prove or disprove it)
 
    Present the hypotheses to the user before proceeding.
 
-3. **Create the team:**
+4. **Create the team** (clean up stale session first if needed):
    ```
+   TeamDelete() -- ignore if no existing team
    TeamCreate(team_name: "debug-session", description: "Debug: {brief problem summary}")
    ```
 
-4. **Create the task list** with TaskCreate:
+5. **Create the task list** with TaskCreate:
    - "Investigate hypothesis 1: {brief}" -- for investigator-1
    - "Investigate hypothesis 2: {brief}" -- for investigator-2
    - "Investigate hypothesis 3: {brief}" -- for investigator-3
 
-5. **Spawn 3 investigators** in a single message with 3 Task tool calls. Use the agent briefing below. Use `model: "sonnet"` for all investigators.
+6. **Spawn 3 investigators** in a single message with 3 Task tool calls. Use the agent briefing below. Use `model: "sonnet"` for all investigators.
 
 ---
 
@@ -152,7 +155,8 @@ Once the root cause is identified:
 
 1. **Create fix tasks:**
    - "Implement fix for: {root cause}" -- assign to the investigator who identified it (they have the most context)
-   - "Verify fix" -- for another investigator, blocked by fix
+   - "Verify fix" -- for a second investigator, blocked by fix
+   - "Check for regressions" -- for the third investigator, blocked by fix
 
 2. **Send fix request to the assigned investigator:**
 
@@ -164,7 +168,7 @@ Run any related tests to verify.
 When done, message me with your changes.
 ```
 
-3. **Send verification request to a second investigator:**
+3. **Send verification request to the second investigator:**
 
 ```
 {investigator name} is implementing a fix for: {root cause}
@@ -177,7 +181,20 @@ Once they finish, review their fix:
 Message me with your verification results.
 ```
 
-**Wait** for both to complete.
+4. **Send regression check to the third investigator:**
+
+```
+{investigator name} is implementing a fix for: {root cause}
+
+Once they finish, check for broader regressions:
+- Run the full test suite (not just the targeted tests).
+- Look for any code that depends on the behavior being changed.
+- Check if similar patterns exist elsewhere that might have the same bug.
+
+Message me with your regression analysis.
+```
+
+**Wait** for all three to complete.
 
 ---
 
@@ -222,6 +239,7 @@ Message me with your verification results.
 ### Verification
 - **Tests pass:** YES / NO
 - **Verified by:** {investigator name}
+- **Regression check:** {investigator name} -- {result}
 - **Regression risk:** {low/medium/high with explanation}
 
 ### Diff
@@ -247,7 +265,7 @@ YOUR APPROACH:
 3. Challenge their theories with evidence. Accept challenges to yours.
 4. If your theory is disproved, pivot -- help validate or disprove others.
 5. Be specific: cite file paths, line numbers, and reproduction steps.
-6. If you find the root cause, you may be asked to implement a fix.
+6. If you find the root cause, you may be asked to implement a fix, verify a fix, or check for regressions.
 
 The goal is TRUTH, not winning. Abandon your hypothesis the moment
 evidence disproves it.

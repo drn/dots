@@ -45,17 +45,19 @@ You do NOT write code yourself. You decompose, assign, coordinate, and verify.
 
 ## Phase 0: Analysis
 
-1. **Understand the migration scope:**
+1. **Clean working tree:** If there are uncommitted changes, commit them with message `"WIP: pre-migration state"` before proceeding.
+
+2. **Understand the migration scope:**
    - Explore the codebase to identify all files/modules affected
    - Map dependencies between modules
    - Identify the migration pattern (what changes from old → new)
 
-2. **Decompose into independent modules.** Each module should:
+3. **Decompose into independent modules.** Each module should:
    - Be owned by a single agent
    - Have clear file boundaries (no overlapping files between agents)
    - Have identifiable dependencies on other modules
 
-3. **Present the decomposition to the user:**
+4. **Present the decomposition to the user:**
 
 ```markdown
 ## Migration Plan: {migration description}
@@ -76,17 +78,18 @@ You do NOT write code yourself. You decompose, assign, coordinate, and verify.
 
    Wait for user approval before proceeding.
 
-4. **Create the team:**
+5. **Create the team** (clean up stale session first if needed):
    ```
+   TeamDelete() -- ignore if no existing team
    TeamCreate(team_name: "migration-session", description: "Migration: {brief summary}")
    ```
 
-5. **Create the task list** with TaskCreate:
+6. **Create the task list** with TaskCreate:
    - One task per module, with dependency ordering reflected in blockedBy
-   - "Verify migration" -- blocked by all module tasks
-   - "Run full test suite" -- blocked by all module tasks
+   - "Wave {N} test check" -- for tester, after each wave (not just at the end)
+   - "Final verification" -- blocked by all module tasks
 
-6. **Spawn agents:** One migrator per module, plus one tester. Use `model: "sonnet"` for the tester. Spawn all in a single message.
+7. **Spawn agents:** One migrator per module, plus one tester. Use `model: "sonnet"` for all agents. Spawn all in a single message.
 
 ---
 
@@ -135,21 +138,37 @@ Mark your task as completed.
 
 ### Between waves
 
-After a wave completes:
-- Verify no files were modified by multiple agents (run `git diff --name-only` and check for conflicts)
-- If upstream modules changed interfaces, confirm downstream modules adapted
-- Start the next wave of modules (those whose dependencies are now complete)
+After each wave completes:
+1. Verify no files were modified by multiple agents (run `git diff --name-only` and check for conflicts)
+2. If upstream modules changed interfaces, confirm downstream modules adapted
+3. **Send the tester a wave check:**
+
+```
+WAVE {N} COMPLETE. Run targeted tests for the modules just migrated:
+
+MIGRATED MODULES THIS WAVE:
+{list of modules and their files}
+
+INSTRUCTIONS:
+1. Run tests related to the migrated files.
+2. Report pass/fail to me (the lead).
+3. If failures, identify which module caused the issue.
+
+This is a quick check -- full suite runs at the end.
+```
+
+4. Start the next wave of modules (those whose dependencies are now complete)
 
 ---
 
-## Phase 2: Verification
+## Phase 2: Final Verification
 
 Once all modules are migrated:
 
 1. **Send the tester the full scope:**
 
 ```
-MIGRATION: {overall migration description}
+ALL WAVES COMPLETE. Run the FULL test suite.
 
 ALL CHANGED FILES: {list from git diff --name-only}
 FULL DIFF: {git diff}
@@ -205,6 +224,7 @@ Mark your task as completed.
 
 ### Test Results
 - **Status:** PASS / FAIL
+- **Wave checks:** {N} waves, all passed / issues found in wave {N}
 - **Fix rounds:** {N}
 - **Issues found:** {list or "None"}
 
@@ -227,7 +247,7 @@ You are a MIGRATOR on a migration team. You own a specific set of files.
 YOUR TEAMMATES:
 - Lead: assigns modules, coordinates waves, verifies results.
 - Other migrators: own different modules. You coordinate DIRECTLY with them on interface changes.
-- Tester: runs the test suite after migration.
+- Tester: runs tests between waves and at the end.
 
 RULES:
 1. ONLY modify files assigned to you. Never touch another migrator's files.
@@ -248,10 +268,11 @@ YOUR TEAMMATES:
 - Migrators: each own a module. You test their combined work.
 
 WORKFLOW:
-1. After all modules are migrated, run the full test suite.
-2. For failures, identify which module is responsible.
-3. For interface mismatches, identify the two conflicting modules.
-4. Report everything to the lead.
+1. After each wave completes, run targeted tests for the migrated modules.
+2. After all waves complete, run the full test suite.
+3. For failures, identify which module is responsible.
+4. For interface mismatches, identify the two conflicting modules.
+5. Report everything to the lead.
 
 Be specific: report exact test names, failure messages, and line numbers.
 

@@ -43,7 +43,7 @@ Read the full content of each changed file for context. The reviewer needs to se
 
 ### Step 3: Launch Reviewer
 
-Use 1 Task tool call with `subagent_type="general-purpose"`:
+Use 1 Task tool call with `subagent_type="general-purpose"`, `model: "sonnet"`:
 
 ```
 Review the following code changes for security, architecture, and clarity.

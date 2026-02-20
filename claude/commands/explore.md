@@ -56,15 +56,16 @@ You do NOT research yourself. You decompose the question, assign angles, moderat
 
 2. **Present the research angles to the user** before proceeding.
 
-3. **Create the team:**
+3. **Create the team** (clean up stale session first if needed):
    ```
+   TeamDelete() -- ignore if no existing team
    TeamCreate(team_name: "explore-session", description: "Explore: {brief topic}")
    ```
 
 4. **Create the task list** with TaskCreate:
-   - One task per research angle
-   - "Peer review findings" -- blocked by all research tasks
-   - "Synthesize report" -- blocked by peer review
+   - One research task per angle (e.g., "Research: auth flow")
+   - One peer review task PER researcher (e.g., "Peer review: researcher-1 findings"), each blocked by ALL research tasks
+   - "Synthesize report" -- blocked by all peer review tasks
 
 5. **Spawn researchers:** One per angle. Use `model: "sonnet"` for all. Spawn all in a single message.
 
@@ -94,7 +95,7 @@ INSTRUCTIONS:
 
 DO NOT message other researchers yet -- save that for the peer review phase.
 
-Mark your task as completed.
+Mark your research task as completed.
 ```
 
 **Wait** for all researchers to report.
@@ -105,7 +106,7 @@ Mark your task as completed.
 
 Once all researchers have reported, share everyone's findings with everyone:
 
-Send to ALL researchers simultaneously:
+Send to each researcher individually (customize with their findings):
 
 ```
 All research is complete. Now CHALLENGE each other's findings.
@@ -133,10 +134,21 @@ INSTRUCTIONS:
    - Corrections to others' findings (with evidence)
    - Your confidence level: HIGH / MEDIUM / LOW for each of your claims
 
-Mark the "Peer review" task as completed.
+Mark YOUR peer review task as completed (not someone else's).
 ```
 
 **Wait** for the peer challenge to conclude. Allow time for back-and-forth debate.
+
+### Decision Point
+
+```
+IF peer challenge revealed MAJOR GAPS (entire areas unresearched):
+  → Create targeted follow-up tasks for the researchers who have capacity
+  → Wait for follow-up, then proceed to Phase 3
+
+IF findings are reasonably complete:
+  → Proceed to Phase 3
+```
 
 ---
 
@@ -224,6 +236,7 @@ Always use TaskUpdate to mark tasks completed.
 |---------|--------|
 | Agent fails to spawn | Retry once. Proceed with fewer researchers -- merge the missing angle into another researcher's scope. |
 | Researcher finds nothing for their angle | That's a valid finding ("this codebase has no X"). Include in report. |
+| Peer challenge reveals major gaps | Assign targeted follow-up research before synthesis. |
 | Peer challenge reveals major contradictions | Lead investigates the specific contradiction directly (reads the files in question) to break the tie. |
 | Researchers can't agree | Lead makes a judgment call based on evidence. Note the disagreement in the report. |
 | Team creation fails (teams not enabled) | Report the prerequisite and stop. |

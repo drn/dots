@@ -64,9 +64,21 @@ Run the determined tests. Capture output including:
 
 If tests fail, read the failing test files and the source files they test to understand the failures.
 
-### Step 4: Analyze Coverage Gaps
+### Step 4: Measure and Analyze Coverage
 
-Read each changed file and its corresponding test file (if any). Identify:
+First, try to use the project's coverage tool if available:
+
+| Framework | Coverage Command |
+|-----------|-----------------|
+| Go | `go test -coverprofile=coverage.out ./... && go tool cover -func=coverage.out` |
+| pytest | `pytest --cov --cov-report=term-missing` |
+| Jest | `npx jest --coverage` |
+| RSpec | Coverage via `simplecov` (runs automatically if in Gemfile) |
+| cargo | `cargo tarpaulin` (if installed) |
+
+If a coverage tool ran, report the coverage percentage and uncovered lines.
+
+If no coverage tool is available, fall back to manual analysis. Read each changed file and its corresponding test file (if any). Identify:
 
 1. **Untested functions/methods** -- changed code with no corresponding test
 2. **Missing edge cases** -- tests exist but don't cover error paths, boundary values, or nil/empty inputs
