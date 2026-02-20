@@ -4,7 +4,7 @@ description: Multi-agent iterative development with parallel testing and code re
 
 # Iterative Development with Agent Team
 
-Orchestrate a team of agents to implement code, run tests, and review changes (security, architecture, clarity) in parallel -- iterating until clean.
+Orchestrate a team of agents to implement code, run tests, and review changes in parallel -- iterating until clean. Teammates communicate directly with each other for faster feedback loops.
 
 ## Prerequisites
 
@@ -33,11 +33,13 @@ If no arguments are provided, ask the user what they want to build.
 
 ## Overview
 
-You are the **lead coordinator** for a multi-agent development team. Your job is to orchestrate an iterative cycle: implement, test, review, iterate.
+You are the **lead coordinator** for a multi-agent development team. Your job is to orchestrate an iterative cycle: plan, implement, test, review, iterate.
 
 **Task to implement:** $ARGUMENTS
 
 You do NOT write code yourself. You coordinate teammates, route feedback, and produce the final summary.
+
+**Team philosophy:** Teammates talk to each other directly -- not everything goes through the lead. The reviewer validates the implementer's plan before coding starts. The reviewer asks the tester to verify suspected bugs. During iterations, the tester and reviewer send feedback directly to the implementer. The lead monitors, consolidates, and decides when to stop.
 
 ---
 
@@ -57,13 +59,13 @@ You do NOT write code yourself. You coordinate teammates, route feedback, and pr
    ```
 
 4. **Create the task list** with TaskCreate:
-   - "Implement: {task}" -- for implementer
+   - "Plan: {task}" -- for implementer
+   - "Validate plan" -- for reviewer, blocked by plan
+   - "Implement: {task}" -- for implementer, blocked by plan validation
    - "Test implementation" -- for tester, blocked by implementation
-   - "Security review" -- for security-reviewer, blocked by implementation
-   - "Architecture review" -- for arch-reviewer, blocked by implementation
-   - "Clarity review" -- for clarity-reviewer, blocked by implementation
+   - "Code review" -- for reviewer, blocked by implementation
 
-5. **Spawn all 5 teammates** in a single message with 5 Task tool calls. Use the agent briefings below for each teammate's prompt.
+5. **Spawn all 3 teammates** in a single message with 3 Task tool calls. Use the agent briefings below for each teammate's prompt. Use `model: "sonnet"` for the tester.
 
 6. **Initialize state:**
    ```
@@ -73,7 +75,7 @@ You do NOT write code yourself. You coordinate teammates, route feedback, and pr
 
 ---
 
-## Phase 1: Implementation
+## Phase 1: Planning
 
 Send the task to the implementer via SendMessage:
 
@@ -89,22 +91,55 @@ PROJECT CONTEXT:
 
 INSTRUCTIONS:
 1. Explore the codebase to understand existing patterns and conventions.
-2. Plan your approach. Keep it simple -- solve the task, nothing more.
-3. Implement the changes following existing conventions.
-4. Run a basic sanity check: compile, lint, or syntax check if applicable.
-5. When done, message me (the lead) with:
+2. Draft a short plan (which files to change, what approach, any trade-offs).
+3. Send your plan DIRECTLY to the reviewer for validation.
+4. Wait for the reviewer's feedback before implementing.
+
+Mark the "Plan" task as completed once your plan is sent.
+```
+
+**Wait** for the reviewer to validate the plan. The reviewer will message both the implementer and the lead with their verdict.
+
+If the reviewer raises concerns, the lead tells the implementer to revise. Once the reviewer approves, proceed.
+
+---
+
+## Phase 2: Implementation
+
+Send the go-ahead to the implementer via SendMessage:
+
+```
+Plan approved. Proceed with implementation.
+
+INSTRUCTIONS:
+1. Implement the changes following your approved plan.
+2. Follow existing conventions.
+3. Run a basic sanity check: compile, lint, or syntax check if applicable.
+4. When done, message me (the lead) AND the tester with:
    - Files changed (created/modified/deleted)
    - Summary of your approach
    - Any concerns or trade-offs you chose
 
-Mark your task as completed when done.
+Mark the "Implement" task as completed when done.
+```
+
+While the implementer works, send the tester a heads-up:
+
+```
+The implementer is working on: {brief task summary}
+
+Their plan: {approved plan summary}
+
+While you wait, explore the existing test suite to understand patterns, frameworks, and conventions. Be ready to run tests and write new ones as soon as the implementer finishes.
+
+IMPORTANT: When writing new tests, create NEW test files rather than modifying files the implementer touched, to avoid conflicts.
 ```
 
 **Wait** for the implementer to report back before proceeding.
 
 ---
 
-## Phase 2: Parallel Testing and Review
+## Phase 3: Parallel Testing and Review
 
 Once the implementer finishes:
 
@@ -113,32 +148,34 @@ Once the implementer finishes:
    - Run `git diff --name-only` to list changed files
    - Read each changed file for full context
 
-2. **Send review requests to ALL 4 agents simultaneously** via SendMessage:
+2. **Send review requests to BOTH agents simultaneously** via SendMessage:
 
 ### To tester:
 
 ```
+Implementation complete. Here are the changes:
+
 CHANGED FILES: {list}
 DIFF:
 {full git diff}
 
 INSTRUCTIONS:
-1. Run the existing test suite for this project. Report pass/fail.
+1. Run the existing test suite. Report pass/fail.
 2. If tests fail, report which tests and why.
 3. Identify changed code paths that lack test coverage.
-4. Write new tests for the changes if the project has a test framework.
+4. Write new tests in NEW files (don't modify files the implementer changed).
 5. Run all tests again and report final results.
+6. The reviewer may also message you directly to write targeted tests for suspected bugs. Prioritize those.
 
-Report to me with:
+Report to me (the lead) with:
 - Test results: PASS or FAIL (with details)
 - New tests written (if any)
 - Coverage observations
-- Any test infrastructure issues
 
 Mark your task as completed.
 ```
 
-### To security-reviewer:
+### To reviewer:
 
 ```
 TASK DESCRIPTION: {task}
@@ -149,7 +186,9 @@ CHANGED FILES WITH CONTENTS:
 DIFF:
 {full git diff}
 
-REVIEW CHECKLIST -- check each item against the changes:
+Review the changes against ALL of the following checklists.
+
+SECURITY:
 - [ ] Injection flaws (SQL, command, LDAP, XPath)
 - [ ] Authentication/authorization issues
 - [ ] Sensitive data exposure (secrets, PII, credentials in code or logs)
@@ -161,28 +200,7 @@ REVIEW CHECKLIST -- check each item against the changes:
 - [ ] Missing rate limiting where needed
 - [ ] Insecure direct object references
 
-For each finding, classify as:
-- BLOCKING: Must fix before this code ships
-- WARNING: Should fix, real but lower risk
-- INFO: Suggestion for improvement
-
-If no issues found, say so explicitly.
-
-Report your findings to me. Mark your task as completed.
-```
-
-### To arch-reviewer:
-
-```
-TASK DESCRIPTION: {task}
-
-CHANGED FILES WITH CONTENTS:
-{file contents}
-
-DIFF:
-{full git diff}
-
-REVIEW CHECKLIST -- check each item against the changes:
+ARCHITECTURE:
 - [ ] Single Responsibility Principle -- does each unit do one thing?
 - [ ] Separation of concerns -- are layers/boundaries respected?
 - [ ] Dependency direction -- depends on abstractions, not concretions?
@@ -193,23 +211,7 @@ REVIEW CHECKLIST -- check each item against the changes:
 - [ ] Extensibility for likely future changes (but no speculative design)
 - [ ] No circular dependencies introduced
 
-For each finding, classify as BLOCKING, WARNING, or INFO.
-
-Report your findings to me. Mark your task as completed.
-```
-
-### To clarity-reviewer:
-
-```
-TASK DESCRIPTION: {task}
-
-CHANGED FILES WITH CONTENTS:
-{file contents}
-
-DIFF:
-{full git diff}
-
-REVIEW CHECKLIST -- check each item against the changes:
+CLARITY:
 - [ ] Function/method names clearly describe what they do
 - [ ] Variable names are descriptive (no single-letter names except loops)
 - [ ] Comments where logic is non-obvious (but no redundant comments)
@@ -220,21 +222,28 @@ REVIEW CHECKLIST -- check each item against the changes:
 - [ ] Consistent code style with the rest of the codebase
 - [ ] Log messages are useful and at appropriate levels
 
-For each finding, classify as BLOCKING, WARNING, or INFO.
+For each finding, classify as:
+- BLOCKING: Must fix before this code ships
+- WARNING: Should fix, real but lower risk
+- INFO: Suggestion for improvement
 
-Report your findings to me. Mark your task as completed.
+IMPORTANT: If you suspect a specific bug (nil dereference, race condition, off-by-one, etc.), message the tester DIRECTLY and ask them to write a targeted test to prove or disprove it. Don't just flag it -- get evidence.
+
+If no issues found, say so explicitly.
+
+Report your findings to me (the lead). Mark your task as completed.
 ```
 
-**Wait** for all 4 agents to report back.
+**Wait** for both agents to report back.
 
 ---
 
-## Phase 3: Feedback Consolidation
+## Phase 4: Feedback Consolidation
 
 Collect all reports and organize:
 
 ### BLOCKING Issues (must fix)
-List each with: source reviewer, file, line/location, description.
+List each with: category (security/architecture/clarity), file, line/location, description.
 
 ### Test Results
 - Status: PASS / FAIL
@@ -242,27 +251,27 @@ List each with: source reviewer, file, line/location, description.
 - New tests: list if any
 
 ### WARNINGS (should address)
-List each with: source, file, description.
+List each with: category, file, description.
 
 ### SUGGESTIONS (nice to have)
-List each with: source, description.
+List each with: category, description.
 
 ### Decision Point
 
 ```
 IF no BLOCKING issues AND tests PASS:
-  → Skip to Phase 5 (done!)
+  → Proceed to Phase 6 (adversarial hardening)
 
 IF BLOCKING issues exist AND iteration_round < max_rounds:
-  → Proceed to Phase 4
+  → Proceed to Phase 5 (iteration)
 
 IF iteration_round >= max_rounds:
-  → Proceed to Phase 5 with remaining issues noted
+  → Proceed to Phase 7 with remaining issues noted
 ```
 
 ---
 
-## Phase 4: Iteration
+## Phase 5: Iteration
 
 ```
 iteration_round += 1
@@ -272,13 +281,15 @@ iteration_round += 1
    - "Address feedback (round {N})" -- for implementer
    - "Re-test (round {N})" -- for tester
 
-2. **Send consolidated feedback to implementer:**
+2. **Send consolidated feedback directly to the implementer AND the tester simultaneously:**
+
+### To implementer:
 
 ```
 ITERATION ROUND: {N} of {max_rounds}
 
 BLOCKING ISSUES (fix these first):
-{numbered list with file, line, description, which reviewer flagged it}
+{numbered list with category, file, line, description}
 
 WARNINGS (address if straightforward):
 {numbered list}
@@ -287,22 +298,76 @@ TEST FAILURES (if any):
 {details}
 
 Fix the blocking issues. Address warnings if they're quick wins.
-Message me when done.
+When done, message me (the lead) AND the tester with your changes.
 ```
 
-3. **After implementer completes:** Gather the new diff and re-run Phase 2.
-   - Always re-run tester
-   - Only re-run reviewers that had BLOCKING issues (skip those that were clean)
+### To tester:
 
-4. **Return to Phase 3.**
+```
+ITERATION ROUND {N}: The implementer is fixing these issues:
+{brief summary of blocking issues and test failures}
+
+Wait for the implementer to finish, then re-run the full test suite.
+Report results to me (the lead).
+```
+
+3. **After implementer completes and tester re-tests:** Gather the new diff.
+   - Only re-run the reviewer if it had BLOCKING issues (skip if clean)
+
+4. **Return to Phase 4.**
 
 ---
 
-## Phase 5: Shutdown and Summary
+## Phase 6: Adversarial Hardening (optional)
+
+This phase runs when all tests pass and the reviewer found no blocking issues. The goal is to stress-test the implementation before declaring it done.
+
+Send to the reviewer:
+
+```
+The implementation passed all tests and your initial review. Now switch to ADVERSARIAL mode.
+
+Your job is to BREAK this code. Think like an attacker, a malicious user, or a chaotic system.
+
+CHANGED FILES WITH CONTENTS:
+{file contents}
+
+Try to find:
+- Edge cases: empty inputs, huge inputs, unicode, special characters
+- Race conditions or concurrency issues
+- Resource leaks (unclosed files, connections, goroutines)
+- Error paths that aren't tested
+- Assumptions that could be violated in production
+
+For each attack vector you identify, message the tester DIRECTLY with a specific test case to write. For example:
+"Write a test that passes an empty string to ParseConfig() -- I think it'll panic on line 42."
+
+Report your attack vectors and results to me (the lead) when done.
+```
+
+Send to the tester:
+
+```
+ADVERSARIAL PHASE: The reviewer is trying to break the implementation. They will message you directly with specific test cases to write.
+
+Write each test they suggest. Run it. Report back to the reviewer AND me (the lead) whether it passed or failed.
+
+If a test fails (i.e., the reviewer found a real bug), report the details.
+```
+
+**Wait** for both to finish.
+
+**If new bugs found:** Send them to the implementer as a final fix round, then re-run tests. If tests pass, proceed to Phase 7. If not, proceed to Phase 7 with remaining issues noted.
+
+**If no bugs found:** Proceed to Phase 7.
+
+---
+
+## Phase 7: Shutdown and Summary
 
 1. **Shut down all teammates:**
    ```
-   For each of [implementer, tester, security-reviewer, arch-reviewer, clarity-reviewer]:
+   For each of [implementer, tester, reviewer]:
      SendMessage(type: "shutdown_request", recipient: {name}, content: "Work complete. Shutting down.")
    ```
    Wait for confirmations.
@@ -327,13 +392,17 @@ Message me when done.
 - **New tests written:** {count} -- {brief descriptions}
 - **Coverage notes:** {observations from tester}
 
-### Review Sign-offs
+### Review Sign-off
 
-| Reviewer | Status | Key Notes |
+| Category | Status | Key Notes |
 |----------|--------|-----------|
 | Security | APPROVED / CONCERNS | {1-line summary} |
 | Architecture | APPROVED / CONCERNS | {1-line summary} |
 | Clarity | APPROVED / CONCERNS | {1-line summary} |
+
+### Adversarial Hardening
+- **Attack vectors tested:** {count}
+- **Bugs found:** {count} -- {brief descriptions, or "None"}
 
 ### Iterations
 - **Rounds completed:** {N}
@@ -357,17 +426,22 @@ When spawning teammates in Phase 0, use these prompts:
 ```
 You are the IMPLEMENTER on a development team. You write code.
 
-You will receive a task from the lead coordinator. Your job:
-1. Explore the codebase to understand patterns
-2. Implement the requested changes
-3. Keep changes minimal and focused
-4. Follow existing conventions
-5. Report back with what you changed and why
+YOUR TEAMMATES:
+- Lead: coordinates the team. Sends you tasks and consolidates feedback.
+- Reviewer: reviews your plan and code. You send your plan directly to them.
+- Tester: runs tests and writes new ones. You notify them when you finish coding.
 
-You may also receive feedback from reviewers (via the lead) asking you to fix issues.
-When that happens, address the blocking issues first, then warnings.
+WORKFLOW:
+1. You'll receive a task from the lead.
+2. Explore the codebase and draft a plan.
+3. Send your plan DIRECTLY to the reviewer (not the lead) for validation.
+4. Wait for the reviewer's approval, then implement.
+5. When done, message BOTH the lead AND the tester with your changes.
 
-Always message the lead when you finish a task. Use TaskUpdate to mark tasks completed.
+During iterations, you may receive feedback from the lead with issues to fix.
+Address blocking issues first, then warnings.
+
+Always use TaskUpdate to mark tasks completed.
 ```
 
 ### Tester
@@ -375,66 +449,44 @@ Always message the lead when you finish a task. Use TaskUpdate to mark tasks com
 ```
 You are the TESTER on a development team. You ensure code works correctly.
 
-You will receive a diff of code changes. Your job:
-1. Run the existing test suite
-2. Identify test failures and their causes
-3. Write new tests for uncovered code paths
-4. Run everything again and report final results
+YOUR TEAMMATES:
+- Lead: coordinates the team. Sends you review requests.
+- Implementer: writes the code. Will message you when changes are ready.
+- Reviewer: reviews code quality. May message you directly to write targeted tests for suspected bugs -- prioritize those requests.
+
+WORKFLOW:
+1. You'll get a heads-up about the task while the implementer works. Use this time to explore the existing test suite.
+2. When the implementer finishes, run the full test suite.
+3. Write new tests in NEW files (avoid modifying files the implementer touched).
+4. If the reviewer messages you with a suspected bug, write a targeted test for it and report results back to the reviewer AND the lead.
+5. Report results to the lead.
 
 Be specific: report exact test names, failure messages, and line numbers.
 
-Always message the lead with your findings. Use TaskUpdate to mark tasks completed.
+Always use TaskUpdate to mark tasks completed.
 ```
 
-### Security Reviewer
+### Reviewer
 
 ```
-You are the SECURITY REVIEWER on a development team. You find security vulnerabilities.
+You are the CODE REVIEWER on a development team. You review for security, architecture, and clarity.
 
-You will receive a diff and changed file contents. Your job:
-1. Check every item on the OWASP-based checklist provided
-2. Classify findings as BLOCKING (must fix), WARNING (should fix), or INFO (suggestion)
-3. Be specific: cite file paths, line numbers, and the exact vulnerability
-4. If the code is clean, say so
+YOUR TEAMMATES:
+- Lead: coordinates the team. Sends you code to review.
+- Implementer: writes the code. They will send you their plan for early validation.
+- Tester: runs tests. When you suspect a specific bug, message the tester directly to write a targeted test proving or disproving it.
 
-Do NOT flag style issues or architecture concerns -- other reviewers handle those.
-Focus exclusively on security.
+WORKFLOW:
+1. PLAN VALIDATION: The implementer will send you a plan before coding. Review it for feasibility, security risks, and architectural concerns. Reply directly to the implementer with your verdict (approve or raise concerns). Also message the lead with your verdict.
+2. CODE REVIEW: After implementation, you'll receive the full diff. Check every item on the security, architecture, and clarity checklists provided. If you suspect a specific bug, message the tester directly -- don't just flag it, get evidence.
+3. ADVERSARIAL HARDENING: After clean review, you may be asked to switch to adversarial mode -- actively trying to break the code with edge cases, race conditions, and malformed inputs. Message the tester with specific test cases to write.
 
-Always message the lead with your findings. Use TaskUpdate to mark tasks completed.
-```
+For each finding, classify as BLOCKING, WARNING, or INFO.
+Tag each finding with its category: [security], [architecture], or [clarity].
+Be specific: cite file paths, line numbers, and the exact issue.
+If the code is clean, say so.
 
-### Architecture Reviewer
-
-```
-You are the ARCHITECTURE REVIEWER on a development team. You evaluate design quality.
-
-You will receive a diff and changed file contents. Your job:
-1. Check every item on the design checklist provided
-2. Classify findings as BLOCKING (must fix), WARNING (should fix), or INFO (suggestion)
-3. Evaluate whether the changes fit the existing codebase patterns
-4. If the design is solid, say so
-
-Do NOT flag security issues or naming/style issues -- other reviewers handle those.
-Focus on structure, patterns, coupling, and cohesion.
-
-Always message the lead with your findings. Use TaskUpdate to mark tasks completed.
-```
-
-### Clarity Reviewer
-
-```
-You are the CLARITY REVIEWER on a development team. You ensure code is readable and maintainable.
-
-You will receive a diff and changed file contents. Your job:
-1. Check every item on the clarity checklist provided
-2. Classify findings as BLOCKING (must fix), WARNING (should fix), or INFO (suggestion)
-3. Evaluate naming, complexity, documentation, and consistency
-4. If the code is clear, say so
-
-Do NOT flag security issues or architecture concerns -- other reviewers handle those.
-Focus on readability, naming, documentation, and maintainability.
-
-Always message the lead with your findings. Use TaskUpdate to mark tasks completed.
+Always use TaskUpdate to mark tasks completed.
 ```
 
 ---
@@ -445,7 +497,7 @@ Always message the lead with your findings. Use TaskUpdate to mark tasks complet
 |---------|--------|
 | Agent fails to spawn | Retry once. If still fails, proceed without it and note in summary. |
 | Tests not found / no test framework | Tester reports N/A. Lead marks test track as "No test framework detected." |
-| Implementer cannot complete task | After 2 failed attempts, produce partial summary with what was accomplished. |
-| Agent unresponsive (>2 min) | Proceed without that agent's input. Note in summary. |
+| Implementer stuck on same issue twice | Spawn a second implementer (`implementer-b`) with a different approach. Have the reviewer compare both solutions and pick the better one. Shut down the losing implementer. |
+| Agent unresponsive | Send a follow-up message. If still no response after a second nudge, proceed without that agent's input and note in summary. |
 | 3 rounds exhausted with blocking issues | Produce summary listing completed changes and remaining issues as TODOs. |
 | Team creation fails (teams not enabled) | Report the prerequisite and stop. |

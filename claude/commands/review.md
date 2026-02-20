@@ -1,10 +1,10 @@
 ---
-description: Multi-reviewer code review panel for current branch changes
+description: Code review panel for current branch changes
 ---
 
 # Code Review Panel
 
-Run three specialized reviewers (security, architecture, clarity) in parallel against your current changes. Produces a consolidated review report.
+Run a comprehensive code review (security, architecture, clarity) against your current changes.
 
 ## Arguments
 
@@ -18,7 +18,7 @@ Run three specialized reviewers (security, architecture, clarity) in parallel ag
 
 ## Instructions
 
-You are running a 3-reviewer code review panel. You coordinate the reviewers and produce a consolidated report.
+You run a code review and produce a consolidated report.
 
 ### Step 1: Determine Review Scope
 
@@ -39,16 +39,14 @@ If there are no changes to review, tell the user and stop.
 
 ### Step 2: Read Changed Files
 
-Read the full content of each changed file for context. The reviewers need to see the code around the changes, not just the diff.
+Read the full content of each changed file for context. The reviewer needs to see the code around the changes, not just the diff.
 
-### Step 3: Launch 3 Reviewers in Parallel
+### Step 3: Launch Reviewer
 
-Use 3 Task tool calls in a single message, each with `subagent_type="general-purpose"`:
-
-#### Security Reviewer
+Use 1 Task tool call with `subagent_type="general-purpose"`:
 
 ```
-Review the following code changes for security vulnerabilities.
+Review the following code changes for security, architecture, and clarity.
 
 DIFF:
 {full diff}
@@ -56,7 +54,7 @@ DIFF:
 CHANGED FILES:
 {full file contents}
 
-CHECK EACH:
+CHECK EACH -- SECURITY:
 - Injection flaws (SQL, command, LDAP, XPath)
 - Authentication/authorization issues
 - Sensitive data exposure (secrets, PII, credentials in code or logs)
@@ -68,30 +66,7 @@ CHECK EACH:
 - Missing rate limiting
 - Insecure direct object references
 
-Classify each finding as:
-- BLOCKING: Must fix before merging
-- WARNING: Should fix, real risk
-- INFO: Improvement suggestion
-
-If no issues: explicitly state "No security issues found."
-
-Output your findings in this format:
-## Security Review
-{findings or "No security issues found."}
-```
-
-#### Architecture Reviewer
-
-```
-Review the following code changes for design and architecture quality.
-
-DIFF:
-{full diff}
-
-CHANGED FILES:
-{full file contents}
-
-CHECK EACH:
+CHECK EACH -- ARCHITECTURE:
 - Single Responsibility Principle
 - Separation of concerns
 - Dependency direction (abstractions over concretions)
@@ -102,26 +77,7 @@ CHECK EACH:
 - Extensibility for likely changes
 - Circular dependencies
 
-Classify findings as BLOCKING, WARNING, or INFO.
-If the design is solid, say so.
-
-Output format:
-## Architecture Review
-{findings or "Design looks solid."}
-```
-
-#### Clarity Reviewer
-
-```
-Review the following code changes for readability and maintainability.
-
-DIFF:
-{full diff}
-
-CHANGED FILES:
-{full file contents}
-
-CHECK EACH:
+CHECK EACH -- CLARITY:
 - Function/method naming clarity
 - Variable naming
 - Comments where logic is non-obvious
@@ -132,17 +88,20 @@ CHECK EACH:
 - Consistent code style
 - Log message quality
 
-Classify findings as BLOCKING, WARNING, or INFO.
-If the code is clear, say so.
+Classify each finding as:
+- BLOCKING: Must fix before merging
+- WARNING: Should fix, real risk
+- INFO: Improvement suggestion
 
-Output format:
-## Clarity Review
-{findings or "Code is clear and well-written."}
+Tag each finding with its category: [security], [architecture], or [clarity].
+If no issues in a category: explicitly state so.
+
+Output your findings grouped by severity (BLOCKING first, then WARNING, then INFO).
 ```
 
 ### Step 4: Produce Consolidated Report
 
-After all 3 reviewers complete, consolidate into:
+After the reviewer completes, consolidate into:
 
 ```markdown
 # Code Review: {branch name}
@@ -151,7 +110,7 @@ After all 3 reviewers complete, consolidate into:
 {1-2 sentences: what the changes do and overall assessment}
 
 ## Blocking Issues
-{Numbered list with reviewer source, file, line, description -- or "None"}
+{Numbered list with category tag, file, line, description -- or "None"}
 
 ## Warnings
 {Numbered list -- or "None"}
@@ -159,8 +118,8 @@ After all 3 reviewers complete, consolidate into:
 ## Suggestions
 {Numbered list -- or "None"}
 
-## Reviewer Verdicts
-| Reviewer | Verdict | Key Notes |
+## Verdicts
+| Category | Verdict | Key Notes |
 |----------|---------|-----------|
 | Security | PASS / CONCERNS | {1-line} |
 | Architecture | PASS / CONCERNS | {1-line} |
@@ -171,4 +130,4 @@ After all 3 reviewers complete, consolidate into:
 ```
 
 If there are blocking issues, note: "Address the blocking issues before merging."
-If clean: "Changes look good across all three review dimensions."
+If clean: "Changes look good across all review dimensions."
