@@ -1,5 +1,5 @@
 ---
-allowed-tools: Bash(git add:*), Bash(git commit:*), Bash(git checkout:*), Bash(git pull:*), Bash(git merge:*), Bash(git push:*), Bash(git branch:*), Bash(git fetch:*), Bash(git log:*), Bash(git diff:*), Bash(git reset:*)
+allowed-tools: Bash(git add:*), Bash(git commit:*), Bash(git checkout:*), Bash(git pull:*), Bash(git merge:*), Bash(git push:*), Bash(git branch:*), Bash(git fetch:*), Bash(git log:*), Bash(git diff:*), Bash(git reset:*), Bash(git rebase:*)
 description: Merge current branch to upstream/master with squashed commits
 ---
 
@@ -13,7 +13,7 @@ description: Merge current branch to upstream/master with squashed commits
 
 ## Your task
 
-Merge the current branch into upstream/master with squashed commits:
+Merge the current branch into upstream/master with squashed commits. The branch must be rebased and force-pushed first so the PR auto-closes on GitHub.
 
 1. **Commit any uncommitted changes:**
    - If there are uncommitted changes, stage and commit them with an appropriate message
@@ -27,24 +27,36 @@ Merge the current branch into upstream/master with squashed commits:
    - Review the full diff to understand what the branch accomplishes
    - Determine a clear, concise summary for the squashed commit based on the overall purpose
 
-4. **Fetch and checkout upstream/master:**
+4. **Rebase on upstream/master:**
    - Run `git fetch upstream`
+   - Run `git rebase upstream/master`
+   - If there are conflicts, resolve them and continue the rebase
+
+5. **Force-push the rebased branch to origin:**
+   - Run `git push origin <branch-name> --force-with-lease`
+   - This updates the PR branch so GitHub can auto-close it after the merge
+
+6. **Checkout and update master:**
    - Run `git checkout master`
    - Run `git pull upstream master` to ensure master is up to date
 
-5. **Squash merge the feature branch:**
+7. **Squash merge the feature branch:**
    - Run `git merge --squash <branch-name>` to stage all changes as a single commit
    - Create a new commit with a well-crafted message that:
      - Summarizes the overall purpose of all changes (not individual commits)
      - Is written in imperative mood
-     - Includes `Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>` at the end
+     - Includes `Co-Authored-By: Claude <noreply@anthropic.com>` at the end
 
-6. **Push to upstream:**
+8. **Push to upstream:**
    - Run `git push upstream master` to push the merged changes
 
-7. **Report the result:**
-   - Confirm the squash merge was successful
-   - Show the final commit message
-   - Show which files were changed
+9. **Clean up the remote branch:**
+   - Run `git push origin --delete <branch-name>` to delete the remote branch
+   - This ensures the PR is closed on GitHub
+
+10. **Report the result:**
+    - Confirm the squash merge was successful
+    - Show the final commit message
+    - Show which files were changed
 
 Execute all steps in sequence. If any step fails, stop and report the error.
