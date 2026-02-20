@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="favicon.svg" width="120" alt="Dots logo">
+</p>
+
 # Dots
 
 > Obsessively curated dotfiles managed by a robust, extensible Go CLI.
