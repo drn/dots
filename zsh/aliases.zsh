@@ -9,6 +9,7 @@ alias ls='nerd-ls -i'
 alias lt='nerd-ls -iT'
 alias o.='open .'
 alias o='open'
+alias pwdc='pwd | pbcopy'
 alias sls='/bin/ls -G'
 
 # Navigation Aliases
