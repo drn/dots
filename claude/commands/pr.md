@@ -7,7 +7,7 @@ description: Open a PR, wait for CI to pass, fix failures, address review commen
 - Current branch: !`git branch --show-current`
 - Git status: !`git status --short`
 - Default branch: !`gh repo view --json defaultBranchRef -q .defaultBranchRef.name 2>/dev/null || echo "unknown"`
-- Commits on branch: !`git log origin/$(gh repo view --json defaultBranchRef -q .defaultBranchRef.name 2>/dev/null || echo main)..HEAD --oneline 2>/dev/null || echo "Unable to determine commits"`
+- Commits on branch: !`DEFAULT=$(gh repo view --json defaultBranchRef -q .defaultBranchRef.name 2>/dev/null || echo main) && git log origin/$DEFAULT..HEAD --oneline 2>/dev/null || echo "Unable to determine commits"`
 - Existing PR: !`gh pr view --json number,url,state,title 2>/dev/null || echo "No existing PR"`
 
 ## Your task
@@ -15,6 +15,8 @@ description: Open a PR, wait for CI to pass, fix failures, address review commen
 Open a PR for the current branch, then loop until CI is fully green and all review comments are addressed. Do not return until the PR is in a mergeable, green state.
 
 **Important:** If a PR already exists for this branch, skip straight to Step 3 — even if there are no local changes. Your job is to get the PR to a green, mergeable state, not just to open it.
+
+**Abort condition:** If there is no existing PR for this branch AND there are no commits ahead of the default branch AND there are no uncommitted changes, stop and tell the user: "Nothing to ship — no PR exists and there are no commits on this branch." Do not silently exit.
 
 ### Step 1: Commit any uncommitted changes
 

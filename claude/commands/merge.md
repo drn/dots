@@ -7,13 +7,19 @@ description: Merge current branch to upstream/master with squashed commits
 
 - Current branch: !`git branch --show-current`
 - Git status: !`git status --short`
-- Remote tracking: !`git remote -v | grep upstream || echo "No upstream remote configured"`
-- Commits on this branch: !`git log upstream/master..HEAD --oneline 2>/dev/null || echo "Unable to determine commits"`
-- Full diff from upstream/master: !`git diff upstream/master..HEAD --stat 2>/dev/null || echo "Unable to determine diff"`
+- Remote tracking: !`git remote -v | grep upstream || echo "No upstream remote — will use origin"`
+- Target remote: !`git remote | grep -q upstream && echo "upstream" || echo "origin"`
+- Commits on this branch: !`TARGET=$(git remote | grep -q upstream && echo upstream || echo origin) && git log $TARGET/master..HEAD --oneline 2>/dev/null || echo "Unable to determine commits"`
+- Full diff from target/master: !`TARGET=$(git remote | grep -q upstream && echo upstream || echo origin) && git diff $TARGET/master..HEAD --stat 2>/dev/null || echo "Unable to determine diff"`
 
 ## Your task
 
 Merge the current branch into upstream/master with squashed commits. The branch must be rebased and force-pushed first so the PR auto-closes on GitHub.
+
+0. **Determine the target remote:**
+   - If an `upstream` remote exists, use it as the target remote.
+   - Otherwise, use `origin` as the target remote.
+   - Use this target remote in place of `upstream` in all subsequent steps.
 
 1. **Commit any uncommitted changes:**
    - If there are uncommitted changes, stage and commit them with an appropriate message
