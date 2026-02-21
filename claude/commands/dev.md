@@ -43,7 +43,7 @@ You do NOT write code yourself. You coordinate teammates, route feedback, and pr
 
 ---
 
-## Phase 0: Setup
+## Phase 0: Setup and Plan Approval
 
 1. **Clean working tree:** If there are uncommitted changes, commit them with message `"WIP: pre-dev-session state"` before proceeding. This ensures clean diffs during the session.
 
@@ -55,22 +55,34 @@ You do NOT write code yourself. You coordinate teammates, route feedback, and pr
    - Build tool (go build, make, npm, bundle, etc.)
    - Linter (revive, rubocop, eslint, ruff, clippy, etc.)
 
-4. **Create the team** (clean up stale session first if needed):
+4. **Explore the codebase** to understand relevant code, patterns, and conventions. Read key files related to the task. Understand the existing architecture before proposing changes.
+
+5. **Present a plan to the user for approval.** Based on your exploration, write a concrete implementation plan and present it for the user to review. The plan must include:
+
+   - **Goal:** One-sentence summary of the task.
+   - **Approach:** How you intend to solve it (strategy, patterns to follow).
+   - **Files to change:** List each file that will be created, modified, or deleted, with a brief description of the change.
+   - **Testing strategy:** What tests will be added or run.
+   - **Risks / trade-offs:** Anything the user should be aware of.
+
+   **Wait for the user to approve the plan before proceeding.** If the user requests changes, revise and re-present until approved. Do NOT create the team or spawn agents until the user approves.
+
+6. **Create the team** (clean up stale session first if needed):
    ```
    TeamDelete() -- ignore if no existing team
    TeamCreate(team_name: "dev-session", description: "Iterative dev: {brief task summary}")
    ```
 
-5. **Create the task list** with TaskCreate:
+7. **Create the task list** with TaskCreate:
    - "Plan: {task}" -- for implementer
    - "Validate plan" -- for reviewer, blocked by plan
    - "Implement: {task}" -- for implementer, blocked by plan validation
    - "Test implementation" -- for tester, blocked by implementation
    - "Code review" -- for reviewer, blocked by implementation
 
-6. **Spawn all 3 teammates** in a single message with 3 Task tool calls. Use the agent briefings below for each teammate's prompt. Use `model: "sonnet"` for the tester.
+8. **Spawn all 3 teammates** in a single message with 3 Task tool calls. Use the agent briefings below for each teammate's prompt. Use `model: "sonnet"` for the tester. Include the approved plan in the implementer's briefing so they can skip redundant exploration.
 
-7. **Initialize state:**
+9. **Initialize state:**
    ```
    iteration_round = 0
    max_rounds = 3
@@ -80,7 +92,7 @@ You do NOT write code yourself. You coordinate teammates, route feedback, and pr
 
 ## Phase 1: Planning
 
-Send the task to the implementer via SendMessage:
+Send the task and the user-approved plan to the implementer via SendMessage:
 
 ```
 TASK: {full task description from $ARGUMENTS}
@@ -92,11 +104,13 @@ PROJECT CONTEXT:
 - Build: {detected build tool}
 - Lint: {detected linter}
 
+APPROVED PLAN (already approved by the user):
+{the plan approved in Phase 0, step 5}
+
 INSTRUCTIONS:
-1. Explore the codebase to understand existing patterns and conventions.
-2. Draft a short plan (which files to change, what approach, any trade-offs).
-3. Send your plan DIRECTLY to the reviewer for validation.
-4. Wait for the reviewer's feedback before implementing.
+1. Review the approved plan. You may refine implementation details, but the overall approach is set.
+2. Send a brief implementation plan (specific code-level details) DIRECTLY to the reviewer for validation.
+3. Wait for the reviewer's feedback before implementing.
 
 Mark the "Plan" task as completed once your plan is sent.
 ```
