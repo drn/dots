@@ -33,7 +33,7 @@ func Fetch(path string, onUnset *func(), secure bool) *string {
 	section, key := parsePath(path)
 	if section == nil || key == nil {
 		log.Error("Invalid config.Fetch(%s)", path)
-		os.Exit(1)
+		return nil
 	}
 
 	value := Read(path)
@@ -89,7 +89,7 @@ func Delete(path string) {
 
 // ask - Prompts user for input for the given config section and key.
 func ask(section string, key string, secure bool) string {
-	label := fmt.Sprintf("%s %s?", strings.Title(section), key)
+	label := fmt.Sprintf("%s %s?", strings.ToUpper(section[:1])+section[1:], key)
 
 	var mask rune
 	if secure {

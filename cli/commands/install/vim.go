@@ -2,7 +2,6 @@ package install
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"strings"
 
@@ -24,8 +23,14 @@ func (i Install) Vim() {
 
 func vimLinkConfig() {
 	log.Info("Ensuring all vim configuration is linked:")
-	os.Mkdir(path.FromHome(".vim"), os.ModePerm)
-	files, _ := ioutil.ReadDir(path.FromDots("vim"))
+	if err := os.Mkdir(path.FromHome(".vim"), os.ModePerm); err != nil && !os.IsExist(err) {
+		log.Warning("Failed to create .vim directory: %s", err.Error())
+	}
+	files, err := os.ReadDir(path.FromDots("vim"))
+	if err != nil {
+		log.Warning("Failed to read vim directory: %s", err.Error())
+		return
+	}
 	for _, file := range files {
 		link.Soft(
 			path.FromDots("vim/%s", file.Name()),
@@ -35,7 +40,9 @@ func vimLinkConfig() {
 }
 
 func vimLinkNeovim() {
-	os.Mkdir(path.FromHome(".config"), os.ModePerm)
+	if err := os.Mkdir(path.FromHome(".config"), os.ModePerm); err != nil && !os.IsExist(err) {
+		log.Warning("Failed to create .config directory: %s", err.Error())
+	}
 	link.Soft(
 		path.FromHome(".vim"),
 		path.FromHome(".config/nvim"),
@@ -77,7 +84,7 @@ func vimUpdatePlugins() {
 			"|",
 		),
 	)
-	bytes, err := ioutil.ReadFile(tempPath)
+	bytes, err := os.ReadFile(tempPath)
 	if err == nil {
 		fmt.Println(string(bytes))
 	} else {

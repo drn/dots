@@ -24,13 +24,13 @@ func main() {
 		path[1],
 	)
 
-	if !run.Verbose(
+	if err := run.Verbose(
 		"git push %s %s:%s %s",
 		path[0],
 		branch,
 		path[1],
 		strings.Join(os.Args[1:], " "),
-	) {
+	); err != nil {
 		os.Exit(1)
 	}
 }

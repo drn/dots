@@ -133,7 +133,7 @@ func installAll() {
 
 	log.Info("Ensuring sudo access")
 	command := "sudo -p \"Enter your password: \" echo \"We're good to go!\""
-	if !run.Silent(command) {
+	if err := run.Silent(command); err != nil {
 		os.Exit(1)
 	}
 
