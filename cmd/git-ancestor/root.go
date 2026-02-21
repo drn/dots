@@ -10,7 +10,7 @@ import (
 	"github.com/drn/dots/pkg/run"
 )
 
-var max = 100
+var maxAncestors = 100
 var remote = baseRemote()
 var dev = fmt.Sprintf("%s/dev", remote)
 var master = fmt.Sprintf("%s/master", remote)
@@ -79,7 +79,7 @@ func branches(sha string) []string {
 }
 
 func ancestors() []string {
-	history := run.Capture("git rev-list --max-count %d HEAD", max)
+	history := run.Capture("git rev-list --max-count %d HEAD", maxAncestors)
 	return strings.Split(history, "\n")
 }
 

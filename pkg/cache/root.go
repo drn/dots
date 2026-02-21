@@ -3,7 +3,6 @@
 package cache
 
 import (
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"time"
@@ -31,7 +30,7 @@ func Warm(key string, ttl float64) bool {
 	if err != nil {
 		return false
 	}
-	age := time.Now().Sub(info.ModTime())
+	age := time.Since(info.ModTime())
 	return age.Minutes() <= ttl
 }
 
@@ -48,20 +47,43 @@ func Read(key string, ttl float64) string {
 	if err != nil {
 		return ""
 	}
-	age := time.Now().Sub(info.ModTime())
+	age := time.Since(info.ModTime())
 	if age.Minutes() > ttl {
 		return ""
 	}
-	data, _ := ioutil.ReadFile(cachePath)
+	data, err := os.ReadFile(cachePath)
+	if err != nil {
+		log.Warning("Failed to read cache file %s: %s", cachePath, err.Error())
+		return ""
+	}
 	return string(data)
 }
 
-// Write - stores input string at specified cache key
+// Write - stores input string at specified cache key atomically
 func Write(key string, data string) {
 	cachePath := path.FromCache(key)
+	dir := filepath.Dir(cachePath)
 	// create directory hierarchy if it doesn't exist
-	os.MkdirAll(filepath.Dir(cachePath), os.ModePerm)
-	file, _ := os.Create(cachePath)
-	file.WriteString(data)
-	file.Close()
+	if err := os.MkdirAll(dir, os.ModePerm); err != nil {
+		log.Warning("Failed to create cache directory: %s", err.Error())
+		return
+	}
+	// write to temp file then rename for atomicity
+	tmp, err := os.CreateTemp(dir, ".cache-*")
+	if err != nil {
+		log.Warning("Failed to create temp cache file: %s", err.Error())
+		return
+	}
+	tmpPath := tmp.Name()
+	if _, err := tmp.WriteString(data); err != nil {
+		tmp.Close()
+		os.Remove(tmpPath)
+		log.Warning("Failed to write cache data: %s", err.Error())
+		return
+	}
+	tmp.Close()
+	if err := os.Rename(tmpPath, cachePath); err != nil {
+		os.Remove(tmpPath)
+		log.Warning("Failed to rename cache file: %s", err.Error())
+	}
 }

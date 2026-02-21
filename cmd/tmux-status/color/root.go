@@ -1,5 +1,5 @@
 // Package color contains tmux-status color constants
-package color
+package color //revive:disable-line:var-naming
 
 // Color -
 type Color string

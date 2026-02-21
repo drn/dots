@@ -1,5 +1,5 @@
 // Package path returns path-related helper functions
-package path
+package path //revive:disable-line:var-naming
 
 import (
 	"fmt"

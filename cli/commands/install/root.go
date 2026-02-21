@@ -3,8 +3,6 @@ package install
 
 import (
 	"os"
-	"reflect"
-	"strings"
 
 	"github.com/drn/dots/pkg/run"
 )
@@ -15,13 +13,28 @@ type Install struct{}
 // Call - Call install command by name
 func Call(command string) {
 	var i Install
-	command = strings.Title(command)
-	reflect.ValueOf(&i).MethodByName(command).Call([]reflect.Value{})
+	installers := map[string]func(){
+		"bin":         i.Bin,
+		"claude":      i.Claude,
+		"fonts":       i.Fonts,
+		"git":         i.Git,
+		"hammerspoon": i.Hammerspoon,
+		"home":        i.Home,
+		"homebrew":    i.Homebrew,
+		"languages":   i.Languages,
+		"npm":         i.Npm,
+		"osx":         i.Osx,
+		"vim":         i.Vim,
+		"zsh":         i.Zsh,
+	}
+	if fn, ok := installers[command]; ok {
+		fn()
+	}
 }
 
 // Verbosely runs a command and fails if the command fails
 func exec(command string, args ...interface{}) {
-	if !run.Verbose(command, args...) {
+	if err := run.Verbose(command, args...); err != nil {
 		os.Exit(1)
 	}
 }

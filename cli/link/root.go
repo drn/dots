@@ -40,6 +40,8 @@ func Hard(from string, to string) {
 
 func removeExisting(linkPath string) {
 	if _, err := os.Lstat(linkPath); err == nil {
-		os.Remove(linkPath)
+		if err := os.Remove(linkPath); err != nil {
+			log.Warning("Failed to remove existing link %s: %s", linkPath, err.Error())
+		}
 	}
 }

@@ -30,13 +30,6 @@ func Run() {
 	log.Info("Update complete!")
 }
 
-func setWindow(name string) {
-	if name == "" {
-		return
-	}
-	run.Capture("tmux rename-window %s", name)
-}
-
 func checkClean() {
 	if cache.Warm("dots-clean", 10080) { // 7 days
 		return

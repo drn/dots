@@ -73,12 +73,14 @@ func main() {
 }
 
 func alternateDeviceID(currentDeviceID string) string {
-	// if laptop, transfer to iphone
-	if currentDeviceID == "ffac8fe2389bf5536633fec4320117105a77d45f" {
-		return "010a8a7f027d31cd55b229dd11a8f4f3e32cc9e5"
+	laptopID := os.Getenv("SPOTIFY_DEVICE_LAPTOP")
+	phoneID := os.Getenv("SPOTIFY_DEVICE_PHONE")
+	// if laptop, transfer to phone
+	if currentDeviceID == laptopID {
+		return phoneID
 	}
 	// default to laptop
-	return "ffac8fe2389bf5536633fec4320117105a77d45f"
+	return laptopID
 }
 
 func currentDevice(accessToken string) string {

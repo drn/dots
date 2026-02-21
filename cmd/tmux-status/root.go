@@ -13,7 +13,6 @@ import (
 )
 
 var side string
-var width int
 
 // Position -
 type Position interface {

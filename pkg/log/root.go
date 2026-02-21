@@ -1,5 +1,5 @@
 // Package log provides various colorized logging functions
-package log
+package log //revive:disable-line:var-naming
 
 import (
 	"fmt"

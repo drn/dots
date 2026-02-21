@@ -22,7 +22,7 @@ func Run() {
 }
 
 func tools() {
-	if run.Silent("xcode-select --print-path >/dev/null") {
+	if run.Silent("xcode-select --print-path >/dev/null") == nil {
 		log.Success("Xcode Command Line Tools are properly installed")
 	} else {
 		log.Error("Xcode Command Line Tools are not installed")

@@ -8,12 +8,23 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// Verbose controls whether verbose output is enabled
+var Verbose bool
+
+// Quiet controls whether output is suppressed
+var Quiet bool
+
 var root = &cobra.Command{
 	Use:   "dots",
 	Short: "The dots CLI manages your development environment dependencies",
 	Run: func(cmd *cobra.Command, _ []string) {
 		cmd.Help()
 	},
+}
+
+func init() {
+	root.PersistentFlags().BoolVarP(&Verbose, "verbose", "v", false, "enable verbose output")
+	root.PersistentFlags().BoolVarP(&Quiet, "quiet", "q", false, "suppress output")
 }
 
 func addCommands() {

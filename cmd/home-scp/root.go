@@ -10,7 +10,6 @@ import (
 
 var homeUser = os.Getenv("HOME_USER")
 var homeWAN = os.Getenv("HOME_WAN")
-var homeLAN = os.Getenv("HOME_LAN")
 
 func main() {
 	if len(os.Args) < 2 {

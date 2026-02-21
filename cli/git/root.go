@@ -10,7 +10,7 @@ import (
 
 // IsRepo - Returns true if currently in a git repository
 func IsRepo() bool {
-	return run.Silent("git rev-parse --git-dir >/dev/null 2>&1")
+	return run.Silent("git rev-parse --git-dir >/dev/null 2>&1") == nil
 }
 
 // Branch - Returns the current HEAD alias
@@ -84,12 +84,12 @@ func RemoteHasBranch(remote string, branch string) bool {
 	return run.Silent(
 		"git branch --remote --contains %s >/dev/null 2>&1",
 		fmt.Sprintf("%s/%s", remote, branch),
-	)
+	) == nil
 }
 
 // Checkout - Checks out the specified branch
 func Checkout(branch string) bool {
-	return run.Verbose("git checkout %s 2>/dev/null", branch)
+	return run.Verbose("git checkout %s 2>/dev/null", branch) == nil
 }
 
 // Create - Creates the specified branch
@@ -97,7 +97,7 @@ func Create(branch string) bool {
 	return run.Verbose(
 		"git checkout %s 2>/dev/null || git checkout -b %s",
 		branch, branch,
-	)
+	) == nil
 }
 
 // ResetHard - Hard resets to the specified address
@@ -107,7 +107,7 @@ func ResetHard(address string) {
 
 // Delete - Deletes the specified branch
 func Delete(branch string) bool {
-	return run.Verbose("git branch -D %s", branch)
+	return run.Verbose("git branch -D %s", branch) == nil
 }
 
 // Ancestor - Returns the ancestor of HEAD
