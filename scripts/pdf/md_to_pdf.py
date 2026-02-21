@@ -207,7 +207,7 @@ def render_text_with_formatting(pdf: FPDF, text: str, base_size: int = 11):
 
 
 def render_table(pdf: FPDF, table_lines: List[str]):
-    """Render a markdown table."""
+    """Render a markdown table with proportional column widths."""
     # Parse table
     rows = []
     for i, line in enumerate(table_lines):
@@ -219,31 +219,86 @@ def render_table(pdf: FPDF, table_lines: List[str]):
     if not rows:
         return
 
-    # Calculate column widths
     num_cols = len(rows[0])
     page_width = 190  # Available width
-    col_width = page_width / num_cols
 
-    pdf.set_font("Helvetica", "", 9)
+    # Clean all cells for width measurement
+    clean_rows = []
+    for row in rows:
+        clean_row = []
+        for cell in row:
+            clean_cell = re.sub(r'\*\*([^*]+)\*\*', r'\1', cell)
+            clean_cell = re.sub(r'\[([^\]]+)\]\([^)]+\)', r'\1', clean_cell)
+            clean_cell = sanitize_text(clean_cell)
+            clean_row.append(clean_cell)
+        clean_rows.append(clean_row)
 
-    for row_idx, row in enumerate(rows):
+    # Calculate proportional column widths based on max content length
+    pdf.set_font("Helvetica", "B", 9)
+    max_widths = [0.0] * num_cols
+    for row in clean_rows:
+        for col_idx, cell in enumerate(row):
+            if col_idx < num_cols:
+                w = pdf.get_string_width(cell) + 4  # padding
+                max_widths[col_idx] = max(max_widths[col_idx], w)
+
+    # Scale widths to fit page, with minimum width
+    min_col_width = 12
+    total_natural = sum(max_widths)
+    if total_natural > page_width:
+        col_widths = [max(min_col_width, w * page_width / total_natural) for w in max_widths]
+        # Re-scale after applying minimums
+        total_scaled = sum(col_widths)
+        if total_scaled > page_width:
+            col_widths = [w * page_width / total_scaled for w in col_widths]
+    else:
+        col_widths = [max(min_col_width, w) for w in max_widths]
+        # Distribute remaining space proportionally
+        remaining = page_width - sum(col_widths)
+        if remaining > 0:
+            total_w = sum(col_widths)
+            col_widths = [w + remaining * w / total_w for w in col_widths]
+
+    # Determine font size — shrink for wide tables
+    font_size = 9
+    if num_cols >= 6:
+        font_size = 7.5
+    elif num_cols >= 5:
+        font_size = 8
+
+    row_height = 8
+
+    for row_idx, clean_row in enumerate(clean_rows):
         # Header row
         if row_idx == 0:
             pdf.set_fill_color(246, 248, 250)
-            pdf.set_font("Helvetica", "B", 9)
+            pdf.set_font("Helvetica", "B", font_size)
         else:
             if row_idx % 2 == 0:
                 pdf.set_fill_color(249, 250, 251)
             else:
                 pdf.set_fill_color(255, 255, 255)
-            pdf.set_font("Helvetica", "", 9)
+            pdf.set_font("Helvetica", "", font_size)
 
-        for cell in row:
-            # Remove markdown formatting for table cells
-            clean_cell = re.sub(r'\*\*([^*]+)\*\*', r'\1', cell)
-            clean_cell = re.sub(r'\[([^\]]+)\]\([^)]+\)', r'\1', clean_cell)
-            clean_cell = sanitize_text(clean_cell)
-            pdf.cell(col_width, 8, clean_cell, border=1, fill=True)
+        for col_idx, cell in enumerate(clean_row):
+            if col_idx < num_cols:
+                w = col_widths[col_idx]
+                # Extract link URL if present
+                link_match = re.search(r'\[([^\]]+)\]\(([^)]+)\)', rows[row_idx][col_idx] if col_idx < len(rows[row_idx]) else '')
+                link_url = link_match.group(2) if link_match else ''
+                # Truncate text with ellipsis if it exceeds cell width
+                display = cell
+                while pdf.get_string_width(display) > w - 3 and len(display) > 1:
+                    display = display[:-1]
+                if display != cell:
+                    display = display.rstrip() + '..'
+                if link_url:
+                    # Render as clickable link
+                    pdf.set_text_color(0, 102, 204)
+                    pdf.cell(w, row_height, display, border=1, fill=True, link=link_url)
+                    pdf.set_text_color(51, 51, 51)
+                else:
+                    pdf.cell(w, row_height, display, border=1, fill=True)
         pdf.ln()
 
     pdf.ln(4)
@@ -251,6 +306,10 @@ def render_table(pdf: FPDF, table_lines: List[str]):
 
 def create_pdf(md_content: str, output_path: Path, title: Optional[str] = None) -> Path:
     """Create PDF from markdown content."""
+    # When a title is provided, strip the leading H1 from markdown to avoid duplication
+    if title:
+        md_content = re.sub(r'^#\s+.+\n*', '', md_content, count=1)
+
     pdf = MarkdownPDF(title)
 
     elements = parse_markdown(md_content)
