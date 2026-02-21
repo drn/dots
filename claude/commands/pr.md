@@ -7,7 +7,7 @@ description: Open a PR, wait for CI to pass, fix failures, address review commen
 - Current branch: !`git branch --show-current`
 - Git status: !`git status --short`
 - Default branch: !`gh repo view --json defaultBranchRef -q .defaultBranchRef.name 2>/dev/null || echo "unknown"`
-- Commits on branch: !`git log origin/master..HEAD --oneline 2>/dev/null || git log origin/main..HEAD --oneline 2>/dev/null || echo "Unable to determine commits"`
+- Commits on branch: !`git log origin/main..HEAD --oneline 2>/dev/null || git log origin/master..HEAD --oneline 2>/dev/null || echo "Unable to determine commits"`
 - Existing PR: !`gh pr view --json number,url,state,title 2>/dev/null || echo "No existing PR"`
 
 ## Your task

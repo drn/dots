@@ -86,14 +86,28 @@ dots doctor                                   # Run diagnostics
 | hammerspoon | Window management |
 | osx | macOS defaults |
 
-## Skill / Command Authoring
+## Writing Skills / Slash Commands
 
-When writing skills in `claude/commands/*.md`:
+Skills live in `claude/commands/` (symlinked to `~/.claude/commands/`).
 
-- **No `$()` in context commands.** The `!` backtick context syntax (e.g., `!`\`some command\``) does NOT support `$()` command substitution -- it will be rejected by the permission checker. Use `||` fallback chains instead.
-  - Bad: `` !`git log $(git remote | head -1)/master..HEAD` ``
-  - Good: `` !`git log upstream/master..HEAD --oneline 2>/dev/null || git log origin/master..HEAD --oneline 2>/dev/null` ``
+### Dynamic Context Rules
+
+The `` !`command` `` syntax runs shell commands and injects output as context. **Critical restriction:**
+
+- **Never use `$()` command substitution** inside dynamic context expressions. Claude Code blocks `$()` in these expansions for security reasons.
+- **Use pipes and `||` fallback chains** instead of variable assignment + interpolation.
+- **Keep output bounded** with `| head -N` or `| grep` to avoid blowing up context.
 - **No agent teams in Conductor.** Do not use `TeamCreate`, `TeamDelete`, `SendMessage`, or `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS`. Use parallel `Task` tool calls with sub-agents instead.
+
+```
+# BAD — blocked by permission system
+!`DEFAULT=$(gh repo view ...) && git log origin/$DEFAULT..HEAD`
+
+# GOOD — simple pipe chain with fallback
+!`git log origin/main..HEAD --oneline 2>/dev/null || echo "None"`
+```
+
+See `/write-skill` for the full skill-authoring guide.
 
 ## Critical Notes
 
