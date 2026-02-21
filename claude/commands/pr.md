@@ -14,17 +14,19 @@ description: Open a PR, wait for CI to pass, fix failures, address review commen
 
 Open a PR for the current branch, then loop until CI is fully green and all review comments are addressed. Do not return until the PR is in a mergeable, green state.
 
+**Important:** If a PR already exists for this branch, skip straight to Step 3 — even if there are no local changes. Your job is to get the PR to a green, mergeable state, not just to open it.
+
 ### Step 1: Commit any uncommitted changes
 
 If there are uncommitted changes, stage and commit them with an appropriate message before proceeding.
 
 ### Step 2: Push the branch
 
-Push the current branch to origin. Use `git push -u origin HEAD` if no upstream is set.
+Push the current branch to origin. Use `git push -u origin HEAD` if no upstream is set. If there is nothing new to push, that is fine — continue to Step 3.
 
 ### Step 3: Open a PR (or use existing one)
 
-- If a PR already exists for this branch, use it. Skip to Step 4.
+- If a PR already exists for this branch, use it. Print the PR URL and skip to Step 4.
 - Otherwise, create a PR with `gh pr create`.
   - Analyze all commits on the branch to write a clear title and description.
   - Keep the title under 70 characters.
@@ -35,11 +37,12 @@ Push the current branch to origin. Use `git push -u origin HEAD` if no upstream 
 
 Repeat the following until CI is fully green **and** there are no unresolved review comments:
 
-#### 4a: Wait for CI checks to complete
+#### 4a: Check CI status
 
-- Run `timeout 1800 gh pr checks <pr-number> --watch --fail-fast` to wait for CI (30 minute timeout).
-- If the timeout is hit, report to the user: "CI hasn't completed after 30 minutes. Check the CI dashboard manually." and stop.
+- Run `gh pr checks <pr-number>` to see the current state of all checks.
+- If checks are still running, run `timeout 1800 gh pr checks <pr-number> --watch --fail-fast` to wait (30 minute timeout). If the timeout is hit, report to the user and stop.
 - If all checks pass and there are no pending review comments, you are done — go to Step 5.
+- If any checks have failed, proceed to 4b immediately — do not wait.
 
 #### 4b: If CI fails — diagnose and fix
 
