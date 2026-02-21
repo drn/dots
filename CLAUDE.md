@@ -86,6 +86,15 @@ dots doctor                                   # Run diagnostics
 | hammerspoon | Window management |
 | osx | macOS defaults |
 
+## Skill / Command Authoring
+
+When writing skills in `claude/commands/*.md`:
+
+- **No `$()` in context commands.** The `!` backtick context syntax (e.g., `!`\`some command\``) does NOT support `$()` command substitution -- it will be rejected by the permission checker. Use `||` fallback chains instead.
+  - Bad: `` !`git log $(git remote | head -1)/master..HEAD` ``
+  - Good: `` !`git log upstream/master..HEAD --oneline 2>/dev/null || git log origin/master..HEAD --oneline 2>/dev/null` ``
+- **No agent teams in Conductor.** Do not use `TeamCreate`, `TeamDelete`, `SendMessage`, or `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS`. Use parallel `Task` tool calls with sub-agents instead.
+
 ## Critical Notes
 
 - Installation is destructive (no backups)

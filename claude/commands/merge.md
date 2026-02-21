@@ -9,8 +9,8 @@ description: Merge current branch to upstream/master with squashed commits
 - Git status: !`git status --short`
 - Remote tracking: !`git remote -v | grep upstream || echo "No upstream remote — will use origin"`
 - Target remote: !`git remote | grep -q upstream && echo "upstream" || echo "origin"`
-- Commits on this branch: !`TARGET=$(git remote | grep -q upstream && echo upstream || echo origin) && git log $TARGET/master..HEAD --oneline 2>/dev/null || echo "Unable to determine commits"`
-- Full diff from target/master: !`TARGET=$(git remote | grep -q upstream && echo upstream || echo origin) && git diff $TARGET/master..HEAD --stat 2>/dev/null || echo "Unable to determine diff"`
+- Commits from upstream: !`git log upstream/master..HEAD --oneline 2>/dev/null || git log origin/master..HEAD --oneline 2>/dev/null || echo "Unable to determine commits"`
+- Diff from upstream: !`git diff upstream/master..HEAD --stat 2>/dev/null || git diff origin/master..HEAD --stat 2>/dev/null || echo "Unable to determine diff"`
 
 ## Your task
 
