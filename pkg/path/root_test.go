@@ -1,4 +1,4 @@
-package path
+package path //revive:disable-line:var-naming
 
 import (
 	"os"

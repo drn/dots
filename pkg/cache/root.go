@@ -30,7 +30,7 @@ func Warm(key string, ttl float64) bool {
 	if err != nil {
 		return false
 	}
-	age := time.Now().Sub(info.ModTime())
+	age := time.Since(info.ModTime())
 	return age.Minutes() <= ttl
 }
 
@@ -47,7 +47,7 @@ func Read(key string, ttl float64) string {
 	if err != nil {
 		return ""
 	}
-	age := time.Now().Sub(info.ModTime())
+	age := time.Since(info.ModTime())
 	if age.Minutes() > ttl {
 		return ""
 	}

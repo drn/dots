@@ -141,7 +141,7 @@ func inputCode() string {
 
 func validateInput(input string) error {
 	if strings.TrimSpace(input) == "" {
-		return errors.New("Must not be blank")
+		return errors.New("must not be blank")
 	}
 	return nil
 }

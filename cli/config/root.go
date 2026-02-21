@@ -111,7 +111,7 @@ func ask(section string, key string, secure bool) string {
 
 func validateInput(input string) error {
 	if strings.TrimSpace(input) == "" {
-		return errors.New("Must not be blank")
+		return errors.New("must not be blank")
 	}
 	return nil
 }
