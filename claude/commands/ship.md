@@ -1,5 +1,4 @@
 ---
-allowed-tools: Bash(git add:*), Bash(git commit:*), Bash(git push:*), Bash(git diff:*), Bash(git log:*), Bash(git status:*), Bash(git branch:*), Bash(git fetch:*), Bash(git stash:*), Bash(gh pr create:*), Bash(gh pr view:*), Bash(gh pr checks:*), Bash(gh pr merge:*), Bash(gh api:*), Bash(gh run view:*)
 description: Open a PR, wait for CI to pass, fix failures, address review comments, and loop until fully green
 ---
 
