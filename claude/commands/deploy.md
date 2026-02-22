@@ -1,47 +1,40 @@
 ---
-allowed-tools: Bash(git fetch:*), Bash(git rebase:*), Bash(thanx version update:*), Bash(git push:*)
-description: Create a new version tag and deploy to production
+allowed-tools: Bash(git fetch:*), Bash(git tag:*), Bash(thanx version update:*), Bash(git push:*)
+description: Deploy latest upstream/master to production with a version tag
 disable-model-invocation: true
 ---
 
 ## Context
 
-- Current branch: !`git branch --show-current`
 - Current tags: !`git tag --sort=-v:refname 2>/dev/null | head -5 || echo "No tags found"`
-- Git status: !`git status --short 2>/dev/null || echo "Unable to determine status"`
 - Upstream remote: !`git remote -v 2>/dev/null | grep upstream || echo "No upstream remote configured"`
+- Upstream master: !`git fetch upstream 2>/dev/null && git log --oneline upstream/master -3 || echo "Unable to fetch"`
 
 ## Your task
 
-Deploy the application by rebasing on upstream/master, creating a version tag, and pushing to production.
+Deploy the latest upstream/master to production by creating a version tag and pushing to the production branch. This works from any branch — no need to checkout master.
 
 ### Pre-flight checks
 
 Before doing anything, verify all of the following. If any check fails, stop and tell the user why.
 
-- The current branch is master. If not, tell the user to switch to master first.
-- The working tree is clean (no uncommitted changes). If dirty, tell the user to commit or stash first.
 - An upstream remote is configured. If not, tell the user to add one.
+- `git fetch upstream` succeeded (context above confirms this).
 
-### Step 1: Rebase on upstream/master
+### Step 1: Create a new version tag on upstream/master
 
-- Run `git fetch upstream`
-- Run `git rebase upstream/master`
-- If there are conflicts, stop and report them.
+- Run `thanx version update` to determine the next version number and create a git tag.
+- If `thanx version update` requires being on master, run it with `git tag <next-version> upstream/master` instead. Determine the next version by incrementing the patch of the latest tag.
 
-### Step 2: Create a new version tag
+### Step 2: Push tags and upstream/master to production
 
-- Run `thanx version update` to bump the version and create a git tag.
-
-### Step 3: Push tags and master to production
-
-- Run `git push origin --tags master:production` to push tags and deploy atomically.
+- Run `git push upstream --tags upstream/master:refs/heads/production` to push tags and deploy atomically.
 - This MUST be a single git push command to avoid a race condition where CircleCI fetches the repo before GitHub has indexed the new version tag, causing the Docker image to be tagged as "latest" instead of the version.
 
-### Step 4: Report the result
+### Step 3: Report the result
 
-- Confirm the rebase was successful.
 - Confirm the new version tag that was created.
 - Confirm that tags and master were pushed to production.
+- Show the commit being deployed.
 
 Execute all steps in sequence. If any step fails, stop and report the error.
