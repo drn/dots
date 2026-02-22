@@ -14,9 +14,9 @@ description: Open a PR, wait for CI to pass, fix failures, address review commen
 
 Open a PR for the current branch, then loop until CI is fully green and all review comments are addressed. Do not return until the PR is in a mergeable, green state.
 
-**Important:** If a PR already exists for this branch, skip straight to Step 3 — even if there are no local changes. Your job is to get the PR to a green, mergeable state, not just to open it.
+**If a PR already exists for this branch, skip straight to Step 3** — even if there are no local changes or commits. Your job is to get the PR to a green, mergeable state, not just to open it. Never abort when a PR exists.
 
-**Abort condition:** If there is no existing PR for this branch AND there are no commits ahead of the default branch AND there are no uncommitted changes, stop and tell the user: "Nothing to ship — no PR exists and there are no commits on this branch." Do not silently exit.
+**Abort condition (only when NO PR exists):** If there are no commits ahead of the default branch AND there are no uncommitted changes, stop and tell the user: "Nothing to ship — no PR exists and there are no commits on this branch."
 
 ### Step 1: Commit any uncommitted changes
 
