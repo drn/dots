@@ -26,4 +26,9 @@ func (i Install) Claude() {
 		path.FromDots("claude/commands"),
 		path.FromHome(".claude/commands"),
 	)
+
+	link.Soft(
+		path.FromDots("claude/skills"),
+		path.FromHome(".claude/skills"),
+	)
 }

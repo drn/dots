@@ -47,8 +47,8 @@ cat << 'CONTENT_EOF' > /tmp/export_content.md
 {markdown content here}
 CONTENT_EOF
 
-# Convert to PDF
-python scripts/pdf/md_to_pdf.py \
+# Convert to PDF using the colocated script
+python ~/.claude/skills/pdf/scripts/md_to_pdf.py \
   --input /tmp/export_content.md \
   --output ~/Downloads/{filename}.pdf \
   --title "{title}"
@@ -79,4 +79,4 @@ PDFs are saved to `~/Downloads/` by default for easy access and sharing.
 - Uses `fpdf2` for PDF rendering (`pip install fpdf2`)
 - Supports tables, code blocks, and full GitHub-flavored markdown
 - Professional styling optimized for sharing with colleagues
-- Script location: `scripts/pdf/md_to_pdf.py`
+- Script location: `scripts/md_to_pdf.py` (colocated in this skill directory)

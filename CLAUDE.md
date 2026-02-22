@@ -53,6 +53,9 @@ dots doctor                                   # Run diagnostics
 ├── cli/commands/              # All CLI commands (Cobra framework)
 │   ├── install.go            # Install orchestration
 │   └── install/              # Component installers
+├── claude/
+│   ├── commands/             # Single-file skills (.md)
+│   └── skills/               # Directory-based skills (SKILL.md + supporting files)
 ├── cmd/                      # 22 standalone utilities
 └── pkg/                      # Shared utilities (log, run, cache, path)
 ```
@@ -88,7 +91,12 @@ dots doctor                                   # Run diagnostics
 
 ## Writing Skills / Slash Commands
 
-Skills live in `claude/commands/` (symlinked to `~/.claude/commands/`).
+Skills live in two locations (both symlinked into `~/.claude/`):
+
+- **`claude/commands/`** - Simple single-file skills (flat `.md` files)
+- **`claude/skills/<name>/`** - Skills with supporting files (`SKILL.md` + scripts, templates, etc.)
+
+Use the `skills/` directory when a skill needs colocated files (scripts, templates, examples). Use `commands/` for standalone skills that are a single markdown file.
 
 ### Dynamic Context Rules
 
