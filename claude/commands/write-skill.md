@@ -66,14 +66,16 @@ allowed-tools: Bash(git *), Bash(npm test)
 
 ### Dynamic Context
 
-Inject live data with the `` !`command` `` syntax. The command runs locally and its output replaces the placeholder before Claude sees the prompt.
+Inject live data by writing an exclamation mark followed by a command wrapped in backticks. The command runs locally and its output replaces the placeholder before Claude sees the prompt.
+
+In the examples below, !{command} represents the actual syntax (exclamation mark + backtick + command + backtick). Curly braces are used here to prevent this skill file from executing its own examples.
 
 ```markdown
 ## Context
 
-- Current branch: !`git branch --show-current`
-- Git status: !`git status --short`
-- Project type: !`ls -1 go.mod package.json Cargo.toml 2>/dev/null | head -3`
+- Current branch: !{git branch --show-current}
+- Git status: !{git status --short}
+- Project type: !{ls -1 go.mod package.json Cargo.toml 2>/dev/null | head -3}
 ```
 
 #### CRITICAL: No `$()` Command Substitution
@@ -82,19 +84,19 @@ Claude Code blocks `$()` inside dynamic context expressions for security reasons
 
 ```markdown
 # BROKEN — $() is blocked
-- Branch commits: !`DEFAULT=$(git symbolic-ref ...) && git log origin/$DEFAULT..HEAD`
-- Changes: !`git diff --stat HEAD...$(git symbolic-ref ...)`
+- Branch commits: !{DEFAULT=$(git symbolic-ref ...) && git log origin/$DEFAULT..HEAD}
+- Changes: !{git diff --stat HEAD...$(git symbolic-ref ...)}
 
 # FIXED — use pipes, fallback chains, or hardcoded values
-- Branch commits: !`git log origin/main..HEAD --oneline 2>/dev/null || echo "None"`
-- Changes: !`git diff --stat HEAD...origin/main 2>/dev/null || git diff --stat`
+- Branch commits: !{git log origin/main..HEAD --oneline 2>/dev/null || echo "None"}
+- Changes: !{git diff --stat HEAD...origin/main 2>/dev/null || git diff --stat}
 ```
 
 **Alternatives to `$()`:**
 - Pipe chains: `command1 | command2 | command3`
 - Fallback chains: `command1 2>/dev/null || command2 2>/dev/null || echo "fallback"`
 - Hardcode known values: use `origin/main` instead of dynamically detecting the default branch
-- Separate context lines: split a complex command into multiple simpler `!` backtick lines
+- Separate context lines: split a complex command into multiple simpler dynamic context lines
 
 #### Output Size Management
 
@@ -102,12 +104,12 @@ Always bound output to avoid blowing up the context window:
 
 ```markdown
 # GOOD — bounded output
-- Files: !`find . -maxdepth 3 -name "*.go" 2>/dev/null | head -20`
-- Commits: !`git log --oneline -10`
+- Files: !{find . -maxdepth 3 -name "*.go" 2>/dev/null | head -20}
+- Commits: !{git log --oneline -10}
 
 # BAD — unbounded, could be massive
-- Files: !`find . -name "*.go"`
-- Log: !`git log`
+- Files: !{find . -name "*.go"}
+- Log: !{git log}
 ```
 
 #### Error Handling
@@ -116,10 +118,10 @@ Always add fallbacks for commands that might fail:
 
 ```markdown
 # GOOD
-- Tag: !`git describe --tags --abbrev=0 2>/dev/null || echo "No tags"`
+- Tag: !{git describe --tags --abbrev=0 2>/dev/null || echo "No tags"}
 
 # BAD — empty output if no tags exist
-- Tag: !`git describe --tags --abbrev=0`
+- Tag: !{git describe --tags --abbrev=0}
 ```
 
 ### String Substitutions
@@ -152,7 +154,7 @@ allowed-tools: ...  (optional)
 ---
 
 ## Context
-- Key info: !`command`
+- Key info: !{command}
 
 ## Your task / Instructions
 Step-by-step instructions for Claude.
