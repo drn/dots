@@ -1,6 +1,6 @@
 ---
-allowed-tools: Bash(git add:*), Bash(git commit:*), Bash(git checkout:*), Bash(git pull:*), Bash(git merge:*), Bash(git push:*), Bash(git branch:*), Bash(git fetch:*), Bash(git log:*), Bash(git diff:*), Bash(git reset:*), Bash(git rebase:*)
-description: Merge current branch to master with squashed commits
+allowed-tools: Bash(git add:*), Bash(git commit:*), Bash(git checkout:*), Bash(git pull:*), Bash(git push:*), Bash(git branch:*), Bash(git fetch:*), Bash(git log:*), Bash(git diff:*), Bash(git reset:*), Bash(git rebase:*), Bash(gh pr:*)
+description: Merge current branch to master via GitHub PR squash merge
 ---
 
 ## Context
@@ -10,10 +10,11 @@ description: Merge current branch to master with squashed commits
 - Remotes: !`git remote -v 2>/dev/null`
 - Commits on branch: !`git log origin/master..HEAD --oneline 2>/dev/null`
 - Diff stat: !`git diff origin/master..HEAD --stat 2>/dev/null`
+- Open PR: !`gh pr view --json number,title,url 2>/dev/null`
 
 ## Your task
 
-Merge the current branch into master with squashed commits. The branch must be rebased and force-pushed first so the PR auto-closes on GitHub.
+Merge the current branch into master via GitHub PR squash merge. This preserves PR association so the commit on master links back to the PR.
 
 0. **Determine the target remote (CRITICAL — use this for all subsequent steps):**
    - Check which remotes exist using `git remote`
@@ -23,7 +24,6 @@ Merge the current branch into master with squashed commits. The branch must be r
 
 1. **Commit any uncommitted changes:**
    - If there are uncommitted changes, stage and commit them with an appropriate message
-   - Use the commit skill or create a commit directly based on the changes
 
 2. **Store the current branch name:**
    - Save the current branch name for the merge
@@ -40,29 +40,26 @@ Merge the current branch into master with squashed commits. The branch must be r
 
 5. **Force-push the rebased branch to origin:**
    - Run `git push origin <branch-name> --force-with-lease`
-   - This updates the PR branch so GitHub can auto-close it after the merge
 
-6. **Checkout and update master:**
-   - Run `git checkout master`
-   - Run `git pull {TARGET} master` to ensure master is up to date
+6. **Ensure a PR exists:**
+   - Run `gh pr view` to check if a PR already exists for this branch
+   - If no PR exists, create one: `gh pr create --title "<summary>" --body "Co-Authored-By: Claude <noreply@anthropic.com>" --base master`
 
-7. **Squash merge the feature branch:**
-   - Run `git merge --squash <branch-name>` to stage all changes as a single commit
-   - Create a new commit with a well-crafted message that:
+7. **Squash merge via GitHub:**
+   - Craft a commit message that:
      - Summarizes the overall purpose of all changes (not individual commits)
      - Is written in imperative mood
      - Includes `Co-Authored-By: Claude <noreply@anthropic.com>` at the end
+   - Run `gh pr merge --squash --subject "<title>" --body "<body with co-author>" --delete-branch`
+   - This merges through GitHub so the PR shows as "Merged" and the commit links to the PR
 
-8. **Push to {TARGET}:**
-   - Run `git push {TARGET} master` to push the merged changes
+8. **Update local master:**
+   - Run `git checkout master`
+   - Run `git pull {TARGET} master`
 
-9. **Clean up the remote branch:**
-   - Run `git push origin --delete <branch-name>` to delete the remote branch
-   - This ensures the PR is closed on GitHub
-
-10. **Report the result:**
-    - Confirm the squash merge was successful
-    - Show the final commit message
-    - Show which files were changed
+9. **Report the result:**
+   - Confirm the merge was successful
+   - Show the PR URL (so the user can verify the "Merged" status)
+   - Show the final commit on master
 
 Execute all steps in sequence. If any step fails, stop and report the error.
