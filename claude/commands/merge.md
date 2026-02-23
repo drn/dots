@@ -41,19 +41,18 @@ Merge the current branch into master via GitHub PR merge. This preserves PR asso
 5. **Force-push the rebased branch to origin:**
    - Run `git push origin <branch-name> --force-with-lease`
 
-6. **Ensure a PR exists:**
+6. **Ensure a PR exists with a good title and description:**
+   - Craft a PR title and body based on your analysis from step 3:
+     - **Title**: concise imperative summary of what the branch accomplishes (not individual commits)
+     - **Body**: a short description of the changes, followed by `Co-Authored-By: Claude <noreply@anthropic.com>`
    - Run `gh pr view` to check if a PR already exists for this branch
-   - If no PR exists, create one: `gh pr create --title "<summary>" --body "Co-Authored-By: Claude <noreply@anthropic.com>" --base master`
+   - If a PR exists, update it: `gh pr edit --title "<title>" --body "<body>"`
+   - If no PR exists, create one: `gh pr create --title "<title>" --body "<body>" --base master`
 
-7. **Merge via GitHub:**
-   - Craft a commit message that:
-     - Summarizes the overall purpose of all changes (not individual commits)
-     - Is written in imperative mood
-     - Includes `Co-Authored-By: Claude <noreply@anthropic.com>` at the end
-   - Try merge strategies in order until one succeeds (repos may restrict which are allowed):
-     1. `gh pr merge --squash --subject "<title>" --body "<body>" --delete-branch`
-     2. `gh pr merge --rebase --delete-branch`
-     3. `gh pr merge --merge --delete-branch`
+7. **Squash merge via GitHub:**
+   - Use the same title and body from step 6 as the squash commit message
+   - Try: `gh pr merge --squash --subject "<title>" --body "<body>" --delete-branch`
+   - If squash is not allowed, fall back to: `gh pr merge --rebase --delete-branch`
    - This merges through GitHub so the PR shows as "Merged" and the commit links to the PR
 
 8. **Update local master:**
