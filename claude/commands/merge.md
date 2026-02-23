@@ -1,25 +1,25 @@
 ---
 allowed-tools: Bash(git add:*), Bash(git commit:*), Bash(git checkout:*), Bash(git pull:*), Bash(git merge:*), Bash(git push:*), Bash(git branch:*), Bash(git fetch:*), Bash(git log:*), Bash(git diff:*), Bash(git reset:*), Bash(git rebase:*)
-description: Merge current branch to upstream/master with squashed commits
+description: Merge current branch to master with squashed commits
 ---
 
 ## Context
 
 - Current branch: !`git branch --show-current`
 - Git status: !`git status --short`
-- Remote tracking: !`git remote -v 2>/dev/null | grep upstream`
-- Target remote: !`git remote 2>/dev/null | grep upstream`
-- Commits from upstream: !`git log upstream/master..HEAD --oneline 2>/dev/null`
-- Diff from upstream: !`git diff upstream/master..HEAD --stat 2>/dev/null`
+- Remotes: !`git remote -v 2>/dev/null`
+- Commits on branch: !`git log origin/master..HEAD --oneline 2>/dev/null`
+- Diff stat: !`git diff origin/master..HEAD --stat 2>/dev/null`
 
 ## Your task
 
-Merge the current branch into upstream/master with squashed commits. The branch must be rebased and force-pushed first so the PR auto-closes on GitHub.
+Merge the current branch into master with squashed commits. The branch must be rebased and force-pushed first so the PR auto-closes on GitHub.
 
-0. **Determine the target remote:**
-   - If an `upstream` remote exists, use it as the target remote.
-   - Otherwise, use `origin` as the target remote.
-   - Use this target remote in place of `upstream` in all subsequent steps.
+0. **Determine the target remote (CRITICAL — use this for all subsequent steps):**
+   - Check which remotes exist using `git remote`
+   - If an `upstream` remote exists, set **TARGET=upstream**
+   - Otherwise, set **TARGET=origin**
+   - All references to `{TARGET}` below must use the determined remote
 
 1. **Commit any uncommitted changes:**
    - If there are uncommitted changes, stage and commit them with an appropriate message
@@ -29,13 +29,13 @@ Merge the current branch into upstream/master with squashed commits. The branch 
    - Save the current branch name for the merge
 
 3. **Analyze all commits and changes:**
-   - Review ALL commits on the branch since it diverged from upstream/master
+   - Review ALL commits on the branch since it diverged from `{TARGET}/master`
    - Review the full diff to understand what the branch accomplishes
    - Determine a clear, concise summary for the squashed commit based on the overall purpose
 
-4. **Rebase on upstream/master:**
-   - Run `git fetch upstream`
-   - Run `git rebase upstream/master`
+4. **Rebase on {TARGET}/master:**
+   - Run `git fetch {TARGET}`
+   - Run `git rebase {TARGET}/master`
    - If there are conflicts, resolve them and continue the rebase
 
 5. **Force-push the rebased branch to origin:**
@@ -44,7 +44,7 @@ Merge the current branch into upstream/master with squashed commits. The branch 
 
 6. **Checkout and update master:**
    - Run `git checkout master`
-   - Run `git pull upstream master` to ensure master is up to date
+   - Run `git pull {TARGET} master` to ensure master is up to date
 
 7. **Squash merge the feature branch:**
    - Run `git merge --squash <branch-name>` to stage all changes as a single commit
@@ -53,8 +53,8 @@ Merge the current branch into upstream/master with squashed commits. The branch 
      - Is written in imperative mood
      - Includes `Co-Authored-By: Claude <noreply@anthropic.com>` at the end
 
-8. **Push to upstream:**
-   - Run `git push upstream master` to push the merged changes
+8. **Push to {TARGET}:**
+   - Run `git push {TARGET} master` to push the merged changes
 
 9. **Clean up the remote branch:**
    - Run `git push origin --delete <branch-name>` to delete the remote branch
