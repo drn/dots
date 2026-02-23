@@ -1,5 +1,5 @@
 ---
-allowed-tools: Bash(git fetch:*), Bash(git tag:*), Bash(thanx version update:*), Bash(git push:*)
+allowed-tools: Bash(git fetch:*), Bash(git tag:*), Bash(git log:*), Bash(thanx version update:*), Bash(git push:*)
 description: Deploy latest upstream/master to production with a version tag
 disable-model-invocation: true
 ---
@@ -20,11 +20,12 @@ Before doing anything, verify all of the following. If any check fails, stop and
 
 - An upstream remote is configured. If not, tell the user to add one.
 - `git fetch upstream` succeeded (context above confirms this).
+- `thanx` is installed (run `thanx version update --help` or similar to verify). If not, you'll use manual tagging in Step 1.
 
 ### Step 1: Create a new version tag on upstream/master
 
-- Run `thanx version update` to determine the next version number and create a git tag.
-- If `thanx version update` requires being on master, run it with `git tag <next-version> upstream/master` instead. Determine the next version by incrementing the patch of the latest tag.
+1. Try `thanx version update` first.
+2. If it fails for any reason (not installed, requires checkout of master, etc.), fall back to manual tagging: determine the next version by incrementing the patch of the latest tag, then run `git tag <next-version> upstream/master`.
 
 ### Step 2: Push tags and upstream/master to production
 
