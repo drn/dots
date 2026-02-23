@@ -1,6 +1,6 @@
 ---
 allowed-tools: Bash(git add:*), Bash(git commit:*), Bash(git checkout:*), Bash(git pull:*), Bash(git push:*), Bash(git branch:*), Bash(git fetch:*), Bash(git log:*), Bash(git diff:*), Bash(git reset:*), Bash(git rebase:*), Bash(gh pr:*)
-description: Merge current branch to master via GitHub PR squash merge
+description: Merge current branch to master via GitHub PR merge
 ---
 
 ## Context
@@ -14,7 +14,7 @@ description: Merge current branch to master via GitHub PR squash merge
 
 ## Your task
 
-Merge the current branch into master via GitHub PR squash merge. This preserves PR association so the commit on master links back to the PR.
+Merge the current branch into master via GitHub PR merge. This preserves PR association so the commit on master links back to the PR.
 
 0. **Determine the target remote (CRITICAL — use this for all subsequent steps):**
    - Check which remotes exist using `git remote`
@@ -45,12 +45,15 @@ Merge the current branch into master via GitHub PR squash merge. This preserves 
    - Run `gh pr view` to check if a PR already exists for this branch
    - If no PR exists, create one: `gh pr create --title "<summary>" --body "Co-Authored-By: Claude <noreply@anthropic.com>" --base master`
 
-7. **Squash merge via GitHub:**
+7. **Merge via GitHub:**
    - Craft a commit message that:
      - Summarizes the overall purpose of all changes (not individual commits)
      - Is written in imperative mood
      - Includes `Co-Authored-By: Claude <noreply@anthropic.com>` at the end
-   - Run `gh pr merge --squash --subject "<title>" --body "<body with co-author>" --delete-branch`
+   - Try merge strategies in order until one succeeds (repos may restrict which are allowed):
+     1. `gh pr merge --squash --subject "<title>" --body "<body>" --delete-branch`
+     2. `gh pr merge --rebase --delete-branch`
+     3. `gh pr merge --merge --delete-branch`
    - This merges through GitHub so the PR shows as "Merged" and the commit links to the PR
 
 8. **Update local master:**
