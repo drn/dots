@@ -13,8 +13,8 @@ Run a comprehensive code review (security, architecture, clarity) against your c
 ## Context
 
 - Current branch: !`git branch --show-current`
-- Default branch: !`git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@' || echo "master"`
-- Changes: !`git diff --stat HEAD...origin/main 2>/dev/null || git diff --stat HEAD...origin/master 2>/dev/null || git diff --stat`
+- Default branch ref: !`git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null`
+- Changes: !`git diff --stat HEAD...origin/HEAD 2>/dev/null`
 
 ## Instructions
 

@@ -13,7 +13,7 @@ Analyze recent changes, run targeted tests, identify coverage gaps, and optional
 ## Context
 
 - Project type: !`ls -1 go.mod Gemfile package.json Cargo.toml pyproject.toml setup.py requirements.txt pom.xml build.gradle Makefile 2>/dev/null | head -5`
-- Changed files: !`git diff --name-only HEAD~1 2>/dev/null || git diff --name-only`
+- Changed files: !`git diff --name-only HEAD~1 2>/dev/null`
 - Test files: !`find . -maxdepth 4 \( -name "*_test.*" -o -name "*.test.*" -o -name "*_spec.*" -o -name "test_*" \) 2>/dev/null | head -20`
 - Git status: !`git status --short`
 

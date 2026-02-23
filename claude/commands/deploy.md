@@ -6,9 +6,9 @@ disable-model-invocation: true
 
 ## Context
 
-- Current tags: !`git tag --sort=-v:refname 2>/dev/null | head -5 || echo "No tags found"`
-- Upstream remote: !`git remote -v 2>/dev/null | grep upstream || echo "No upstream remote configured"`
-- Upstream master: !`git fetch upstream 2>/dev/null && git log --oneline upstream/master -3 || echo "Unable to fetch"`
+- Current tags: !`git tag --sort=-v:refname 2>/dev/null | head -5`
+- Upstream remote: !`git remote -v 2>/dev/null | grep upstream`
+- Upstream master: !`git log --oneline upstream/master -3 2>/dev/null`
 
 ## Your task
 

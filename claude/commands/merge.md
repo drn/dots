@@ -7,10 +7,10 @@ description: Merge current branch to upstream/master with squashed commits
 
 - Current branch: !`git branch --show-current`
 - Git status: !`git status --short`
-- Remote tracking: !`git remote -v | grep upstream || echo "No upstream remote — will use origin"`
-- Target remote: !`git remote | grep -q upstream && echo "upstream" || echo "origin"`
-- Commits from upstream: !`git log upstream/master..HEAD --oneline 2>/dev/null || git log origin/master..HEAD --oneline 2>/dev/null || echo "Unable to determine commits"`
-- Diff from upstream: !`git diff upstream/master..HEAD --stat 2>/dev/null || git diff origin/master..HEAD --stat 2>/dev/null || echo "Unable to determine diff"`
+- Remote tracking: !`git remote -v 2>/dev/null | grep upstream`
+- Target remote: !`git remote 2>/dev/null | grep upstream`
+- Commits from upstream: !`git log upstream/master..HEAD --oneline 2>/dev/null`
+- Diff from upstream: !`git diff upstream/master..HEAD --stat 2>/dev/null`
 
 ## Your task
 

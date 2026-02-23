@@ -100,19 +100,24 @@ Use the `skills/` directory when a skill needs colocated files (scripts, templat
 
 ### Dynamic Context Rules
 
-The `` !`command` `` syntax runs shell commands and injects output as context. **Critical restriction:**
+The `` !`command` `` syntax runs shell commands and injects output as context. **Critical restrictions:**
 
 - **Never use `$()` command substitution** inside dynamic context expressions. Claude Code blocks `$()` in these expansions for security reasons.
-- **Use pipes and `||` fallback chains** instead of variable assignment + interpolation.
+- **Never use `||` or `&&` operators** — Claude Code's permission system treats these as multiple operations and blocks them.
+- **Use `2>/dev/null`** to suppress errors. Empty output on failure is fine — skill logic should handle missing context gracefully.
+- **Use `origin/HEAD`** instead of hardcoding `origin/main` or `origin/master` for default branch references.
 - **Keep output bounded** with `| head -N` or `| grep` to avoid blowing up context.
 - **No agent teams in Conductor.** Do not use `TeamCreate`, `TeamDelete`, `SendMessage`, or `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS`. Use parallel `Task` tool calls with sub-agents instead.
 
 ```
-# BAD — blocked by permission system
+# BAD — $() blocked by permission system
 !`DEFAULT=$(gh repo view ...) && git log origin/$DEFAULT..HEAD`
 
-# GOOD — simple pipe chain with fallback
+# BAD — || treated as multiple operations
 !`git log origin/main..HEAD --oneline 2>/dev/null || echo "None"`
+
+# GOOD — single command, errors suppressed
+!`git log origin/HEAD..HEAD --oneline 2>/dev/null`
 ```
 
 See `/write-skill` for the full skill-authoring guide.

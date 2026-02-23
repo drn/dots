@@ -51,6 +51,8 @@ jobs:
         run: go install github.com/mgechev/revive@latest
       - name: Go Lint
         run: revive -set_exit_status ./...
+      - name: Skill Lint
+        run: .github/lint-skills.sh
 
   vet:
     name: Vet
