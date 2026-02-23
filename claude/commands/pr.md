@@ -6,15 +6,16 @@ description: Open a PR, wait for CI to pass, fix failures, address review commen
 
 - Current branch: !`git branch --show-current`
 - Git status: !`git status --short`
-- Default branch: !`gh repo view --json defaultBranchRef -q .defaultBranchRef.name 2>/dev/null || echo "unknown"`
-- Commits on branch: !`git log origin/main..HEAD --oneline 2>/dev/null || git log origin/master..HEAD --oneline 2>/dev/null || echo "Unable to determine commits"`
-- Existing PR: !`gh pr view --json number,url,state,title 2>/dev/null || echo "No existing PR"`
 
 ## Your task
 
 Open a PR for the current branch, then loop until CI is fully green and all review comments are addressed. Do not return until the PR is in a mergeable, green state.
 
 **If a PR already exists for this branch, skip straight to Step 3** — even if there are no local changes or commits. Your job is to get the PR to a green, mergeable state, not just to open it. Never abort when a PR exists.
+
+### Step 0: Check for existing PR
+
+Run `gh pr view --json number,url,state,title` to check if a PR already exists for this branch. If one exists, skip to Step 3.
 
 ### Step 1: Commit any uncommitted changes
 

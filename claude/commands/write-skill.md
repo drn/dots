@@ -87,15 +87,15 @@ Claude Code blocks `$()` inside dynamic context expressions for security reasons
 - Branch commits: !{DEFAULT=$(git symbolic-ref ...) && git log origin/$DEFAULT..HEAD}
 - Changes: !{git diff --stat HEAD...$(git symbolic-ref ...)}
 
-# FIXED — use pipes, fallback chains, or hardcoded values
-- Branch commits: !{git log origin/main..HEAD --oneline 2>/dev/null || echo "None"}
-- Changes: !{git diff --stat HEAD...origin/main 2>/dev/null || git diff --stat}
+# FIXED — single commands with error suppression
+- Branch commits: !{git log origin/HEAD..HEAD --oneline 2>/dev/null}
+- Changes: !{git diff --stat HEAD...origin/HEAD 2>/dev/null}
 ```
 
 **Alternatives to `$()`:**
 - Pipe chains: `command1 | command2 | command3`
-- Fallback chains: `command1 2>/dev/null || command2 2>/dev/null || echo "fallback"`
-- Hardcode known values: use `origin/main` instead of dynamically detecting the default branch
+- Error suppression: `command 2>/dev/null` (empty output on failure is fine)
+- Use `origin/HEAD`: resolves to whatever the remote default branch is, no hardcoding needed
 - Separate context lines: split a complex command into multiple simpler dynamic context lines
 
 #### Output Size Management
@@ -114,14 +114,15 @@ Always bound output to avoid blowing up the context window:
 
 #### Error Handling
 
-Always add fallbacks for commands that might fail:
+Use `2>/dev/null` to suppress errors from commands that might fail. Empty output is acceptable — skill logic should handle missing context gracefully. **Never use `||` or `&&`** — Claude Code's permission system treats these as multiple operations and blocks them.
 
 ```markdown
-# GOOD
-- Tag: !{git describe --tags --abbrev=0 2>/dev/null || echo "No tags"}
+# GOOD — errors suppressed, empty output is fine
+- Tag: !{git describe --tags --abbrev=0 2>/dev/null}
+- Commits: !{git log origin/HEAD..HEAD --oneline 2>/dev/null}
 
-# BAD — empty output if no tags exist
-- Tag: !{git describe --tags --abbrev=0}
+# BAD — || treated as multiple operations by permission system
+- Tag: !{git describe --tags --abbrev=0 2>/dev/null || echo "No tags"}
 ```
 
 ### String Substitutions
@@ -171,7 +172,8 @@ Multi-agent skills (like `/dev`, `/debug`, `/explore`) use the Task tool to spaw
 
 After writing, check the skill for:
 - [ ] No `$()` in any dynamic context line
-- [ ] All dynamic context commands have error fallbacks (`2>/dev/null || echo "..."`)
+- [ ] No `||` or `&&` operators in any dynamic context line
+- [ ] Error-prone commands use `2>/dev/null` for suppression
 - [ ] Output is bounded (`| head -N`)
 - [ ] Description is present and includes trigger keywords
 - [ ] No inline backticks in prose that could break shell evaluation

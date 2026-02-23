@@ -26,7 +26,7 @@ If no arguments are provided, ask the user what they want implemented.
 
 - Current branch: !`git branch --show-current`
 - Git status: !`git status --short`
-- Default branch: !`git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@' || echo "master"`
+- Default branch: !`git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@'`
 - Project root: !`pwd`
 - Project type: !`ls -1 go.mod Gemfile package.json Cargo.toml pyproject.toml setup.py requirements.txt pom.xml build.gradle Makefile 2>/dev/null | head -5`
 - Recent commits: !`git log --oneline -5`
