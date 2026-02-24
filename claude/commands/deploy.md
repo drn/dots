@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 - Current tags: !`git tag --sort=-v:refname 2>/dev/null | head -5`
 - Upstream remote: !`git remote -v 2>/dev/null | grep upstream`
-- Upstream master: !`git log --oneline upstream/master -3 2>/dev/null`
+- Upstream master: !`git log --oneline upstream/master -3 2>/dev/null | head -5`
 
 ## Your task
 

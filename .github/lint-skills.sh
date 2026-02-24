@@ -49,6 +49,17 @@ for dir in ${dirs[@]}; do
         errors=$((errors + 1))
       fi
 
+      # Check for 2>/dev/null without a trailing pipe (exit code not neutralized).
+      # When the command fails, 2>/dev/null suppresses stderr but the non-zero
+      # exit code still breaks the skill loader. Piping through head/tail/etc
+      # makes the pipeline exit 0 regardless.
+      if echo "$line" | grep -qE '2>/dev/null\s*`'; then
+        echo "WARNING: $file:$lineno: 2>/dev/null without pipe — non-zero exit code will break skill loading"
+        echo "  Fix: add '| head -N' after 2>/dev/null to neutralize the exit code"
+        echo "  $line"
+        warnings=$((warnings + 1))
+      fi
+
       # Check for pipes to unapproved commands
       if echo "$line" | grep -qE '\|[^|]'; then
         # Extract pipe targets (commands after |)

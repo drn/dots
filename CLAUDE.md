@@ -104,7 +104,7 @@ The `` !`command` `` syntax runs shell commands and injects output as context. *
 
 - **Never use `$()` command substitution** inside dynamic context expressions. Claude Code blocks `$()` in these expansions for security reasons.
 - **Never use `||` or `&&` operators** — Claude Code's permission system treats these as multiple operations and blocks them.
-- **Use `2>/dev/null`** to suppress errors. Empty output on failure is fine — skill logic should handle missing context gracefully.
+- **Always pipe through `| head -N`** after `2>/dev/null`. The `2>/dev/null` suppresses stderr but does not fix the exit code — a non-zero exit code breaks the skill loader. Piping through `head` neutralizes the exit code (pipeline exit code = last command = `head` = 0).
 - **Use `origin/HEAD`** instead of hardcoding `origin/main` or `origin/master` for default branch references.
 - **Keep output bounded** with `| head -N` or `| grep` to avoid blowing up context.
 - **No agent teams in Conductor.** Do not use `TeamCreate`, `TeamDelete`, `SendMessage`, or `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS`. Use parallel `Task` tool calls with sub-agents instead.
@@ -116,8 +116,11 @@ The `` !`command` `` syntax runs shell commands and injects output as context. *
 # BAD — || treated as multiple operations
 !`git log origin/main..HEAD --oneline 2>/dev/null || echo "None"`
 
-# GOOD — single command, errors suppressed
+# BAD — 2>/dev/null alone does not fix exit code, breaks skill loader
 !`git log origin/HEAD..HEAD --oneline 2>/dev/null`
+
+# GOOD — pipe neutralizes exit code, empty output on failure is fine
+!`git log origin/HEAD..HEAD --oneline 2>/dev/null | head -50`
 ```
 
 See `/write-skill` for the full skill-authoring guide.
