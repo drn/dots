@@ -8,8 +8,10 @@ description: Merge current branch to master via GitHub PR merge
 - Current branch: !`git branch --show-current`
 - Git status: !`git status --short`
 - Remotes: !`git remote -v 2>/dev/null`
-- Commits on branch: !`git log origin/master..HEAD --oneline 2>/dev/null`
-- Diff stat: !`git diff origin/master..HEAD --stat 2>/dev/null`
+- Commits (upstream): !`git log upstream/master..HEAD --oneline 2>/dev/null`
+- Commits (origin): !`git log origin/master..HEAD --oneline 2>/dev/null`
+- Diff stat (upstream): !`git diff upstream/master..HEAD --stat 2>/dev/null`
+- Diff stat (origin): !`git diff origin/master..HEAD --stat 2>/dev/null`
 - Open PR: !`gh pr view --json number,title,url 2>/dev/null`
 
 ## Your task
@@ -41,8 +43,8 @@ Merge the current branch into master via GitHub PR merge. This preserves PR asso
    - Run `git rebase {TARGET}/master`
    - If there are conflicts, resolve them and continue the rebase
 
-5. **Force-push the rebased branch to origin:**
-   - Run `git push origin <branch-name> --force-with-lease`
+5. **Force-push the rebased branch to {TARGET}:**
+   - Run `git push {TARGET} <branch-name> --force-with-lease`
 
 6. **Ensure a PR exists with a good title and description:**
    - Craft a PR title and body based on your analysis from step 3:
