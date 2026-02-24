@@ -1,3 +1,8 @@
+---
+name: pdf
+description: Use when the user wants to export conversation content to a professionally styled PDF for sharing
+---
+
 # Export to PDF
 
 Export summaries, research, or any content from the conversation to a professionally styled PDF for sharing.

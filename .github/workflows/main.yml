@@ -53,6 +53,8 @@ jobs:
         run: revive -set_exit_status ./...
       - name: Skill Lint
         run: .github/lint-skills.sh
+      - name: Agent Config Lint (agnix)
+        run: npx agnix@0.13.0 .
 
   vet:
     name: Vet
