@@ -102,8 +102,8 @@ Use the `skills/` directory when a skill needs colocated files (scripts, templat
 
 The `` !`command` `` syntax runs shell commands and injects output as context. **Critical restrictions:**
 
-- **Never use `$()` command substitution** inside dynamic context expressions. Claude Code blocks `$()` in these expansions for security reasons.
-- **Never use `||` or `&&` operators** — Claude Code's permission system treats these as multiple operations and blocks them.
+- **Avoid `$()` command substitution** inside dynamic context expressions. Use plain commands instead — Claude Code blocks `$()` in these expansions for security reasons.
+- **Avoid `||` and `&&` operators** — use separate commands or pipes instead. Claude Code's permission system treats these as multiple operations and blocks them.
 - **Always pipe through `| head -N`** after `2>/dev/null`. The `2>/dev/null` suppresses stderr but does not fix the exit code — a non-zero exit code breaks the skill loader. Piping through `head` neutralizes the exit code (pipeline exit code = last command = `head` = 0).
 - **Use `origin/HEAD`** instead of hardcoding `origin/main` or `origin/master` for default branch references.
 - **Keep output bounded** with `| head -N` or `| grep` to avoid blowing up context.

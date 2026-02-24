@@ -12,7 +12,7 @@ Create or improve Claude Code skills (slash commands) following established patt
 
 ## Context
 
-- Existing skills: !`ls -1 ~/.claude/commands/*.md 2>/dev/null | xargs -I{} basename {} .md | sort`
+- Existing skills: !`ls -1 ~/.claude/commands/*.md 2>/dev/null | grep -oE '[^/]+\.md$' | cut -d. -f1 | sort`
 - Project type: !`ls -1 go.mod Gemfile package.json Cargo.toml pyproject.toml 2>/dev/null | head -3`
 
 ## Instructions

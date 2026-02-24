@@ -1,0 +1,29 @@
+tools = ["claude-code"]
+
+[rules]
+# Disable other tool validators — this project only uses Claude Code
+cursor = false
+codex = false
+copilot = false
+cline = false
+windsurf = false
+opencode = false
+gemini_md = false
+kiro_steering = false
+roo_code = false
+amp_checks = false
+
+# Disable cross-platform portability warnings — this is a macOS dotfiles repo
+# with intentionally hardcoded paths
+cross_platform = false
+
+# Disable xml_balance — skills use <placeholder> syntax in natural language
+# instructions, which triggers false positives for "unclosed XML tags"
+xml_balance = false
+
+# Suppress known false positives
+disabled_rules = ["AGM-006"]  # Multiple/nested AGENTS.md — intentional with openspec
+
+# Exclude openspec-managed files from prompt engineering rules
+[files]
+exclude = ["openspec/**"]
