@@ -1,5 +1,5 @@
 ---
-allowed-tools: Bash(git add:*), Bash(git commit:*), Bash(git checkout:*), Bash(git pull:*), Bash(git push:*), Bash(git branch:*), Bash(git fetch:*), Bash(git log:*), Bash(git diff:*), Bash(git reset:*), Bash(git rebase:*), Bash(gh pr:*)
+allowed-tools: Bash(git add:*), Bash(git commit:*), Bash(git checkout:*), Bash(git pull:*), Bash(git push:*), Bash(git branch:*), Bash(git fetch:*), Bash(git log:*), Bash(git diff:*), Bash(git reset:*), Bash(git rebase:*), mcp__github__list_pull_requests, mcp__github__create_pull_request, mcp__github__update_pull_request, mcp__github__merge_pull_request
 description: Merge current branch to master via GitHub PR merge
 ---
 
@@ -50,14 +50,14 @@ Merge the current branch into master via GitHub PR merge. This preserves PR asso
    - Craft a PR title and body based on your analysis from step 3:
      - **Title**: concise imperative summary of what the branch accomplishes (not individual commits)
      - **Body**: a short description of the changes, followed by `Co-Authored-By: Claude <noreply@anthropic.com>`
-   - Run `gh pr view` to check if a PR already exists for this branch
-   - If a PR exists, update it: `gh pr edit --title "<title>" --body "<body>"`
-   - If no PR exists, create one: `gh pr create --title "<title>" --body "<body>" --base master`
+   - Use `mcp__github__list_pull_requests` (with `head` set to `<owner>:<branch>`, `state: "open"`) to check if a PR already exists
+   - If a PR exists, update it with `mcp__github__update_pull_request` (set title and body)
+   - If no PR exists, create one with `mcp__github__create_pull_request` (base: `master`)
 
 7. **Squash merge via GitHub:**
    - Use the same title and body from step 6 as the squash commit message
-   - Try: `gh pr merge --squash --subject "<title>" --body "<body>" --delete-branch`
-   - If squash is not allowed, fall back to: `gh pr merge --rebase --delete-branch`
+   - Use `mcp__github__merge_pull_request` with `merge_method: "squash"` and the title/body as commit message
+   - If squash is not allowed, fall back to `mcp__github__merge_pull_request` with `merge_method: "rebase"`
    - This merges through GitHub so the PR shows as "Merged" and the commit links to the PR
 
 8. **Update local master:**

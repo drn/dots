@@ -1,5 +1,5 @@
 ---
-allowed-tools: Bash(git fetch:*), Bash(git rebase:*), Bash(git push:*), Bash(git log:*), Bash(git diff:*), Bash(git branch:*), Bash(git rev-parse:*), Bash(git symbolic-ref:*), Bash(git merge-base:*), Bash(gh pr:*)
+allowed-tools: Bash(git fetch:*), Bash(git rebase:*), Bash(git push:*), Bash(git log:*), Bash(git diff:*), Bash(git branch:*), Bash(git rev-parse:*), Bash(git symbolic-ref:*), Bash(git merge-base:*), mcp__github__list_pull_requests
 description: Rebase current branch onto latest upstream default branch and force-push to update PR
 disable-model-invocation: true
 ---
@@ -68,7 +68,7 @@ If the user passed `--onto <branch>` in the arguments, use that branch as the re
 ### Step 6: Force push (conditional)
 
 - Check if the current branch has a remote tracking branch by running `git rev-parse --abbrev-ref @{upstream} 2>/dev/null`.
-- Check if there is an open PR by running `gh pr view --json url,number 2>/dev/null`.
+- Use `mcp__github__list_pull_requests` (with `head` set to `<owner>:<branch>`, `state: "open"`) to check if there is an open PR.
 - **If there is an open PR:**
   - Run `git push --force-with-lease` to update the PR branch.
   - Report: "Force pushed to origin/<branch> (open PR #N)."
@@ -78,7 +78,7 @@ If the user passed `--onto <branch>` in the arguments, use that branch as the re
 - **If there is no remote tracking branch:**
   - Skip the push.
   - Report: "No remote tracking branch. Skipped push."
-- **If `gh` is not available** (command not found), skip the PR check, and only push if there is a remote tracking branch.
+- **If the MCP GitHub tools are not available**, skip the PR check, and only push if there is a remote tracking branch.
 
 ### Step 7: Report summary
 
