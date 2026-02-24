@@ -15,7 +15,7 @@ Open a PR for the current branch, then loop until CI is fully green and all revi
 
 ### Step 0: Check for existing PR
 
-Run `gh pr view --json number,url,state,title` to check if a PR already exists for this branch. If one exists, skip to Step 3.
+Determine the repository owner and name from `git remote get-url origin`. Use `mcp__github__list_pull_requests` (with `head` set to `<owner>:<branch>`, `state: "open"`) to check if a PR already exists. If one exists, note the PR number and skip to Step 3.
 
 ### Step 1: Commit any uncommitted changes
 
@@ -30,7 +30,7 @@ Push the current branch to origin. Use `git push -u origin HEAD` if no upstream 
 ### Step 3: Open a PR (or use existing one)
 
 - If a PR already exists for this branch, use it. Print the PR URL and skip to Step 4.
-- Otherwise, create a PR with `gh pr create`.
+- Otherwise, create a PR with `mcp__github__create_pull_request`.
   - Analyze all commits on the branch to write a clear title and description.
   - Keep the title under 70 characters.
   - Include a summary section and test plan in the body.
@@ -42,16 +42,16 @@ Repeat the following until CI is fully green **and** there are no unresolved rev
 
 #### 4a: Check CI status
 
-- Run `gh pr checks <pr-number>` to see the current state of all checks.
-- If checks are still running, run `timeout 1800 gh pr checks <pr-number> --watch --fail-fast` to wait (30 minute timeout). If the timeout is hit, report to the user and stop.
+- Use `mcp__github__get_pull_request_status` to see the current state of all checks.
+- If checks are still running, poll `mcp__github__get_pull_request_status` every 60 seconds until all checks complete (30 minute max). If the timeout is hit, report to the user and stop.
 - If all checks pass and there are no pending review comments, you are done — go to Step 5.
 - If any checks have failed, proceed to 4b immediately — do not wait.
 
 #### 4b: If CI fails — diagnose and fix
 
-- Run `gh pr checks <pr-number>` to see which checks failed.
+- Use `mcp__github__get_pull_request_status` to see which checks failed.
 - For each failed check:
-  - Get the failed run ID and use `gh run view <run-id> --log-failed` to read the failure logs.
+  - Use `mcp__github__get_job_logs` with `failed_only: true` and the workflow `run_id` to read the failure logs.
   - Analyze the failure. Read the relevant source files to understand the issue.
   - Fix the code. Make the minimal change needed to resolve the failure.
   - Stage and commit the fix with a clear message describing what was fixed and why.
@@ -59,7 +59,7 @@ Repeat the following until CI is fully green **and** there are no unresolved rev
 
 #### 4c: Check for PR review comments
 
-- Fetch review comments: `gh api repos/{owner}/{repo}/pulls/<pr-number>/reviews` and `gh api repos/{owner}/{repo}/pulls/<pr-number>/comments`.
+- Fetch reviews with `mcp__github__get_pull_request_reviews` and comments with `mcp__github__get_pull_request_comments`.
 - For each unresolved comment thread:
   - Read and understand the feedback.
   - If the comment requests a code change, make the change, then reply confirming what you changed.
