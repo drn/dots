@@ -16,6 +16,8 @@ description: Merge current branch to master via GitHub PR merge
 
 Merge the current branch into master via GitHub PR merge. This preserves PR association so the commit on master links back to the PR.
 
+**Important:** An existing open PR is NOT required. If no PR exists, one will be created. If there are uncommitted changes, they will be committed first. The only requirement is that the branch has something to merge (commits diverging from master).
+
 0. **Determine the target remote (CRITICAL — use this for all subsequent steps):**
    - Check which remotes exist using `git remote`
    - If an `upstream` remote exists, set **TARGET=upstream**
@@ -30,6 +32,7 @@ Merge the current branch into master via GitHub PR merge. This preserves PR asso
 
 3. **Analyze all commits and changes:**
    - Review ALL commits on the branch since it diverged from `{TARGET}/master`
+   - If there are no prior commits (only the changes just committed in step 1), base the summary on that commit
    - Review the full diff to understand what the branch accomplishes
    - Determine a clear, concise summary for the squashed commit based on the overall purpose
 
