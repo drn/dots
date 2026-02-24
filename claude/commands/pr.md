@@ -30,11 +30,74 @@ Push the current branch to origin. Use `git push -u origin HEAD` if no upstream 
 ### Step 3: Open a PR (or use existing one)
 
 - If a PR already exists for this branch, use it. Print the PR URL and skip to Step 4.
-- Otherwise, create a PR with `mcp__github__create_pull_request`.
-  - Analyze all commits on the branch to write a clear title and description.
-  - Keep the title under 70 characters.
-  - Include a summary section and test plan in the body.
-- Print the PR URL.
+- Otherwise, create a PR following Steps 3a–3d below.
+
+#### 3a: Analyze the diff
+
+Run `git diff origin/HEAD...HEAD` and `git log origin/HEAD..HEAD --oneline` to understand what changed. Classify the change complexity:
+
+- **Simple** (rename, typo, config change, dependency bump): skip to 3c.
+- **Medium** (single-file logic change): do 3b lightly — read the changed file in full.
+- **Complex** (bug fix across multiple components, deletions of non-obvious code, changes where the diff alone doesn't explain *why*): do 3b thoroughly.
+
+#### 3b: Trace change context
+
+For each modified file, read the full file (not just the diff hunk) to understand the surrounding code.
+
+**For deleted or removed code:** This is the most important case — reviewers need to understand why the code shouldn't exist. For each deletion:
+- Identify what the removed code was doing.
+- Trace where else that method/class is called (use Grep) to find the other code path that now handles the responsibility.
+- Read those files to confirm the duplication or explain why the deletion is safe.
+
+**For bug fixes:** Trace the interaction between components that caused the bug. Read the files that call into or are called by the changed code. Identify the specific mechanism of failure (e.g., a race condition, a duplicated side effect, an incorrect assumption).
+
+#### 3c: Gather conversation context
+
+Scan the conversation history for context that should flow into the PR description:
+
+- **Triggering links** — CI failure URLs, Jira tickets, Sentry errors, PagerDuty incidents that motivated the work.
+- **Production impact data** — If the conversation contains query results or impact numbers, summarize them.
+- **Root cause analysis** — If the conversation contains a diagnosis, capture the key insight.
+
+#### 3d: Write the PR and create it
+
+Use `mcp__github__create_pull_request`. Keep the title under 70 characters.
+
+Scale the body to match complexity:
+
+**Simple changes:** title + 1–2 bullet summary.
+
+**Medium changes:**
+```
+## Summary
+- [What changed and why]
+
+## Test plan
+- [How to verify]
+```
+
+**Complex changes (bug fixes, cross-file interactions, deletions):**
+```
+## Summary
+- [What changed]
+
+## Root cause
+[Explain the interaction between components that caused the issue.
+Include brief code references — e.g., "create_transaction.rb:34 already
+calls CreateTransactionEvent, so the explicit call in reverse_transaction.rb
+created a duplicate." Show the mechanism, not just the symptom.]
+
+## Production impact
+[Only if the conversation contains impact data — e.g., "1,208 duplicate
+events in the last 30 days." Omit this section if no data is available.]
+
+## Test plan
+- [How to verify]
+
+[Link to triggering CI failure, Jira ticket, or Sentry error if available]
+```
+
+Print the PR URL.
 
 ### Step 4: Wait for CI and address feedback (loop)
 
