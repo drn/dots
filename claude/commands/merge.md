@@ -7,12 +7,12 @@ description: Merge current branch to master via GitHub PR merge
 
 - Current branch: !`git branch --show-current`
 - Git status: !`git status --short`
-- Remotes: !`git remote -v 2>/dev/null`
-- Commits (upstream): !`git log upstream/master..HEAD --oneline 2>/dev/null`
-- Commits (origin): !`git log origin/master..HEAD --oneline 2>/dev/null`
-- Diff stat (upstream): !`git diff upstream/master..HEAD --stat 2>/dev/null`
-- Diff stat (origin): !`git diff origin/master..HEAD --stat 2>/dev/null`
-- Open PR: !`gh pr view --json number,title,url 2>/dev/null`
+- Remotes: !`git remote -v 2>/dev/null | head -10`
+- Commits (upstream): !`git log upstream/master..HEAD --oneline 2>/dev/null | head -50`
+- Commits (origin): !`git log origin/master..HEAD --oneline 2>/dev/null | head -50`
+- Diff stat (upstream): !`git diff upstream/master..HEAD --stat 2>/dev/null | head -50`
+- Diff stat (origin): !`git diff origin/master..HEAD --stat 2>/dev/null | head -50`
+- Open PR: !`gh pr view --json number,title,url 2>/dev/null | head -10`
 
 ## Your task
 

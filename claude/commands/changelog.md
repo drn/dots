@@ -6,7 +6,7 @@ description: Generate an intelligent changelog from recent commits
 ## Context
 
 - Current branch: !`git branch --show-current`
-- Latest tag: !`git describe --tags --abbrev=0 2>/dev/null`
+- Latest tag: !`git describe --tags --abbrev=0 2>/dev/null | head -1`
 - Recent commits (last 7 days): !`git log --oneline --since="7 days ago" 2>/dev/null | head -20`
 
 ## Arguments

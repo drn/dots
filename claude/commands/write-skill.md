@@ -112,17 +112,25 @@ Always bound output to avoid blowing up the context window:
 - Log: !{git log}
 ```
 
-#### Error Handling
+#### Error Handling and Exit Codes
 
-Use `2>/dev/null` to suppress errors from commands that might fail. Empty output is acceptable — skill logic should handle missing context gracefully. **Never use `||` or `&&`** — Claude Code's permission system treats these as multiple operations and blocks them.
+**Never use `||` or `&&`** — Claude Code's permission system treats these as multiple operations and blocks them.
+
+Use `2>/dev/null` to suppress stderr, but **it does not fix exit codes**. When a command fails, the skill loader sees the non-zero exit code and treats it as an error, even though stderr is suppressed. This breaks skill loading entirely.
+
+**Fix: always pipe through `| head -N`** after `2>/dev/null`. In a pipeline, the exit code is that of the last command (`head`), which exits 0 even when the upstream command fails and produces no output.
 
 ```markdown
-# GOOD — errors suppressed, empty output is fine
+# BAD — 2>/dev/null suppresses stderr but exit code is still non-zero
 - Tag: !{git describe --tags --abbrev=0 2>/dev/null}
-- Commits: !{git log origin/HEAD..HEAD --oneline 2>/dev/null}
+- Commits: !{git log origin/master..HEAD --oneline 2>/dev/null}
 
 # BAD — || treated as multiple operations by permission system
 - Tag: !{git describe --tags --abbrev=0 2>/dev/null || echo "No tags"}
+
+# GOOD — pipe neutralizes exit code, empty output on failure is fine
+- Tag: !{git describe --tags --abbrev=0 2>/dev/null | head -1}
+- Commits: !{git log origin/master..HEAD --oneline 2>/dev/null | head -50}
 ```
 
 ### String Substitutions
@@ -173,8 +181,8 @@ Multi-agent skills (like `/dev`, `/debug`, `/explore`) use the Task tool to spaw
 After writing, check the skill for:
 - [ ] No `$()` in any dynamic context line
 - [ ] No `||` or `&&` operators in any dynamic context line
-- [ ] Error-prone commands use `2>/dev/null` for suppression
-- [ ] Output is bounded (`| head -N`)
+- [ ] Error-prone commands use `2>/dev/null | head -N` (suppresses stderr AND neutralizes exit code)
+- [ ] No bare `2>/dev/null` without a trailing pipe (exit code breaks skill loading)
 - [ ] Description is present and includes trigger keywords
 - [ ] No inline backticks in prose that could break shell evaluation
 - [ ] No contractions (don't, can't, won't) in the skill body

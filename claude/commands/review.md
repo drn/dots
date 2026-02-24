@@ -13,8 +13,8 @@ Run a comprehensive code review (security, architecture, clarity) against your c
 ## Context
 
 - Current branch: !`git branch --show-current`
-- Default branch ref: !`git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null`
-- Changes: !`git diff --stat HEAD...origin/HEAD 2>/dev/null`
+- Default branch ref: !`git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | head -1`
+- Changes: !`git diff --stat HEAD...origin/HEAD 2>/dev/null | head -50`
 
 ## Instructions
 
