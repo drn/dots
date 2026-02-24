@@ -13,7 +13,7 @@ Re-review all branch changes from scratch with independent competing reviewers. 
 ## Context
 
 - Current branch: !`git branch --show-current`
-- Default branch ref: !`git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | head -1`
+- Default branch ref: !`git rev-parse --abbrev-ref origin/HEAD 2>/dev/null | grep -v '^origin/HEAD$' | head -1`
 - Git status: !`git status --short`
 - Project type: !`ls -1 go.mod Gemfile package.json Cargo.toml pyproject.toml 2>/dev/null | head -5`
 - Test framework: !`find . -maxdepth 4 -name "*_test.*" -o -name "*.test.*" -o -name "*_spec.*" 2>/dev/null | head -10`
