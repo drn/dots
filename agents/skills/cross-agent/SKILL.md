@@ -235,6 +235,21 @@ fi
 # Verify AGENTS.md exists
 [[ -f "AGENTS.md" ]] || { echo "MISSING: AGENTS.md"; fail=1; }
 
+# Verify CLAUDE.md is a symlink to AGENTS.md
+if [[ -L "CLAUDE.md" ]]; then
+  target="$(readlink CLAUDE.md)"
+  if [[ "$target" != "AGENTS.md" ]]; then
+    echo "WRONG SYMLINK: CLAUDE.md points to $target (expected AGENTS.md)"
+    fail=1
+  fi
+elif [[ -f "CLAUDE.md" ]]; then
+  echo "NOT A SYMLINK: CLAUDE.md is a regular file (should be symlink to AGENTS.md)"
+  fail=1
+else
+  echo "MISSING: CLAUDE.md"
+  fail=1
+fi
+
 # Verify Copilot instructions exist
 [[ -f ".github/copilot-instructions.md" ]] || { echo "MISSING: .github/copilot-instructions.md"; fail=1; }
 
