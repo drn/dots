@@ -21,11 +21,12 @@ if [ "$ZSHENV_SOURCED" != "true" ]; then
   # Include go dependencies in PATH
   export GOPATH=$HOME/go
   export GOBIN=$GOPATH/bin
-  export PATH=$GOBIN:$PATH
   # Include rust dependencies in PATH
   export PATH=$HOME/.cargo/bin:$PATH
   # Include asdf shims in PATH
   export PATH=$HOME/.asdf/shims:$PATH
+  # GOBIN after asdf shims so go-installed binaries bypass shims
+  export PATH=$GOBIN:$PATH
   # Include binstubs in path
   export PATH=.bundle/bin:$PATH
   # Set $ANDROID_HOME
