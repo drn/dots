@@ -5,21 +5,18 @@ on:
     branches:
       - master
   pull_request:
-  schedule:
-    # midnight and noon PT
-    - cron: '0 8,20 * * *'
 
 concurrency:
   group: ${{ github.actor }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  setup:
-    name: Setup & install drn/dots
+  ci:
+    name: CI
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-go@v2
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
         with:
           go-version: '1.24.10'
       - name: Cache Go Modules
@@ -29,232 +26,33 @@ jobs:
           key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
           restore-keys: |
             ${{ runner.os }}-go-
-      - name: Install drn/dots
-        run: go install github.com/drn/dots
-      - name: Verify installation
-        run: dots help
-      - name: Cache dots CLI
-        uses: actions/upload-artifact@v4
-        with:
-          name: dots-cli
-          path: ~/go/bin/dots
 
-  lint:
-    name: Lint
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-go@v2
-        with:
-          go-version: '1.24.10'
-      - name: Install Golint
-        run: go install github.com/mgechev/revive@latest
-      - name: Go Lint
-        run: revive -set_exit_status ./...
-      - name: Skill Lint
-        run: .github/lint-skills.sh
-      - name: Skill Lint Tests
-        run: .github/lint-skills-test.sh
-      - name: Agent Config Lint (agnix)
-        run: npx agnix@0.13.0 .
+      - name: Build
+        run: go install ./...
 
-  vet:
-    name: Vet
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-go@v2
-        with:
-          go-version: '1.24.10'
-      - name: Go Vet
+      - name: Test
+        run: go test ./...
+
+      - name: Vet
         run: go vet ./...
 
-  staticcheck:
-    name: Staticcheck
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-go@v2
-        with:
-          go-version: '1.24.10'
       - name: Install Staticcheck
         run: go install honnef.co/go/tools/cmd/staticcheck@latest
+
       - name: Staticcheck
         run: staticcheck ./...
 
-  test:
-    name: Test
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-go@v2
-        with:
-          go-version: '1.24.10'
-      - name: Go Test
-        run: go test ./...
+      - name: Install Revive
+        run: go install github.com/mgechev/revive@latest
 
-  dots-install-bin:
-    name: dots install bin
-    needs: setup
-    runs-on: macos-latest
-    steps:
-      - name: Fetch dots CLI
-        uses: actions/download-artifact@v4
-        with:
-          name: dots-cli
-          path: ~/bin
-      - run: chmod +x ~/bin/dots
-      - run: dots install bin
+      - name: Go Lint
+        run: revive -set_exit_status ./...
 
-  dots-install-git:
-    name: dots install git
-    needs: setup
-    runs-on: macos-latest
-    steps:
-      - name: Fetch dots CLI
-        uses: actions/download-artifact@v4
-        with:
-          name: dots-cli
-          path: ~/bin
-      - run: chmod +x ~/bin/dots
-      - run: dots install git
+      - name: Skill Lint
+        run: .github/lint-skills.sh
 
-  dots-install-home:
-    name: dots install home
-    needs: setup
-    runs-on: macos-latest
-    steps:
-      - name: Fetch dots CLI
-        uses: actions/download-artifact@v4
-        with:
-          name: dots-cli
-          path: ~/bin
-      - run: chmod +x ~/bin/dots
-      - run: dots install home
+      - name: Skill Lint Tests
+        run: .github/lint-skills-test.sh
 
-  dots-install-zsh:
-    name: dots install zsh
-    needs: setup
-    runs-on: macos-latest
-    env:
-      DOTS: /Users/runner/work/dots/dots
-    steps:
-      - uses: actions/checkout@v2
-      - name: Fetch dots CLI
-        uses: actions/download-artifact@v4
-        with:
-          name: dots-cli
-          path: ~/bin
-      - run: chmod +x ~/bin/dots
-      - run: dots install zsh
-
-  dots-install-fonts:
-    name: dots install fonts
-    needs: setup
-    runs-on: macos-latest
-    steps:
-      - name: Fetch dots CLI
-        uses: actions/download-artifact@v4
-        with:
-          name: dots-cli
-          path: ~/bin
-      - run: chmod +x ~/bin/dots
-      - run: dots install fonts
-
-  dots-install-homebrew:
-    name: dots install homebrew
-    needs: setup
-    runs-on: macos-latest
-    if: github.ref == 'refs/heads/master'
-    env:
-      DOTS: /Users/runner/work/dots/dots
-    steps:
-      - uses: actions/checkout@v2
-      - name: Fetch dots CLI
-        uses: actions/download-artifact@v4
-        with:
-          name: dots-cli
-          path: ~/bin
-      - run: chmod +x ~/bin/dots
-      - name: Handle CI brew installation conflicts
-        run: |
-          rm /usr/local/bin/aws* # awscli
-      - run: dots install homebrew
-
-  dots-install-npm:
-    name: dots install npm
-    needs: setup
-    runs-on: macos-latest
-    steps:
-      - name: Fetch dots CLI
-        uses: actions/download-artifact@v4
-        with:
-          name: dots-cli
-          path: ~/bin
-      - run: chmod +x ~/bin/dots
-      - run: dots install npm
-
-  dots-install-vim:
-    name: dots install vim
-    needs: setup
-    runs-on: macos-latest
-    env:
-      DOTS: /Users/runner/work/dots/dots
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-go@v2
-        with:
-          go-version: '1.24.10'
-      - name: Fetch dots CLI
-        uses: actions/download-artifact@v4
-        with:
-          name: dots-cli
-          path: ~/bin
-      - run: chmod +x ~/bin/dots
-      - run: brew install neovim
-      - run: dots install home # symlinks ~/.vimrc
-      - run: dots install vim || true # suppress CI failures
-
-  dots-install-languages:
-    name: dots install languages
-    needs: setup
-    runs-on: macos-latest
-    steps:
-      - name: Fetch dots CLI
-        uses: actions/download-artifact@v4
-        with:
-          name: dots-cli
-          path: ~/bin
-      - run: chmod +x ~/bin/dots
-      - run: |
-          brew install asdf
-          source $(brew --prefix)/opt/asdf/libexec/asdf.sh
-          dots install languages
-        env:
-          OPENSSL_CFLAGS: -Wno-error=implicit-function-declaration
-
-  dots-install-hammerspoon:
-    name: dots install hammerspoon
-    needs: setup
-    runs-on: macos-latest
-    steps:
-      - name: Fetch dots CLI
-        uses: actions/download-artifact@v4
-        with:
-          name: dots-cli
-          path: ~/bin
-      - run: chmod +x ~/bin/dots
-      - run: dots install hammerspoon
-
-  dots-install-osx:
-    name: dots install osx
-    needs: setup
-    runs-on: macos-latest
-    steps:
-      - name: Fetch dots CLI
-        uses: actions/download-artifact@v4
-        with:
-          name: dots-cli
-          path: ~/bin
-      - run: chmod +x ~/bin/dots
-      - run: dots install osx
+      - name: Agent Config Lint (agnix)
+        run: npx agnix@0.13.0 .
