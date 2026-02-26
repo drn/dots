@@ -106,7 +106,7 @@ Repeat the following until CI is fully green **and** there are no unresolved rev
 #### 4a: Check CI status
 
 - Use `mcp__github__get_pull_request_status` to see the current state of all checks.
-- If checks are still running, poll `mcp__github__get_pull_request_status` every 60 seconds until all checks complete (30 minute max). If the timeout is hit, report to the user and stop.
+- If checks are still running, poll `mcp__github__get_pull_request_status` with exponential backoff: wait 60s, then 120s, then 240s, capping at 300s between polls. Stop after 30 minutes total and report to the user.
 - If all checks pass and there are no pending review comments, you are done — go to Step 5.
 - If any checks have failed, proceed to 4b immediately — do not wait.
 
