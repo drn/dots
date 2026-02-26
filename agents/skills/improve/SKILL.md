@@ -1,3 +1,7 @@
+---
+name: improve
+description: Improve Skills & Commands
+---
 # Improve Skills & Commands
 
 Analyze the current conversation to identify learnings, friction points, and improvements for all skills and commands that were used during the session.

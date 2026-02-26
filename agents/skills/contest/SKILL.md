@@ -1,4 +1,5 @@
 ---
+name: contest
 description: Competing implementations with judge evaluation
 ---
 

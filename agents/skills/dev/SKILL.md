@@ -1,4 +1,5 @@
 ---
+name: dev
 description: Multi-agent iterative development with parallel testing and code review
 ---
 

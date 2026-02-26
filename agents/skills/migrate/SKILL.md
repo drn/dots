@@ -1,4 +1,5 @@
 ---
+name: migrate
 description: Multi-agent codebase migration with module ownership
 ---
 

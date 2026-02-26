@@ -1,4 +1,5 @@
 ---
+name: rebase
 allowed-tools: Bash(git fetch:*), Bash(git rebase:*), Bash(git push:*), Bash(git log:*), Bash(git diff:*), Bash(git branch:*), Bash(git rev-parse:*), Bash(git symbolic-ref:*), Bash(git merge-base:*), mcp__github__list_pull_requests
 description: Rebase current branch onto latest upstream default branch and force-push to update PR
 disable-model-invocation: true

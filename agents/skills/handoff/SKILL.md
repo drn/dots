@@ -1,4 +1,5 @@
 ---
+name: handoff
 description: Generate a handoff prompt to pass context to another agent thread. Use when switching repos, handing off work, or sharing context between agents.
 ---
 

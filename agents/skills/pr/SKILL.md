@@ -1,4 +1,5 @@
 ---
+name: pr
 description: Open a PR, wait for CI to pass, fix failures, address review comments, and loop until fully green
 ---
 

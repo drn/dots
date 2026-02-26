@@ -1,4 +1,5 @@
 ---
+name: guard
 description: Pre-commit safety check for secrets, security antipatterns, and test breakage
 ---
 

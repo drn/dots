@@ -23,12 +23,7 @@ func (i Install) Claude() {
 	}
 
 	link.Soft(
-		path.FromDots("claude/commands"),
-		path.FromHome(".claude/commands"),
-	)
-
-	link.Soft(
-		path.FromDots("claude/skills"),
+		path.FromDots("agents/skills"),
 		path.FromHome(".claude/skills"),
 	)
 }

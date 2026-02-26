@@ -1,4 +1,5 @@
 ---
+name: test
 description: Intelligent test runner that targets changed code and identifies coverage gaps
 ---
 

@@ -1,4 +1,5 @@
 ---
+name: changelog
 allowed-tools: Bash(git log:*), Bash(git diff:*), Bash(git show:*), Bash(git tag:*)
 description: Generate an intelligent changelog from recent commits
 ---
