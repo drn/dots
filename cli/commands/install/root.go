@@ -14,9 +14,8 @@ type Install struct{}
 func Call(command string) {
 	var i Install
 	installers := map[string]func(){
+		"agents":      i.Agents,
 		"bin":         i.Bin,
-		"claude":      i.Claude,
-		"codex":       i.Codex,
 		"fonts":       i.Fonts,
 		"git":         i.Git,
 		"hammerspoon": i.Hammerspoon,

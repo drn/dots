@@ -87,12 +87,11 @@ dots doctor                                   # Run diagnostics
 | vim | Vim configuration |
 | hammerspoon | Window management |
 | osx | macOS defaults |
-| claude | Claude Code skills (symlinks agents/skills → ~/.claude/skills) |
-| codex | Codex skills (symlinks agents/skills → ~/.agents/skills) |
+| agents | Agent skills for Claude Code + Codex (symlinks agents/skills → ~/.claude/skills and ~/.agents/skills) |
 
 ## Writing Skills / Slash Commands
 
-All skills live in `agents/skills/<name>/SKILL.md` following the [Agent Skills](https://agentskills.io) open standard. This directory is symlinked to both `~/.claude/skills/` (for Claude Code) and `~/.agents/skills/` (for Codex) via `dots install claude` and `dots install codex`.
+All skills live in `agents/skills/<name>/SKILL.md` following the [Agent Skills](https://agentskills.io) open standard. This directory is symlinked to both `~/.claude/skills/` (for Claude Code) and `~/.agents/skills/` (for Codex) via `dots install agents`.
 
 Each skill is a directory with a `SKILL.md` entrypoint. Add supporting files (scripts, templates, examples) alongside the SKILL.md when needed.
 
@@ -127,5 +126,5 @@ See `/write-skill` for the full skill-authoring guide.
 
 - Installation is destructive (no backups)
 - Requires macOS, Homebrew, Go 1.15+
-- Uses reflection for dynamic component installation
+- Uses map-based dispatch for dynamic component installation
 - CI runs on GitHub Actions (macOS, Go 1.19.5)

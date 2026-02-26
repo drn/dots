@@ -15,5 +15,10 @@ func (i Install) Homebrew() {
 	exec("brew services start mysql@8.0")
 	exec("brew services start postgresql@16")
 	log.Info("Ensuring ~/.z exists")
-	os.OpenFile(path.FromHome("Desktop/z"), os.O_RDONLY|os.O_CREATE, 0666)
+	f, err := os.OpenFile(path.FromHome("Desktop/z"), os.O_RDONLY|os.O_CREATE, 0666)
+	if err != nil {
+		log.Warning("Failed to ensure ~/.z exists: %s", err.Error())
+	} else {
+		f.Close()
+	}
 }

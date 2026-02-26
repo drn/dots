@@ -128,7 +128,10 @@ func parsePath(key string) (*string, *string) {
 }
 
 func save(config *ini.File) {
-	os.Mkdir(path.FromHome(".dots/sys"), os.ModePerm)
+	if err := os.MkdirAll(path.FromHome(".dots/sys"), os.ModePerm); err != nil {
+		log.Warning("Failed to create config directory: %s", err.Error())
+		return
+	}
 	config.SaveTo(configPath())
 }
 

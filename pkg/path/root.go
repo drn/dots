@@ -31,8 +31,14 @@ func FromDots(path string, args ...interface{}) string {
 
 // Home - Returns $HOME path
 func Home() string {
-	user, _ := user.Current()
-	return user.HomeDir
+	u, err := user.Current()
+	if err != nil {
+		if home := os.Getenv("HOME"); home != "" {
+			return home
+		}
+		panic(fmt.Sprintf("failed to determine home directory: %s", err.Error()))
+	}
+	return u.HomeDir
 }
 
 // FromHome - Returns path relative to $HOME

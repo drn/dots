@@ -3,6 +3,7 @@ package git
 
 import (
 	"fmt"
+	"slices"
 	"strings"
 
 	"github.com/drn/dots/pkg/run"
@@ -25,18 +26,18 @@ func Branch() string {
 // RemoteBranches - Returns a slice of the current remote branches
 func RemoteBranches() []string {
 	branches := strings.Fields(run.Capture("git branch --remote"))
-	i := 0
-	for _, branch := range branches {
+	return filterBranches(branches)
+}
+
+func filterBranches(branches []string) []string {
+	return slices.DeleteFunc(branches, func(branch string) bool {
 		switch branch {
-		case "->":
-		case "origin/HEAD":
-		case "upstream/HEAD":
+		case "->", "origin/HEAD", "upstream/HEAD":
+			return true
 		default:
-			branches[i] = branch
-			i++
+			return false
 		}
-	}
-	return branches[:i]
+	})
 }
 
 // Remotes - Returns the configured remotes

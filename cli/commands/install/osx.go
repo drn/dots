@@ -13,7 +13,7 @@ func (i Install) Osx() {
 
 	if !is.Osx() {
 		log.Error("Cannot install OSX configuration on a non-darwin machine")
-		os.Exit(0)
+		os.Exit(1)
 	}
 
 	log.Info("Configuring system key press speeds")
