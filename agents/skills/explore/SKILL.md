@@ -1,4 +1,5 @@
 ---
+name: explore
 description: Multi-agent parallel research with peer-challenged synthesis
 ---
 

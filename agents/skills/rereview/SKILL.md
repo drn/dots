@@ -1,4 +1,5 @@
 ---
+name: rereview
 description: "Re-review with fresh eyes. Zero regressions. Go slow and analyze everything."
 ---
 

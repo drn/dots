@@ -1,3 +1,7 @@
+---
+name: logo
+description: Logo Generation
+---
 # Logo Generation
 
 Generate SVG logo alternatives for a project, then present them in a side-by-side comparison page for review.

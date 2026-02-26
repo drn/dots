@@ -16,6 +16,7 @@ func Call(command string) {
 	installers := map[string]func(){
 		"bin":         i.Bin,
 		"claude":      i.Claude,
+		"codex":       i.Codex,
 		"fonts":       i.Fonts,
 		"git":         i.Git,
 		"hammerspoon": i.Hammerspoon,

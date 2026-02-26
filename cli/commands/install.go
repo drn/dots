@@ -61,6 +61,10 @@ var commands = []map[string]string{
 		"command":     "claude",
 		"description": "Installs Claude configuration",
 	},
+	{
+		"command":     "codex",
+		"description": "Installs Codex configuration",
+	},
 }
 
 var cmdInstall = &cobra.Command{

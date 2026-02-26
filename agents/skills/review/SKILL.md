@@ -1,4 +1,5 @@
 ---
+name: review
 description: Code review panel for current branch changes
 ---
 

@@ -1,4 +1,5 @@
 ---
+name: debug
 description: Multi-agent competing hypotheses debugging
 ---
 

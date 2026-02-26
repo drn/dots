@@ -1,4 +1,5 @@
 ---
+name: write-skill
 description: Create or improve a Claude Code skill/slash command with best practices for structure, dynamic context, and safety
 ---
 
