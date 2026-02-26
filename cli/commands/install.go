@@ -58,12 +58,8 @@ var commands = []map[string]string{
 		"description": "Installs OSX configuration",
 	},
 	{
-		"command":     "claude",
-		"description": "Installs Claude configuration",
-	},
-	{
-		"command":     "codex",
-		"description": "Installs Codex configuration",
+		"command":     "agents",
+		"description": "Installs agent skills (Claude Code + Codex)",
 	},
 }
 

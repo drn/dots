@@ -93,3 +93,71 @@ func TestHardOverwrite(t *testing.T) {
 		t.Errorf("hard link content = %s, want 'second'", string(data))
 	}
 }
+
+func TestSoft_NonexistentSource(t *testing.T) {
+	dir := t.TempDir()
+	source := filepath.Join(dir, "nonexistent")
+	target := filepath.Join(dir, "target")
+
+	// Should create a dangling symlink without panicking
+	Soft(source, target)
+
+	_, err := os.Lstat(target)
+	if err != nil {
+		t.Fatalf("expected symlink to exist (even dangling): %s", err)
+	}
+	resolved, _ := os.Readlink(target)
+	if resolved != source {
+		t.Errorf("symlink points to %s, want %s", resolved, source)
+	}
+}
+
+func TestHard_NonexistentSource(t *testing.T) {
+	dir := t.TempDir()
+	source := filepath.Join(dir, "nonexistent")
+	target := filepath.Join(dir, "target")
+
+	// Hard link to nonexistent source should fail gracefully
+	Hard(source, target)
+
+	if _, err := os.Stat(target); err == nil {
+		t.Error("expected target not to exist for hard link to nonexistent source")
+	}
+}
+
+func TestRemoveExisting_NoFile(t *testing.T) {
+	dir := t.TempDir()
+	target := filepath.Join(dir, "nonexistent")
+	// Should not panic when target doesn't exist
+	removeExisting(target)
+}
+
+func TestRemoveExisting_RegularFile(t *testing.T) {
+	dir := t.TempDir()
+	target := filepath.Join(dir, "file")
+	os.WriteFile(target, []byte("content"), 0644)
+
+	removeExisting(target)
+
+	if _, err := os.Stat(target); !os.IsNotExist(err) {
+		t.Error("expected file to be removed")
+	}
+}
+
+func TestSoft_TargetIsDirectory(t *testing.T) {
+	dir := t.TempDir()
+	source := filepath.Join(dir, "source")
+	os.WriteFile(source, []byte("content"), 0644)
+	target := filepath.Join(dir, "targetdir")
+	os.Mkdir(target, 0755)
+
+	Soft(source, target)
+
+	info, err := os.Lstat(target)
+	if err != nil {
+		t.Fatalf("expected symlink: %s", err)
+	}
+	if info.Mode()&os.ModeSymlink == 0 {
+		t.Error("expected target to be a symlink")
+	}
+}
