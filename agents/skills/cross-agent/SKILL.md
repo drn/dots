@@ -17,8 +17,6 @@ Migrate a repository's skills to the Agent Skills open standard so they work acr
 - Existing .agents/skills: !`find .agents/skills -maxdepth 2 -name SKILL.md 2>/dev/null | head -30`
 - Existing .claude/commands: !`find .claude/commands -maxdepth 1 -name "*.md" 2>/dev/null | head -30`
 - Existing .claude/skills: !`find .claude/skills -maxdepth 2 -name SKILL.md 2>/dev/null | head -30`
-- Existing .codex/skills: !`find .codex/skills -maxdepth 2 -name SKILL.md 2>/dev/null | head -30`
-- .codex/skills type: !`file .codex/skills 2>/dev/null | head -1`
 - AGENTS.md exists: !`find . -maxdepth 1 -name AGENTS.md 2>/dev/null | head -1`
 - CLAUDE.md type: !`file CLAUDE.md 2>/dev/null | head -1`
 - claude.md (lowercase) exists: !`find . -maxdepth 1 -type f 2>/dev/null | grep '/claude\.md$' | head -1`
@@ -40,8 +38,6 @@ Scan for existing skills in all locations:
 1. `.agents/skills/*/SKILL.md` (already canonical)
 2. `.claude/commands/*.md` (Claude flat commands)
 3. `.claude/skills/*/SKILL.md` (Claude directory skills)
-4. `.codex/skills/*/SKILL.md` (Codex mirror — should be a symlink, not a copy)
-
 Also check for a lowercase `claude.md` — Claude Code requires `CLAUDE.md` (uppercase) for discovery. Use `ls -1 | grep '^claude\.md$'` to detect the wrong casing (a plain `test -f` is unreliable on case-insensitive filesystems).
 
 Classify the repo:
@@ -71,7 +67,6 @@ State: [GREENFIELD/CLAUDE-ONLY/PARTIAL/COMPLETE]
 - [ ] AGENTS.md (cross-agent contract)
 - [ ] CLAUDE.md symlink to AGENTS.md
 - [ ] .claude/skills symlink to .agents/skills
-- [ ] .codex/skills symlink to .agents/skills
 - [ ] .github/copilot-instructions.md
 - [ ] scripts/skills/sync-cross-agent-skills.sh
 - [ ] .github/workflows/skills-sync.yml
@@ -121,7 +116,7 @@ For each existing canonical skill:
 
 ### Step 5: Set Up Agent Discovery Symlinks
 
-Both `.claude/skills/` and `.codex/skills/` should be symlinks to `.agents/skills/` so all agents discover the same canonical skills.
+`.claude/skills/` should be a symlink to `.agents/skills/` so Claude Code discovers the canonical skills. Codex discovers skills directly from `.agents/skills/` — no additional symlink needed.
 
 #### `.claude/skills`
 
@@ -132,14 +127,6 @@ Claude Code discovers skills from `.claude/skills/`. After migration, the origin
 **If `.claude/skills` does not exist**: create a symlink `.claude/skills` pointing to `.agents/skills`
 
 Remove `.claude/commands/` if it was fully migrated (all files moved to `.agents/skills/`). If some files remain that were not migrated, leave them.
-
-#### `.codex/skills`
-
-Codex discovers skills from `.codex/skills/`. This should also be a symlink to `.agents/skills/`, not a separate copy.
-
-**If `.codex/skills` is a symlink**: update it to point to `.agents/skills`
-**If `.codex/skills` is a directory with content**: the content was already migrated in Step 4. Replace the directory with a symlink to `.agents/skills/`.
-**If `.codex/skills` does not exist**: create `.codex/` if needed, then create a symlink `.codex/skills` pointing to `.agents/skills`
 
 ### Step 6: Create AGENTS.md
 
@@ -163,7 +150,7 @@ All skill logic lives in `.agents/skills/<name>/SKILL.md`.
 | Agent | Discovery Path | Mechanism |
 |-------|---------------|-----------|
 | Claude Code | `.claude/skills/` | Symlink to `.agents/skills/` |
-| OpenAI Codex | `.codex/skills/` | Symlink to `.agents/skills/` |
+| OpenAI Codex | `.agents/skills/` | Direct (scans `.agents/skills` from CWD to repo root) |
 | GitHub Copilot | `.github/copilot-instructions.md` | Routing file |
 ```
 
@@ -254,18 +241,6 @@ elif [[ -d ".claude/skills" ]]; then
   fail=1
 fi
 
-# Verify .codex/skills points to .agents/skills
-if [[ -L ".codex/skills" ]]; then
-  target="$(readlink .codex/skills)"
-  if [[ "$target" != ".agents/skills" && "$target" != "./agents/skills" && "$target" != "./.agents/skills" && "$target" != "../.agents/skills" ]]; then
-    echo "WRONG SYMLINK: .codex/skills points to $target (expected .agents/skills)"
-    fail=1
-  fi
-elif [[ -d ".codex/skills" ]]; then
-  echo "NOT A SYMLINK: .codex/skills is a directory (should be symlink to .agents/skills)"
-  fail=1
-fi
-
 # Verify AGENTS.md exists
 [[ -f "AGENTS.md" ]] || { echo "MISSING: AGENTS.md"; fail=1; }
 
@@ -336,7 +311,6 @@ on:
       - 'CLAUDE.md'
       - '.agents/skills/**'
       - '.claude/skills'
-      - '.codex/skills'
       - '.github/copilot-instructions.md'
       - 'scripts/skills/**'
       - '.github/workflows/skills-sync.yml'
@@ -347,7 +321,6 @@ on:
       - 'CLAUDE.md'
       - '.agents/skills/**'
       - '.claude/skills'
-      - '.codex/skills'
       - '.github/copilot-instructions.md'
       - 'scripts/skills/**'
       - '.github/workflows/skills-sync.yml'
@@ -392,7 +365,6 @@ Present a final summary:
 - [x] AGENTS.md
 - [x] CLAUDE.md symlink
 - [x] .claude/skills symlink
-- [x] .codex/skills symlink
 - [x] .github/copilot-instructions.md
 - [x] scripts/skills/sync-cross-agent-skills.sh
 - [x] .github/workflows/skills-sync.yml
@@ -401,7 +373,7 @@ Present a final summary:
 | Agent | Discovery | Status |
 |-------|-----------|--------|
 | Claude Code | .claude/skills/ symlink | Ready |
-| Codex | .codex/skills/ symlink | Ready |
+| Codex | .agents/skills/ (direct) | Ready |
 | Copilot | .github/copilot-instructions.md | Ready |
 
 ### Next Steps
