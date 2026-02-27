@@ -31,14 +31,14 @@ If unclear, ask the user before generating.
 
 Create 6 **meaningfully different** SVG logo files. Each should explore a distinct visual direction:
 
-| # | Direction | What to Try |
-|---|-----------|-------------|
-| 1 | **Minimal** | Strip to the essential mark. One shape, one gradient. App icon clean. |
-| 2 | **Geometric** | Low-poly, faceted, angular. Crystal/tech aesthetic. |
-| 3 | **Organic** | Flowing curves, natural forms. Warmth and craft. |
-| 4 | **Structural** | Architectural forms, layered shapes, or negative space. The structure is the mark. |
-| 5 | **Conceptual** | Symbolic/metaphorical. Combine two ideas into one mark (e.g., flame + orbits). |
-| 6 | **Bold** | High-contrast, strong presence. Thick strokes, confident shapes. Statement piece. |
+| # | Direction | Color | What to Try |
+|---|-----------|-------|-------------|
+| 1 | **Minimal** | Amber/Gold | Strip to the essential mark. One shape, one gradient. App icon clean. |
+| 2 | **Geometric** | Cyan/Teal | Low-poly, faceted, angular. Crystal/tech aesthetic. |
+| 3 | **Organic** | Violet/Purple | Flowing curves, natural forms. Warmth and craft. |
+| 4 | **Typographic** | Emerald/Green | Lettermark or monogram. The initial letter as hero. |
+| 5 | **Conceptual** | Rose/Pink | Symbolic/metaphorical. Combine two ideas into one mark (e.g., flame + orbits). |
+| 6 | **Sci-fi** | Blue/Indigo | Orbital, atomic, or space-inspired. Tech gravitas. |
 
 **CRITICAL: No text in logos.** Never use `<text>` elements, letters, words, or typographic marks in the SVG logos. Every logo must be purely symbolic — shapes, icons, and abstract marks only. Text/wordmarks are added separately by the user if needed.
 
@@ -50,6 +50,7 @@ Create 6 **meaningfully different** SVG logo files. Each should explore a distin
 - Use `linearGradient` for directional surfaces, `radialGradient` for point-light and glow
 - Layer elements: ambient light → structure → hero element → accents
 - Keep the viewBox at `0 0 200 200` for the main logo
+- **Center precisely**: Calculate the bounding box of all visible elements and ensure its center is at (100, 100). For asymmetric layouts (e.g., 3 nodes around a hub), offset the composition so the bounding box center — not just the primary element — sits at (100, 100). Verify: (minX + maxX) / 2 ≈ 100, (minY + maxY) / 2 ≈ 100.
 
 Save to the project's `assets/` directory:
 - `assets/logo-alt-1.svg` through `assets/logo-alt-6.svg`
@@ -80,7 +81,9 @@ Create `assets/logo-compare.html` — a dark-themed grid page showing all option
     margin: 0 auto;
   }
   .card {
-    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     background: #1a1a1a;
     border-radius: 16px;
     padding: 32px 24px 24px;
@@ -91,7 +94,7 @@ Create `assets/logo-compare.html` — a dark-themed grid page showing all option
   .well { display: flex; align-items: center; justify-content: center; width: 160px; height: 160px; margin: 0 auto 16px; background: #111; border-radius: 12px; }
   .well img { width: 140px; height: 140px; }
   .card h3 { color: #F59E0B; font-size: 16px; margin-bottom: 6px; }
-  .card p { color: #888; font-size: 12px; line-height: 1.5; }
+  .card p { text-align: center; color: #888; font-size: 12px; line-height: 1.5; }
   .label { display: inline-block; background: #F59E0B22; color: #F59E0B; padding: 2px 10px; border-radius: 12px; font-size: 11px; margin-bottom: 12px; }
   .current .label { background: #22c55e22; color: #22c55e; }
 </style>
@@ -139,3 +142,4 @@ When the user picks a logo:
 4. **Dark-first** — Assume dark backgrounds. Light elements should glow.
 5. **Layered depth** — Background → ambient glow → structure → hero → sparkle/accent
 6. **Name each option** — Short, memorable names make discussion easier ("Orbital Forge" vs "Alt 5")
+7. **Unique palettes** — Each alternative MUST use a different color scheme. Never repeat the same palette across options.
