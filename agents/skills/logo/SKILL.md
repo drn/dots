@@ -46,7 +46,17 @@ Create 6 **meaningfully different** SVG logo files. Each should explore a distin
 - Always include explicit `width="200" height="200"` on the `<svg>` element (required for `<img>` tag rendering)
 - **Transparent background** — do not include a background `<rect>`. The comparison page provides the dark background via the `.well` container. Logos must work on any background.
 - Use `<defs>` for gradients, filters, and reusable elements
-- Include glow/blur filters for light-emitting elements (`feGaussianBlur` + `feMerge`)
+- **For circular glow halos**, use `radialGradient` fills (not blur filters). Blur filters (`feGaussianBlur`) clip to a rectangular region and render as squares at small sizes. Use a `radialGradient` with opacity tapering to 0 at the edge, applied to a circle larger than the core element. Example:
+    ```xml
+    <radialGradient id="halo" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#COLOR" stop-opacity="0.6"/>
+      <stop offset="40%" stop-color="#COLOR" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#COLOR" stop-opacity="0"/>
+    </radialGradient>
+    <circle cx="X" cy="Y" r="20" fill="url(#halo)"/>
+    <circle cx="X" cy="Y" r="5" fill="#COLOR" opacity="0.9"/>
+    ```
+- Reserve `feGaussianBlur` for trail/path effects where rectangular clipping is less visible
 - Use `linearGradient` for directional surfaces, `radialGradient` for point-light and glow
 - Layer elements: ambient light → structure → hero element → accents
 - Keep the viewBox at `0 0 200 200` for the main logo
@@ -121,6 +131,15 @@ Create `assets/logo-compare.html` — a dark-themed grid page showing all option
 1. Open the comparison HTML in the browser: `open assets/logo-compare.html`
 2. Present a summary table of all options with name and concept
 3. Offer to refine, mix elements, or apply the chosen design
+
+### Step 4b: Refine the Winner (if requested)
+
+When the user wants to vary a single element (e.g., center color, accent style):
+1. Create 4-5 variants that ONLY change the requested element
+2. Name each variant file descriptively (e.g., `center-1-white.svg`, `center-2-gold.svg`)
+3. Generate a comparison page (`assets/<element>-compare.html`) using the same flexbox grid template
+4. Open it for the user to pick
+5. Apply the chosen variant to the main logo and clean up variant files
 
 ### Step 5: Apply the Winner
 
