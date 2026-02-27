@@ -168,7 +168,7 @@ The knowledge base uses structured topic files with an index. To add knowledge:
 
 ### Step 9: Append to the Improvement Log
 
-After all changes are applied (or handoff prompts generated), append a summary to `~/.dots/agents/skills/improve/log.md`. Create the file if it does not exist.
+After all changes are applied (or handoff prompts generated), append a summary to `agents/skills/improve/log.md` in the current repo. Create the file if it does not exist.
 
 Each entry follows this format:
 
