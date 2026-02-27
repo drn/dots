@@ -4,11 +4,11 @@
 # inside !`command` expressions.
 #
 # Usage: .github/lint-skills.sh [directory...]
-# Defaults to claude/commands/ and claude/skills/ if no args given.
+# Defaults to agents/skills/ if no args given.
 
 set -euo pipefail
 
-dirs=("${@:-claude/commands claude/skills}")
+dirs=("${@:-agents/skills}")
 errors=0
 warnings=0
 
