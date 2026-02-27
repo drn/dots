@@ -12,7 +12,7 @@ Generate SVG logo alternatives for a project, then present them in a side-by-sid
 
 ## Instructions
 
-You are generating SVG logo alternatives and a visual comparison page. Your goal is to produce **5 distinct design directions** so the user can pick and refine.
+You are generating SVG logo alternatives and a visual comparison page. Your goal is to produce **6 distinct design directions** so the user can pick and refine.
 
 ### Step 1: Understand the Brief
 
@@ -27,28 +27,32 @@ Determine what the logo should communicate:
 
 If unclear, ask the user before generating.
 
-### Step 2: Design 5 Alternatives
+### Step 2: Design 6 Alternatives
 
-Create 5 **meaningfully different** SVG logo files. Each should explore a distinct visual direction:
+Create 6 **meaningfully different** SVG logo files. Each should explore a distinct visual direction:
 
 | # | Direction | What to Try |
 |---|-----------|-------------|
 | 1 | **Minimal** | Strip to the essential mark. One shape, one gradient. App icon clean. |
 | 2 | **Geometric** | Low-poly, faceted, angular. Crystal/tech aesthetic. |
 | 3 | **Organic** | Flowing curves, natural forms. Warmth and craft. |
-| 4 | **Typographic** | Lettermark or monogram. The initial letter as the hero element. |
+| 4 | **Structural** | Architectural forms, layered shapes, or negative space. The structure is the mark. |
 | 5 | **Conceptual** | Symbolic/metaphorical. Combine two ideas into one mark (e.g., flame + orbits). |
+| 6 | **Bold** | High-contrast, strong presence. Thick strokes, confident shapes. Statement piece. |
+
+**CRITICAL: No text in logos.** Never use `<text>` elements, letters, words, or typographic marks in the SVG logos. Every logo must be purely symbolic — shapes, icons, and abstract marks only. Text/wordmarks are added separately by the user if needed.
 
 **SVG quality standards:**
+- Always include explicit `width="200" height="200"` on the `<svg>` element (required for `<img>` tag rendering)
+- **Transparent background** — do not include a background `<rect>`. The comparison page provides the dark background via the `.well` container. Logos must work on any background.
 - Use `<defs>` for gradients, filters, and reusable elements
 - Include glow/blur filters for light-emitting elements (`feGaussianBlur` + `feMerge`)
 - Use `linearGradient` for directional surfaces, `radialGradient` for point-light and glow
-- Layer elements: background → ambient light → structure → hero element → accents
+- Layer elements: ambient light → structure → hero element → accents
 - Keep the viewBox at `0 0 200 200` for the main logo
-- Dark backgrounds work well: `#0D1117`, `#0C0F17`, `#111`
 
 Save to the project's `assets/` directory:
-- `assets/logo-alt-1.svg` through `assets/logo-alt-5.svg`
+- `assets/logo-alt-1.svg` through `assets/logo-alt-6.svg`
 - If there's an existing logo, include it as the "Current" option
 
 ### Step 3: Generate Comparison Page
@@ -84,7 +88,8 @@ Create `assets/logo-compare.html` — a dark-themed grid page showing all option
     transition: border-color 0.2s;
   }
   .card:hover { border-color: #F59E0B44; }
-  .card img { width: 160px; height: 160px; margin-bottom: 16px; }
+  .well { display: flex; align-items: center; justify-content: center; width: 160px; height: 160px; margin: 0 auto 16px; background: #111; border-radius: 12px; }
+  .well img { width: 140px; height: 140px; }
   .card h3 { color: #F59E0B; font-size: 16px; margin-bottom: 6px; }
   .card p { color: #888; font-size: 12px; line-height: 1.5; }
   .label { display: inline-block; background: #F59E0B22; color: #F59E0B; padding: 2px 10px; border-radius: 12px; font-size: 11px; margin-bottom: 12px; }
@@ -93,22 +98,16 @@ Create `assets/logo-compare.html` — a dark-themed grid page showing all option
 </head>
 <body>
   <h1>[Project] Logo Alternatives</h1>
-  <p class="subtitle">Current design + 5 alternatives. Click to open full-size SVG.</p>
+  <p class="subtitle">6 design directions. Click any logo to open full-size SVG.</p>
   <div class="grid">
-    <!-- One card per option. Include current if it exists. -->
-    <div class="card current">
-      <span class="label">CURRENT</span>
-      <a href="logo.svg" target="_blank"><img src="logo.svg" alt="Current"></a>
-      <h3>[Short Name]</h3>
-      <p>[1-line description]</p>
-    </div>
+    <!-- If there is an existing logo, include it as the first card with class="card current" and label CURRENT -->
     <div class="card">
       <span class="label">ALT 1</span>
-      <a href="logo-alt-1.svg" target="_blank"><img src="logo-alt-1.svg" alt="Alt 1"></a>
+      <div class="well"><a href="logo-alt-1.svg" target="_blank"><img src="logo-alt-1.svg" alt="Alt 1"></a></div>
       <h3>[Short Name]</h3>
       <p>[1-line description]</p>
     </div>
-    <!-- ... repeat for each alternative ... -->
+    <!-- ... repeat for ALT 2 through ALT 6 ... -->
   </div>
 </body>
 </html>
