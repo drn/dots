@@ -68,9 +68,6 @@ State: [GREENFIELD/CLAUDE-ONLY/PARTIAL/COMPLETE]
 - [ ] CLAUDE.md symlink to AGENTS.md
 - [ ] .claude/skills symlink to .agents/skills
 - [ ] .github/copilot-instructions.md
-- [ ] scripts/skills/sync-cross-agent-skills.sh
-- [ ] .github/workflows/skills-sync.yml
-
 Proceed? (waiting for confirmation)
 ```
 
@@ -80,8 +77,6 @@ Wait for confirmation before making changes.
 
 Create directories if they do not exist:
 - `.agents/skills/`
-- `scripts/skills/`
-- `.github/workflows/` (if not present)
 
 ### Step 4: Migrate Skills
 
@@ -200,153 +195,20 @@ Replace `[LIST_OF_SKILLS]` with a table of all skill names and descriptions from
 
 If the file already exists, check if it has a "Skill Routing" section. If not, append one.
 
-### Step 9: Generate Sync Script
+### Step 9: Run Validation
 
-Create `scripts/skills/sync-cross-agent-skills.sh`:
+Verify the setup by checking:
 
-```bash
-#!/usr/bin/env bash
-set -euo pipefail
-
-repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
-cd "$repo_root"
-
-mode="apply"
-if [[ "${1:-}" == "--check" ]]; then
-  mode="check"
-fi
-
-[[ -d ".agents/skills" ]] || { echo "Missing .agents/skills"; exit 1; }
-
-fail=0
-
-# Verify every canonical skill has name: in frontmatter
-for skill_file in .agents/skills/*/SKILL.md; do
-  skill="$(basename "$(dirname "$skill_file")")"
-  if ! grep -q "^name:" "$skill_file" 2>/dev/null; then
-    echo "MISSING name: field in $skill_file"
-    fail=1
-  fi
-done
-
-# Verify .claude/skills points to .agents/skills
-if [[ -L ".claude/skills" ]]; then
-  target="$(readlink .claude/skills)"
-  if [[ "$target" != ".agents/skills" && "$target" != "./agents/skills" && "$target" != "./.agents/skills" ]]; then
-    echo "WRONG SYMLINK: .claude/skills points to $target (expected .agents/skills)"
-    fail=1
-  fi
-elif [[ -d ".claude/skills" ]]; then
-  echo "NOT A SYMLINK: .claude/skills is a directory (should be symlink to .agents/skills)"
-  fail=1
-fi
-
-# Verify AGENTS.md exists
-[[ -f "AGENTS.md" ]] || { echo "MISSING: AGENTS.md"; fail=1; }
-
-# Detect lowercase claude.md (wrong casing — Claude Code requires CLAUDE.md)
-if ls -1 | grep -q '^claude\.md$' 2>/dev/null; then
-  echo "WRONG CASING: claude.md exists (should be CLAUDE.md)"
-  if [[ "$mode" == "apply" ]]; then
-    git mv claude.md CLAUDE.md 2>/dev/null || mv claude.md CLAUDE.md
-    echo "FIXED: Renamed claude.md to CLAUDE.md"
-  else
-    fail=1
-  fi
-fi
-
-# Verify CLAUDE.md is a symlink to AGENTS.md
-if [[ -L "CLAUDE.md" ]]; then
-  target="$(readlink CLAUDE.md)"
-  if [[ "$target" != "AGENTS.md" ]]; then
-    echo "WRONG SYMLINK: CLAUDE.md points to $target (expected AGENTS.md)"
-    fail=1
-  fi
-elif [[ -f "CLAUDE.md" ]]; then
-  echo "NOT A SYMLINK: CLAUDE.md is a regular file (should be symlink to AGENTS.md)"
-  fail=1
-else
-  echo "MISSING: CLAUDE.md"
-  fail=1
-fi
-
-# Verify Copilot instructions exist
-[[ -f ".github/copilot-instructions.md" ]] || { echo "MISSING: .github/copilot-instructions.md"; fail=1; }
-
-# Update Copilot instructions skill list if in apply mode
-if [[ "$mode" == "apply" && -f ".github/copilot-instructions.md" ]]; then
-  skill_table="| Skill | Description |\n|-------|-------------|"
-  for skill_file in .agents/skills/*/SKILL.md; do
-    skill="$(basename "$(dirname "$skill_file")")"
-    desc=$(sed -n '/^description:/s/^description: *//p' "$skill_file" | head -1)
-    skill_table="$skill_table\n| $skill | $desc |"
-  done
-  # Replace skill list placeholder or update existing table
-  if grep -q "\[LIST_OF_SKILLS\]" ".github/copilot-instructions.md" 2>/dev/null; then
-    sed -i '' "s|\[LIST_OF_SKILLS\]|$(echo -e "$skill_table")|" ".github/copilot-instructions.md"
-  fi
-fi
-
-if [[ $fail -ne 0 ]]; then
-  echo "Cross-agent sync FAILED"
-  exit 1
-fi
-
-echo "Cross-agent sync ${mode} complete"
-```
-
-Make the script executable: `chmod +x scripts/skills/sync-cross-agent-skills.sh`
-
-### Step 10: Generate CI Workflow
-
-Create `.github/workflows/skills-sync.yml`:
-
-```yaml
-name: Cross-Agent Skills Sync
-
-on:
-  pull_request:
-    paths:
-      - 'AGENTS.md'
-      - 'CLAUDE.md'
-      - '.agents/skills/**'
-      - '.claude/skills'
-      - '.github/copilot-instructions.md'
-      - 'scripts/skills/**'
-      - '.github/workflows/skills-sync.yml'
-  push:
-    branches: [main, master]
-    paths:
-      - 'AGENTS.md'
-      - 'CLAUDE.md'
-      - '.agents/skills/**'
-      - '.claude/skills'
-      - '.github/copilot-instructions.md'
-      - 'scripts/skills/**'
-      - '.github/workflows/skills-sync.yml'
-
-jobs:
-  verify-skills:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Verify cross-agent skill sync
-        run: bash scripts/skills/sync-cross-agent-skills.sh --check
-```
-
-### Step 11: Run Validation
-
-Execute the sync script in check mode:
-
-```bash
-bash scripts/skills/sync-cross-agent-skills.sh --check
-```
+1. Every skill in `.agents/skills/*/SKILL.md` has a `name:` field in frontmatter
+2. `.claude/skills` is a symlink pointing to `.agents/skills`
+3. `AGENTS.md` exists
+4. `CLAUDE.md` is a symlink to `AGENTS.md`
+5. `.github/copilot-instructions.md` exists
+6. No lowercase `claude.md` exists
 
 Report results. If any checks fail, explain what needs fixing and offer to fix it.
 
-### Step 12: Summary Report
+### Step 10: Summary Report
 
 Present a final summary:
 
@@ -366,8 +228,6 @@ Present a final summary:
 - [x] CLAUDE.md symlink
 - [x] .claude/skills symlink
 - [x] .github/copilot-instructions.md
-- [x] scripts/skills/sync-cross-agent-skills.sh
-- [x] .github/workflows/skills-sync.yml
 
 ### Agent Compatibility
 | Agent | Discovery | Status |
