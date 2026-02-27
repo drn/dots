@@ -14,15 +14,15 @@ Migrate a repository's skills to the Agent Skills open standard so they work acr
 
 ## Context
 
-- Existing .agents/skills: !`ls -1d .agents/skills/*/SKILL.md 2>/dev/null | head -30`
-- Existing .claude/commands: !`ls -1 .claude/commands/*.md 2>/dev/null | head -30`
-- Existing .claude/skills: !`ls -1d .claude/skills/*/SKILL.md 2>/dev/null | head -30`
-- Existing .codex/skills: !`ls -1d .codex/skills/*/SKILL.md 2>/dev/null | head -30`
+- Existing .agents/skills: !`find .agents/skills -maxdepth 2 -name SKILL.md 2>/dev/null | head -30`
+- Existing .claude/commands: !`find .claude/commands -maxdepth 1 -name "*.md" 2>/dev/null | head -30`
+- Existing .claude/skills: !`find .claude/skills -maxdepth 2 -name SKILL.md 2>/dev/null | head -30`
+- Existing .codex/skills: !`find .codex/skills -maxdepth 2 -name SKILL.md 2>/dev/null | head -30`
 - .codex/skills type: !`file .codex/skills 2>/dev/null | head -1`
-- AGENTS.md exists: !`test -f AGENTS.md && echo yes 2>/dev/null | head -1`
+- AGENTS.md exists: !`find . -maxdepth 1 -name AGENTS.md 2>/dev/null | head -1`
 - CLAUDE.md type: !`file CLAUDE.md 2>/dev/null | head -1`
-- claude.md (lowercase) exists: !`ls -1 | grep '^claude\.md$' 2>/dev/null | head -1`
-- Copilot instructions: !`test -f .github/copilot-instructions.md && echo yes 2>/dev/null | head -1`
+- claude.md (lowercase) exists: !`find . -maxdepth 1 -type f 2>/dev/null | grep '/claude\.md$' | head -1`
+- Copilot instructions: !`find .github -maxdepth 1 -name copilot-instructions.md 2>/dev/null | head -1`
 - Git root: !`git rev-parse --show-toplevel 2>/dev/null | head -1`
 
 ## Instructions

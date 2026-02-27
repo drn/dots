@@ -13,8 +13,8 @@ Create or improve Claude Code skills (slash commands) following established patt
 
 ## Context
 
-- Existing skills: !`ls -1 ~/.claude/commands/*.md 2>/dev/null | grep -oE '[^/]+\.md$' | cut -d. -f1 | sort`
-- Project type: !`ls -1 go.mod Gemfile package.json Cargo.toml pyproject.toml 2>/dev/null | head -3`
+- Existing skills: !`find ~/.claude/commands -maxdepth 1 -name "*.md" -exec basename {} .md \; 2>/dev/null | sort | head -30`
+- Project type: !`find . -maxdepth 1 \( -name go.mod -o -name Gemfile -o -name package.json -o -name Cargo.toml -o -name pyproject.toml \) 2>/dev/null | head -3`
 
 ## Instructions
 
