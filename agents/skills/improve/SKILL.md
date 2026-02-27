@@ -60,7 +60,9 @@ For each skill with proposed changes, determine where it lives:
 2. **Check if it is inside the current git repo** — compare the SKILL.md real path against `git rev-parse --show-toplevel`
 3. **Classify:**
    - **Local skill** — the SKILL.md is inside the current repo. Changes can be applied directly.
-   - **External skill** — the SKILL.md lives in a different repo (e.g., `~/.dots/agents/skills/`). Changes require a handoff prompt.
+   - **External skill** — the SKILL.md lives in a different repo (e.g., `~/.dots/agents/skills/`). **Never edit external skills directly.** Always generate a handoff prompt instead.
+
+**Default: local project.** All improvements and new skills target the current project unless there is a strong reason to modify an external skill. When an external skill needs changes, generate a handoff prompt (Step 5) — do not edit it even if you have write access.
 
 ### Step 4: Propose Improvements
 
@@ -78,13 +80,17 @@ Present each proposed change as a before/after diff for the user to review.
 
 ### Step 5: Apply or Hand Off
 
-**For local skills:**
+**For local skills (default path):**
 1. Ask the user which changes to apply (default: all)
-2. Edit the skill files with the approved changes
+2. Edit the skill files in the current project with the approved changes
 3. Summarize what was updated
 
-**For external skills:**
-Generate a copy-pasteable handoff prompt for each external skill with changes. The prompt should follow this format:
+**For external skills (handoff only — never edit directly):**
+Generate a copy-pasteable handoff prompt for each external skill with changes. The prompt should:
+- Be self-contained so another agent can apply it without this session's context
+- Include the full file path and repo so the receiving agent knows where to work
+
+Format:
 
 ```
 ## Skill Improvement Handoff: /<skill-name>
@@ -105,7 +111,7 @@ Generate a copy-pasteable handoff prompt for each external skill with changes. T
 <1-3 sentences explaining what session behavior motivated these changes>
 ```
 
-Print each handoff prompt inside a fenced code block so the user can copy it.
+Print each handoff prompt inside a fenced code block so the user can copy it into a session working in the skill's source repo.
 
 ### Step 6: Check for New Skill Opportunities
 
@@ -114,7 +120,9 @@ Look for patterns in the session not covered by any existing skill:
 - Recurring command sequences
 - Integration patterns with MCP tools or external services
 
-If found, propose a new skill with a brief description of what it would do and where it should live.
+If found, propose a new skill with a brief description of what it would do.
+
+**New skills default to the local project.** Create them in the current repo's skill directory (e.g., `.claude/commands/` or `agents/skills/` depending on project convention). Only propose creating a skill in an external repo (like `~/.dots`) if the skill is clearly cross-project and not specific to the current codebase — and in that case, generate a handoff prompt instead of creating it directly.
 
 ### Step 7: Fix Codebase Gaps
 
@@ -137,6 +145,8 @@ Only fix gaps that were actually encountered during the session. Do not speculat
 
 Check whether the current project has a knowledge base by looking for `context/knowledge/index.md` (shown in the Context section above).
 
+**If no knowledge base exists, skip this step entirely.** Do not suggest creating one, do not update auto memory, do not fall back to any alternative. Just move on.
+
 **If a knowledge base exists**, review the session for durable knowledge worth preserving:
 - Architectural decisions or constraints discovered during this session
 - Project-specific patterns (naming conventions, API quirks, deploy procedures)
@@ -156,8 +166,6 @@ The knowledge base uses structured topic files with an index. To add knowledge:
 - Operational items (todos, plans in progress)
 - Speculative conclusions from a single observation
 - Information that duplicates existing knowledge entries
-
-**If no knowledge base exists**, suggest that the user run `/knowledge init` to set one up. Do not create the directory structure directly from `/improve`.
 
 ### Step 9: Append to the Improvement Log
 
@@ -255,5 +263,6 @@ Each `/improve` run should leave the system measurably better than it found it. 
 - Be specific about what changed and why
 - Link improvements to actual friction in the session
 - Every improvement should have a clear "this would have saved time because..."
-- Always check skill location before editing — never edit skills in repos you are not working in
+- Always check skill location before editing — never edit skills outside the current repo; generate a handoff prompt instead
+- Default all new skills and improvements to the local project — only target external repos via handoff prompts
 - Treat the improvement log as append-only — never delete entries, only add corrections
