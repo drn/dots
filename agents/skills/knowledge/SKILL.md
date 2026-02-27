@@ -13,9 +13,9 @@ Manage a structured knowledge base at `context/knowledge/` for capturing durable
 ## Context
 
 - Knowledge index: !`cat context/knowledge/index.md 2>/dev/null | head -50`
-- Knowledge files: !`ls -1 context/knowledge/*.md 2>/dev/null | head -20`
+- Knowledge files: !`find context/knowledge -maxdepth 1 -name "*.md" 2>/dev/null | head -20`
 - Project root: !`git rev-parse --show-toplevel 2>/dev/null | head -1`
-- CLAUDE.md exists: !`ls CLAUDE.md AGENTS.md 2>/dev/null | head -2`
+- CLAUDE.md exists: !`find . -maxdepth 1 \( -name CLAUDE.md -o -name AGENTS.md \) 2>/dev/null | head -2`
 
 ## Instructions
 

@@ -28,7 +28,7 @@ If no arguments are provided, ask the user what they want to build.
 - Current branch: !`git branch --show-current`
 - Git status: !`git status --short`
 - Project root: !`pwd`
-- Project type: !`ls -1 go.mod Gemfile package.json Cargo.toml pyproject.toml setup.py requirements.txt pom.xml build.gradle Makefile 2>/dev/null | head -5`
+- Project type: !`find . -maxdepth 1 \( -name go.mod -o -name Gemfile -o -name package.json -o -name Cargo.toml -o -name pyproject.toml -o -name setup.py -o -name requirements.txt -o -name pom.xml -o -name build.gradle -o -name Makefile \) 2>/dev/null | head -5`
 - Recent commits: !`git log --oneline -5`
 - Test files: !`find . -maxdepth 4 -name "*_test.*" -o -name "*.test.*" -o -name "*_spec.*" 2>/dev/null | head -10`
 
