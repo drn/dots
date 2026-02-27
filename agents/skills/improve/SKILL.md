@@ -19,10 +19,9 @@ Run `/improve` at the end of any session where:
 ## Context
 
 - Current repo: !`git rev-parse --show-toplevel 2>/dev/null | head -1`
-- Skills directory: !`ls -1d ~/.claude/skills/*/SKILL.md 2>/dev/null | head -30`
-- Skill canonical source: !`readlink ~/.claude/skills 2>/dev/null | head -1`
+- Skills directory: !`command ls -1d agents/skills/*/SKILL.md 2>/dev/null | head -30`
 - Knowledge base index: !`cat context/knowledge/index.md 2>/dev/null | head -30`
-- Improvement log (recent): !`tail -80 ~/.dots/agents/skills/improve/log.md 2>/dev/null | head -80`
+- Improvement log (recent): !`tail -80 agents/skills/improve/log.md 2>/dev/null | head -80`
 
 ## Instructions
 
