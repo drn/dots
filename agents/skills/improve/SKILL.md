@@ -21,7 +21,6 @@ Run `/improve` at the end of any session where:
 - Current repo: !`git rev-parse --show-toplevel 2>/dev/null | head -1`
 - Skills directory: !`find agents/skills -maxdepth 2 -name SKILL.md 2>/dev/null | head -30`
 - Knowledge base index: !`cat context/knowledge/index.md 2>/dev/null | head -30`
-- Improvement log (recent): !`tail -80 agents/skills/improve/log.md 2>/dev/null | head -80`
 
 ## Instructions
 
@@ -36,8 +35,6 @@ Scan the full conversation for:
 - Recurring manual steps that could be codified into a skill
 
 List each skill used with a brief note on what it did in this session.
-
-**Regression check:** Cross-reference the improvement log (from Context above). If any friction in this session was caused by a recent improvement, flag it as a regression and prioritize reverting or fixing it.
 
 **Note:** If improvements were already applied earlier in the same session (e.g., from manual fixes or a prior `/improve` run), skip those and only propose net-new changes.
 
@@ -72,8 +69,6 @@ For each skill with learnings, draft specific changes:
 - **Add missing instructions** (e.g., "can also accept `--input` flag for existing files")
 - **Add troubleshooting tips** (e.g., "if tables show whitespace, check for multi_cell usage")
 - **Suggest new skills** if a recurring pattern does not have one yet
-
-**Escalation:** Check the improvement log for the same skill. If it has been patched 3 or more times, flag it for deeper restructuring instead of another incremental patch. Note the pattern (e.g., "this skill has been patched 4 times for output formatting — consider a structural rewrite of the output section").
 
 Present each proposed change as a before/after diff for the user to review.
 
@@ -166,30 +161,6 @@ The knowledge base uses structured topic files with an index. To add knowledge:
 - Speculative conclusions from a single observation
 - Information that duplicates existing knowledge entries
 
-### Step 9: Append to the Improvement Log
-
-After all changes are applied (or handoff prompts generated), append a summary to `agents/skills/improve/log.md` in the current repo. Create the file if it does not exist.
-
-Each entry follows this format:
-
-```
-## YYYY-MM-DD — <project name>
-
-**Skills improved:** /skill1, /skill2
-**Codebase gaps fixed:** <count>
-**Knowledge captured:** <count> entries
-**Handoffs generated:** /skill3 (external)
-**New skills proposed:** /skill-name
-**Regressions found:** none | <description>
-
-Changes:
-- /skill1: <one-line summary>
-- /skill2: <one-line summary>
-- codebase: <one-line summary>
-```
-
-This log enables future runs to detect patterns, catch regressions, and escalate chronic issues. Keep entries concise — one line per change, no diffs.
-
 **Note:** The `/improve` skill itself is in scope for improvement. If this session revealed friction in the improve workflow, include it in the report.
 
 ## What NOT to Improve
@@ -252,8 +223,7 @@ Updated context/knowledge/index.md:
 Each `/improve` run should leave the system measurably better than it found it. The goal is not just fixing today's friction — it is building a system that compounds: each session's learnings reduce friction in all future sessions.
 
 - **Small bets, high frequency** — Prefer small, targeted changes applied often over large rewrites applied rarely
-- **Log everything** — The improvement log is the memory that turns isolated fixes into trend detection
-- **Escalate, do not patch forever** — If the log shows recurring friction in the same skill, stop patching and restructure
+- **Escalate, do not patch forever** — If the same skill keeps getting patched, stop patching and restructure
 - **Close the loop** — Check whether past improvements actually helped. Revert what did not.
 - **Widen the surface** — Skills, codebase, knowledge, and the improve process itself are all in scope
 
@@ -264,4 +234,3 @@ Each `/improve` run should leave the system measurably better than it found it. 
 - Every improvement should have a clear "this would have saved time because..."
 - Always check skill location before editing — never edit skills outside the current repo; generate a handoff prompt instead
 - Default all new skills and improvements to the local project — only target external repos via handoff prompts
-- Treat the improvement log as append-only — never delete entries, only add corrections
