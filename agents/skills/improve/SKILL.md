@@ -68,7 +68,7 @@ For each skill with learnings, draft specific changes:
 - **Add learned patterns** (e.g., "when exporting tables, use proportional column widths")
 - **Add missing instructions** (e.g., "can also accept `--input` flag for existing files")
 - **Add troubleshooting tips** (e.g., "if tables show whitespace, check for multi_cell usage")
-- **Suggest new skills** if a recurring pattern does not have one yet
+- **Flag new skill opportunities** — if a recurring pattern has no skill, note it here and detail it in Step 6
 
 Present each proposed change as a before/after diff for the user to review.
 
@@ -109,14 +109,41 @@ Print each handoff prompt inside a fenced code block so the user can copy it int
 
 ### Step 6: Check for New Skill Opportunities
 
-Look for patterns in the session not covered by any existing skill:
-- Multi-step workflows that were done manually
-- Recurring command sequences
-- Integration patterns with MCP tools or external services
+Review the full session for patterns that are **not covered by any existing skill** but would benefit from one. Look for:
 
-If found, propose a new skill with a brief description of what it would do.
+- **Multi-step workflows done manually** — sequences of 3+ steps that followed a predictable pattern (e.g., "check CI, read logs, fix issue, re-push" repeated across sessions)
+- **Recurring command sequences** — the same shell commands or tool calls issued in a consistent order
+- **Integration patterns** — interactions with MCP tools, external APIs, or services that required domain knowledge to get right
+- **User corrections that reveal a process** — when the user redirected you toward a specific workflow, that workflow might be a skill
+- **Arguments passed to `/improve` itself** — if the user described a capability gap when invoking `/improve`, treat that as a direct signal
 
-**New skills default to the local project.** Create them in the current repo's skill directory (e.g., `.claude/commands/` or `agents/skills/` depending on project convention). Only propose creating a skill in an external repo (like `~/.dots`) if the skill is clearly cross-project and not specific to the current codebase — and in that case, generate a handoff prompt instead of creating it directly.
+#### Threshold Test
+
+Only propose a skill if it passes **at least two** of these criteria:
+1. **Repeatable** — the workflow would likely recur in future sessions (not a one-off)
+2. **Non-trivial** — it involves enough steps or domain knowledge that an agent without the skill would get it wrong or take significantly longer
+3. **Self-contained** — it can be described as a clear input-to-output process with defined success criteria
+
+#### Proposal Format
+
+For each new skill opportunity, present:
+
+```
+**Proposed Skill: /<name>**
+- **What it does:** <1-2 sentence description>
+- **Trigger:** When would a user invoke this? What keywords or situations?
+- **Key steps:** <numbered list of what the skill would instruct the agent to do>
+- **Dynamic context needed:** <what live data the skill would inject, if any>
+- **Cross-project or local?** <local (default) or cross-project with rationale>
+```
+
+#### Creating the Skill
+
+After the user approves a proposal:
+1. **If the skill is local (default):** invoke `/write-skill <name> — <description>` to create it following established patterns and validation rules. If `/write-skill` is not available, create the SKILL.md directly in the repo skills directory.
+2. **If the skill is cross-project:** generate a handoff prompt (same format as Step 5) so it can be created in the source repo via `/write-skill` there.
+
+**New skills default to the local project.** Only propose creating a skill in an external repo (like `~/.dots`) if the skill is clearly cross-project and not specific to the current codebase — and in that case, generate a handoff prompt instead of creating it directly.
 
 ### Step 7: Fix Codebase Gaps
 
@@ -194,8 +221,14 @@ Handoff prompt generated below.
 
 ### New Skill Proposal: /coverage-report
 
-Recurring pattern: run tests, parse coverage output, highlight untested
-lines in changed files. Would save manual coverage checking.
+**Proposed Skill: /coverage-report**
+- **What it does:** Run tests, parse coverage output, and highlight untested lines in changed files.
+- **Trigger:** After writing code, when checking test coverage for a PR or branch.
+- **Key steps:** 1. Identify changed files on branch. 2. Run test suite with coverage. 3. Parse coverage report. 4. Show untested lines in changed files only.
+- **Dynamic context needed:** Changed files list, test runner config.
+- **Cross-project or local?** Cross-project (handoff to ~/.dots).
+
+Create with /write-skill? (y/n)
 
 ## Codebase Gaps Fixed
 
