@@ -123,14 +123,13 @@ Create `assets/logo-compare.html` — a dark-themed grid page showing all option
 
 When the user picks a logo:
 
-1. Copy it to `assets/logo.svg` (the main logo)
-2. Copy it to `favicon.svg` in the project root (same 200x200 viewBox — browsers scale SVG favicons automatically)
-3. Add the logo to the top of the project's README, centered at 120px width:
+1. Copy it to `favicon.svg` in the project root
+2. Add the logo to the top of the project's README, centered at 120px width:
    ```html
-   <p align="center"><img src="assets/logo.svg" width="120"></p>
+   <p align="center"><img src="favicon.svg" width="120"></p>
    ```
    Insert this as the very first line, before any existing heading or content.
-4. Clean up the `logo-alt-*.svg` files and `logo-compare.html`
+3. Clean up the `logo-alt-*.svg` files and `logo-compare.html`
 
 ## Design Principles
 
