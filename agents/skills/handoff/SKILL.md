@@ -13,7 +13,7 @@ Generate a structured prompt capturing the current conversation context so it ca
 
 ## Context
 
-- Repo: !`git rev-parse --show-toplevel 2>/dev/null | xargs basename 2>/dev/null | head -1`
+- Repo: !`git rev-parse --show-toplevel 2>/dev/null | grep -oE '[^/]+$' | head -1`
 - Branch: !`git branch --show-current`
 - Recent commits: !`git log origin/HEAD..HEAD --oneline 2>/dev/null | head -15`
 - Uncommitted changes: !`git status --short 2>/dev/null | head -20`
