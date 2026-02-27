@@ -1,6 +1,6 @@
 ---
 name: merge
-allowed-tools: Bash(git add:*), Bash(git commit:*), Bash(git checkout:*), Bash(git pull:*), Bash(git push:*), Bash(git branch:*), Bash(git fetch:*), Bash(git log:*), Bash(git diff:*), Bash(git reset:*), Bash(git rebase:*), mcp__github__list_pull_requests, mcp__github__create_pull_request, mcp__github__update_pull_request, mcp__github__merge_pull_request
+allowed-tools: Bash(git add:*), Bash(git commit:*), Bash(git checkout:*), Bash(git pull:*), Bash(git push:*), Bash(git branch:*), Bash(git fetch:*), Bash(git log:*), Bash(git diff:*), Bash(git reset:*), Bash(git rebase:*), Bash(gh pr:*), Bash(gh pr list:*), Bash(gh pr create:*), Bash(gh pr edit:*), Bash(gh pr merge:*)
 description: Merge current branch to master via GitHub PR merge
 ---
 
@@ -50,14 +50,27 @@ Merge the current branch into master via GitHub PR merge. This preserves PR asso
    - Craft a PR title and body based on your analysis from step 3:
      - **Title**: concise imperative summary of what the branch accomplishes (not individual commits)
      - **Body**: a short description of the changes, followed by `Co-Authored-By: Claude <noreply@anthropic.com>`
-   - Use `mcp__github__list_pull_requests` (with `head` set to `<owner>:<branch>`, `state: "open"`) to check if a PR already exists
-   - If a PR exists, update it with `mcp__github__update_pull_request` (set title and body)
-   - If no PR exists, create one with `mcp__github__create_pull_request` (base: `master`)
+   - Check if a PR already exists:
+     ```
+     gh pr list --head <branch> --state open --json number,url
+     ```
+   - If a PR exists, update it:
+     ```
+     gh pr edit <number> --title "..." --body "..."
+     ```
+   - If no PR exists, create one:
+     ```
+     gh pr create --base master --head <branch> --title "..." --body "..."
+     ```
 
 7. **Squash merge via GitHub:**
    - Use the same title and body from step 6 as the squash commit message
-   - Use `mcp__github__merge_pull_request` with `merge_method: "squash"` and the title/body as commit message
-   - If squash is not allowed, fall back to `mcp__github__merge_pull_request` with `merge_method: "rebase"`
+   - Squash merge the PR:
+     ```
+     gh pr merge <number> --squash --subject "..." --body "..."
+     ```
+   - If squash merge fails (e.g. branch protection), try with `--auto` flag to enable auto-merge when checks pass
+   - If that also fails, fall back to rebase merge: `gh pr merge <number> --rebase`
    - This merges through GitHub so the PR shows as "Merged" and the commit links to the PR
 
 8. **Update local master:**
