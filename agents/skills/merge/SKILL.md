@@ -1,6 +1,6 @@
 ---
 name: merge
-allowed-tools: Bash(git add:*), Bash(git commit:*), Bash(git checkout:*), Bash(git pull:*), Bash(git push:*), Bash(git branch:*), Bash(git fetch:*), Bash(git log:*), Bash(git diff:*), Bash(git reset:*), Bash(git rebase:*), Bash(gh pr:*), Bash(gh pr list:*), Bash(gh pr create:*), Bash(gh pr edit:*), Bash(gh pr merge:*)
+allowed-tools: Bash(git add:*), Bash(git commit:*), Bash(git checkout:*), Bash(git pull:*), Bash(git push:*), Bash(git branch:*), Bash(git fetch:*), Bash(git log:*), Bash(git diff:*), Bash(git reset:*), Bash(git rebase:*), Bash(gh pr:*), Bash(gh pr list:*), Bash(gh pr create:*), Bash(gh pr edit:*), Bash(gh pr merge:*), Bash(git -C:*)
 description: Merge current branch to master via GitHub PR merge
 ---
 
@@ -81,5 +81,15 @@ Merge the current branch into master via GitHub PR merge. This preserves PR asso
    - Confirm the merge was successful
    - Show the PR URL (so the user can verify the "Merged" status)
    - Show the final commit on master
+
+10. **Sync ~/.dots checkout (dots repo only):**
+    - Check if `/Users/darrencheng/.dots` exists and is a different directory from the current working directory (i.e. we're in a worktree)
+    - Check if the current repo shares the same origin as `~/.dots` (compare `git remote get-url origin` with `git -C /Users/darrencheng/.dots remote get-url origin`)
+    - If both conditions are true, automatically run:
+      ```
+      git -C /Users/darrencheng/.dots fetch origin
+      git -C /Users/darrencheng/.dots reset --hard origin/master
+      ```
+    - Report the updated commit in `~/.dots`
 
 Execute all steps in sequence. If any step fails, stop and report the error.
