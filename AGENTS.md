@@ -122,6 +122,16 @@ The `` !`command` `` syntax runs shell commands and injects output as context. *
 
 See `/write-skill` for the full skill-authoring guide.
 
+## Skill Auto-Activation
+
+Claude Code auto-activates skills by matching keywords in each skill's `description` field against the user's message. Other agents (Codex, Copilot) do not have this mechanism, so use this routing table instead.
+
+When the user's message matches a phrase below, read and follow the corresponding skill:
+
+| Trigger Phrases | Skill |
+|-----------------|-------|
+| "last screenshot", "see screenshot", "recent screenshot", "show screenshot", "last N screenshots" | `agents/skills/screenshot/SKILL.md` |
+
 ## Critical Notes
 
 - Installation is destructive (no backups)
