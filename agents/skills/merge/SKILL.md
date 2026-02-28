@@ -83,9 +83,8 @@ Merge the current branch into master via GitHub PR merge. This preserves PR asso
    - Show the final commit on master
 
 10. **Sync ~/.dots checkout (dots repo only):**
-    - Check if `/Users/darrencheng/.dots` exists and is a different directory from the current working directory (i.e. we're in a worktree)
-    - Check if the current repo shares the same origin as `~/.dots` (compare `git remote get-url origin` with `git -C /Users/darrencheng/.dots remote get-url origin`)
-    - If both conditions are true, automatically run:
+    - Skip this step unless `$CONDUCTOR_ROOT_PATH` equals `/Users/darrencheng/.dots`
+    - If it matches, automatically run:
       ```
       git -C /Users/darrencheng/.dots fetch origin
       git -C /Users/darrencheng/.dots reset --hard origin/master
