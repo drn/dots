@@ -48,6 +48,12 @@ jobs:
       - name: Go Lint
         run: revive -set_exit_status ./...
 
+      - name: Install LuaJIT
+        run: brew install luajit
+
+      - name: Hammerspoon Tests
+        run: luajit hammerspoon/test.lua
+
       - name: Skill Lint
         run: .github/lint-skills.sh
 

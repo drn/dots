@@ -3,11 +3,9 @@ local background = require 'background'
 local bluetooth  = require 'bluetooth'
 local brightness = require 'brightness'
 local browser    = require 'browser'
-local log        = require 'log'
 local music      = require 'music'
 local osx        = require 'osx'
 local resize     = require 'resize'
-local screen     = require 'screen'
 local volume     = require 'volume'
 
 -- Window Management
@@ -126,10 +124,6 @@ hs.hotkey.bind({'ctrl', 'cmd'}, '/', function()
   alert.show(time..' - '..date, 2.5)
 end)
 
--- Open Hammerspoon Console
-
-hs.hotkey.bind({'ctrl', 'alt', 'cmd'}, 'o', function() hs.openConsole() end)
-
 -- OS Bindings
 
 hs.hotkey.bind({'ctrl', 'alt', 'cmd', 'shift'}, 'l', function()
@@ -208,12 +202,7 @@ hs.hotkey.bind({'ctrl', 'alt', 'cmd', 'shift'}, '0', function()
   bluetooth.hd1Toggle()
 end)
 
--- Test Binding
-
-hs.hotkey.bind({'ctrl', 'alt', 'cmd'}, 'j', function()
-end)
-
--- Open hammerspoon console
+-- Toggle Hammerspoon Console
 
 hs.hotkey.bind({'ctrl', 'alt', 'cmd'}, 'delete', function()
   hs.toggleConsole()
@@ -223,10 +212,6 @@ end)
 
 hs.hotkey.bind({'ctrl', 'cmd'}, 'delete', function() hs.reload() end)
 hs.pathwatcher.new(os.getenv('HOME') .. '/.hammerspoon/', hs.reload):start()
-
--- Watch for Screen changes
-
--- screen.watch()
 
 -- Set default alert styles
 

@@ -14,7 +14,7 @@ local function display(text, value)
 end
 
 local function increase(screen, delta)
-  current = screen:getBrightness()
+  local current = screen:getBrightness()
   if not current then return end
   delta = (delta or 5) / 100.0
   local value = current + delta
@@ -23,7 +23,7 @@ local function increase(screen, delta)
 end
 
 local function decrease(screen, delta)
-  current = screen:getBrightness()
+  local current = screen:getBrightness()
   if not current then return end
   delta = (delta or 5) / 100.0
   local value = current - delta

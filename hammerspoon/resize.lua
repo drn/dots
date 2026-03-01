@@ -1,19 +1,13 @@
 local resize = {}
+local lib = require 'lib'
+
+local frameForUnit = lib.frameForUnit
 
 local function isTerm(win)
   local app = win:application()
   if app == nil then return false end
   local title = app:title()
-  return title == 'iTerm2' or title == 'Alacritty'
-end
-
-local function frameForUnit(baseframe, unit)
-  return {
-    x = baseframe.x + (unit.x * baseframe.w),
-    y = baseframe.y + (unit.y * baseframe.h),
-    w = unit.w * baseframe.w,
-    h = unit.h * baseframe.h,
-  }
+  return title == 'Alacritty'
 end
 
 local function setUnit(unit)
@@ -38,7 +32,7 @@ local function setUnit(unit)
     end
   end
 
-  if justified.x ~= updated.x or justified.h ~= updated.h then
+  if justified.x ~= updated.x or justified.y ~= updated.y then
     win:setFrame(justified, 0)
   end
 end
@@ -107,10 +101,9 @@ function resize.changeScreen()
   local next = current:next()
   if current:id() == next:id() then return end
   -- handle full-sreen terminal screen change
-  term=isTerm(win) and not win:isMaximizable()
+  local term = isTerm(win) and not win:isMaximizable()
   if term then hs.eventtap.keyStroke({"cmd"}, "f") end
   -- set the frame of current window to the next screen
-  local win = hs.window.focusedWindow()
   win:setFrame(next:fullFrame(), 0)
   if term then hs.eventtap.keyStroke({"cmd"}, "f") end
 end

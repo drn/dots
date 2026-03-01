@@ -26,7 +26,7 @@ local function backgroundPath(target)
 end
 
 local function backgroundFolder(target)
-  folder = 'horizontal'
+  local folder = 'horizontal'
   if target == 'second' then folder = 'vertical' end
   return '~/Pictures/'..folder..'/'
 end
