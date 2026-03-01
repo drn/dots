@@ -5,7 +5,7 @@ local alert = require 'alert'
 
 local function app()
   local app = hs.application.frontmostApplication()
-  if app:name() == 'Google Chrome' or app:name() == 'Brave Browser' then
+  if app:name() == 'Brave Browser' then
     return app
   end
   return nil
@@ -30,7 +30,7 @@ function browser.closeOtherTabs()
       set activeTabIndex to active tab index of window 1
       set counter to 1
       repeat with thisTab in tabList
-        if not counter = activeTabIndex then
+        if counter is not equal to activeTabIndex then
           close thisTab
         end if
         set counter to counter + 1

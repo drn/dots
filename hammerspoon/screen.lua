@@ -11,7 +11,7 @@ local function handleCountChange(count)
   if count == 1 then
     -- TODO
   elseif count == 2 then
-    app = hs.application.applicationsForBundleID('com.googlecode.iterm2')[1]
+    local app = hs.application.applicationsForBundleID('com.googlecode.iterm2')[1]
     if app ~= nil then
       for _,win in pairs(app:allWindows()) do
         if win:title():match('vertical') then

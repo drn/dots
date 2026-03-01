@@ -1,20 +1,14 @@
 local spotify = {}
 local alert = require 'alert'
 local as    = require 'hs.applescript'
+local lib   = require 'lib'
+
+local formatSeconds = lib.formatSeconds
 
 local function tell(cmd)
   local _cmd = 'tell application "Spotify" to ' .. cmd
   local _ok, result = as.applescript(_cmd)
   return result
-end
-
-local function formatSeconds(seconds)
-  local minutes = math.floor(seconds / 60)
-  local hours = math.floor(minutes / 60)
-  local formatted = math.floor(seconds % 60)..'s'
-  if minutes > 0 then formatted = (minutes % 60)..'m '..formatted end
-  if hours > 0 then formatted = hours..'h '..formatted end
-  return formatted
 end
 
 local function duration()
