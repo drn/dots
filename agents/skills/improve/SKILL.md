@@ -200,6 +200,56 @@ The knowledge base uses structured topic files with an index. To add knowledge:
 3. Propose additions as diffs to the relevant topic file(s) and index
 4. Apply after user approval
 
+**Part C: Knowledge Graph Gap Analysis**
+
+Proactively identify knowledge graph gaps — entities, topic files, or categories the session revealed that don't yet exist. This goes beyond "capture what was discussed" to "suggest what *should* be tracked."
+
+1. **Scan for uncaptured entities**: Compare entities mentioned in this session against the knowledge index. Flag any that were discussed substantively but have no entry (e.g., a merchant with GMV data, a new integration partner, a person with a defined role).
+
+2. **Suggest new topic files**: If session content doesn't fit cleanly into existing knowledge files, propose a new topic file. Include:
+   - Proposed filename and topic description
+   - 2-3 seed entities that would go in it
+   - Why existing files aren't the right home
+
+3. **Identify missing entity types or relationship types**: The current taxonomy (from `/capture`) defines:
+   - Entity types: `service`, `company`, `integration`, `system`, `process`, `policy`
+   - Relationship types: `integrates_with`, `routes_through`, `hosted_on`, `owned_by`, `manages`, `replaces`, `depends_on`, `provides`, `consumes`
+
+   If the session surfaced entities or relationships that don't fit these categories, propose additions to `/capture`'s taxonomy. Common gaps that have emerged in practice:
+   - Entity types: `product` (a Thanx product like Ordering), `strategy` (a strategic direction), `market_context` (competitive landscape), `partner` (vs generic company), `case_study` (merchant success story with metrics)
+   - Relationship types: `migrated_from`, `competes_with`, `evaluated_by`, `implemented_by`, `fills_gap_for`, `displaces`
+
+   For each proposed addition, include the entity/relationship name, a one-line definition, and 2-3 examples from the session or knowledge base that demonstrate the need.
+
+4. **Check coverage map staleness**: Scan the Coverage Map section of `index.md` for:
+   - Context files that exist in `context/` but aren't listed in the coverage map
+   - Context files listed in the coverage map that no longer exist
+   - Knowledge files whose "Last Updated" date is >30 days old and were touched in this session
+
+5. **Report as a "Knowledge Gaps" section** in the improvement report:
+
+```
+## Knowledge Gaps Identified
+
+### Uncaptured Entities
+- **[Entity Name]** — mentioned as [role/context], no knowledge entry exists
+  - Suggested file: [existing-file.md] or [new-file.md]
+
+### New Topic File Proposals
+- **[filename.md]** — [description]. Seed entities: [list].
+  - Why: [why existing files aren't the right home]
+
+### Taxonomy Gaps
+- New entity type: `[type]` — [definition]. Examples: [from session or KB]
+- New relationship type: `[type]` — [definition]. Examples: [from session or KB]
+
+### Stale Coverage
+- `context/[file].md` — exists but not in coverage map
+- `knowledge/[file].md` — last updated [date], touched in this session → update date
+```
+
+Only report gaps that are actionable and non-trivial. Don't flag every passing mention — focus on entities with enough substance to warrant a knowledge entry (verified facts, defined relationships, business significance).
+
 **Do NOT capture:**
 - Anything already in CLAUDE.md or AGENTS.md
 - Session-specific transients (file paths being worked on, temp state)
@@ -266,6 +316,19 @@ Added to context/knowledge/thanx-infrastructure.md:
 
 Updated context/knowledge/index.md:
 - thanx-infrastructure.md Last Updated → 2026-02-26
+
+## Knowledge Gaps Identified
+
+### Uncaptured Entities
+- **Nautical Bowls** — mentioned as Thanx+Toast case study with metrics, no entry
+  - Suggested file: merchant-accounts.md
+
+### Taxonomy Gaps
+- New entity type: `case_study` — A merchant success story with quantified outcomes.
+  Examples: Nautical Bowls (38% activation, 3x active members), Nothing Bundt Cakes ($125M+ loyalty revenue)
+
+### Stale Coverage
+- `context/thanx/ordering-positioning.md` — exists but not in coverage map
 
 ## Apply all? (y/n)
 ```
