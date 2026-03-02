@@ -1,8 +1,8 @@
 ---
 name: improve
-description: Improve Skills & Commands
+description: Improve skills, capture context & knowledge
 ---
-# Improve Skills & Commands
+# Improve Skills, Capture Context & Knowledge
 
 Analyze the current conversation to improve skills, fix codebase gaps, capture durable knowledge, and generate handoff prompts for skills managed outside this repository.
 
@@ -15,6 +15,7 @@ Run `/improve` at the end of any session where:
 - Technical assumptions in a skill turned out to be wrong
 - You learned something that would make a skill work better next time
 - You hit a codebase gap (missing docs, tests, error handling, or config)
+- You learned new organizational context (people, roles, vendor contacts, processes)
 
 ## Context
 
@@ -162,11 +163,29 @@ For each gap found:
 
 Only fix gaps that were actually encountered during the session. Do not speculatively audit the codebase.
 
-### Step 8: Capture Knowledge for Future Sessions
+### Step 8: Capture Context & Knowledge
+
+**Part A: Operational Context**
+
+Review the session for extractable operational context:
+- People mentioned (names, roles, responsibilities, reporting lines)
+- Vendors/tools (active, deprecated, categories)
+- Processes (who handles what, escalation paths)
+- Policies and requirements (compliance, partnerships)
+- Decisions made and their rationale
+
+Update existing context files in `context/` directory as appropriate:
+- `context/thanx/org-contacts.md` — People and roles
+- `context/vendors.md` — Tools, sub-processors, integrations
+- `context/processes.md` — How things work, who to contact
+- Create new files as needed for distinct topics
+- Update CLAUDE.md if the context applies broadly across tasks
+
+**Part B: Knowledge Graph**
 
 Check whether the current project has a knowledge base by looking for `context/knowledge/index.md` (shown in the Context section above).
 
-**If no knowledge base exists, skip this step entirely.** Do not suggest creating one, do not update auto memory, do not fall back to any alternative. Just move on.
+**If no knowledge base exists, skip Part B entirely.** Do not suggest creating one, do not update auto memory, do not fall back to any alternative. Just move on.
 
 **If a knowledge base exists**, review the session for durable knowledge worth preserving:
 - Architectural decisions or constraints discovered during this session
