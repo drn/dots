@@ -71,6 +71,8 @@ For each skill with learnings, draft specific changes:
 - **Add troubleshooting tips** (e.g., "if tables show whitespace, check for multi_cell usage")
 - **Flag new skill opportunities** — if a recurring pattern has no skill, note it here and detail it in Step 6
 
+**Code-over-skills check:** Before proposing any change that adds inline scripts (bash, Ruby, Python, data transformations, API calls, or parsing logic) to a SKILL.md, check whether the project's CLAUDE.md has rules about where logic should live (e.g., "code over skills", "capture reusable logic in CLI commands"). If it does, do NOT add the script to the skill. Instead, route it to Step 7 (Fix Codebase Gaps) as a missing CLI command. The skill improvement becomes: "reference the new CLI command" rather than "embed the script."
+
 Present each proposed change as a before/after diff for the user to review.
 
 ### Step 5: Apply or Hand Off
