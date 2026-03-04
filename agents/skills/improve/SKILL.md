@@ -161,7 +161,7 @@ Review the session for codebase gaps that were discovered or worked around but n
 For each gap found:
 1. Describe the gap and how it caused friction
 2. Propose a specific fix (as a diff when possible)
-3. Apply after user approval
+3. **Apply immediately by default** — straightforward fixes (missing CLI flags, error handling, docs, tests) should be implemented and committed without asking. Only pause for approval on risky changes (breaking API changes, large refactors, changes to shared interfaces).
 
 Only fix gaps that were actually encountered during the session. Do not speculatively audit the codebase.
 
