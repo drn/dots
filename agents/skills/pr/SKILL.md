@@ -104,11 +104,11 @@ Print the PR URL.
 
 Repeat the following until CI is fully green **and** there are no unresolved review comments:
 
-#### 4a: Check CI status
+#### 4a: Check CI status and unresolved threads
 
 - Use `mcp__github__get_pull_request_status` to see the current state of all checks.
 - If checks are still running, poll `mcp__github__get_pull_request_status` with exponential backoff: wait 60s, then 120s, then 240s, capping at 300s between polls. Stop after 30 minutes total and report to the user.
-- If all checks pass and there are no pending review comments, you are done — go to Step 5.
+- If all checks pass, proceed to 4c to check for unresolved review threads. Only go to Step 5 when CI is green **and** 4c confirms zero unresolved threads.
 - If any checks have failed, proceed to 4b immediately — do not wait.
 
 #### 4b: If CI fails — diagnose and fix
@@ -121,15 +121,68 @@ Repeat the following until CI is fully green **and** there are no unresolved rev
   - Stage and commit the fix with a clear message describing what was fixed and why.
 - Push all fixes with `git push`.
 
-#### 4c: Check for PR review comments
+#### 4c: Check for and resolve ALL review threads
 
-- Fetch reviews with `mcp__github__get_pull_request_reviews` and comments with `mcp__github__get_pull_request_comments`.
-- For each unresolved comment thread:
-  - Read and understand the feedback.
-  - If the comment requests a code change, make the change, then reply confirming what you changed.
-  - If the comment is a question or discussion point, reply thoughtfully.
-  - If you disagree with a suggestion, reply explaining your reasoning rather than silently ignoring it.
-- After addressing all comments, stage, commit, and push the changes.
+This step handles both human and automated bot comments (CodeRabbit, qlty, Copilot, GitHub Actions, etc.). Every unresolved thread blocks mergeability.
+
+**Fetch unresolved threads** using `gh api graphql`:
+
+```
+gh api graphql -f query='
+  query {
+    repository(owner: "<owner>", name: "<repo>") {
+      pullRequest(number: <number>) {
+        reviewThreads(first: 100) {
+          nodes {
+            id
+            isResolved
+            comments(first: 10) {
+              nodes {
+                body
+                author { login }
+                path
+                line
+              }
+            }
+          }
+        }
+      }
+    }
+  }'
+```
+
+Filter to threads where `isResolved` is false. If there are zero unresolved threads, this step is done — return to 4a (which will proceed to Step 5 if CI is also green).
+
+**For each unresolved thread, classify and respond:**
+
+1. **Identify the author.** Check the first comment author login. Bot usernames typically end in `[bot]` (e.g., `coderabbitai[bot]`, `qltysh[bot]`, `github-actions[bot]`, `copilot-pull-request-review[bot]`).
+
+2. **Triage the comment.** Read the comment body and the referenced code. Classify as one of:
+   - **(a) Valid fix needed** — The comment identifies a real bug, missing error handling, or correctness issue. Make the code change.
+   - **(b) Intentional design choice** — The comment suggests a change that conflicts with the existing pattern, project conventions, or was a deliberate decision. No code change needed.
+   - **(c) Informational or stylistic** — The comment flags metrics (complexity scores, similar code), asks a question, or suggests a cosmetic change that is not worth addressing. No code change needed.
+
+   For bot comments specifically: bot suggestions are frequently false positives or conflict with project conventions. Do not blindly apply every suggestion. Evaluate each on its merits. Complexity warnings from linter bots (qlty, CodeClimate) are almost always informational — the complexity is inherent to the function. Similar-code detection is usually informational when the code implements a shared interface pattern.
+
+3. **Reply to the thread.** Always reply before resolving, so there is an audit trail:
+   - **(a)** Reply confirming what you changed (e.g., "Fixed — added nil check at line 42").
+   - **(b)** Reply explaining why no change was made (e.g., "This complexity is inherent to the dispatch logic — extracting sub-functions would hurt readability without reducing actual complexity").
+   - **(c)** Reply with a brief acknowledgment (e.g., "Acknowledged — these implement the same abstract interface, so the similarity is expected").
+
+   Use `mcp__github__create_pull_request_review_comment_reply` to reply to the thread, passing the first comment ID as `comment_id`.
+
+4. **Resolve the thread** via GraphQL mutation:
+
+```
+gh api graphql -f query='
+  mutation {
+    resolveReviewThread(input: {threadId: "<thread_node_id>"}) {
+      thread { isResolved }
+    }
+  }'
+```
+
+**After addressing all threads:** if any code changes were made, stage, commit, and push them before looping back.
 
 #### 4d: Loop back to 4a
 
