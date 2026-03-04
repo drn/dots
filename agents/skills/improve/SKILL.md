@@ -22,6 +22,7 @@ Run `/improve` at the end of any session where:
 - Current repo: !`git rev-parse --show-toplevel 2>/dev/null | head -1`
 - Skills directory: !`find agents/skills -maxdepth 2 -name SKILL.md 2>/dev/null | head -30`
 - Knowledge base index: !`cat context/knowledge/index.md 2>/dev/null | head -30`
+- Voice profile: !`find . -maxdepth 3 -name 'voice-profile.md' -o -name 'VOICE.md' -o -name 'voice.md' 2>/dev/null | head -5`
 
 ## Instructions
 
@@ -259,6 +260,27 @@ Only report gaps that are actionable and non-trivial. Don't flag every passing m
 - Speculative conclusions from a single observation
 - Information that duplicates existing knowledge entries
 
+**Part D: Voice Profile**
+
+Check whether the repo has a voice profile by looking at the dynamic context above (Voice profile field). Common locations: `voice-profile.md`, `VOICE.md`, or `voice.md` at the repo root or in `context/`.
+
+**If no voice profile exists, skip Part D entirely.** Do not suggest creating one.
+
+**If a voice profile exists**, review the session for patterns that should refine it:
+
+1. **Read the existing voice profile** to understand current guidelines
+2. **Scan the session for voice/tone signals:**
+   - User corrections to tone, wording, or style (e.g., "make it more direct", "too formal", "don't use jargon")
+   - Consistent patterns in user-written text (sentence length, vocabulary level, use of contractions, humor)
+   - Audience-specific language that was established (technical depth, abbreviations, domain terms)
+   - Formatting preferences demonstrated through corrections (bullet vs. prose, heading style, emphasis patterns)
+3. **Propose updates** as diffs to the voice profile. Only add patterns that were:
+   - Explicitly corrected or requested by the user, OR
+   - Consistently demonstrated across multiple messages (not a one-off phrasing)
+4. **Apply after user approval**
+
+Do not overwrite existing voice profile entries — add to or refine them. If a session observation contradicts an existing entry, flag the conflict for the user to resolve rather than silently changing it.
+
 **Note:** The `/improve` skill itself is in scope for improvement. If this session revealed friction in the improve workflow, include it in the report.
 
 ## What NOT to Improve
@@ -331,6 +353,12 @@ Updated context/knowledge/index.md:
 
 ### Stale Coverage
 - `context/thanx/ordering-positioning.md` — exists but not in coverage map
+
+## Voice Profile Updated
+
+Updated `voice-profile.md`:
+- Added: Prefer short, direct sentences. Avoid hedging language ("might", "perhaps").
+- Refined: Technical depth → "assume reader knows Ruby/Rails; skip basic explanations"
 
 ## Apply all? (y/n)
 ```
