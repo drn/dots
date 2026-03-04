@@ -26,6 +26,9 @@ Review the full conversation history and synthesize a handoff prompt. Use this f
 ```
 ## Handoff: [brief title]
 
+### Invoke First
+/[skill-name] — [why this skill should be invoked before starting work]
+
 ### Background
 [1-3 sentences on what was being worked on and why]
 
@@ -48,6 +51,8 @@ Review the full conversation history and synthesize a handoff prompt. Use this f
 ### Files to Read First
 - [Ordered list of files to get up to speed]
 ```
+
+**Invoke First section:** If the remaining work maps to an existing skill (e.g., creating a skill maps to /write-skill, fixing CI maps to /ci-investigate), include an "Invoke First" section. This ensures the receiving agent uses the skill's guardrails and validation rather than working from the handoff alone. Omit this section only if no skill applies.
 
 Keep it concise but complete enough that the receiving agent can continue without re-discovering context.
 
