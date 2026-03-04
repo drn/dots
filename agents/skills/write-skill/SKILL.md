@@ -13,7 +13,9 @@ Create or improve Claude Code skills (slash commands) following established patt
 
 ## Context
 
-- Existing skills: !`find ~/.claude/commands -maxdepth 1 -name "*.md" -exec basename {} .md \; 2>/dev/null | sort | head -30`
+- Global skills: !`find ~/.claude/commands -maxdepth 1 -name "*.md" -exec basename {} .md \; 2>/dev/null | sort | head -20`
+- Project skills (Agent Skills standard): !`find . -maxdepth 3 -path "*/skills/*/SKILL.md" 2>/dev/null | head -20`
+- Project skills (Claude Code standard): !`find . -path "./claude/commands/*.md" 2>/dev/null | head -20`
 - Project type: !`find . -maxdepth 1 \( -name go.mod -o -name Gemfile -o -name package.json -o -name Cargo.toml -o -name pyproject.toml \) 2>/dev/null | head -3`
 
 ## Instructions
@@ -36,7 +38,9 @@ Plan the skill structure:
 
 ### Step 3: Write the Skill File
 
-Write the `.md` file to `claude/commands/<name>.md`.
+Detect the project skill convention from the context above:
+- If the project has skills matching `*/skills/*/SKILL.md` (Agent Skills standard), create `<skills-dir>/<name>/SKILL.md`
+- Otherwise, create `claude/commands/<name>.md` (Claude Code standard)
 
 Follow all rules below carefully.
 
@@ -152,10 +156,11 @@ Use `2>/dev/null` to suppress stderr, but **it does not fix exit codes**. When a
 7. **Avoid contractions.** Words like "don't" or "can't" can break due to single-quote shell interpretation.
 8. **Match specificity to fragility.** Give high freedom for flexible tasks, exact commands for fragile operations.
 9. **Use `disable-model-invocation: true`** for skills with side effects (deploy, merge, send).
+10. **Keep skills generic.** This is a public repo. Never embed company names, internal tool names, proprietary patterns, or org-specific conventions. Skills should work for any user. Put org-specific knowledge in private CLAUDE.md files or project-local config instead.
 
-### Existing Skill Patterns in This Repo
+### Existing Skill Patterns
 
-Skills in `claude/commands/` follow this general structure:
+Skills follow this general structure (path varies by convention -- see Step 3):
 
 ```
 ---
@@ -188,5 +193,6 @@ After writing, check the skill for:
 - [ ] No inline backticks in prose that could break shell evaluation
 - [ ] No contractions (don't, can't, won't) in the skill body
 - [ ] Destructive skills have `disable-model-invocation: true`
+- [ ] No company-specific names, internal tools, or proprietary patterns (this is a public repo)
 
 Report the validation results and the file path of the new/updated skill.

@@ -131,6 +131,12 @@ When the user's message matches a phrase below, read and follow the correspondin
 | Trigger Phrases | Skill |
 |-----------------|-------|
 | "last screenshot", "see screenshot", "recent screenshot", "show screenshot", "last N screenshots" | `agents/skills/screenshot/SKILL.md` |
+| "investigate CI failures", "find flaky tests", "why is CI failing", "diagnose test flakiness", "flaky CI" | `agents/skills/ci-investigate/SKILL.md` |
+| "create skill", "new skill", "write skill", "add a slash command", "improve skill" | `agents/skills/write-skill/SKILL.md` |
+
+## Public Repo Policy
+
+This is a public repository. Skills and configuration checked in here must be generic and reusable by anyone. Never commit company names, internal tool names, proprietary patterns, or org-specific conventions to skills or CLAUDE.md. Put org-specific knowledge in private project-local CLAUDE.md files instead.
 
 ## Critical Notes
 
