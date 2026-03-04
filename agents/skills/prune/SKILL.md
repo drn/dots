@@ -16,7 +16,7 @@ Delete merged and stale local branches safely, with preview and confirmation.
 ## Context
 
 - Current branch: !`git branch --show-current`
-- Local branches with dates: !`git for-each-ref --sort=-committerdate --format='%(refname:short) %(committerdate:relative) %(upstream:short)' refs/heads/ 2>/dev/null | head -50`
+- Local branches with dates: !`git branch --sort=-committerdate --format='%(refname:short) %(committerdate:relative) %(upstream:short)' 2>/dev/null | head -50`
 - Remote: !`git remote 2>/dev/null | head -5`
 
 ## Instructions
