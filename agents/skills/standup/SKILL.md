@@ -20,7 +20,7 @@ Generate a quick summary of recent work for standups or status updates.
 - Commits since yesterday: !`git log --all --oneline --since="yesterday" 2>/dev/null | head -30`
 - Open PRs: !`gh pr list --author @me --state open 2>/dev/null | head -20`
 - Uncommitted changes: !`git status --short 2>/dev/null | head -10`
-- Recent branches: !`git for-each-ref --sort=-committerdate --format='%(refname:short) %(committerdate:relative)' refs/heads/ 2>/dev/null | head -10`
+- Recent branches: !`git branch --sort=-committerdate --format='%(refname:short) %(committerdate:relative)' 2>/dev/null | head -10`
 
 ## Instructions
 
