@@ -1,5 +1,6 @@
 ---
 name: deploy
+disable-model-invocation: true
 allowed-tools: Bash(git fetch:*), Bash(git tag:*), Bash(git log:*), Bash(git ls-remote:*), Bash(thanx version update:*), Bash(git push:*)
 description: Deploy latest master to production with a version tag
 ---
