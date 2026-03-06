@@ -24,15 +24,13 @@ If agent teams are not enabled, report: "Agent teams required. Add `CLAUDE_CODE_
 ## Context
 
 - Current branch: !`git branch --show-current`
-- Git status: !`git status --short 2>/dev/null | head -20`
+- Git status: !`git status --short`
 - Project root: !`pwd`
-- Project type: !`find . -maxdepth 1 \( -name go.mod -o -name Gemfile -o -name package.json -o -name Cargo.toml -o -name pyproject.toml -o -name setup.py -o -name requirements.txt -o -name pom.xml -o -name build.gradle -o -name Makefile \) 2>/dev/null | head -5`
-- Ruby version: !`ruby -v 2>/dev/null | head -1`
-- Rails version: !`grep -m1 'rails' Gemfile.lock 2>/dev/null | head -1`
-- Test framework: !`find . -maxdepth 4 -name "*_test.*" -o -name "*.test.*" -o -name "*_spec.*" 2>/dev/null | head -10`
-- Linter config: !`ls -1 .rubocop.yml .rubocop_todo.yml .eslintrc* .prettierrc* revive.toml 2>/dev/null | head -5`
-- Recent commits: !`git log --oneline -5 2>/dev/null | head -5`
-- Branch changes: !`git diff --name-only origin/HEAD...HEAD 2>/dev/null | head -30`
+- Project type: !`find . -maxdepth 1 \( -name go.mod -o -name Gemfile -o -name package.json -o -name Cargo.toml -o -name pyproject.toml -o -name setup.py -o -name requirements.txt -o -name pom.xml -o -name build.gradle -o -name Makefile \)`
+- Test framework: !`find . -maxdepth 4 \( -name "*_test.*" -o -name "*.test.*" -o -name "*_spec.*" \)`
+- Linter config: !`find . -maxdepth 1 \( -name .rubocop.yml -o -name .rubocop_todo.yml -o -name ".eslintrc*" -o -name ".prettierrc*" -o -name revive.toml \)`
+- Recent commits: !`git log --oneline -5`
+- Branch changes: !`git diff --name-only origin/HEAD...HEAD`
 
 ## Overview
 
