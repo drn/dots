@@ -14,7 +14,7 @@ _PASS=0
 _FAIL=0
 _TMPDIRS=()
 _ORIG_DIR="$(pwd)"
-SCRIPTS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+SCRIPTS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../agents/skills" && pwd)"
 
 # Clean up all temp dirs on exit
 _cleanup_all() {

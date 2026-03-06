@@ -97,6 +97,15 @@ for dir in ${dirs[@]}; do
         errors=$((errors + 1))
       fi
 
+      # Check for origin/HEAD in dynamic context — doesn't exist in many repos.
+      # Use git branch -r | grep or provide both origin/main and origin/master variants.
+      if echo "$line" | grep -q 'origin/HEAD'; then
+        echo "ERROR: $file:$lineno: origin/HEAD in dynamic context — doesn't exist in repos without 'git clone'"
+        echo "  Fix: use 'git branch -r | grep -oE origin/(main|master) | head -1', or provide both origin/main and origin/master variants"
+        echo "  $line"
+        errors=$((errors + 1))
+      fi
+
       # Check for 2>/dev/null without a trailing pipe (exit code not neutralized).
       # When the command fails, 2>/dev/null suppresses stderr but the non-zero
       # exit code still breaks the skill loader. Piping through head/tail/etc
@@ -108,10 +117,13 @@ for dir in ${dirs[@]}; do
         warnings=$((warnings + 1))
       fi
 
-      # Check for pipes to unapproved commands
-      if echo "$line" | grep -qE '\|[^|]'; then
+      # Check for pipes to unapproved commands.
+      # Strip single-quoted strings first to avoid matching | inside regex args
+      # (e.g., grep -oE 'origin/(main|master)' has a literal |, not a pipe).
+      stripped_line=$(echo "$line" | sed "s/'[^']*'//g")
+      if echo "$stripped_line" | grep -qE '\|[^|]'; then
         # Extract pipe targets (commands after |)
-        pipe_targets=$(echo "$line" | grep -oE '\|\s*[a-z]+' | sed 's/|[[:space:]]*//' || true)
+        pipe_targets=$(echo "$stripped_line" | grep -oE '\|\s*[a-z]+' | sed 's/|[[:space:]]*//' || true)
         for target in $pipe_targets; do
           if ! echo "$target" | grep -qE "^($APPROVED_PIPE_TARGETS)$"; then
             echo "WARNING: $file:$lineno: pipe to '$target' may be blocked by permission system"
@@ -127,7 +139,7 @@ for dir in ${dirs[@]}; do
       # the source side will block skill loading even if the pipe target
       # (e.g. head) is approved.
       # Skip lines with || or && — those are already caught as separate errors.
-      if echo "$line" | grep -qE '\|[^|]' && ! echo "$line" | grep -q '||'; then
+      if echo "$stripped_line" | grep -qE '\|[^|]' && ! echo "$stripped_line" | grep -q '||'; then
         git_subcmd=$(echo "$line" | grep -oE 'git [a-z-]+' | head -1 | awk '{print $2}' || true)
         if [ -n "$git_subcmd" ]; then
           if ! echo "$git_subcmd" | grep -qE "^($APPROVED_GIT_SUBCMDS)$"; then

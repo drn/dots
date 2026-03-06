@@ -12,7 +12,9 @@ disable-model-invocation: true
 - Remotes: !`git remote -v 2>/dev/null | head -10`
 - HEAD ref: !`git rev-parse --abbrev-ref HEAD 2>/dev/null | head -1`
 - Open PR: !`gh pr view --json number,url,headRefName 2>/dev/null | head -10`
-- Commits on branch: !`git log origin/HEAD..HEAD --oneline 2>/dev/null | head -20`
+- Base ref: !`git branch -r 2>/dev/null | grep -oE 'origin/(main|master)' | head -1`
+- Commits vs main: !`git log origin/main..HEAD --oneline 2>/dev/null | head -20`
+- Commits vs master: !`git log origin/master..HEAD --oneline 2>/dev/null | head -20`
 - Arguments: $ARGUMENTS
 
 ## Your task

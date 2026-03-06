@@ -20,7 +20,7 @@ Create a versioned release: bump version, generate changelog, create git tag, an
 - Latest tag: !`git describe --tags --abbrev=0 2>/dev/null | head -1`
 - Commits since last tag: !`git log --oneline 2>/dev/null | head -30`
 - Remotes: !`git remote -v 2>/dev/null | head -10`
-- Default branch ref: !`git rev-parse --abbrev-ref origin/HEAD 2>/dev/null | head -1`
+- Base ref: !`git branch -r 2>/dev/null | grep -oE 'origin/(main|master)' | head -1`
 
 ## Instructions
 

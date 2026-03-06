@@ -16,7 +16,7 @@ Run a command multiple times on the current branch and the base branch, then com
 ## Context
 
 - Current branch: !`git branch --show-current`
-- Base branch: !`git rev-parse --abbrev-ref origin/HEAD 2>/dev/null | head -1`
+- Base ref: !`git branch -r 2>/dev/null | grep -oE 'origin/(main|master)' | head -1`
 - Git status: !`git status --short`
 
 ## Your task

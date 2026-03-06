@@ -187,7 +187,7 @@ go install ./...                              # Build all binaries
 go test ./...                                 # Run tests
 revive -set_exit_status ./...                 # Lint
 luajit hammerspoon/test.lua                   # Hammerspoon tests
-bash agents/skills/tests/run_all.sh           # Skill script tests
+bash .github/skill-tests/run_all.sh           # Skill script tests
 ```
 
 ### Adding Components

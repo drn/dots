@@ -13,11 +13,14 @@ Generate a structured prompt capturing the current conversation context so it ca
 
 ## Context
 
-- Repo: !`git rev-parse --show-toplevel 2>/dev/null | grep -oE '[^/]+$' | head -1`
+- Repo root: !`git rev-parse --show-toplevel 2>/dev/null | head -1`
 - Branch: !`git branch --show-current`
-- Recent commits: !`git log origin/HEAD..HEAD --oneline 2>/dev/null | head -15`
+- Base ref: !`git branch -r 2>/dev/null | grep -oE 'origin/(main|master)' | head -1`
+- Commits vs main: !`git log origin/main..HEAD --oneline 2>/dev/null | head -15`
+- Commits vs master: !`git log origin/master..HEAD --oneline 2>/dev/null | head -15`
 - Uncommitted changes: !`git status --short 2>/dev/null | head -20`
-- Changed files vs base: !`git diff --name-only origin/HEAD..HEAD 2>/dev/null | head -30`
+- Changed files vs main: !`git diff --name-only origin/main..HEAD 2>/dev/null | head -30`
+- Changed files vs master: !`git diff --name-only origin/master..HEAD 2>/dev/null | head -30`
 
 ## Instructions
 
