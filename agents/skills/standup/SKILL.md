@@ -1,7 +1,7 @@
 ---
 name: standup
 allowed-tools: Bash(git log:*), Bash(git branch:*), Bash(git status:*), Bash(gh pr list:*), Bash(gh pr view:*)
-description: Generate a daily standup summary from recent git activity, commits, open PRs, and current work in progress
+description: Generate a daily standup summary from recent git activity, commits, open PRs, and current work in progress. Use for daily standup prep or summarizing recent work.
 ---
 
 # Daily Standup

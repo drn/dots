@@ -1,7 +1,7 @@
 ---
 name: changelog
 allowed-tools: Bash(git log:*), Bash(git diff:*), Bash(git show:*), Bash(git tag:*)
-description: Generate an intelligent changelog from recent commits
+description: Generate an intelligent changelog from recent commits. Use for release notes, version history, or documenting what changed.
 ---
 
 ## Context

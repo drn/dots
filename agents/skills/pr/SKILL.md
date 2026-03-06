@@ -1,6 +1,6 @@
 ---
 name: pr
-description: Open a PR, wait for CI to pass, fix failures, address review comments, and loop until fully green
+description: Open a PR, wait for CI to pass, fix failures, address review comments, and loop until fully green. Use when opening a PR, fixing CI, or addressing review feedback.
 ---
 
 ## Context

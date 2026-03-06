@@ -1,6 +1,6 @@
 ---
 name: deps
-description: Audit outdated dependencies, check for vulnerabilities, and upgrade with test verification
+description: Audit outdated dependencies, check for vulnerabilities, and upgrade with test verification. Use for dependency audits, security checks, or upgrading packages.
 ---
 
 # Dependency Audit & Upgrade

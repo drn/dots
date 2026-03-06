@@ -1,6 +1,6 @@
 ---
 name: scaffold
-description: Bootstrap new components, files, or modules matching existing repo conventions and patterns
+description: Bootstrap new components, files, or modules matching existing repo conventions and patterns. Use for creating new files, components, or modules that follow repo patterns.
 ---
 
 # Scaffold

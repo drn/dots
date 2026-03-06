@@ -1,6 +1,6 @@
 ---
 name: guard
-description: Pre-commit safety check for secrets, security antipatterns, and test breakage
+description: Pre-commit safety check for secrets, security antipatterns, and test breakage. Use for pre-commit checks, secret scanning, or verifying test safety.
 ---
 
 # Pre-commit Guard

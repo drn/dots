@@ -1,7 +1,7 @@
 ---
 name: bisect
 allowed-tools: Bash(git bisect:*), Bash(git log:*), Bash(git status:*), Bash(git diff:*), Bash(git show:*), Bash(git rev-parse:*), Bash(git stash:*)
-description: Find which commit introduced a bug using git bisect with automatic test verification
+description: Find which commit introduced a bug using git bisect with automatic test verification. Use when tracking down which commit introduced a bug.
 disable-model-invocation: true
 ---
 
