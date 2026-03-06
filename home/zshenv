@@ -5,6 +5,8 @@ if [ "$ZSHENV_SOURCED" != "true" ]; then
   export DOTS="$HOME/.dots"
   # Include ~/bin scripts in PATH
   export PATH=$HOME/bin:$PATH
+  # Include ~/.mini/bin on sanguinemini
+  [[ "$HOST" == "sanguinemini"* ]] && export PATH=$HOME/.mini/bin:$PATH
   # Include Homebrew in PATH
   export BREW_PATH=/usr/local # Intel silicon
   [ -d "/opt/homebrew" ] && export BREW_PATH=/opt/homebrew # Apple silicon
