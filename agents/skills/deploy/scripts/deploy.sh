@@ -91,13 +91,11 @@ verify() {
 
 print_summary() {
   echo ""
-  echo "--- DEPLOY RESULT ---"
   echo "status:     success"
   echo "tag:        ${NEW_TAG}"
   echo "commit:     ${TAG_COMMIT}"
   echo "remote:     ${TARGET}"
   echo "production: ${TARGET}/master → production"
-  echo "--- END ---"
 }
 
 # --- Main ---
