@@ -53,4 +53,5 @@ Handle the exit code:
   6. Re-run: `bash <script-path> --skip-rebase "<title>" "<body>"`
   7. Show the output block verbatim
 - **Exit 3** — Tell the user: "Nothing to merge — branch has no commits ahead of master."
+- **Exit 4 (review blocked)** — The PR requires review and auto-merge is not available. Tell the user: "PR requires an approving review before it can merge. Auto-merge is not enabled on this repository — ask a reviewer to approve, then re-run /merge."
 - **Exit 1** — Report the error from stderr.
