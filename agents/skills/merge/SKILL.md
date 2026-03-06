@@ -1,6 +1,6 @@
 ---
 name: merge
-allowed-tools: Bash(git add:*), Bash(git commit:*), Bash(git checkout:*), Bash(git pull:*), Bash(git push:*), Bash(git branch:*), Bash(git fetch:*), Bash(git log:*), Bash(git diff:*), Bash(git reset:*), Bash(git rebase:*), Bash(gh pr:*), Bash(gh pr list:*), Bash(gh pr create:*), Bash(gh pr edit:*), Bash(gh pr merge:*), Bash(git -C:*)
+allowed-tools: Bash(git add:*), Bash(git commit:*), Bash(git log:*), Bash(git diff:*), Bash(git status:*), Bash(git rebase:*), Bash(git checkout:*), Bash(bash ~/.claude/skills/merge/scripts/merge.sh:*)
 description: Merge current branch to master via GitHub PR merge
 ---
 
@@ -16,82 +16,37 @@ description: Merge current branch to master via GitHub PR merge
 
 ## Your task
 
-Merge the current branch into master via GitHub PR merge. This preserves PR association so the commit on master links back to the PR.
+Merge the current branch into master via GitHub PR merge. An existing PR is NOT required — one will be created if needed.
 
-**Important:** An existing open PR is NOT required. If no PR exists, one will be created. If there are uncommitted changes, they will be committed first. The only requirement is that the branch has something to merge (commits diverging from master).
+### Step 1: Commit uncommitted changes
 
-0. **Determine the target remote (CRITICAL — use this for all subsequent steps):**
-   - Check which remotes exist using `git remote`
-   - If an `upstream` remote exists, set **TARGET=upstream**
-   - Otherwise, set **TARGET=origin**
-   - All references to `{TARGET}` below must use the determined remote
+If git status shows uncommitted changes, stage and commit them with an appropriate message. Skip if working tree is clean.
 
-1. **Commit any uncommitted changes:**
-   - If there are uncommitted changes, stage and commit them with an appropriate message
+### Step 2: Analyze commits and craft PR metadata
 
-2. **Store the current branch name:**
-   - Save the current branch name for the merge
+Review all commits and the full diff since the branch diverged from master. Determine:
 
-3. **Analyze all commits and changes:**
-   - Review ALL commits on the branch since it diverged from `{TARGET}/master`
-   - If there are no prior commits (only the changes just committed in step 1), base the summary on that commit
-   - Review the full diff to understand what the branch accomplishes
-   - Determine a clear, concise summary for the squashed commit based on the overall purpose
+- **Title**: Concise imperative summary of what the branch accomplishes (not individual commits). Under 72 characters.
+- **Body**: Short description of the changes. Do NOT include Co-Authored-By — the script adds it.
 
-4. **Rebase on {TARGET}/master:**
-   - Run `git fetch {TARGET}`
-   - Run `git rebase {TARGET}/master`
-   - If there are conflicts, resolve them and continue the rebase
+If there are no prior commits (only what was committed in step 1), base the summary on that commit.
 
-5. **Force-push the rebased branch to {TARGET}:**
-   - Run `git push {TARGET} <branch-name> --force-with-lease`
+### Step 3: Run the merge script
 
-6. **Ensure a PR exists with a good title and description:**
-   - Craft a PR title and body based on your analysis from step 3:
-     - **Title**: concise imperative summary of what the branch accomplishes (not individual commits)
-     - **Body**: a short description of the changes, followed by `Co-Authored-By: Claude <noreply@anthropic.com>`
-   - Check if a PR already exists:
-     ```
-     gh pr list --head <branch> --state open --json number,url
-     ```
-   - If a PR exists, update it:
-     ```
-     gh pr edit <number> --title "..." --body "..."
-     ```
-   - If no PR exists, create one:
-     ```
-     gh pr create --base master --head <branch> --title "..." --body "..."
-     ```
+```
+bash ~/.claude/skills/merge/scripts/merge.sh "<title>" "<body>"
+```
 
-7. **Squash merge via GitHub:**
-   - Use the same title and body from step 6 as the squash commit message
-   - Squash merge the PR:
-     ```
-     gh pr merge <number> --squash --subject "..." --body "..."
-     ```
-   - If squash merge fails (e.g. branch protection), try with `--auto` flag to enable auto-merge when checks pass
-   - If that also fails, fall back to rebase merge: `gh pr merge <number> --rebase`
-   - This merges through GitHub so the PR shows as "Merged" and the commit links to the PR
+Handle the exit code:
 
-8. **Update local master:**
-   - Run `git checkout master`
-   - If checkout fails because master is checked out in another worktree, try:
-     `git -C $(git worktree list | grep master | awk '{print $1}') pull {TARGET} master`
-   - If that also fails (or no worktree found), skip local master update — the merge is already complete on GitHub
-   - Run `git pull {TARGET} master` (only if checkout succeeded)
-
-9. **Report the result:**
-   - Confirm the merge was successful
-   - Show the PR URL (so the user can verify the "Merged" status)
-   - Show the final commit on master
-
-10. **Sync ~/.dots checkout (dots repo only):**
-    - Skip this step unless `$CONDUCTOR_ROOT_PATH` equals `/Users/darrencheng/.dots`
-    - If it matches, automatically run:
-      ```
-      git -C /Users/darrencheng/.dots fetch origin
-      git -C /Users/darrencheng/.dots reset --hard origin/master
-      ```
-    - Report the updated commit in `~/.dots`
-
-Execute all steps in sequence. If any step fails, stop and report the error.
+- **Exit 0** — Show the output block verbatim as your final response. Do not add commentary.
+- **Exit 2 (rebase conflict)** — Resolve conflicts:
+  1. Read the conflicting files from stderr
+  2. Open each file, resolve the conflict
+  3. `git add` resolved files
+  4. `git rebase --continue`
+  5. Repeat if more conflicts
+  6. Re-run: `bash ~/.claude/skills/merge/scripts/merge.sh --skip-rebase "<title>" "<body>"`
+  7. Show the output block verbatim
+- **Exit 3** — Tell the user: "Nothing to merge — branch has no commits ahead of master."
+- **Exit 1** — Report the error from stderr.
