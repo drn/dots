@@ -144,6 +144,10 @@ This is a public repository. Skills and configuration checked in here must be ge
 
 When receiving a handoff for `~/.dots` skill changes, apply them to this workspace under `agents/skills/`. This repo is the source of truth for skills — `~/.claude/skills/` is a symlink to `agents/skills/` via `dots install agents`.
 
+## README Maintenance
+
+When making changes that affect user-facing features — adding/removing skills, custom agents, CLI commands, components, or utilities — always update `README.md` to reflect those changes. Keep counts, tables, and the project structure tree accurate.
+
 ## Critical Notes
 
 - Installation is destructive (no backups)
