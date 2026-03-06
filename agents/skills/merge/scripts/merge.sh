@@ -19,6 +19,7 @@ BRANCH=""
 COMMIT_COUNT=""
 PR_NUMBER=""
 PR_URL=""
+REPO_SLUG=""
 MERGE_METHOD=""
 MERGE_STATUS="merged"
 MASTER_COMMIT=""
@@ -82,11 +83,10 @@ do_push() {
 ensure_pr() {
   local title="$1" body="$2"
 
-  local repo_slug
-  repo_slug=$(git remote get-url "$TARGET" | sed 's|.*github.com[:/]||;s|\.git$||')
+  REPO_SLUG=$(git remote get-url "$TARGET" | sed 's|.*github.com[:/]||;s|\.git$||')
 
   local existing
-  existing=$(gh pr list --head "$BRANCH" --state open --repo "$repo_slug" --json number,url --jq '.[0]' 2>/dev/null || echo "")
+  existing=$(gh pr list --head "$BRANCH" --state open --repo "$REPO_SLUG" --json number,url --jq '.[0]' 2>/dev/null || echo "")
 
   if [[ -n "$existing" && "$existing" != "null" ]]; then
     PR_NUMBER=$(echo "$existing" | jq -r '.number')
@@ -107,7 +107,7 @@ do_merge() {
   info "Merging PR #${PR_NUMBER}..."
 
   # Attempt 1: squash merge
-  if gh pr merge "$PR_NUMBER" --squash --subject "$title" --body "$body" 2>/dev/null; then
+  if gh pr merge "$PR_NUMBER" --repo "$REPO_SLUG" --squash --subject "$title" --body "$body" 2>/dev/null; then
     MERGE_METHOD="squash"
     return 0
   fi
@@ -115,7 +115,7 @@ do_merge() {
   info "Squash merge failed, trying auto-merge..."
 
   # Attempt 2: squash with auto-merge
-  if gh pr merge "$PR_NUMBER" --squash --auto --subject "$title" --body "$body" 2>/dev/null; then
+  if gh pr merge "$PR_NUMBER" --repo "$REPO_SLUG" --squash --auto --subject "$title" --body "$body" 2>/dev/null; then
     MERGE_METHOD="squash (auto-merge)"
     MERGE_STATUS="auto-merge enabled"
     return 0
@@ -124,7 +124,7 @@ do_merge() {
   info "Auto-merge failed, falling back to rebase merge..."
 
   # Attempt 3: rebase merge
-  if gh pr merge "$PR_NUMBER" --rebase 2>/dev/null; then
+  if gh pr merge "$PR_NUMBER" --repo "$REPO_SLUG" --rebase 2>/dev/null; then
     MERGE_METHOD="rebase"
     return 0
   fi
