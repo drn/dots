@@ -1,7 +1,7 @@
 ---
 name: merge
 allowed-tools: Bash(git add:*), Bash(git commit:*), Bash(git log:*), Bash(git diff:*), Bash(git status:*), Bash(git rebase:*), Bash(git checkout:*), Bash(bash ~/.claude/skills/merge/scripts/merge.sh:*), Bash(bash agents/skills/merge/scripts/merge.sh:*)
-description: Merge current branch to master via GitHub PR merge
+description: Merge current branch to master via GitHub PR merge. Use when ready to merge a PR or land a branch.
 ---
 
 ## Context

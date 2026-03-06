@@ -1,6 +1,6 @@
 ---
 name: migrate
-description: Multi-agent codebase migration with module ownership
+description: Multi-agent codebase migration with module ownership. Use for large refactors, API upgrades, framework migrations, or bulk code changes.
 ---
 
 # Multi-Agent Migration

@@ -123,6 +123,18 @@ The `` !`command` `` syntax runs shell commands and injects output as context. *
 
 See `/write-skill` for the full skill-authoring guide.
 
+### Agent Skills Spec Compliance
+
+All skills must follow the [Agent Skills specification](https://agentskills.io/specification). Key rules enforced by CI:
+
+- **`name`** must match the parent directory name (lowercase, hyphens only, no consecutive hyphens)
+- **`description`** must say what the skill does AND when to use it — include a "Use when..." or "Use for..." clause with trigger keywords for auto-activation
+- **SKILL.md** should be under 500 lines — extract detailed reference material to `references/` files
+- **File references** use relative paths from the skill root, one level deep (e.g., `references/CHECKLIST.md`)
+- **Progressive disclosure**: metadata (~100 tokens) loads at startup; full SKILL.md loads on activation; `references/` and `scripts/` load on demand
+
+CI runs `agnix` for schema validation and `.github/lint-skills.sh` for best-practice checks (name/dir match, description quality, line count).
+
 ## Skill Auto-Activation
 
 Claude Code auto-activates skills by matching keywords in each skill's `description` field against the user's message. Other agents (Codex, Copilot) do not have this mechanism, so use this routing table instead.

@@ -1,6 +1,6 @@
 ---
 name: retro
-description: Run a structured retrospective or post-incident review with optional knowledge base capture
+description: Run a structured retrospective or post-incident review with optional knowledge base capture. Use for running retrospectives, postmortems, or incident reviews.
 ---
 
 # Retrospective

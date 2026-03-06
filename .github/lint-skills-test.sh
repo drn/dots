@@ -99,6 +99,87 @@ assert_pass "git symbolic-ref inside code block" \
 !`git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | head -1`
 ```'
 
+assert_warning_count() {
+  local name="$1" expected="$2"
+  # Runs the linter on $dir (already populated by caller) and counts WARNINGs
+  local output
+  output=$($LINTER "$dir" 2>&1 || true)
+  local actual
+  actual=$(echo "$output" | grep -c '^WARNING:' || true)
+  if [ "$actual" -eq "$expected" ]; then
+    PASS=$((PASS + 1))
+  else
+    echo "FAIL: $name — expected $expected warning(s), got $actual"
+    echo "  Output: $output"
+    FAIL=$((FAIL + 1))
+  fi
+}
+
+# --- Agent Skills spec checks ---
+
+# name/directory mismatch
+spec_dir=$(mktemp -d)
+trap "rm -rf $dir $spec_dir" EXIT
+mkdir -p "$spec_dir/my-skill"
+cat > "$spec_dir/my-skill/SKILL.md" << 'HEREDOC'
+---
+name: wrong-name
+description: Test skill. Use when testing.
+---
+# Test
+HEREDOC
+output=$($LINTER "$spec_dir" 2>&1 || true)
+if echo "$output" | grep -q "does not match directory"; then
+  PASS=$((PASS + 1))
+else
+  echo "FAIL: name/directory mismatch not detected"
+  FAIL=$((FAIL + 1))
+fi
+
+# description missing "Use when/for/to" triggers warning
+mkdir -p "$spec_dir/good-skill"
+cat > "$spec_dir/good-skill/SKILL.md" << 'HEREDOC'
+---
+name: good-skill
+description: Does something. Use when you need it.
+---
+# Good
+HEREDOC
+mkdir -p "$spec_dir/bad-desc"
+cat > "$spec_dir/bad-desc/SKILL.md" << 'HEREDOC'
+---
+name: bad-desc
+description: Does something without guidance.
+---
+# Bad
+HEREDOC
+output=$($LINTER "$spec_dir" 2>&1 || true)
+if echo "$output" | grep -q "bad-desc.*lacks.*Use when"; then
+  PASS=$((PASS + 1))
+else
+  echo "FAIL: missing 'Use when' warning not detected for bad-desc"
+  echo "  Output: $output"
+  FAIL=$((FAIL + 1))
+fi
+if echo "$output" | grep -q "good-skill.*lacks"; then
+  echo "FAIL: false positive 'Use when' warning for good-skill"
+  FAIL=$((FAIL + 1))
+else
+  PASS=$((PASS + 1))
+fi
+
+# line count >500 triggers warning
+mkdir -p "$spec_dir/long-skill"
+{ echo '---'; echo 'name: long-skill'; echo 'description: Long skill. Use for testing.'; echo '---'; seq 1 501; } > "$spec_dir/long-skill/SKILL.md"
+output=$($LINTER "$spec_dir" 2>&1 || true)
+if echo "$output" | grep -q "long-skill.*exceeds 500"; then
+  PASS=$((PASS + 1))
+else
+  echo "FAIL: line count >500 warning not detected"
+  echo "  Output: $output"
+  FAIL=$((FAIL + 1))
+fi
+
 echo ""
 echo "Results: $PASS passed, $FAIL failed"
 [ "$FAIL" -eq 0 ] || exit 1

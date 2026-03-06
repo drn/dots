@@ -1,6 +1,6 @@
 ---
 name: perf
-description: Before/after performance benchmarking comparing current branch against base, with statistical analysis
+description: Before/after performance benchmarking comparing current branch against base, with statistical analysis. Use for benchmarking, profiling, or measuring performance impact.
 disable-model-invocation: true
 allowed-tools: Bash(bash ~/.claude/skills/perf/scripts/perf.sh:*), Bash(bash agents/skills/perf/scripts/perf.sh:*)
 ---

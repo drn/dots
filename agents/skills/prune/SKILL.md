@@ -1,7 +1,7 @@
 ---
 name: prune
 allowed-tools: Bash(bash ~/.claude/skills/prune/scripts/prune.sh:*), Bash(bash agents/skills/prune/scripts/prune.sh:*)
-description: Clean up merged and stale git branches, prune old local and remote branches safely
+description: Clean up merged and stale git branches, prune old local and remote branches safely. Use for cleaning up old branches or pruning stale remotes.
 disable-model-invocation: true
 ---
 

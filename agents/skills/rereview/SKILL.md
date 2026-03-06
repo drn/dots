@@ -1,6 +1,6 @@
 ---
 name: rereview
-description: "Re-review with fresh eyes. Zero regressions. Go slow and analyze everything."
+description: "Re-review with fresh eyes. Zero regressions. Go slow and analyze everything. Use for a paranoid final review before merging."
 ---
 
 # Fresh-Eyes Re-Review

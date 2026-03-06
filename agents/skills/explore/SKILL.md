@@ -1,6 +1,6 @@
 ---
 name: explore
-description: Multi-agent parallel research with peer-challenged synthesis
+description: Multi-agent parallel research with peer-challenged synthesis. Use for deep research, codebase exploration, or investigating how something works.
 ---
 
 # Parallel Research & Exploration

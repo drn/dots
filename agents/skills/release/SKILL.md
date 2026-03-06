@@ -1,7 +1,7 @@
 ---
 name: release
 allowed-tools: Bash(git tag:*), Bash(git log:*), Bash(git fetch:*), Bash(git diff:*), Bash(git status:*), Bash(git rev-parse:*), Bash(git symbolic-ref:*), Bash(gh release:*)
-description: Create a versioned release with changelog generation, git tag, and GitHub release
+description: Create a versioned release with changelog generation, git tag, and GitHub release. Use for creating releases, tagging versions, or publishing changelogs.
 disable-model-invocation: true
 ---
 

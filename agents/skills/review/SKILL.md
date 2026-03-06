@@ -1,6 +1,6 @@
 ---
 name: review
-description: Code review panel for current branch changes
+description: Code review panel for current branch changes. Use for reviewing PR changes, code review, or getting feedback on branch changes.
 ---
 
 # Code Review Panel

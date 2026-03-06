@@ -1,6 +1,6 @@
 ---
 name: spike
-description: Time-boxed technical investigation with structured findings document, tech spike, research spike, proof of concept
+description: Time-boxed technical investigation with structured findings document, tech spike, research spike, proof of concept. Use for time-boxed research, technical spikes, or proof of concept work.
 ---
 
 # Technical Spike

@@ -2,7 +2,7 @@
 name: deploy
 disable-model-invocation: true
 allowed-tools: Bash(bash ~/.claude/skills/deploy/scripts/deploy.sh:*), Bash(bash agents/skills/deploy/scripts/deploy.sh:*)
-description: Deploy latest master to production with a version tag
+description: Deploy latest master to production with a version tag. Use when releasing to production or tagging a deploy.
 ---
 
 ## Context

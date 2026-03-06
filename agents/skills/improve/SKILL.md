@@ -1,6 +1,6 @@
 ---
 name: improve
-description: Improve skills, capture context & knowledge
+description: Improve skills, capture context & knowledge. Use for skill iteration, capturing learnings, or upgrading agent context.
 ---
 # Improve Skills, Capture Context & Knowledge
 

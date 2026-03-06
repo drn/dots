@@ -1,6 +1,6 @@
 ---
 name: knowledge
-description: Initialize or update a project knowledge base for durable cross-session knowledge capture
+description: Initialize or update a project knowledge base for durable cross-session knowledge capture. Use for setting up or updating project knowledge bases.
 ---
 # Knowledge Base
 

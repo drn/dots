@@ -25,6 +25,48 @@ APPROVED_GIT_SUBCMDS="status|branch|log|diff|rev-parse|remote|show|ls-files|tag|
 for dir in ${dirs[@]}; do
   [ -d "$dir" ] || continue
 
+  # --- Agent Skills spec checks on SKILL.md files ---
+  for skill_dir in "$dir"/*/; do
+    [ -d "$skill_dir" ] || continue
+    skill_file="$skill_dir/SKILL.md"
+    [ -f "$skill_file" ] || continue
+    dir_name=$(basename "$skill_dir")
+
+    # Check name matches directory
+    fm_name=$(awk '/^---/{n++; next} n==1 && /^name:/{print $2; exit}' "$skill_file")
+    if [ -n "$fm_name" ] && [ "$fm_name" != "$dir_name" ]; then
+      echo "ERROR: $skill_file: name '$fm_name' does not match directory '$dir_name'"
+      errors=$((errors + 1))
+    fi
+
+    # Check description includes "when to use" guidance.
+    # Handles single-line, quoted, and multiline (> or |) YAML descriptions.
+    fm_desc=$(awk '
+      /^---/ { n++; next }
+      n==1 && /^description:/ {
+        sub(/^description: */, "")
+        if ($0 ~ /^[>|]$/) { ml=1; next }  # multiline indicator
+        gsub(/^"/, ""); gsub(/"$/, "")
+        print; exit
+      }
+      n==1 && ml && /^  / { sub(/^ +/, ""); buf = buf " " $0; next }
+      n==1 && ml { print buf; exit }
+    ' "$skill_file")
+    if [ -n "$fm_desc" ]; then
+      if ! echo "$fm_desc" | grep -qiE 'Use (when|for|to) '; then
+        echo "WARNING: $skill_file: description lacks 'Use when/for/to' guidance for discoverability"
+        warnings=$((warnings + 1))
+      fi
+    fi
+
+    # Check SKILL.md line count (spec recommends <500)
+    line_count=$(wc -l < "$skill_file")
+    if [ "$line_count" -gt 500 ]; then
+      echo "WARNING: $skill_file: $line_count lines exceeds 500-line recommendation — extract to references/"
+      warnings=$((warnings + 1))
+    fi
+  done
+
   for file in "$dir"/*.md "$dir"/*/*.md; do
     [ -f "$file" ] || continue
 

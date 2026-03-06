@@ -1,6 +1,6 @@
 ---
 name: test
-description: Intelligent test runner that targets changed code and identifies coverage gaps
+description: Intelligent test runner that targets changed code and identifies coverage gaps. Use for running tests, finding coverage gaps, or testing changed code.
 ---
 
 # Smart Test Runner

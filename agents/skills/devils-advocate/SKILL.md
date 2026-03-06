@@ -1,6 +1,6 @@
 ---
 name: devils-advocate
-description: Execute the /devils-advocate workflow shared across Codex, Claude Code, and Copilot in this repository.
+description: Execute the /devils-advocate workflow shared across Codex, Claude Code, and Copilot in this repository. Use when you want to stress-test ideas, challenge assumptions, or play devil's advocate.
 ---
 
 # Devil's Advocate

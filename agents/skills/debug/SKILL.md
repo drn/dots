@@ -1,6 +1,6 @@
 ---
 name: debug
-description: Multi-agent competing hypotheses debugging
+description: Multi-agent competing hypotheses debugging. Use when stuck on a bug, need root cause analysis, or want competing debug theories.
 ---
 
 # Competing Hypotheses Debugging

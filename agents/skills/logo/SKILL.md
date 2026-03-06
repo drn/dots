@@ -1,6 +1,6 @@
 ---
 name: logo
-description: Logo Generation
+description: Generate SVG logo alternatives with side-by-side comparison. Use when creating logos, branding, or project icons.
 ---
 # Logo Generation
 

@@ -1,6 +1,6 @@
 ---
 name: contest
-description: Competing implementations with judge evaluation
+description: Competing implementations with judge evaluation. Use when comparing multiple approaches, picking the best solution, or running a bake-off.
 ---
 
 # Competing Implementations
