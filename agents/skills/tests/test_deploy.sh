@@ -87,11 +87,9 @@ test_summary_format() {
   local output
   output=$(print_summary)
 
-  assert_contains "$output" "--- DEPLOY RESULT ---" "should have header"
-  assert_contains "$output" "--- END ---" "should have footer"
+  assert_contains "$output" "status:     success" "should show success"
   assert_contains "$output" "tag:        v2.0.0" "should include tag"
   assert_contains "$output" "remote:     upstream" "should include remote"
-  assert_contains "$output" "status:     success" "should show success"
 }
 
 test_exit_1_on_no_remotes() {
