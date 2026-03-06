@@ -30,7 +30,7 @@ Push the current branch to origin. Use `git push -u origin HEAD` if no upstream 
 
 ### Step 3: Open a PR (or use existing one)
 
-- If a PR already exists for this branch, use it. Print the PR URL and skip to Step 4.
+- If a PR already exists for this branch, use it. Print the PR URL on its own line as `PR: <url>` and skip to Step 4.
 - Otherwise, create a PR following Steps 3a–3d below.
 
 #### 3a: Analyze the diff
@@ -98,7 +98,11 @@ events in the last 30 days." Omit this section if no data is available.]
 [Link to triggering CI failure, Jira ticket, or Sentry error if available]
 ```
 
-Print the PR URL.
+Print the PR URL on its own line, formatted exactly as:
+
+```
+PR: <url>
+```
 
 ### Step 4: Wait for CI and address feedback (loop)
 
@@ -194,6 +198,6 @@ After pushing fixes or addressing comments, loop back to wait for CI again. Cont
 
 When CI is green and all comments are addressed:
 
-- Print the PR URL.
+- Print the PR URL on its own line as `PR: <url>`.
 - Summarize what happened: how many CI fix cycles, how many comments addressed.
 - Confirm the PR is ready for merge.
