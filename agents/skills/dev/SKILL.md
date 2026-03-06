@@ -287,8 +287,35 @@ IF BLOCKING issues exist AND iteration_round < max_rounds:
   → Proceed to Phase 5 (iteration)
 
 IF iteration_round >= max_rounds:
-  → Proceed to Phase 7 with remaining issues noted
+  → Proceed to Phase 4b (escalation)
 ```
+
+---
+
+## Phase 4b: Escalation (max rounds exhausted)
+
+When `iteration_round >= max_rounds` with blocking issues remaining, present the user with escalation options:
+
+```markdown
+## Escalation: {max_rounds} rounds exhausted with blocking issues
+
+### Unresolved Blocking Issues
+{numbered list with category, file, line, description for each}
+
+### Escalation Options
+1. **Reassign** -- spawn a second implementer (`implementer-b`) with a different approach to the blocked issues
+2. **Decompose** -- break the remaining work into smaller tasks and address them individually
+3. **Defer** -- accept the current state and create TODO comments for unresolved issues
+4. **Extend** -- grant {max_rounds} more rounds (reset iteration counter)
+
+Which option? (default: defer)
+```
+
+**Wait for the user to choose.** Then:
+- **Reassign:** Spawn `implementer-b` with fresh context. Send it ONLY the blocking issues and the current code state. Route through the same QA loop (tester + reviewer). Max 2 additional rounds.
+- **Decompose:** Create new tasks for each blocking issue. Send each to the implementer one at a time with focused scope.
+- **Defer:** Add `// TODO: {issue description}` comments at each flagged location. Note in the summary.
+- **Extend:** Reset `iteration_round = 0` and return to Phase 5.
 
 ---
 
@@ -307,19 +334,24 @@ iteration_round += 1
 ### To implementer:
 
 ```
-ITERATION ROUND: {N} of {max_rounds}
+QA VERDICT: FAIL -- Round {N} of {max_rounds}
 
-BLOCKING ISSUES (fix these first):
-{numbered list with category, file, line, description}
+BLOCKING ISSUES (fix these -- each must be resolved to pass):
+| # | Category | File | Line | Description | Fix Instruction |
+|---|----------|------|------|-------------|-----------------|
+{one row per blocking issue with a specific, actionable fix instruction}
 
 WARNINGS (address if straightforward):
 {numbered list}
 
-TEST FAILURES (if any):
-{details}
+TEST FAILURES:
+{test name, failure message, and file:line for each}
 
-Fix the blocking issues. Address warnings if they're quick wins.
-When done, message me (the lead) AND the tester with your changes.
+INSTRUCTIONS:
+1. Fix ONLY the issues listed above
+2. Do NOT introduce new features or refactor unrelated code
+3. When done, message me (the lead) AND the tester with your changes
+4. This is attempt {N} of {max_rounds} -- if attempt {max_rounds} fails, the task escalates
 ```
 
 ### To tester:
@@ -428,6 +460,7 @@ If a test fails (i.e., the reviewer found a real bug), report the details.
 
 ### Iterations
 - **Rounds completed:** {N}
+- **First-pass QA:** {PASS or FAIL} (did the first implementation pass without iteration?)
 - **Key feedback addressed:** {brief summary of what changed between rounds}
 
 ### Remaining Items
@@ -521,5 +554,5 @@ Always use TaskUpdate to mark tasks completed.
 | Tests not found / no test framework | Tester reports N/A. Lead marks test track as "No test framework detected." |
 | Implementer stuck on same issue twice | Spawn a second implementer (`implementer-b`) with a different approach. Have the reviewer compare both solutions and pick the better one. Shut down the losing implementer. |
 | Agent unresponsive | Send a follow-up message. If still no response after a second nudge, proceed without that agent's input and note in summary. |
-| 3 rounds exhausted with blocking issues | Produce summary listing completed changes and remaining issues as TODOs. |
+| 3 rounds exhausted with blocking issues | Proceed to Phase 4b escalation -- present user with options: reassign, decompose, defer, or extend. |
 | Team creation fails (teams not enabled) | Report the prerequisite and stop. |
