@@ -1,7 +1,7 @@
 ---
 name: deploy
 disable-model-invocation: true
-allowed-tools: Bash(git fetch:*), Bash(git tag:*), Bash(git log:*), Bash(git ls-remote:*), Bash(thanx version update:*), Bash(git push:*)
+allowed-tools: Bash(bash ~/.claude/skills/deploy/scripts/deploy.sh:*), Bash(bash agents/skills/deploy/scripts/deploy.sh:*)
 description: Deploy latest master to production with a version tag
 ---
 
@@ -14,50 +14,17 @@ description: Deploy latest master to production with a version tag
 
 Deploy the latest master to production by creating a version tag and pushing to the production branch. This works from any branch — no need to checkout master.
 
-### Step 0: Determine the target remote
+### Step 1: Run the deploy script
 
-1. Run `git remote` to list available remotes.
-2. If an `upstream` remote exists, set **TARGET=upstream**.
-3. Otherwise, set **TARGET=origin**.
-4. All references to `{TARGET}` below use the determined remote.
-
-### Pre-flight checks
-
-Before continuing, verify all of the following. If any check fails, stop and tell the user why.
-
-- At least one remote (upstream or origin) is configured.
-- `git fetch {TARGET}` succeeded.
-
-### Step 1: Create a new version tag on {TARGET}/master
-
-`thanx version update` always tags HEAD, so we use it to calculate the correct sprint-based version, then move the tag to `{TARGET}/master`.
-
-1. Run `thanx version update` — this creates an annotated tag on HEAD.
-2. Identify the new tag name from the output (or compare tags before/after).
-3. Move the tag to `{TARGET}/master`:
-   ```
-   git tag -d <new-tag>
-   git tag -a <new-tag> {TARGET}/master -m ''
-   ```
-
-Save the new tag name for Step 2.
-
-### Step 2: Push the tag and {TARGET}/master to production
-
-Push the specific new tag and the production branch update in a single atomic command:
+Resolve the script path — use the first that exists:
+1. `~/.claude/skills/deploy/scripts/deploy.sh` (deployed via symlink)
+2. `agents/skills/deploy/scripts/deploy.sh` (repo-relative, for development/workspaces)
 
 ```
-git push {TARGET} <new-tag> {TARGET}/master:refs/heads/production
+bash <script-path>
 ```
 
-Do NOT use `--tags` — that pushes every local tag. Push only the new tag by name.
+Handle the exit code:
 
-This MUST be a single git push command to avoid a race condition where CircleCI fetches the repo before GitHub has indexed the new version tag, causing the Docker image to be tagged as "latest" instead of the version.
-
-### Step 3: Verify and report
-
-1. Verify the tag exists on the remote: `git ls-remote --tags {TARGET} <new-tag>`
-2. Confirm the new version tag and the commit it points to.
-3. Confirm that the tag and master were pushed to production.
-
-Execute all steps in sequence. If any step fails, stop and report the error.
+- **Exit 0** — Show the output block verbatim as your final response. Do not add commentary.
+- **Exit 1** — Report the error from stderr.

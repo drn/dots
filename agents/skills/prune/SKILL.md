@@ -1,6 +1,6 @@
 ---
 name: prune
-allowed-tools: Bash(git branch:*), Bash(git log:*), Bash(git fetch:*), Bash(git for-each-ref:*), Bash(gh pr list:*)
+allowed-tools: Bash(bash ~/.claude/skills/prune/scripts/prune.sh:*), Bash(bash agents/skills/prune/scripts/prune.sh:*)
 description: Clean up merged and stale git branches, prune old local and remote branches safely
 disable-model-invocation: true
 ---
@@ -16,50 +16,29 @@ Delete merged and stale local branches safely, with preview and confirmation.
 ## Context
 
 - Current branch: !`git branch --show-current`
-- Local branches with dates: !`git branch --sort=-committerdate --format='%(refname:short) %(committerdate:relative) %(upstream:short)' 2>/dev/null | head -50`
 - Remote: !`git remote 2>/dev/null | head -5`
 
 ## Instructions
 
-### Step 0: Validate state
+Resolve the script path — use the first that exists:
+1. `~/.claude/skills/prune/scripts/prune.sh` (deployed via symlink)
+2. `agents/skills/prune/scripts/prune.sh` (repo-relative, for development/workspaces)
 
-- Determine the current branch. This branch is PROTECTED and will never be deleted.
-- Determine the default branch using `git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null` (fallback to checking for origin/main, then origin/master).
-- Build the protected branch list: current branch, default branch, `main`, `master`, `develop`, and any branch matching `release/*` or `staging`.
+### Step 1: Preview branches
 
-### Step 1: Fetch and sync
-
-Run `git fetch --prune` to sync remote tracking references and remove stale remote-tracking branches.
-
-### Step 2: Identify merged branches
-
-List branches already merged into the default branch:
+Run the preview command, forwarding any `--stale-days` argument:
 
 ```
-git branch --merged <default-branch>
+bash <script-path> preview [--stale-days N]
 ```
 
-Exclude all protected branches from this list.
+Handle the exit code:
 
-### Step 3: Identify stale branches
+- **Exit 0** — Present the output as a formatted table (see format below). Proceed to Step 2.
+- **Exit 3** — Tell the user: "All branches are current — nothing to prune." and stop.
+- **Exit 1** — Report the error from stderr.
 
-Parse the stale threshold from `$ARGUMENTS` (default: 30 days).
-
-For each non-merged, non-protected local branch, check the last commit date. Mark as stale if the last commit is older than the threshold.
-
-### Step 4: Check for open PRs
-
-For each branch identified for deletion (merged or stale), check if it has an open PR:
-
-```
-gh pr list --head <branch-name> --state open
-```
-
-If a branch has an open PR, remove it from the deletion list and flag it in the preview.
-
-### Step 5: Preview
-
-Show a table of what will be deleted:
+Format the preview output as:
 
 ```markdown
 ## Branch Cleanup Preview
@@ -67,30 +46,32 @@ Show a table of what will be deleted:
 ### Merged (safe to delete)
 | Branch | Last Commit | Merged Into |
 |--------|------------|-------------|
-| feature/foo | 2 weeks ago | main |
+| <branch> | <date> | <default> |
 
-### Stale (no commits in <N> days)
-| Branch | Last Commit | Open PR? |
-|--------|------------|----------|
-| old-experiment | 3 months ago | No |
+### Stale (no commits in N days)
+| Branch | Last Commit |
+|--------|------------|
+| <branch> | <date> |
 
 ### Skipped
 | Branch | Reason |
 |--------|--------|
-| release/2.0 | Protected (release/*) |
-| feature/bar | Has open PR #42 |
+| <branch> | <reason> |
 ```
 
-IF no branches qualify for deletion, report "All branches are current." and stop.
+### Step 2: Confirm and delete
 
-### Step 6: Confirm and delete
+Ask the user which branches to delete. Accept "all", specific branch names, or "none".
 
-Ask the user to confirm before deleting. Accept "all", specific branch names, or "none".
+For confirmed branches, run the delete command:
 
-For confirmed branches:
-- Delete local branch: `git branch -d <name>` (use `-D` only for stale unmerged branches)
-- If `--remote` flag was provided, also delete remote branch: `git push origin --delete <name>`
+```
+bash <script-path> delete [--remote] <branch1> [branch2 ...]
+```
 
-### Step 7: Report
+Include `--remote` only if the user passed it in `$ARGUMENTS`.
 
-Print a summary of what was deleted and what was kept.
+Handle the exit code:
+
+- **Exit 0** — Show the output block verbatim as your final response.
+- **Exit 1** — Report the error from stderr.
