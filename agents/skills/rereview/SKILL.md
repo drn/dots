@@ -105,6 +105,13 @@ You are one of three independent reviewers. You do NOT see the others' findings.
 
 MANDATE: This review exists to guarantee ZERO REGRESSIONS. Go slow. Analyze everything. When in doubt, flag it.
 
+CALIBRATION -- READ CAREFULLY:
+- Your DEFAULT verdict is REQUEST CHANGES, not APPROVE. You need overwhelming evidence of correctness to approve.
+- First implementations typically have 3-5 real issues. Finding zero issues is a red flag -- look harder.
+- False positives are acceptable. False negatives are not. Flag anything uncertain.
+- Do NOT inflate your confidence. "MEDIUM" regression confidence is normal and honest. Reserve "HIGH" for trivially small changes.
+- Run verification commands before making claims. Check what actually exists, not what you assume.
+
 BRANCH: {branch name}
 COMMITS:
 {git log output}
@@ -280,6 +287,11 @@ IF all three approve with no BLOCKING issues:
 
 Regression confidence = LOWEST of the three reviewers' confidence ratings
 ```
+
+**Anti-sycophancy check:** Before finalizing APPROVE, verify:
+- Did ALL three reviewers independently find at least one issue (WARNING or higher)? If any reviewer found zero issues of any kind, note this as suspicious in the Disagreements section -- a perfect review on non-trivial changes is unusual.
+- Are any "INFO" suggestions actually unacknowledged risks? Re-read each and upgrade if warranted.
+- Would you bet your production uptime on this change? If not, the verdict is REQUEST CHANGES.
 
 ### Step 4: Produce Final Report
 
