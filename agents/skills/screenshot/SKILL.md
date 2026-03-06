@@ -20,7 +20,7 @@ Show the user their most recent screenshots from ~/Downloads.
 
 Recent image files in ~/Downloads (sorted newest first):
 
-!`find ~/Downloads -maxdepth 1 -type f \( -name "*.png" -o -name "*.jpg" -o -name "*.jpeg" -o -name "*.webp" -o -name "*.gif" \) -print0 2>/dev/null | xargs -0 stat -f "%m %N" 2>/dev/null | sort -rn | head -20 | cut -d" " -f2-`
+!`ls -1t ~/Downloads/*.png ~/Downloads/*.jpg ~/Downloads/*.jpeg ~/Downloads/*.webp ~/Downloads/*.gif 2>/dev/null | head -20`
 
 ## Instructions
 

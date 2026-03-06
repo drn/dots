@@ -35,7 +35,7 @@ Push the current branch to origin. Use `git push -u origin HEAD` if no upstream 
 
 #### 3a: Analyze the diff
 
-Run `git diff origin/HEAD...HEAD` and `git log origin/HEAD..HEAD --oneline` to understand what changed. Classify the change complexity:
+Determine the base ref (use `git branch -r` to find `origin/main` or `origin/master`) (e.g., `origin/master`). Run `git diff <base>...HEAD` and `git log <base>..HEAD --oneline` to understand what changed. Classify the change complexity:
 
 - **Simple** (rename, typo, config change, dependency bump): skip to 3c.
 - **Medium** (single-file logic change): do 3b lightly — read the changed file in full.

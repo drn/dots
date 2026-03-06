@@ -14,8 +14,9 @@ Run a comprehensive code review (security, architecture, clarity) against your c
 ## Context
 
 - Current branch: !`git branch --show-current`
-- Default branch ref: !`git rev-parse --abbrev-ref origin/HEAD 2>/dev/null | grep -v '^origin/HEAD$' | head -1`
-- Changes: !`git diff --stat HEAD...origin/HEAD 2>/dev/null | head -50`
+- Base ref: !`git branch -r 2>/dev/null | grep -oE 'origin/(main|master)' | head -1`
+- Changes vs main: !`git diff --stat HEAD...origin/main 2>/dev/null | head -50`
+- Changes vs master: !`git diff --stat HEAD...origin/master 2>/dev/null | head -50`
 
 ## Instructions
 

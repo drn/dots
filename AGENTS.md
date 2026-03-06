@@ -103,7 +103,7 @@ The `` !`command` `` syntax runs shell commands and injects output as context. *
 - **Avoid `$()` command substitution** inside dynamic context expressions. Use plain commands instead — Claude Code blocks `$()` in these expansions for security reasons.
 - **Avoid `||` and `&&` operators** — use separate commands or pipes instead. Claude Code's permission system treats these as multiple operations and blocks them.
 - **Always pipe through `| head -N`** after `2>/dev/null`. The `2>/dev/null` suppresses stderr but does not fix the exit code — a non-zero exit code breaks the skill loader. Piping through `head` neutralizes the exit code (pipeline exit code = last command = `head` = 0).
-- **Use `origin/HEAD`** instead of hardcoding `origin/main` or `origin/master` for default branch references.
+- **Never use `origin/HEAD`** in dynamic context — it doesn't exist in repos that weren't `git clone`'d or where the ref wasn't fetched. Detect the base branch with `git branch -r | grep -oE 'origin/(main|master)' | head -1`, or provide both `origin/main` and `origin/master` variants so one always has output.
 - **Keep output bounded** with `| head -N` or `| grep` to avoid blowing up context.
 - **No agent teams in Conductor.** Do not use `TeamCreate`, `TeamDelete`, `SendMessage`, or `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS`. Use parallel `Task` tool calls with sub-agents instead.
 
@@ -115,10 +115,17 @@ The `` !`command` `` syntax runs shell commands and injects output as context. *
 !`git log origin/main..HEAD --oneline 2>/dev/null || echo "None"`
 
 # BAD — 2>/dev/null alone does not fix exit code, breaks skill loader
-!`git log origin/HEAD..HEAD --oneline 2>/dev/null`
+!`git log origin/main..HEAD --oneline 2>/dev/null`
 
-# GOOD — pipe neutralizes exit code, empty output on failure is fine
+# BAD — origin/HEAD doesn't exist in many repos, returns empty context
 !`git log origin/HEAD..HEAD --oneline 2>/dev/null | head -50`
+
+# GOOD — detect base branch portably (no custom tools)
+- Base ref: !`git branch -r 2>/dev/null | grep -oE 'origin/(main|master)' | head -1`
+
+# GOOD — provide both branches, one will have output
+- Commits vs main: !`git log origin/main..HEAD --oneline 2>/dev/null | head -50`
+- Commits vs master: !`git log origin/master..HEAD --oneline 2>/dev/null | head -50`
 ```
 
 See `/write-skill` for the full skill-authoring guide.
@@ -170,7 +177,7 @@ Before considering any task complete, run the full test suite:
 go install ./...                              # Build all binaries
 revive -set_exit_status ./...                 # Run linter
 go test ./...                                 # Run Go tests
-bash agents/skills/tests/run_all.sh           # Run skill script tests
+bash .github/skill-tests/run_all.sh           # Run skill script tests
 bash .github/lint-skills.sh                   # Run skill linter
 ```
 

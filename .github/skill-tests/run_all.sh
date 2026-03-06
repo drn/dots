@@ -3,7 +3,7 @@ set -euo pipefail
 
 # Run all skill script tests
 #
-# Usage: bash agents/skills/tests/run_all.sh
+# Usage: bash .github/skill-tests/run_all.sh
 
 DIR="$(cd "$(dirname "$0")" && pwd)"
 PASS=0

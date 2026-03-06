@@ -92,15 +92,19 @@ Claude Code blocks `$()` inside dynamic context expressions for security reasons
 - Branch commits: !{DEFAULT=$(git symbolic-ref ...) && git log origin/$DEFAULT..HEAD}
 - Changes: !{git diff --stat HEAD...$(git symbolic-ref ...)}
 
-# FIXED — single commands with error suppression
-- Branch commits: !{git log origin/HEAD..HEAD --oneline 2>/dev/null}
-- Changes: !{git diff --stat HEAD...origin/HEAD 2>/dev/null}
+# FIXED — detect base branch portably, provide both branches
+- Base ref: !{git branch -r 2>/dev/null | grep -oE 'origin/(main|master)' | head -1}
+- Commits vs main: !{git log origin/main..HEAD --oneline 2>/dev/null | head -20}
+- Commits vs master: !{git log origin/master..HEAD --oneline 2>/dev/null | head -20}
+- Changes vs main: !{git diff --stat HEAD...origin/main 2>/dev/null | head -50}
+- Changes vs master: !{git diff --stat HEAD...origin/master 2>/dev/null | head -50}
 ```
 
 **Alternatives to `$()`:**
 - Pipe chains: `command1 | command2 | command3`
 - Error suppression: `command 2>/dev/null` (empty output on failure is fine)
-- Use `origin/HEAD`: resolves to whatever the remote default branch is, no hardcoding needed
+- Detect base branch: `git branch -r | grep -oE 'origin/(main|master)' | head -1` — portable, no custom tools needed
+- Provide both branches: include `origin/main` and `origin/master` variants — one will be empty, the agent uses whichever has output
 - Separate context lines: split a complex command into multiple simpler dynamic context lines
 
 #### Output Size Management

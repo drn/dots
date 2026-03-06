@@ -30,7 +30,8 @@ If agent teams are not enabled, report: "Agent teams required. Add `CLAUDE_CODE_
 - Test framework: !`find . -maxdepth 4 \( -name "*_test.*" -o -name "*.test.*" -o -name "*_spec.*" \)`
 - Linter config: !`find . -maxdepth 1 \( -name .rubocop.yml -o -name .rubocop_todo.yml -o -name ".eslintrc*" -o -name ".prettierrc*" -o -name revive.toml \)`
 - Recent commits: !`git log --oneline -5`
-- Branch changes: !`git diff --name-only origin/HEAD...HEAD`
+- Changes vs main: !`git diff --name-only origin/main...HEAD 2>/dev/null | head -50`
+- Changes vs master: !`git diff --name-only origin/master...HEAD 2>/dev/null | head -50`
 
 ## Overview
 

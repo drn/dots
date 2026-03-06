@@ -27,7 +27,7 @@ If no arguments are provided, ask the user what they want implemented.
 
 - Current branch: !`git branch --show-current`
 - Git status: !`git status --short`
-- Default branch ref: !`git rev-parse --abbrev-ref origin/HEAD 2>/dev/null | grep -v '^origin/HEAD$' | head -1`
+- Base ref: !`git branch -r 2>/dev/null | grep -oE 'origin/(main|master)' | head -1`
 - Project root: !`pwd`
 - Project type: !`find . -maxdepth 1 \( -name go.mod -o -name Gemfile -o -name package.json -o -name Cargo.toml -o -name pyproject.toml -o -name setup.py -o -name requirements.txt -o -name pom.xml -o -name build.gradle -o -name Makefile \) 2>/dev/null | head -5`
 - Recent commits: !`git log --oneline -5`
