@@ -149,7 +149,7 @@ After the user approves a proposal:
 
 **New skills default to the local project.** Only propose creating a skill in an external repo (like `~/.dots`) if the skill is clearly cross-project and not specific to the current codebase — and in that case, generate a handoff prompt instead of creating it directly.
 
-### Step 7: Fix Codebase Gaps
+### Step 7: Fix Codebase Gaps & Update Agent Guidance
 
 Review the session for codebase gaps that were discovered or worked around but not fixed. These are issues in the project itself (not in skills):
 
@@ -165,6 +165,25 @@ For each gap found:
 3. **Apply immediately by default** — straightforward fixes (missing CLI flags, error handling, docs, tests) should be implemented and committed without asking. Only pause for approval on risky changes (breaking API changes, large refactors, changes to shared interfaces).
 
 Only fix gaps that were actually encountered during the session. Do not speculatively audit the codebase.
+
+#### Agent Guidance Updates
+
+After completing the gap analysis above, also review the learnings from Steps 2-6 for improvements that should be propagated into CLAUDE.md, AGENTS.md, or other agent guidance files. Skills capture *how to do a specific task*, but agent guidance captures *cross-cutting conventions, patterns, and rules* that affect all tasks.
+
+Specifically, check whether any of these emerged during the session:
+
+- **New conventions or patterns** — a workflow pattern, naming convention, or architectural constraint that was discovered or established and should guide future agent behavior across all tasks (not just within one skill)
+- **Corrected assumptions** — something an agent would get wrong by default without explicit guidance (e.g., "always use X instead of Y", "never run Z without flag W")
+- **Tool/infra quirks** — non-obvious behavior of the project's tools, CI, deploy pipeline, or dependencies that caused friction and would trip up agents again
+- **Process rules** — ordering constraints, approval requirements, or safety checks that should be followed every time (e.g., "run linter before committing", "check with user before modifying shared config")
+
+For each agent guidance update:
+1. Identify the target file (CLAUDE.md, AGENTS.md, or a project-specific guidance file)
+2. Identify the right section — add to an existing section if one fits, otherwise propose a new section
+3. Draft the addition as a diff
+4. **Apply directly for local files** — same apply-by-default rule as codebase gaps. For guidance files in external repos, generate a handoff prompt (same format as Step 5)
+
+**Do NOT duplicate into agent guidance** anything that is already captured in a skill's SKILL.md. Only promote learnings that are cross-cutting — relevant beyond the scope of a single skill.
 
 ### Step 8: Capture Context & Knowledge
 
