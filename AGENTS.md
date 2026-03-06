@@ -54,7 +54,8 @@ dots doctor                                   # Run diagnostics
 │   ├── install.go            # Install orchestration
 │   └── install/              # Component installers
 ├── agents/
-│   └── skills/               # Cross-agent skills (SKILL.md per skill)
+│   ├── skills/               # Cross-agent skills (SKILL.md per skill)
+│   └── custom/               # Custom agent types (.md per agent → ~/.claude/agents/)
 ├── cmd/                      # 22 standalone utilities
 └── pkg/                      # Shared utilities (log, run, cache, path)
 ```
@@ -87,7 +88,7 @@ dots doctor                                   # Run diagnostics
 | vim | Vim configuration |
 | hammerspoon | Window management |
 | osx | macOS defaults |
-| agents | Agent skills for Claude Code + Codex (symlinks agents/skills → ~/.claude/skills and ~/.agents/skills) |
+| agents | Agent skills and custom agents (symlinks agents/skills → ~/.claude/skills + ~/.agents/skills, agents/custom → ~/.claude/agents) |
 
 ## Writing Skills / Slash Commands
 
