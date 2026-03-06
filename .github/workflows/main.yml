@@ -60,5 +60,8 @@ jobs:
       - name: Skill Lint Tests
         run: .github/lint-skills-test.sh
 
+      - name: Skill Script Tests
+        run: bash agents/skills/tests/run_all.sh
+
       - name: Agent Config Lint (agnix)
         run: npx agnix@0.13.0 .

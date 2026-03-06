@@ -2,6 +2,7 @@
 name: perf
 description: Before/after performance benchmarking comparing current branch against base, with statistical analysis
 disable-model-invocation: true
+allowed-tools: Bash(bash ~/.claude/skills/perf/scripts/perf.sh:*), Bash(bash agents/skills/perf/scripts/perf.sh:*)
 ---
 
 # Performance Benchmark
@@ -10,7 +11,7 @@ Run a command multiple times on the current branch and the base branch, then com
 
 ## Arguments
 
-- `$ARGUMENTS` - Required: the command to benchmark (e.g., "go test -bench=. ./pkg/..." or "npm run build"). Optional: `-n <count>` for number of runs (default 5), `--base <ref>` to override base branch.
+- `$ARGUMENTS` - Required: the command to benchmark (e.g., "go test -bench=. ./pkg/..." or "npm run build"). Optional: `--runs <count>` for number of runs (default 5), `--base <ref>` to override base branch.
 
 ## Context
 
@@ -18,76 +19,33 @@ Run a command multiple times on the current branch and the base branch, then com
 - Base branch: !`git rev-parse --abbrev-ref origin/HEAD 2>/dev/null | head -1`
 - Git status: !`git status --short`
 
-## Instructions
+## Your task
 
-### Step 0: Validate state
+Run before/after benchmarks comparing the current branch against the base branch.
 
-- IF `git status --short` shows uncommitted changes, stop: "Uncommitted changes detected. Commit or stash before benchmarking — the base comparison requires a clean working tree."
-- Parse `$ARGUMENTS` for:
-  - **Command:** the benchmark command to run
-  - **N:** number of runs (default 5, parse from `-n <count>`)
-  - **Base:** base ref for comparison (default: the base branch from context, override with `--base <ref>`)
+### Step 1: Parse arguments and run the benchmark script
+
+Extract the benchmark command and optional flags (`--runs N`, `--base <ref>`) from `$ARGUMENTS`.
 
 IF no command is provided, ask: "What command should I benchmark?"
 
-### Step 1: Benchmark current branch
-
-Report: "Benchmarking current branch (<branch>): <command> x <N> runs"
-
-Run 1 warmup execution (discard the result — accounts for caching, compilation, etc.).
-
-Then run the command N times, capturing wall-clock time for each run using:
+Resolve the script path — use the first that exists:
+1. `~/.claude/skills/perf/scripts/perf.sh` (deployed via symlink)
+2. `agents/skills/perf/scripts/perf.sh` (repo-relative, for development/workspaces)
 
 ```
-/usr/bin/time -p <command>
+bash <script-path> "<command>" [--runs N] [--base <ref>]
 ```
 
-Record the `real` time from each run. Store results as an array.
+Handle the exit code:
 
-### Step 2: Set up base comparison
+- **Exit 0** — Format the output as the report below and show it as your final response.
+- **Exit 1** — Report the error from stderr.
+- **Exit 2** — Report: "Benchmark command failed. Verify the command works: `<command>`"
 
-Create a worktree for the base branch:
+### Step 2: Format the report
 
-```
-git worktree add .perf-base <base-ref>
-```
-
-Change to the worktree directory for the base runs.
-
-### Step 3: Benchmark base branch
-
-Report: "Benchmarking base (<base-ref>): <command> x <N> runs"
-
-Run 1 warmup execution (discard), then N measured runs in the worktree directory. Record `real` time for each.
-
-### Step 4: Clean up worktree
-
-Remove the worktree:
-
-```
-git worktree remove .perf-base --force
-```
-
-IF cleanup fails, report the issue but continue to Step 5 with the data collected.
-
-### Step 5: Analyze results
-
-Compute for each branch:
-- **Min** — fastest run
-- **Max** — slowest run
-- **Mean** — average
-- **Median** — middle value
-- **Stddev** — standard deviation
-
-Compute the comparison:
-- **Delta:** mean(current) - mean(base)
-- **Change:** percentage change from base
-- **Verdict:**
-  - Regression: >5% slower
-  - Improvement: >5% faster
-  - Neutral: within 5%
-
-### Step 6: Report
+Parse the script's structured output and present it as:
 
 ```markdown
 ## Benchmark Results
@@ -115,4 +73,4 @@ Compute the comparison:
 <1-2 sentence explanation>
 ```
 
-IF the stddev is high relative to the mean (>20%), add a warning: "High variance detected — results may not be reliable. Consider increasing the number of runs with `-n 10`."
+If the script output includes a high-variance warning, append it after the verdict.
