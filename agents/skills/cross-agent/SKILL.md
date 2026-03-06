@@ -119,7 +119,7 @@ Claude Code discovers skills from `.claude/skills/`. After migration, the origin
 
 **If `.claude/skills` is a symlink**: update it to point to `.agents/skills`
 **If `.claude/skills` is a directory with content**: the content was already migrated in Step 4. Replace the directory with a symlink to `.agents/skills/`.
-**If `.claude/skills` does not exist**: create a symlink `.claude/skills` pointing to `.agents/skills`
+**If `.claude/skills` does not exist**: create `.claude/` directory if it does not exist, then create a symlink `.claude/skills` pointing to `../.agents/skills`
 
 Remove `.claude/commands/` if it was fully migrated (all files moved to `.agents/skills/`). If some files remain that were not migrated, leave them.
 
