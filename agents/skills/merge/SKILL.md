@@ -1,6 +1,6 @@
 ---
 name: merge
-allowed-tools: Bash(git add:*), Bash(git commit:*), Bash(git log:*), Bash(git diff:*), Bash(git status:*), Bash(git rebase:*), Bash(git checkout:*), Bash(bash ~/.claude/skills/merge/scripts/merge.sh:*)
+allowed-tools: Bash(git add:*), Bash(git commit:*), Bash(git log:*), Bash(git diff:*), Bash(git status:*), Bash(git rebase:*), Bash(git checkout:*), Bash(bash ~/.claude/skills/merge/scripts/merge.sh:*), Bash(bash agents/skills/merge/scripts/merge.sh:*)
 description: Merge current branch to master via GitHub PR merge
 ---
 
@@ -33,8 +33,12 @@ If there are no prior commits (only what was committed in step 1), base the summ
 
 ### Step 3: Run the merge script
 
+Resolve the script path — use the first that exists:
+1. `~/.claude/skills/merge/scripts/merge.sh` (deployed via symlink)
+2. `agents/skills/merge/scripts/merge.sh` (repo-relative, for development/workspaces)
+
 ```
-bash ~/.claude/skills/merge/scripts/merge.sh "<title>" "<body>"
+bash <script-path> "<title>" "<body>"
 ```
 
 Handle the exit code:
@@ -46,7 +50,7 @@ Handle the exit code:
   3. `git add` resolved files
   4. `git rebase --continue`
   5. Repeat if more conflicts
-  6. Re-run: `bash ~/.claude/skills/merge/scripts/merge.sh --skip-rebase "<title>" "<body>"`
+  6. Re-run: `bash <script-path> --skip-rebase "<title>" "<body>"`
   7. Show the output block verbatim
 - **Exit 3** — Tell the user: "Nothing to merge — branch has no commits ahead of master."
 - **Exit 1** — Report the error from stderr.
