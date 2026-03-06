@@ -162,6 +162,20 @@ When receiving a handoff for `~/.dots` skill changes, apply them to this workspa
 
 When making changes that affect user-facing features — adding/removing skills, custom agents, CLI commands, components, or utilities — always update `README.md` to reflect those changes. Keep counts, tables, and the project structure tree accurate.
 
+## Pre-Completion Checklist
+
+Before considering any task complete, run the full test suite:
+
+```bash
+go install ./...                              # Build all binaries
+revive -set_exit_status ./...                 # Run linter
+go test ./...                                 # Run Go tests
+bash agents/skills/tests/run_all.sh           # Run skill script tests
+bash .github/lint-skills.sh                   # Run skill linter
+```
+
+Do not skip any of these steps. If any command fails, fix the issue before finishing. This applies to all tasks — feature work, bug fixes, skill changes, and documentation updates.
+
 ## Critical Notes
 
 - Installation is destructive (no backups)
