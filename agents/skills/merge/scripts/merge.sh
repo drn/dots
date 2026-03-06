@@ -139,6 +139,7 @@ update_local_master() {
   if git checkout master 2>/dev/null; then
     git pull "$TARGET" master
     MASTER_COMMIT=$(git log -1 --oneline)
+    git checkout "$BRANCH" 2>/dev/null || true
   else
     local worktree_path
     worktree_path=$(git worktree list | grep '\[master\]' | awk '{print $1}' || echo "")
@@ -151,7 +152,7 @@ update_local_master() {
 }
 
 sync_dots() {
-  if [[ "${CONDUCTOR_ROOT_PATH:-}" != *".dots"* ]]; then
+  if [[ "${CONDUCTOR_ROOT_PATH:-}" != *"/.dots/"* && "${CONDUCTOR_ROOT_PATH:-}" != *"/.dots" ]]; then
     return 0
   fi
 
@@ -166,15 +167,13 @@ sync_dots() {
 
 print_summary() {
   echo ""
-  echo "--- MERGE RESULT ---"
   echo "status:   ${MERGE_STATUS}"
   echo "method:   ${MERGE_METHOD}"
   echo "pr:       ${PR_URL}"
   echo "branch:   ${BRANCH} → master"
   echo "commits:  ${COMMIT_COUNT}"
   [[ -n "${MASTER_COMMIT:-}" ]] && echo "commit:   ${MASTER_COMMIT}"
-  [[ -n "${DOTS_SYNCED:-}" ]] && echo "dots:     ${DOTS_SYNCED}"
-  echo "--- END ---"
+  [[ -n "${DOTS_SYNCED:-}" ]] && echo "~/.dots:  synced → ${DOTS_SYNCED}"
 }
 
 # --- Main ---
