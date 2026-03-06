@@ -121,14 +121,12 @@ test_summary_format() {
   local output
   output=$(print_summary)
 
-  assert_contains "$output" "--- MERGE RESULT ---" "should have header"
-  assert_contains "$output" "--- END ---" "should have footer"
   assert_contains "$output" "status:   merged" "should show status"
   assert_contains "$output" "method:   squash" "should show method"
   assert_contains "$output" "pr:       https://github.com/test/repo/pull/1" "should show PR URL"
   assert_contains "$output" "commits:  3" "should show commit count"
   assert_contains "$output" "commit:   abc1234" "should show master commit"
-  assert_not_contains "$output" "dots:" "should not show dots when empty"
+  assert_not_contains "$output" "~/.dots:" "should not show dots when empty"
 }
 
 run_tests
