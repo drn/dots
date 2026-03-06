@@ -82,8 +82,11 @@ do_push() {
 ensure_pr() {
   local title="$1" body="$2"
 
+  local repo_slug
+  repo_slug=$(git remote get-url "$TARGET" | sed 's|.*github.com[:/]||;s|\.git$||')
+
   local existing
-  existing=$(gh pr list --head "$BRANCH" --state open --json number,url --jq '.[0]' 2>/dev/null || echo "")
+  existing=$(gh pr list --head "$BRANCH" --state open --repo "$repo_slug" --json number,url --jq '.[0]' 2>/dev/null || echo "")
 
   if [[ -n "$existing" && "$existing" != "null" ]]; then
     PR_NUMBER=$(echo "$existing" | jq -r '.number')

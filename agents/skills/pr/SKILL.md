@@ -16,7 +16,7 @@ Open a PR for the current branch, then loop until CI is fully green and all revi
 
 ### Step 0: Check for existing PR
 
-Determine the repository owner and name from `git remote get-url origin`. Use `mcp__github__list_pull_requests` (with `head` set to `<owner>:<branch>`, `state: "open"`) to check if a PR already exists. If one exists, note the PR number and skip to Step 3.
+Determine the upstream repo slug (owner/name) — use `upstream` remote if it exists, otherwise `origin`. Use `gh pr list --repo <owner/repo> --head '<fork-owner>:<branch>' --state open --json number,url` to check if a PR already exists. If one exists, note the PR number and skip to Step 3.
 
 ### Step 1: Commit any uncommitted changes
 
@@ -62,7 +62,7 @@ Scan the conversation history for context that should flow into the PR descripti
 
 #### 3d: Write the PR and create it
 
-Use `mcp__github__create_pull_request`. Keep the title under 70 characters.
+Use `gh pr create --repo <owner/repo> --base master --head <branch>`. Keep the title under 70 characters.
 
 Scale the body to match complexity:
 
@@ -106,14 +106,14 @@ Repeat the following until CI is fully green **and** there are no unresolved rev
 
 #### 4a: Check CI status and unresolved threads
 
-- Use `mcp__github__get_pull_request_status` to see the current state of all checks.
-- If checks are still running, poll `mcp__github__get_pull_request_status` with exponential backoff: wait 60s, then 120s, then 240s, capping at 300s between polls. Stop after 30 minutes total and report to the user.
+- Use `gh pr checks <number> --repo <owner/repo>` to see the current state of all checks.
+- If checks are still running, poll `gh pr checks` with exponential backoff: wait 60s, then 120s, then 240s, capping at 300s between polls. Stop after 30 minutes total and report to the user.
 - If all checks pass, proceed to 4c to check for unresolved review threads. Only go to Step 5 when CI is green **and** 4c confirms zero unresolved threads.
 - If any checks have failed, proceed to 4b immediately — do not wait.
 
 #### 4b: If CI fails — diagnose and fix
 
-- Use `mcp__github__get_pull_request_status` to see which checks failed.
+- Use `gh pr checks <number> --repo <owner/repo>` to see which checks failed.
 - For each failed check:
   - Use `mcp__github__get_job_logs` with `failed_only: true` and the workflow `run_id` to read the failure logs.
   - Analyze the failure. Read the relevant source files to understand the issue.
