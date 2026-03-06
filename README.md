@@ -4,7 +4,7 @@
 
 # Dots
 
-> Obsessively curated dotfiles managed by a robust, extensible Go CLI.
+> Obsessively curated dotfiles and agentic skills managed by a robust, extensible Go CLI.
 
 [![Github](https://github.com/drn/dots/actions/workflows/main.yml/badge.svg?branch=master)](https://github.com/drn/dots/actions?query=branch%3Amaster)
 [![Go Report Card](https://goreportcard.com/badge/github.com/drn/dots)](https://goreportcard.com/report/github.com/drn/dots)
@@ -14,238 +14,203 @@
 
 ## Overview
 
-Dots is a comprehensive development environment management system built in Go. It provides a CLI tool for installing, updating, and managing your development configuration including:
-
-- Shell configurations (ZSH)
-- Development tools and binaries
-- Git extensions and configuration
-- Vim/Neovim setup
-- Homebrew packages
-- Programming language environments (via asdf)
-- macOS system preferences
-- Custom utility commands
-- Font management
-- Hammerspoon configuration
+Dots is a development environment management system built in Go. It provides a CLI for installing, updating, and managing your entire macOS development configuration — shell, editors, languages, system preferences, custom utilities, and a library of reusable [agent skills](https://agentskills.io) for Claude Code and Codex.
 
 ## System Requirements
 
-- macOS (optimized for macOS systems)
-- [Homebrew](https://brew.sh/) package manager
-- [Go](https://golang.org/) 1.15+ (recommended: 1.19+)
-- ZSH shell (will be set as default)
+- macOS
+- [Homebrew](https://brew.sh/)
+- [Go](https://golang.org/) 1.21+
 
 ## Installation
 
-### Prerequisites
-
-1. Install Homebrew:
-   ```bash
-   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-   ```
-
-2. Install Go via Homebrew:
-   ```bash
-   brew install go
-   ```
-
-3. Configure Go environment:
-   ```bash
-   export GOPATH=$HOME/go
-   export PATH=$GOPATH/bin:$PATH
-   ```
-
-### Install Dots
-
 ```bash
+# Install Homebrew and Go if needed
+brew install go
+
+# Clone and install
 git clone https://github.com/drn/dots ~/.dots
 cd ~/.dots
 go install ./...
 dots install all
 ```
 
-⚠️ **Warning**: This installation process will overwrite existing configuration files without creating backups. It's recommended to backup your current dotfiles before proceeding.
+> **Warning**: Installation overwrites existing configuration files without backups. Back up your dotfiles first.
 
 ## Usage
 
-### Primary Commands
-
 ```bash
-dots                    # Show help and available commands
-dots install all        # Install all configuration components
+dots                     # Show help and available commands
+dots install all         # Install all components
 dots install <component> # Install specific component
-dots update             # Update configuration
-dots clean              # Clean legacy configuration
-dots doctor             # Run system diagnostics
-dots docker stop-all    # Stop all Docker containers
-dots spinner            # Display spinner demos
+dots update              # Update configuration, plugins, and packages
+dots doctor              # Run system diagnostics
+dots clean               # Clean legacy configuration
+dots docker stop-all     # Stop all Docker containers
 ```
 
-### Installation Components
+### Components
 
-The `dots install` command supports the following components:
+| Component | What it installs |
+|-----------|------------------|
+| `agents` | Agent skills for Claude Code and Codex (symlinks `agents/skills/` → `~/.claude/skills/` and `~/.agents/skills/`) |
+| `bin` | Custom shell scripts and Go utilities to `~/bin` |
+| `git` | `.gitconfig`, `.gitignore_global`, git extensions |
+| `home` | Dotfiles symlinked to `~/` (`.zshrc`, `.vimrc`, `.tmux.conf`, `.gitconfig`, etc.) |
+| `zsh` | ZSH configuration, zinit plugin manager, tmux plugin manager |
+| `fonts` | Developer fonts via Homebrew Cask |
+| `homebrew` | System packages from `Brewfile` (100+ formulae and casks) |
+| `npm` | Global Node.js packages |
+| `languages` | asdf version manager with Ruby, Python, Go, Node.js, Terraform |
+| `vim` | Vim/Neovim configuration with vim-plug and plugins |
+| `hammerspoon` | Lua-based window management and macOS automation |
+| `osx` | macOS system preferences and defaults |
 
-| Component | Description | What it installs |
-|-----------|-------------|------------------|
-| `all` | Runs all install scripts | Complete environment setup |
-| `bin` | Binary utilities | Custom CLI tools in ~/bin |
-| `git` | Git configuration | .gitconfig, .gitignore_global, git extensions |
-| `home` | Home directory configs | Various .* configuration files |
-| `zsh` | ZSH configuration | .zshrc, .zshenv, custom ZSH setup |
-| `fonts` | System fonts | Developer fonts via Homebrew Cask |
-| `homebrew` | Homebrew packages | System dependencies and tools |
-| `npm` | NPM packages | Global Node.js packages |
-| `languages` | Programming languages | asdf version manager and language runtimes |
-| `vim` | Vim configuration | .vimrc and Vim plugins |
-| `hammerspoon` | Hammerspoon config | Window management and automation |
-| `osx` | macOS settings | System preferences and defaults |
+## Agent Skills
 
-### System Diagnostics
+Dots includes 34 reusable slash-command skills for AI coding agents, following the [Agent Skills](https://agentskills.io) open standard. Each skill lives in `agents/skills/<name>/SKILL.md` and is available as `/<name>` in Claude Code after running `dots install agents`.
 
-The `dots doctor` command performs system health checks:
+| Skill | Description |
+|-------|-------------|
+| `/test` | Intelligent test runner that targets changed code and identifies coverage gaps |
+| `/pr` | Open a PR, wait for CI, fix failures, address review comments |
+| `/review` | Code review panel for current branch changes |
+| `/deploy` | Deploy master to production with version tags |
+| `/merge` | Merge current branch to master via GitHub PR |
+| `/debug` | Multi-agent competing hypotheses debugging |
+| `/dev` | Multi-agent iterative development with parallel testing and code review |
+| `/explore` | Multi-agent parallel research with peer-challenged synthesis |
+| `/ci-investigate` | Investigate flaky CI failures across workflow runs |
+| `/changelog` | Generate changelog from recent commits |
+| `/release` | Release automation |
+| `/bisect` | Automated git bisect |
+| `/migrate` | Multi-agent codebase migration with module ownership |
+| `/polish` | Code quality audit and refactoring |
+| `/guard` | Pre-commit safety check for secrets and security antipatterns |
+| `/scaffold` | Bootstrap new files matching existing repo conventions |
+| `/deps` | Audit outdated dependencies and upgrade with test verification |
+| `/spike` | Time-boxed technical investigation with structured findings |
+| `/contest` | Competing implementations with judge evaluation |
+| `/write-skill` | Create or improve a skill with best practices |
+| `/screenshot` | View recent screenshots from `~/Downloads` |
+| `/handoff` | Generate handoff prompt for another agent thread |
+| `/standup` | Daily standup summary from git activity |
+| `/pdf` | Export conversation content to styled PDF |
+| `/knowledge` | Initialize or update a project knowledge base |
+| `/retro` | Structured retrospective or post-incident review |
+| `/logo` | Logo generation |
+| `/improve` | Improve skills, capture context and knowledge |
+| `/rereview` | Re-review with fresh eyes, zero regressions |
+| `/devils-advocate` | Contrarian review perspective |
+| `/perf` | Performance analysis |
+| `/prune` | Branch cleanup |
+| `/rebase` | Rebase automation |
 
-- Xcode Command Line Tools installation
-- ZSH as default shell
-- Homebrew installation status
-- System configuration validation
+Skills use YAML frontmatter for metadata and dynamic context injection via shell commands. Some skills delegate to standalone bash scripts in `agents/skills/<name>/scripts/`. See `/write-skill` for the full authoring guide.
 
 ## Project Structure
 
 ```
 ~/.dots/
-├── main.go                 # Entry point
-├── go.mod                  # Go module definition
-├── cli/                    # CLI implementation
-│   ├── commands/          # Command implementations
-│   │   ├── root.go        # Main command setup
-│   │   ├── install.go     # Install orchestration
-│   │   ├── install/       # Component installers
-│   │   │   ├── bin.go
-│   │   │   ├── git.go
-│   │   │   ├── home.go
-│   │   │   └── ...
-│   │   ├── update.go
-│   │   ├── clean.go
-│   │   ├── doctor.go
-│   │   ├── docker.go
-│   │   └── spinner.go
-│   └── is/                # Helper utilities
-├── cmd/                   # Standalone utilities
-│   ├── battery-percent/
-│   ├── git-ancestor/
-│   ├── git-killme/
-│   ├── spotify/
-│   ├── tmux-status/
-│   └── ...
-├── pkg/                   # Shared packages
-│   ├── cache/            # Caching utilities
-│   ├── log/              # Logging framework
-│   ├── path/             # Path utilities
-│   └── run/              # Command execution
-└── home/                  # Dotfile templates
-
+├── main.go                    # Entry point → cli/commands.Execute()
+├── go.mod                     # Go module (1.21)
+├── Brewfile                   # Homebrew package manifest
+│
+├── cli/                       # CLI framework (Cobra)
+│   ├── commands/              # Top-level commands
+│   │   ├── root.go            # Command setup, global flags
+│   │   ├── install.go         # Install orchestration
+│   │   └── install/           # Component installers (12 files)
+│   ├── is/                    # Boolean helpers (File, Command, Tmux, Osx)
+│   ├── link/                  # Symlink/hardlink creation
+│   └── git/, config/, tmux/   # Supporting utilities
+│
+├── pkg/                       # Shared packages
+│   ├── log/                   # Colored logging (Action, Info, Success, Error)
+│   ├── run/                   # Command execution (Verbose, Silent, Capture)
+│   ├── path/                  # Path helpers (FromDots, FromHome)
+│   └── cache/                 # File-based caching with TTL
+│
+├── cmd/                       # 20 standalone Go utilities
+│   ├── git-ancestor/          # Common ancestor between branches
+│   ├── git-canonical-branch/  # Canonical branch name
+│   ├── git-killme/            # Delete branch and switch to master
+│   ├── git-masterme/          # Rebase onto master
+│   ├── git-rebase-master/     # Interactive rebase onto master
+│   ├── git-reset-hard-master/ # Hard reset to master
+│   ├── battery-percent/       # Battery percentage
+│   ├── battery-state/         # Charging state
+│   ├── cpu/                   # CPU usage
+│   ├── ip/                    # IP utilities (external, local, home)
+│   ├── router/, ssid/, gps/   # Network info
+│   ├── spotify/               # Spotify control
+│   ├── weather/               # Weather data
+│   ├── tmux-status/           # Tmux status bar components
+│   ├── search-github/         # GitHub search
+│   └── home-scp/              # SCP helper
+│
+├── bin/                       # 37 shell scripts installed to ~/bin
+├── home/                      # Dotfiles symlinked to ~/
+├── zsh/                       # ZSH configuration (aliases, plugins, prompt, etc.)
+├── vim/                       # Vim/Neovim configuration
+├── git/                       # Git extensions and hooks
+├── hammerspoon/               # Lua automation scripts (with tests)
+├── fonts/                     # Developer fonts
+│
+├── agents/                    # Agent configuration
+│   └── skills/                # 34 reusable skills (SKILL.md per skill)
+│       └── tests/             # Skill test suite
+│
+└── openspec/                  # Change proposal system
 ```
-
-## Custom Utilities
-
-The project includes 22+ custom command-line utilities that are installed to `~/bin`:
-
-### Git Utilities
-- `git-ancestor` - Find common ancestor between branches
-- `git-canonical-branch` - Get canonical branch name
-- `git-killme` - Delete current branch and switch to master
-- `git-masterme` - Rebase current branch onto master
-- `git-rebase-master` - Interactive rebase onto master
-- `git-reset-hard-master` - Hard reset to master
-
-### System Utilities
-- `battery-percent` - Display battery percentage
-- `battery-state` - Show battery charging state
-- `cpu` - CPU usage information
-- `router` - Router IP address
-- `ssid` - Current WiFi SSID
-- `ip` - IP address utilities (local, external, home)
-
-### Development Tools
-- `search-github` - Search GitHub repositories
-- `spotify` - Spotify control and authentication
-- `weather` - Weather information
-- `tmux-status/*` - Tmux status bar components
 
 ## Development
 
-### Building from Source
-
 ```bash
-go install ./...
+go install ./...                              # Build all binaries
+go test ./...                                 # Run tests
+revive -set_exit_status ./...                 # Lint
+luajit hammerspoon/test.lua                   # Hammerspoon tests
+bash agents/skills/tests/run_all.sh           # Skill script tests
 ```
 
-### Running Linting
+### Adding Components
 
-```bash
-go install github.com/mgechev/revive@latest
-revive -set_exit_status ./...
-```
+1. Add to the `commands` slice in `cli/commands/install.go`
+2. Create installer in `cli/commands/install/<component>.go`
+3. Use `exec()` helper for error handling and `pkg/run` for command execution
 
-### Adding New Components
+### Adding Utilities
 
-1. Add component to the `commands` slice in `cli/commands/install.go`
-2. Create installation method in `cli/commands/install/<component>.go`
-3. Implement using the `exec()` helper for error handling
-4. Use `pkg/run` for command execution
+1. Create `cmd/<name>/root.go` using Cobra
+2. Build with `go install ./...`
 
-### Adding New Utilities
+### Adding Skills
 
-1. Create directory under `cmd/<utility-name>/`
-2. Implement command using Cobra framework in `root.go`
-3. Build with `go install ./...`
-
-### Code Conventions
-
-- Use `pkg/log` for consistent logging
-- Use `pkg/run.Verbose()` for visible command output
-- Use `pkg/run.Silent()` for quiet execution
-- Follow existing patterns for error handling
-- Maintain consistent code style
-
-## Environment Variables
-
-- `DOTS` - Override dots directory location (default: ~/.dots)
-- `GOPATH` - Go workspace (required)
-- `GOBIN` - Go binary installation directory
+1. Create `agents/skills/<name>/SKILL.md` with YAML frontmatter
+2. See `agents/skills/write-skill/SKILL.md` for the authoring guide
+3. Run `dots install agents` to symlink into `~/.claude/skills/`
 
 ## CI/CD
 
-The project uses GitHub Actions for continuous integration:
-- Runs on macOS latest
-- Tests each installation component
-- Validates update functionality
-- Scheduled runs twice daily
+GitHub Actions runs on every push to master and all PRs:
 
-## Troubleshooting
+- **Build** and **test** Go code
+- **Vet** and **staticcheck** for correctness
+- **Revive** for linting
+- **Hammerspoon tests** via LuaJIT
+- **Skill lint** — validates SKILL.md syntax
+- **Skill script tests** — runs the skill test suite
+- **Agent config lint** — validates configuration via [agnix](https://github.com/anthropics/agnix)
 
-### Common Issues
+## Environment Variables
 
-1. **Command not found: dots**
-   - Ensure `$GOPATH/bin` is in your PATH
-   - Run `go install ./...` from the dots directory
-
-2. **Installation failures**
-   - Run `dots doctor` to check system requirements
-   - Ensure Homebrew is properly installed
-   - Check for sufficient disk space
-
-3. **Permission errors**
-   - Some commands may require sudo access
-   - Ensure you own the directories being modified
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes following existing patterns
-4. Ensure linting passes
-5. Submit a pull request
+| Variable | Description |
+|----------|-------------|
+| `DOTS` | Override dots directory location (default: `~/.dots`) |
+| `GOPATH` | Go workspace |
+| `GOBIN` | Go binary installation directory |
 
 ## License
 
-This project is licensed under the [MIT License](LICENSE.md)
+[MIT License](LICENSE.md)
