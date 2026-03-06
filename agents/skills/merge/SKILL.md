@@ -75,7 +75,10 @@ Merge the current branch into master via GitHub PR merge. This preserves PR asso
 
 8. **Update local master:**
    - Run `git checkout master`
-   - Run `git pull {TARGET} master`
+   - If checkout fails because master is checked out in another worktree, try:
+     `git -C $(git worktree list | grep master | awk '{print $1}') pull {TARGET} master`
+   - If that also fails (or no worktree found), skip local master update — the merge is already complete on GitHub
+   - Run `git pull {TARGET} master` (only if checkout succeeded)
 
 9. **Report the result:**
    - Confirm the merge was successful
