@@ -1,5 +1,5 @@
 ---
-name: clean
+name: polish
 description: Analyze codebase for code smells and refactor to drastically improve code quality. Expert in clean code, SOLID principles, Ruby patterns, service objects, and refactoring. Use for code quality audits, refactoring sessions, and cleaning up technical debt.
 ---
 
@@ -88,7 +88,7 @@ You do NOT analyze or refactor yourself. You coordinate the analysis team, prior
 5. **Create the team:**
    ```
    TeamDelete() -- ignore if no existing team
-   TeamCreate(team_name: "clean-session", description: "Clean code: {brief scope}")
+   TeamCreate(team_name: "polish-session", description: "Polish: {brief scope}")
    ```
 
 6. **Create the task list** with TaskCreate:
