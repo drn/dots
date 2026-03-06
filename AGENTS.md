@@ -138,6 +138,10 @@ When the user's message matches a phrase below, read and follow the correspondin
 
 This is a public repository. Skills and configuration checked in here must be generic and reusable by anyone. Never commit company names, internal tool names, proprietary patterns, or org-specific conventions to skills or CLAUDE.md. Put org-specific knowledge in private project-local CLAUDE.md files instead.
 
+## Skill Handoffs from ~/.dots
+
+When receiving a handoff for `~/.dots` skill changes, apply them to this workspace under `agents/skills/`. This repo is the source of truth for skills — `~/.claude/skills/` is a symlink to `agents/skills/` via `dots install agents`.
+
 ## Critical Notes
 
 - Installation is destructive (no backups)
