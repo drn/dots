@@ -53,7 +53,7 @@ dots docker stop-all     # Stop all Docker containers
 
 | Component | What it installs |
 |-----------|------------------|
-| `agents` | Agent skills for Claude Code and Codex (symlinks `agents/skills/` → `~/.claude/skills/` and `~/.agents/skills/`) |
+| `agents` | Agent skills and custom agents (symlinks `agents/skills/` → `~/.claude/skills/` + `~/.agents/skills/`, `agents/custom/` → `~/.claude/agents/`) |
 | `bin` | Custom shell scripts and Go utilities to `~/bin` |
 | `git` | `.gitconfig`, `.gitignore_global`, git extensions |
 | `home` | Dotfiles symlinked to `~/` (`.zshrc`, `.vimrc`, `.tmux.conf`, `.gitconfig`, etc.) |
@@ -68,7 +68,7 @@ dots docker stop-all     # Stop all Docker containers
 
 ## Agent Skills
 
-Dots includes 34 reusable slash-command skills for AI coding agents, following the [Agent Skills](https://agentskills.io) open standard. Each skill lives in `agents/skills/<name>/SKILL.md` and is available as `/<name>` in Claude Code after running `dots install agents`.
+Dots includes 35 reusable slash-command skills for AI coding agents, following the [Agent Skills](https://agentskills.io) open standard. Each skill lives in `agents/skills/<name>/SKILL.md` and is available as `/<name>` in Claude Code after running `dots install agents`.
 
 | Skill | Description |
 |-------|-------------|
@@ -105,8 +105,22 @@ Dots includes 34 reusable slash-command skills for AI coding agents, following t
 | `/perf` | Performance analysis |
 | `/prune` | Branch cleanup |
 | `/rebase` | Rebase automation |
+| `/prioritize` | RICE-scored backlog prioritization for sprint planning |
+| `/cross-agent` | Set up cross-agent skill infrastructure for multi-agent compatibility |
 
 Skills use YAML frontmatter for metadata and dynamic context injection via shell commands. Some skills delegate to standalone bash scripts in `agents/skills/<name>/scripts/`. See `/write-skill` for the full authoring guide.
+
+### Custom Agents
+
+Dots also ships 3 reusable custom agent definitions in `agents/custom/`. These are specialized agent types that skills can spawn via the `subagent_type` parameter:
+
+| Agent | Purpose |
+|-------|---------|
+| `code-analyst` | Code quality analysis across structure, design, and security dimensions |
+| `investigator` | Evidence-based debugging with hypothesis-driven exploration |
+| `verifier` | Test runner and implementation evaluator for regression checking |
+
+Run `dots install agents` to symlink them to `~/.claude/agents/`.
 
 ## Project Structure
 
@@ -149,7 +163,7 @@ Skills use YAML frontmatter for metadata and dynamic context injection via shell
 │   ├── search-github/         # GitHub search
 │   └── home-scp/              # SCP helper
 │
-├── bin/                       # 37 shell scripts installed to ~/bin
+├── bin/                       # 35 shell scripts installed to ~/bin
 ├── home/                      # Dotfiles symlinked to ~/
 ├── zsh/                       # ZSH configuration (aliases, plugins, prompt, etc.)
 ├── vim/                       # Vim/Neovim configuration
@@ -158,7 +172,8 @@ Skills use YAML frontmatter for metadata and dynamic context injection via shell
 ├── fonts/                     # Developer fonts
 │
 ├── agents/                    # Agent configuration
-│   └── skills/                # 34 reusable skills (SKILL.md per skill)
+│   ├── skills/                # 35 reusable skills (SKILL.md per skill)
+│   └── custom/                # 3 custom agent types (.md per agent)
 │       └── tests/             # Skill test suite
 │
 └── openspec/                  # Change proposal system
