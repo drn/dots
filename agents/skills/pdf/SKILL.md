@@ -81,7 +81,7 @@ PDFs are saved to `~/Downloads/` by default for easy access and sharing.
 
 ## Technical Notes
 
-- Uses `fpdf2` for PDF rendering (`pip install fpdf2`)
+- Uses `mistune` + `fpdf2` (`pip install mistune fpdf2`)
 - Supports tables, code blocks, and full GitHub-flavored markdown
 - Professional styling optimized for sharing with colleagues
 - Script location: `scripts/md_to_pdf.py` (colocated in this skill directory)
