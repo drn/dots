@@ -43,7 +43,7 @@ bash <script-path> "<title>" "<body>"
 
 Handle the exit code:
 
-- **Exit 0** — Show the output block verbatim as your final response. Do not add commentary.
+- **Exit 0** — Show the output block verbatim as your final response. If the output contains a `dots:` line, add a note after the block: "`~/.dots` synced to latest master." Do not add other commentary.
 - **Exit 2 (rebase conflict)** — Resolve conflicts:
   1. Read the conflicting files from stderr
   2. Open each file, resolve the conflict
