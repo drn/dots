@@ -21,12 +21,63 @@ Run `/improve` at the end of any session where:
 
 - Current repo: !`git rev-parse --show-toplevel 2>/dev/null | head -1`
 - Skills directory: !`find agents/skills -maxdepth 2 -name SKILL.md 2>/dev/null | head -30`
+- Context directory exists: !`ls context/knowledge/index.md 2>/dev/null | head -1`
 - Knowledge base index: !`cat context/knowledge/index.md 2>/dev/null | head -30`
+- Context directory structure: !`find context -type f 2>/dev/null | head -20`
 - Voice profile: !`find . -maxdepth 3 -name 'voice-profile.md' -o -name 'VOICE.md' -o -name 'voice.md' 2>/dev/null | head -5`
 
 ## Instructions
 
 When `/improve` is invoked:
+
+### Step 0: Ensure Context Directory Exists
+
+Check whether the current repo has a `context/` directory at the repo root.
+
+**If `context/` does not exist**, prompt the user:
+
+> This repo has no `context/` directory. Want me to create one? This gives you a durable, gitignored place to store operational context, knowledge, research, and plans across sessions.
+>
+> I'll create:
+> ```
+> context/
+> ├── knowledge/
+> │   └── index.md          # Knowledge graph index
+> ├── research/             # Investigation notes, spikes, evaluations
+> └── plans/                # Strategic plans, proposals, roadmaps
+> ```
+>
+> I'll also add a reference in CLAUDE.md. The `context/` directory is checked into git so it persists across clones.
+
+If the user approves:
+
+1. Create the directory structure above
+2. Initialize `context/knowledge/index.md` with an empty knowledge table:
+   ```markdown
+   # Knowledge Index
+
+   Structured knowledge for cross-session persistence. Each file covers a topic/domain.
+
+   | File | Topic | Key Entities | Last Updated |
+   |------|-------|-------------|-------------|
+
+   ## Coverage Map
+
+   Which context files are captured in knowledge:
+
+   | Context File | Knowledge File(s) | Coverage |
+   |-------------|-------------------|----------|
+   ```
+3. Add a `## Context Directory` section to CLAUDE.md (or the repo's agent guidance file) explaining:
+   - `context/` is gitignored and stores durable cross-session knowledge
+   - `context/knowledge/index.md` is the knowledge graph index
+   - `context/research/` holds investigation notes and spike results
+   - `context/plans/` holds strategic plans and proposals
+   - Agents should read `context/knowledge/index.md` when they need project history or domain context
+
+If the user declines, proceed without it — Steps 8B and 8C will be skipped (no knowledge base to update).
+
+**If `context/` already exists**, proceed to Step 1.
 
 ### Step 1: Identify Skills Used
 
@@ -196,18 +247,16 @@ Review the session for extractable operational context:
 - Policies and requirements (compliance, partnerships)
 - Decisions made and their rationale
 
-Update existing context files in `context/` directory as appropriate:
-- `context/thanx/org-contacts.md` — People and roles
-- `context/vendors.md` — Tools, sub-processors, integrations
-- `context/processes.md` — How things work, who to contact
-- Create new files as needed for distinct topics
+Update existing context files in `context/` directory as appropriate (requires `context/` to exist from Step 0):
+- Create new files as needed for distinct topics (e.g., `context/research/`, `context/plans/`)
 - Update CLAUDE.md if the context applies broadly across tasks
+- **Never** write to `memory/`, `memory/memory.md`, or auto memory — all context goes in `context/`
 
 **Part B: Knowledge Graph**
 
 Check whether the current project has a knowledge base by looking for `context/knowledge/index.md` (shown in the Context section above).
 
-**If no knowledge base exists, skip Part B entirely.** Do not suggest creating one, do not update auto memory, do not fall back to any alternative. Just move on.
+**If no knowledge base exists** (and the user declined to create one in Step 0), **skip Part B entirely.** Do not fall back to auto memory or any alternative. Just move on.
 
 **If a knowledge base exists**, review the session for durable knowledge worth preserving:
 - Architectural decisions or constraints discovered during this session
@@ -308,7 +357,8 @@ Do not overwrite existing voice profile entries — add to or refine them. If a 
 - Do not bloat skills with edge cases that will not recur
 - Do not change the fundamental purpose or structure of a skill
 - Do not add improvements based on speculation — only from actual session experience
-- Do not create a knowledge base directory — delegate to `/knowledge init` instead
+- Do not create a knowledge base outside the `context/` directory pattern — use Step 0 to initialize
+- **Never** save context or knowledge to `memory/`, `memory/memory.md`, or auto memory — always use `context/` directory
 
 ## Example Output
 
