@@ -87,18 +87,19 @@ test_parse_args_runs_flag() {
   add_test_remote "origin" >/dev/null
   git remote set-head origin master 2>/dev/null || true
 
-  # Override parse_args test: just test the parsing logic
-  COMMAND=""
-  RUNS=5
-  BASE_REF=""
-  BRANCH="test"
-
-  # Can't easily call parse_args without it detecting detached HEAD etc.
-  # So just verify the script accepts --runs
+  # Verify the script accepts --runs
   capture bash "$PERF" "echo hello" --runs 3 --base master
-  # It will fail because of uncommitted changes or worktree issues, but
-  # the exit should NOT be about usage
   assert_not_contains "$_CAPTURED" "Usage:" "should parse --runs without usage error"
+}
+
+test_parse_args_n_alias() {
+  _source_perf
+  make_test_repo >/dev/null
+  add_test_remote "origin" >/dev/null
+
+  # Verify -n works as alias for --runs
+  capture bash "$PERF" "echo hello" -n 3 --base master
+  assert_not_contains "$_CAPTURED" "Usage:" "should parse -n as alias for --runs"
 }
 
 test_uncommitted_changes_rejected() {
@@ -122,6 +123,16 @@ test_detached_head_rejected() {
   capture bash "$PERF" "echo test"
   assert_eq "$_CAPTURED_EXIT" "1" "should exit 1 on detached HEAD"
   assert_contains "$_CAPTURED" "Detached HEAD" "should report detached HEAD"
+}
+
+test_time_command() {
+  _source_perf
+  make_test_repo >/dev/null
+
+  local t
+  t=$(time_command "echo hello" ".")
+  # Should return a numeric value (seconds)
+  assert_match "$t" "^[0-9]" "time_command should return a number"
 }
 
 test_verdict_regression() {

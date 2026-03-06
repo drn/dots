@@ -100,4 +100,33 @@ test_exit_1_on_no_remotes() {
   assert_eq "$_CAPTURED_EXIT" "1" "should exit 1 when no remotes"
 }
 
+test_end_to_end_with_mock_thanx() {
+  make_test_repo >/dev/null
+  add_test_remote "origin" >/dev/null
+  git fetch origin 2>/dev/null
+
+  # Mock thanx to create a tag
+  export PATH="$PWD/bin:$PATH"
+  mkdir -p bin
+  cat > bin/thanx <<'MOCK'
+#!/usr/bin/env bash
+if [[ "$1" == "version" && "$2" == "update" ]]; then
+  git tag -a "v9.0.0" -m "mock tag"
+  exit 0
+fi
+MOCK
+  chmod +x bin/thanx
+
+  # Mock git push and git ls-remote to avoid needing a real writable remote
+  # Run just create_tag to verify the full tag flow
+  _source_deploy
+  TARGET="origin"
+  create_tag 2>/dev/null
+
+  assert_eq "$NEW_TAG" "v9.0.0" "e2e: should detect tag"
+  assert_eq "$(git rev-parse 'v9.0.0^{commit}')" "$(git rev-parse origin/master)" "e2e: tag on origin/master"
+
+  rm -rf bin
+}
+
 run_tests
