@@ -156,6 +156,7 @@ When the user's message matches a phrase below, read and follow the correspondin
 | "prioritize", "RICE score", "backlog grooming", "sprint planning", "rank items" | `agents/skills/prioritize/SKILL.md` |
 | "swarm", "parallel agents", "agent team in conductor", "multi-agent", "spawn agents" | `agents/skills/swarm/SKILL.md` |
 | "skill gap analysis", "missing skills", "missing agents", "equip project", "bootstrap skills from spec", "what skills do I need" | `agents/skills/equip/SKILL.md` |
+| "write a plan", "implementation plan", "plan from PRD", "plan from spike", "break down this spec", "planning" | `agents/skills/plan/SKILL.md` |
 
 ## Public Repo Policy
 
