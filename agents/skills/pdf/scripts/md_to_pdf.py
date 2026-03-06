@@ -1,11 +1,19 @@
 #!/usr/bin/env python3
 """
-Convert Markdown content to a styled PDF.
+Convert Markdown to a styled PDF.
+
+Pipeline: Markdown → AST (mistune) → PDF (fpdf2 direct rendering)
+
+Performance vs the previous hand-rolled parser:
+- mistune AST parsing replaces fragile regex line-by-line scanning
+- Binary-search table cell truncation replaces O(n²) character-by-character loop
+- Proper handling of nested lists, blockquotes, and inline formatting
+
+Dependencies: pip install mistune fpdf2
 
 Usage:
-    python md_to_pdf.py --output output.pdf < content.md
-    python md_to_pdf.py --output output.pdf --title "My Report" < content.md
-    echo "# Hello" | python md_to_pdf.py --output hello.pdf
+    python md_to_pdf.py --output output.pdf --input content.md
+    python md_to_pdf.py --output output.pdf --title "Report" < content.md
 """
 
 import argparse
@@ -13,68 +21,72 @@ import re
 import sys
 from datetime import datetime
 from pathlib import Path
-from typing import Optional, List, Dict
 
+import mistune
 from fpdf import FPDF
 from fpdf.enums import XPos, YPos
 
+# --- Unicode sanitization (latin-1 PDF fonts) ---
 
-# Unicode to ASCII replacements for PDF compatibility
-UNICODE_REPLACEMENTS = {
-    '\u2014': '--',   # em dash
-    '\u2013': '-',    # en dash
-    '\u2018': "'",    # left single quote
-    '\u2019': "'",    # right single quote
-    '\u201c': '"',    # left double quote
-    '\u201d': '"',    # right double quote
-    '\u2026': '...',  # ellipsis
-    '\u2022': '*',    # bullet
-    '\u00a0': ' ',    # non-breaking space
-    '\u2032': "'",    # prime
-    '\u2033': '"',    # double prime
+_UNICODE_MAP = {
+    "\u2014": "--",
+    "\u2013": "-",
+    "\u2018": "'",
+    "\u2019": "'",
+    "\u201c": '"',
+    "\u201d": '"',
+    "\u2026": "...",
+    "\u2022": "*",
+    "\u00a0": " ",
+    "\u2032": "'",
+    "\u2033": '"',
 }
+_SANITIZE_RE = re.compile("|".join(re.escape(k) for k in _UNICODE_MAP))
 
 
-def sanitize_text(text: str) -> str:
-    """Replace Unicode characters that aren't supported by standard PDF fonts."""
-    for unicode_char, replacement in UNICODE_REPLACEMENTS.items():
-        text = text.replace(unicode_char, replacement)
-    # Remove any remaining non-latin1 characters
-    return text.encode('latin-1', errors='replace').decode('latin-1')
+def sanitize(text: str) -> str:
+    """Single-pass Unicode replacement then latin-1 encoding."""
+    text = _SANITIZE_RE.sub(lambda m: _UNICODE_MAP[m.group()], text)
+    return text.encode("latin-1", errors="replace").decode("latin-1")
 
 
-class MarkdownPDF(FPDF):
-    """Custom PDF class for markdown rendering."""
+# --- Markdown parser (singleton) ---
 
-    def __init__(self, title: Optional[str] = None):
+_parser = mistune.create_markdown(renderer="ast", plugins=["table", "strikethrough"])
+
+
+# --- Styled PDF ---
+
+
+class StyledPDF(FPDF):
+    """PDF with title header and page numbers."""
+
+    def __init__(self, title=None):
         super().__init__()
         self.doc_title = title
         self.set_auto_page_break(auto=True, margin=25)
         self.add_page()
-
-        # Set up fonts
         self.set_font("Helvetica", size=11)
-
-        # Add title if provided
+        self.set_text_color(51, 51, 51)
         if title:
-            self.set_font("Helvetica", "B", 20)
-            self.set_text_color(26, 26, 26)
-            self.cell(0, 12, sanitize_text(title), new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+            self._render_title(title)
 
-            # Add date
-            self.set_font("Helvetica", "", 10)
-            self.set_text_color(87, 96, 106)
-            date_str = datetime.now().strftime("%B %d, %Y")
-            self.cell(0, 6, f"Generated {date_str}", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
-
-            # Add separator line
-            self.ln(4)
-            self.set_draw_color(225, 228, 232)
-            self.line(10, self.get_y(), 200, self.get_y())
-            self.ln(8)
-
-            # Reset text color
-            self.set_text_color(51, 51, 51)
+    def _render_title(self, title):
+        self.set_font("Helvetica", "B", 20)
+        self.set_text_color(26, 26, 26)
+        self.cell(0, 12, sanitize(title), new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+        self.set_font("Helvetica", "", 10)
+        self.set_text_color(87, 96, 106)
+        date_str = datetime.now().strftime("%B %d, %Y")
+        self.cell(
+            0, 6, f"Generated {date_str}", new_x=XPos.LMARGIN, new_y=YPos.NEXT
+        )
+        self.ln(4)
+        self.set_draw_color(225, 228, 232)
+        self.line(10, self.get_y(), 200, self.get_y())
+        self.ln(8)
+        self.set_text_color(51, 51, 51)
+        self.set_font("Helvetica", "", 11)
 
     def footer(self):
         self.set_y(-15)
@@ -83,183 +95,127 @@ class MarkdownPDF(FPDF):
         self.cell(0, 10, str(self.page_no()), align="R")
 
 
-def parse_markdown(md_content: str) -> List[Dict]:
-    """Parse markdown into structured elements."""
-    elements = []
-    lines = md_content.split('\n')
-    i = 0
-    in_code_block = False
-
-    while i < len(lines):
-        line = lines[i]
-
-        # Fenced code blocks
-        if re.match(r'^(`{3,}|~{3,})', line.strip()):
-            if not in_code_block:
-                in_code_block = True
-                lang_match = re.match(r'^(`{3,}|~{3,})\s*(.*)', line.strip())
-                lang = lang_match.group(2) if lang_match else ''
-                code_lines = []
-                fence = lang_match.group(1)[0]  # ` or ~
-                fence_len = len(lang_match.group(1))
-                i += 1
-                while i < len(lines):
-                    if re.match(r'^' + re.escape(fence) + '{' + str(fence_len) + r',}\s*$', lines[i].strip()):
-                        i += 1
-                        break
-                    code_lines.append(lines[i])
-                    i += 1
-                in_code_block = False
-                elements.append({'type': 'code_block', 'text': '\n'.join(code_lines), 'lang': lang})
-                continue
-            # Closing fence handled above; fallthrough shouldn't happen
-            i += 1
-            continue
-
-        # Skip empty lines
-        if not line.strip():
-            elements.append({'type': 'blank'})
-            i += 1
-            continue
-
-        # Horizontal rule
-        if re.match(r'^-{3,}$|^\*{3,}$|^_{3,}$', line.strip()):
-            elements.append({'type': 'hr'})
-            i += 1
-            continue
-
-        # Headers
-        header_match = re.match(r'^(#{1,6})\s+(.+)$', line)
-        if header_match:
-            level = len(header_match.group(1))
-            text = header_match.group(2)
-            elements.append({'type': 'header', 'level': level, 'text': text})
-            i += 1
-            continue
-
-        # Table
-        if '|' in line and i + 1 < len(lines) and re.match(r'^\|?\s*[-:]+', lines[i + 1]):
-            table_lines = []
-            while i < len(lines) and '|' in lines[i]:
-                table_lines.append(lines[i])
-                i += 1
-            elements.append({'type': 'table', 'lines': table_lines})
-            continue
-
-        # Bullet list
-        bullet_match = re.match(r'^(\s*)[-*+]\s+(.+)$', line)
-        if bullet_match:
-            indent = len(bullet_match.group(1))
-            text = bullet_match.group(2)
-            elements.append({'type': 'bullet', 'text': text, 'indent': indent})
-            i += 1
-            continue
-
-        # Numbered list
-        num_match = re.match(r'^(\s*)(\d+)\.\s+(.+)$', line)
-        if num_match:
-            indent = len(num_match.group(1))
-            number = num_match.group(2)
-            text = num_match.group(3)
-            elements.append({'type': 'numbered', 'text': text, 'indent': indent, 'number': number})
-            i += 1
-            continue
-
-        # Regular paragraph
-        elements.append({'type': 'text', 'text': line})
-        i += 1
-
-    return elements
+# --- Inline rendering ---
 
 
-def render_text_with_formatting(pdf: FPDF, text: str, base_size: int = 11):
-    """Render text with bold/italic/code formatting."""
-    # Remove link markdown but keep text
-    text = re.sub(r'\[([^\]]+)\]\([^)]+\)', r'\1', text)
-    # Sanitize for PDF compatibility
-    text = sanitize_text(text)
+def _flatten_inline(children):
+    """Extract plain text from inline AST children."""
+    parts = []
+    for child in children:
+        t = child.get("type", "")
+        if t == "text":
+            parts.append(child["raw"])
+        elif t == "codespan":
+            parts.append(child["raw"])
+        elif t == "softbreak":
+            parts.append(" ")
+        elif t == "linebreak":
+            parts.append("\n")
+        elif "children" in child:
+            parts.append(_flatten_inline(child["children"]))
+    return "".join(parts)
 
-    # Split by formatting markers
-    parts = re.split(r'(\*\*[^*]+\*\*|\*[^*]+\*|`[^`]+`)', text)
 
-    for part in parts:
-        if not part:
-            continue
-
-        if part.startswith('**') and part.endswith('**'):
-            # Bold
+def _render_inline(pdf, children, base_size=11):
+    """Render inline AST nodes with bold/italic/code formatting."""
+    for child in children:
+        t = child.get("type", "")
+        if t == "text":
+            pdf.write(5, sanitize(child["raw"]))
+        elif t == "strong":
             pdf.set_font("Helvetica", "B", base_size)
-            pdf.write(5, part[2:-2])
+            _render_inline(pdf, child["children"], base_size)
             pdf.set_font("Helvetica", "", base_size)
-        elif part.startswith('*') and part.endswith('*'):
-            # Italic
+        elif t == "emphasis":
             pdf.set_font("Helvetica", "I", base_size)
-            pdf.write(5, part[1:-1])
+            _render_inline(pdf, child["children"], base_size)
             pdf.set_font("Helvetica", "", base_size)
-        elif part.startswith('`') and part.endswith('`'):
-            # Code
+        elif t == "codespan":
             pdf.set_font("Courier", "", base_size - 1)
-            pdf.set_fill_color(246, 248, 250)
-            pdf.write(5, part[1:-1])
+            pdf.write(5, sanitize(child["raw"]))
             pdf.set_font("Helvetica", "", base_size)
+        elif t == "link":
+            # Render link text only (PDF links via fpdf2 are limited)
+            _render_inline(pdf, child["children"], base_size)
+        elif t == "softbreak":
+            pdf.write(5, " ")
+        elif t == "linebreak":
+            pdf.ln(5)
+        elif "children" in child:
+            _render_inline(pdf, child["children"], base_size)
+
+
+# --- Table rendering ---
+
+
+def _truncate_to_fit(pdf, text, max_width):
+    """Binary search for the longest prefix that fits within max_width."""
+    if not text or pdf.get_string_width(text) <= max_width:
+        return text
+    lo, hi = 0, len(text)
+    while lo < hi:
+        mid = (lo + hi + 1) // 2
+        if pdf.get_string_width(text[:mid]) <= max_width - 4:
+            lo = mid
         else:
-            pdf.write(5, part)
+            hi = mid - 1
+    return text[:lo].rstrip() + ".."
 
 
-def render_table(pdf: FPDF, table_lines: List[str]):
-    """Render a markdown table with proportional column widths."""
-    # Parse table
+def _render_table(pdf, token):
+    """Render a table from AST tokens with proportional column widths."""
+    # Collect all rows (head + body) as lists of plain-text cells
     rows = []
-    for i, line in enumerate(table_lines):
-        if i == 1 and re.match(r'^\|?\s*[-:]+', line):
-            continue  # Skip separator row
-        cells = [c.strip() for c in line.strip('|').split('|')]
-        rows.append(cells)
+    head = next((c for c in token["children"] if c["type"] == "table_head"), None)
+    body = next((c for c in token["children"] if c["type"] == "table_body"), None)
+
+    if head:
+        row_cells = [
+            sanitize(_flatten_inline(cell.get("children", [])))
+            for cell in head.get("children", [])
+        ]
+        rows.append(row_cells)
+
+    if body:
+        for table_row in body.get("children", []):
+            row_cells = [
+                sanitize(_flatten_inline(cell.get("children", [])))
+                for cell in table_row.get("children", [])
+            ]
+            rows.append(row_cells)
 
     if not rows:
         return
 
     num_cols = len(rows[0])
-    page_width = 190  # Available width
+    page_width = 190
 
-    # Clean all cells for width measurement
-    clean_rows = []
-    for row in rows:
-        clean_row = []
-        for cell in row:
-            clean_cell = re.sub(r'\*\*([^*]+)\*\*', r'\1', cell)
-            clean_cell = re.sub(r'\[([^\]]+)\]\([^)]+\)', r'\1', clean_cell)
-            clean_cell = sanitize_text(clean_cell)
-            clean_row.append(clean_cell)
-        clean_rows.append(clean_row)
-
-    # Calculate proportional column widths based on max content length
+    # Compute proportional column widths from content
     pdf.set_font("Helvetica", "B", 9)
     max_widths = [0.0] * num_cols
-    for row in clean_rows:
-        for col_idx, cell in enumerate(row):
-            if col_idx < num_cols:
-                w = pdf.get_string_width(cell) + 4  # padding
-                max_widths[col_idx] = max(max_widths[col_idx], w)
+    for row in rows:
+        for col, cell in enumerate(row):
+            if col < num_cols:
+                w = pdf.get_string_width(cell) + 4
+                if w > max_widths[col]:
+                    max_widths[col] = w
 
-    # Scale widths to fit page, with minimum width
+    # Scale widths to fit page
     min_col_width = 12
-    total_natural = sum(max_widths)
-    if total_natural > page_width:
-        col_widths = [max(min_col_width, w * page_width / total_natural) for w in max_widths]
-        # Re-scale after applying minimums
+    total = sum(max_widths)
+    if total > page_width:
+        col_widths = [max(min_col_width, w * page_width / total) for w in max_widths]
         total_scaled = sum(col_widths)
         if total_scaled > page_width:
             col_widths = [w * page_width / total_scaled for w in col_widths]
     else:
         col_widths = [max(min_col_width, w) for w in max_widths]
-        # Distribute remaining space proportionally
         remaining = page_width - sum(col_widths)
         if remaining > 0:
             total_w = sum(col_widths)
             col_widths = [w + remaining * w / total_w for w in col_widths]
 
-    # Determine font size — shrink for wide tables
+    # Font size for wide tables
     font_size = 9
     if num_cols >= 6:
         font_size = 7.5
@@ -268,150 +224,147 @@ def render_table(pdf: FPDF, table_lines: List[str]):
 
     row_height = 8
 
-    for row_idx, clean_row in enumerate(clean_rows):
-        # Header row
+    for row_idx, row in enumerate(rows):
         if row_idx == 0:
             pdf.set_fill_color(246, 248, 250)
             pdf.set_font("Helvetica", "B", font_size)
         else:
-            if row_idx % 2 == 0:
-                pdf.set_fill_color(249, 250, 251)
-            else:
-                pdf.set_fill_color(255, 255, 255)
+            pdf.set_fill_color(249, 250, 251) if row_idx % 2 == 0 else pdf.set_fill_color(255, 255, 255)
             pdf.set_font("Helvetica", "", font_size)
 
-        for col_idx, cell in enumerate(clean_row):
-            if col_idx < num_cols:
-                w = col_widths[col_idx]
-                # Extract link URL if present
-                link_match = re.search(r'\[([^\]]+)\]\(([^)]+)\)', rows[row_idx][col_idx] if col_idx < len(rows[row_idx]) else '')
-                link_url = link_match.group(2) if link_match else ''
-                # Truncate text with ellipsis if it exceeds cell width
-                display = cell
-                while pdf.get_string_width(display) > w - 3 and len(display) > 1:
-                    display = display[:-1]
-                if display != cell:
-                    display = display.rstrip() + '..'
-                if link_url:
-                    # Render as clickable link
-                    pdf.set_text_color(0, 102, 204)
-                    pdf.cell(w, row_height, display, border=1, fill=True, link=link_url)
-                    pdf.set_text_color(51, 51, 51)
-                else:
-                    pdf.cell(w, row_height, display, border=1, fill=True)
+        for col, cell in enumerate(row):
+            if col < num_cols:
+                w = col_widths[col]
+                display = _truncate_to_fit(pdf, cell, w - 3)
+                pdf.cell(w, row_height, display, border=1, fill=True)
         pdf.ln()
 
     pdf.ln(4)
 
 
-def create_pdf(md_content: str, output_path: Path, title: Optional[str] = None) -> Path:
-    """Create PDF from markdown content."""
-    # When a title is provided, strip the leading H1 from markdown to avoid duplication
-    if title:
-        md_content = re.sub(r'^#\s+.+\n*', '', md_content, count=1)
+# --- Block rendering ---
 
-    pdf = MarkdownPDF(title)
+_HEADING_SIZES = {1: 18, 2: 14, 3: 12, 4: 11, 5: 11, 6: 11}
 
-    elements = parse_markdown(md_content)
 
-    for elem in elements:
-        if elem['type'] == 'blank':
+def _render_tokens(pdf, tokens):
+    """Walk AST tokens and render each block to the PDF."""
+    for token in tokens:
+        t = token.get("type", "")
+
+        if t == "blank_line":
             pdf.ln(3)
 
-        elif elem['type'] == 'hr':
+        elif t == "thematic_break":
             pdf.ln(4)
             pdf.set_draw_color(208, 215, 222)
             pdf.line(10, pdf.get_y(), 200, pdf.get_y())
             pdf.ln(6)
 
-        elif elem['type'] == 'header':
-            level = elem['level']
-            text = elem['text']
-
-            # Remove markdown formatting from header and sanitize
-            text = re.sub(r'\*\*([^*]+)\*\*', r'\1', text)
-            text = sanitize_text(text)
-
+        elif t == "heading":
+            level = token.get("attrs", {}).get("level", 1)
+            size = _HEADING_SIZES.get(level, 11)
             pdf.ln(4)
-            if level == 1:
-                pdf.set_font("Helvetica", "B", 18)
-            elif level == 2:
-                pdf.set_font("Helvetica", "B", 14)
-            elif level == 3:
-                pdf.set_font("Helvetica", "B", 12)
-            else:
-                pdf.set_font("Helvetica", "B", 11)
-
+            pdf.set_font("Helvetica", "B", size)
             pdf.set_text_color(36, 41, 46)
+            text = sanitize(_flatten_inline(token.get("children", [])))
             pdf.multi_cell(0, 7, text)
             pdf.set_text_color(51, 51, 51)
             pdf.set_font("Helvetica", "", 11)
             pdf.ln(2)
 
-        elif elem['type'] == 'table':
-            render_table(pdf, elem['lines'])
-
-        elif elem['type'] == 'bullet':
-            indent = min(elem['indent'] // 2, 2)
-            pdf.set_x(15 + indent * 5)
-            pdf.write(5, "- ")
-            render_text_with_formatting(pdf, elem['text'])
+        elif t == "paragraph":
+            pdf.set_font("Helvetica", "", 11)
+            _render_inline(pdf, token.get("children", []))
             pdf.ln(6)
 
-        elif elem['type'] == 'numbered':
-            indent = min(elem['indent'] // 2, 2)
-            pdf.set_x(15 + indent * 5)
-            pdf.write(5, f"{elem['number']}. ")
-            render_text_with_formatting(pdf, elem['text'])
-            pdf.ln(6)
+        elif t == "table":
+            _render_table(pdf, token)
 
-        elif elem['type'] == 'code_block':
+        elif t == "block_code":
             pdf.ln(2)
             pdf.set_fill_color(246, 248, 250)
             pdf.set_font("Courier", "", 9)
-            code_text = sanitize_text(elem['text'])
+            code = sanitize(token.get("raw", "")).rstrip("\n")
             x = pdf.get_x()
-            for code_line in code_text.split('\n'):
+            for code_line in code.split("\n"):
                 pdf.set_x(x)
-                pdf.cell(190, 5, code_line, fill=True, new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+                pdf.cell(
+                    190, 5, code_line, fill=True,
+                    new_x=XPos.LMARGIN, new_y=YPos.NEXT,
+                )
             pdf.set_font("Helvetica", "", 11)
             pdf.ln(2)
 
-        elif elem['type'] == 'text':
-            render_text_with_formatting(pdf, elem['text'])
-            pdf.ln(6)
+        elif t == "block_quote":
+            pdf.set_font("Helvetica", "I", 11)
+            pdf.set_text_color(87, 96, 106)
+            for child in token.get("children", []):
+                if child.get("type") == "paragraph":
+                    text = sanitize(_flatten_inline(child.get("children", [])))
+                    pdf.set_x(15)
+                    pdf.multi_cell(175, 6, text)
+            pdf.set_text_color(51, 51, 51)
+            pdf.set_font("Helvetica", "", 11)
+            pdf.ln(4)
 
+        elif t == "list":
+            ordered = token.get("attrs", {}).get("ordered", False)
+            depth = token.get("attrs", {}).get("depth", 0)
+            indent = min(depth, 2) * 5
+            for i, item in enumerate(token.get("children", [])):
+                if item.get("type") == "list_item":
+                    pdf.set_x(15 + indent)
+                    prefix = f"{i + 1}. " if ordered else "- "
+                    pdf.write(5, prefix)
+                    for child in item.get("children", []):
+                        if child.get("type") in ("block_text", "paragraph"):
+                            _render_inline(
+                                pdf, child.get("children", [])
+                            )
+                        elif child.get("type") == "list":
+                            pdf.ln(6)
+                            _render_tokens(pdf, [child])
+                            continue
+                    pdf.ln(6)
+
+
+# --- PDF creation ---
+
+
+def create_pdf(md_content: str, output_path: Path, title=None) -> Path:
+    """Create PDF from markdown content."""
+    if title:
+        md_content = re.sub(r"^#\s+.+\n*", "", md_content, count=1)
+
+    tokens = _parser(md_content)
+
+    pdf = StyledPDF(title)
+    _render_tokens(pdf, tokens)
     pdf.output(output_path)
     return output_path
 
 
 def main():
-    parser = argparse.ArgumentParser(description='Convert Markdown to PDF')
-    parser.add_argument('--output', '-o', required=True, help='Output PDF path')
-    parser.add_argument('--title', '-t', help='Document title (optional)')
-    parser.add_argument('--input', '-i', help='Input markdown file (default: stdin)')
-
+    parser = argparse.ArgumentParser(description="Convert Markdown to PDF")
+    parser.add_argument("--output", "-o", required=True, help="Output PDF path")
+    parser.add_argument("--title", "-t", help="Document title")
+    parser.add_argument(
+        "--input", "-i", help="Input markdown file (default: stdin)"
+    )
     args = parser.parse_args()
 
-    # Read markdown content
-    if args.input:
-        md_content = Path(args.input).read_text()
-    else:
-        md_content = sys.stdin.read()
-
+    md_content = Path(args.input).read_text() if args.input else sys.stdin.read()
     if not md_content.strip():
         print("Error: No content provided", file=sys.stderr)
         sys.exit(1)
 
-    # Create PDF
     output_path = Path(args.output).expanduser()
     output_path.parent.mkdir(parents=True, exist_ok=True)
-
     create_pdf(md_content, output_path, args.title)
-
     print(f"PDF created: {output_path}")
     print(f"Size: {output_path.stat().st_size / 1024:.1f} KB")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
