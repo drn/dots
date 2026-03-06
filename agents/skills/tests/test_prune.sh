@@ -105,9 +105,18 @@ test_preview_stale_days_arg() {
   git checkout -q master
 
   capture bash "$PRUNE" preview --stale-days 1
-  if [[ "$_CAPTURED_EXIT" == "0" ]]; then
-    assert_contains "$_CAPTURED" "STALE:" "should find stale branches"
-  fi
+  assert_eq "$_CAPTURED_EXIT" "0" "should exit 0 with stale branches"
+  assert_contains "$_CAPTURED" "STALE:" "should find stale branches"
+  assert_contains "$_CAPTURED" "old-branch" "should list old-branch as stale"
+}
+
+test_stale_days_non_numeric() {
+  make_test_repo >/dev/null
+  add_test_remote "origin" >/dev/null
+
+  capture bash "$PRUNE" preview --stale-days abc
+  assert_eq "$_CAPTURED_EXIT" "1" "should exit 1 with non-numeric stale-days"
+  assert_contains "$_CAPTURED" "must be a number" "should report invalid stale-days"
 }
 
 test_delete_protected_branch_safety() {

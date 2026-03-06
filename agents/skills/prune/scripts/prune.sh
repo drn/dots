@@ -70,7 +70,11 @@ do_preview() {
   # Parse --stale-days
   while [[ $# -gt 0 ]]; do
     case "$1" in
-      --stale-days) stale_days="$2"; shift 2 ;;
+      --stale-days)
+        stale_days="$2"
+        [[ "$stale_days" =~ ^[0-9]+$ ]] || die 1 "--stale-days must be a number, got: $stale_days"
+        shift 2
+        ;;
       *) shift ;;
     esac
   done

@@ -32,7 +32,7 @@ info() {
 cleanup_worktree() {
   if [[ -d "$WORKTREE_PATH" ]]; then
     info "Cleaning up worktree..."
-    git worktree remove "$WORKTREE_PATH" --force 2>/dev/null || true
+    git worktree remove "$WORKTREE_PATH" --force 2>/dev/null || info "Warning: worktree cleanup failed"
   fi
 }
 
@@ -121,7 +121,7 @@ parse_args() {
 
   while [[ $# -gt 0 ]]; do
     case "$1" in
-      --runs) RUNS="$2"; shift 2 ;;
+      --runs|-n) RUNS="$2"; shift 2 ;;
       --base) BASE_REF="$2"; shift 2 ;;
       *) shift ;;
     esac
