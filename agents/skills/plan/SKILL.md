@@ -1,11 +1,11 @@
 ---
 name: plan
-description: Generate an implementation plan from a PRD, tech spike, or feature spec and save it to .context/plans/. Use for planning work, breaking down a PRD, or creating an implementation plan from a spec.
+description: Generate an implementation plan from a PRD, tech spike, or feature spec and save it to context/plans/. Use for planning work, breaking down a PRD, or creating an implementation plan from a spec.
 ---
 
 # Implementation Plan
 
-Read a PRD, tech spike, or feature spec and produce a concrete implementation plan saved to `.context/plans/`.
+Read a PRD, tech spike, or feature spec and produce a concrete implementation plan saved to `context/plans/`.
 
 ## Arguments
 
@@ -17,7 +17,7 @@ Read a PRD, tech spike, or feature spec and produce a concrete implementation pl
 - Directory structure: !`find . -maxdepth 2 -type d -not -path './.git/*' -not -path './node_modules/*' -not -path './vendor/*' 2>/dev/null | head -30`
 - Recent commits: !`git log --oneline -10 2>/dev/null | head -10`
 - Prior plans: !`find .context/plans -name "*.md" 2>/dev/null | head -10`
-- Prior spikes: !`find .context/spikes -name "*.md" 2>/dev/null | head -10`
+- Prior spikes: !`find context/spikes -name "*.md" 2>/dev/null | head -10`
 
 ## Instructions
 
@@ -46,13 +46,13 @@ Investigate the current codebase to ground the plan in reality:
 1. **Find relevant code** — Search for files, modules, and patterns related to the requirements.
 2. **Understand existing architecture** — Read key files to understand conventions, patterns, and boundaries.
 3. **Identify integration points** — Where does the new work connect to existing code?
-4. **Check for prior art** — Look at prior plans and spikes in `.context/` for related work.
+4. **Check for prior art** — Look at prior plans and spikes in `context/` for related work.
 
 ### Step 3: Write the plan
 
-Ensure `.context/plans/` directory exists (create if needed).
+Ensure `context/plans/` directory exists (create if needed).
 
-Save the plan to `.context/plans/<date>-<slug>.md` where `<date>` is today in YYYY-MM-DD format and `<slug>` is a short kebab-case summary.
+Save the plan to `context/plans/<date>-<slug>.md` where `<date>` is today in YYYY-MM-DD format and `<slug>` is a short kebab-case summary.
 
 Use this format:
 
