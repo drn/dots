@@ -11,6 +11,7 @@ import (
 	"os"
 	"os/exec"
 	"strings"
+	"syscall"
 
 	"github.com/drn/dots/pkg/path"
 	"github.com/joho/godotenv"
@@ -22,6 +23,9 @@ var apiURL = "https://api.openai.com/v1/audio/speech"
 
 // playCmd is the command used to play audio, overridable for testing.
 var playCmd = "afplay"
+
+// lockPath is the file used for cross-process mutual exclusion of playback.
+var lockPath = "/tmp/tts.lock"
 
 func init() {
 	godotenv.Load(path.FromDots("sys/env"))
@@ -119,6 +123,17 @@ func speak(text, voice string, speed float64, model string) error {
 		return err
 	}
 	tmp.Close()
+
+	// Acquire exclusive lock so concurrent tts processes play sequentially.
+	lf, err := os.OpenFile(lockPath, os.O_CREATE|os.O_RDWR, 0600)
+	if err != nil {
+		return err
+	}
+	defer lf.Close()
+	if err := syscall.Flock(int(lf.Fd()), syscall.LOCK_EX); err != nil {
+		return err
+	}
+	defer syscall.Flock(int(lf.Fd()), syscall.LOCK_UN)
 
 	cmd := exec.Command(playCmd, tmp.Name())
 	cmd.Stdout = os.Stdout
