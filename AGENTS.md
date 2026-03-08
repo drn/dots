@@ -172,8 +172,10 @@ When the user's message matches a phrase below, read and follow the correspondin
 **ALWAYS speak aloud when completing ANY task or waiting for user input.** This is mandatory.
 
 ```bash
-tts -s 1.4 "Done"  # 2-4 words max (e.g., "Done", "Updated config", "Need input")
+tts -s 1.4 "Code changed with care / tests passing bright and green / ready for review"
 ```
+
+Summarize what you did as a haiku (5-7-5 syllables). The haiku should reflect the specific task completed, not be generic.
 
 Do this BEFORE moving to the next task. If you forget, you're not following instructions.
 
