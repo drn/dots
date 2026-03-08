@@ -147,7 +147,7 @@ Run `dots install agents` to symlink them to `~/.claude/agents/`.
 │   ├── path/                  # Path helpers (FromDots, FromHome)
 │   └── cache/                 # File-based caching with TTL
 │
-├── cmd/                       # 20 standalone Go utilities
+├── cmd/                       # 22 standalone Go utilities
 │   ├── git-ancestor/          # Common ancestor between branches
 │   ├── git-canonical-branch/  # Canonical branch name
 │   ├── git-killme/            # Delete branch and switch to master
@@ -163,7 +163,9 @@ Run `dots install agents` to symlink them to `~/.claude/agents/`.
 │   ├── weather/               # Weather data
 │   ├── tmux-status/           # Tmux status bar components
 │   ├── search-github/         # GitHub search
-│   └── home-scp/              # SCP helper
+│   ├── home-scp/              # SCP helper
+│   ├── slack/                  # Slack read-only client
+│   └── gmail/                  # Gmail read-only client
 │
 ├── bin/                       # 35 shell scripts installed to ~/bin
 ├── home/                      # Dotfiles symlinked to ~/
@@ -174,7 +176,7 @@ Run `dots install agents` to symlink them to `~/.claude/agents/`.
 ├── fonts/                     # Developer fonts
 │
 ├── agents/                    # Agent configuration
-│   ├── skills/                # 36 reusable skills (SKILL.md per skill)
+│   ├── skills/                # 39 reusable skills (SKILL.md per skill)
 │   └── custom/                # 3 custom agent types (.md per agent)
 │       └── tests/             # Skill test suite
 │
