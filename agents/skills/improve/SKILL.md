@@ -287,7 +287,7 @@ Proactively identify knowledge graph gaps — entities, topic files, or categori
    - Relationship types: `integrates_with`, `routes_through`, `hosted_on`, `owned_by`, `manages`, `replaces`, `depends_on`, `provides`, `consumes`
 
    If the session surfaced entities or relationships that don't fit these categories, propose additions to `/capture`'s taxonomy. Common gaps that have emerged in practice:
-   - Entity types: `product` (a Thanx product like Ordering), `strategy` (a strategic direction), `market_context` (competitive landscape), `partner` (vs generic company), `case_study` (merchant success story with metrics)
+   - Entity types: `product` (a product offering), `strategy` (a strategic direction), `market_context` (competitive landscape), `partner` (vs generic company), `case_study` (customer success story with metrics)
    - Relationship types: `migrated_from`, `competes_with`, `evaluated_by`, `implemented_by`, `fills_gap_for`, `displaces`
 
    For each proposed addition, include the entity/relationship name, a one-line definition, and 2-3 examples from the session or knowledge base that demonstrate the need.
@@ -413,12 +413,12 @@ Updated context/knowledge/index.md:
 ## Knowledge Gaps Identified
 
 ### Uncaptured Entities
-- **Nautical Bowls** — mentioned as Thanx+Toast case study with metrics, no entry
-  - Suggested file: merchant-accounts.md
+- **[Customer Name]** — mentioned as case study with metrics, no entry
+  - Suggested file: customer-accounts.md
 
 ### Taxonomy Gaps
-- New entity type: `case_study` — A merchant success story with quantified outcomes.
-  Examples: Nautical Bowls (38% activation, 3x active members), Nothing Bundt Cakes ($125M+ loyalty revenue)
+- New entity type: `case_study` — A customer success story with quantified outcomes.
+  Examples: [Customer A] (38% activation, 3x active members), [Customer B] ($125M+ loyalty revenue)
 
 ### Stale Coverage
 - `context/thanx/ordering-positioning.md` — exists but not in coverage map

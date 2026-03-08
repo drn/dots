@@ -54,10 +54,10 @@ test_create_tag_detects_new_tag() {
   make_test_repo >/dev/null
   add_test_remote "origin" >/dev/null
 
-  # Simulate thanx version update by replacing it with a function
+  # Simulate version update by replacing it with a function
   # that creates a tag
-  thanx() { git tag -a "v1.0.0" -m "test tag"; }
-  export -f thanx
+  version-update() { git tag -a "v1.0.0" -m "test tag"; }
+  export -f version-update
 
   _source_deploy
   TARGET="origin"
@@ -73,7 +73,7 @@ test_create_tag_detects_new_tag() {
   master_target=$(git rev-parse "origin/master" 2>/dev/null)
   assert_eq "$tag_target" "$master_target" "tag should point to origin/master"
 
-  unset -f thanx
+  unset -f version-update
 }
 
 test_summary_format() {
@@ -103,17 +103,15 @@ test_end_to_end_with_mock_thanx() {
   add_test_remote "origin" >/dev/null
   git fetch origin 2>/dev/null
 
-  # Mock thanx to create a tag
+  # Mock version-update to create a tag
   export PATH="$PWD/bin:$PATH"
   mkdir -p bin
-  cat > bin/thanx <<'MOCK'
+  cat > bin/version-update <<'MOCK'
 #!/usr/bin/env bash
-if [[ "$1" == "version" && "$2" == "update" ]]; then
-  git tag -a "v9.0.0" -m "mock tag"
-  exit 0
-fi
+git tag -a "v9.0.0" -m "mock tag"
+exit 0
 MOCK
-  chmod +x bin/thanx
+  chmod +x bin/version-update
 
   # Mock git push and git ls-remote to avoid needing a real writable remote
   # Run just create_tag to verify the full tag flow

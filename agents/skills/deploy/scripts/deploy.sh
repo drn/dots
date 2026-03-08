@@ -51,8 +51,9 @@ create_tag() {
   local tags_before
   tags_before=$(git tag --sort=-v:refname | head -20)
 
-  info "Running thanx version update..."
-  thanx version update || die 1 "thanx version update failed"
+  local version_cmd="${VERSION_CMD:-version-update}"
+  info "Running ${version_cmd}..."
+  $version_cmd || die 1 "${version_cmd} failed"
 
   # Find the new tag by comparing before/after
   local tags_after
@@ -60,7 +61,7 @@ create_tag() {
 
   # grep -Fxv doesn't require sorted input (unlike comm)
   NEW_TAG=$(grep -Fxv -f <(echo "$tags_before") <(echo "$tags_after") | head -1)
-  [[ -z "$NEW_TAG" ]] && die 1 "Could not identify new tag from thanx version update"
+  [[ -z "$NEW_TAG" ]] && die 1 "Could not identify new tag from ${version_cmd}"
 
   info "New tag: $NEW_TAG"
 

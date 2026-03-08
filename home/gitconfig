@@ -104,9 +104,13 @@
   home = !"open https://github.com/$(git config github.user)"
   cpa = cherry-pick --abort
 
-[user]
-  name = Darren Cheng
-  email = darren@thanx.com
+# PII lives in ~/.gitconfig.local (not committed)
+# Example ~/.gitconfig.local:
+#   [user]
+#     name = Your Name
+#     email = you@example.com
+[include]
+  path = ~/.gitconfig.local
 
 [github]
   user = drn
