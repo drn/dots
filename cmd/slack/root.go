@@ -22,7 +22,7 @@ import (
 const slackAPIBase = "https://slack.com/api"
 
 func init() {
-	godotenv.Load(path.FromHome(".dots/env"))
+	godotenv.Load(path.FromHome(".dots/sys/env"))
 }
 
 func userToken() string {

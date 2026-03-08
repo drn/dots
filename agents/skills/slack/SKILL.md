@@ -9,7 +9,7 @@ Query Slack channels, search messages, and fetch user information using the `sla
 
 ## Instructions
 
-You are helping query Slack data. Auth is handled via environment variables loaded from `~/.dots/env`:
+You are helping query Slack data. Auth is handled via environment variables loaded from `~/.dots/sys/env`:
 - `SLACK_XOXP_TOKEN` — user token for search, history, thread, dms
 - `SLACK_XOXB_TOKEN` — bot token for channels, users
 
