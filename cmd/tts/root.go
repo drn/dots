@@ -47,6 +47,9 @@ func main() {
 		Args:  cobra.MinimumNArgs(1),
 		Run: func(_ *cobra.Command, args []string) {
 			text := strings.Join(args, " ")
+			if !strings.HasSuffix(text, ".") && !strings.HasSuffix(text, "!") && !strings.HasSuffix(text, "?") {
+				text += "."
+			}
 			if err := speak(text, voice, speed, model); err != nil {
 				fmt.Fprintf(os.Stderr, "Error: %v\n", err)
 				os.Exit(1)

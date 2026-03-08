@@ -173,7 +173,7 @@ When the user's message matches a phrase below, read and follow the correspondin
 
 Use the **Haiku** model to generate a task-specific summary (6 words max), then speak it:
 ```bash
-tts -s 1.4 "<SUMMARY>"
+tts -s 1.1 "<SUMMARY>"
 ```
 
 The `tts` command automatically skips playback when the mic is active (e.g., on a call).
