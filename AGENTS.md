@@ -165,6 +165,7 @@ When the user's message matches a phrase below, read and follow the correspondin
 | "slack", "channel history", "slack search", "slack messages", "find channel", "find user slack" | `agents/skills/slack/SKILL.md` |
 | "email", "gmail", "search email", "read email", "inbox", "email labels" | `agents/skills/email/SKILL.md` |
 | "notion", "read notion", "notion page", "notion database" | `agents/skills/notion/SKILL.md` |
+| "speak to me", "read to me", "read this aloud", "say this", "speak the summary" | `agents/skills/tts/SKILL.md` |
 
 ## Public Repo Policy
 
