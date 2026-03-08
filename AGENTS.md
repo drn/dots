@@ -167,6 +167,23 @@ When the user's message matches a phrase below, read and follow the correspondin
 | "notion", "read notion", "notion page", "notion database" | `agents/skills/notion/SKILL.md` |
 | "speak to me", "read to me", "read this aloud", "say this", "speak the summary" | `agents/skills/tts/SKILL.md` |
 
+## TTS Notifications
+
+**ALWAYS speak aloud when completing ANY task or waiting for user input.** This is mandatory.
+
+**First, check if on a call:**
+```bash
+mic-check  # returns "active" (exit 0) or "inactive" (exit 1)
+```
+If mic is **active**, skip TTS entirely — user is in a call. Do not speak.
+
+When mic is inactive, use TTS via bash:
+```bash
+tts -s 1.4 "Done"  # 2-4 words max (e.g., "Done", "Updated config", "Need input")
+```
+
+Do this BEFORE moving to the next task. If you forget, you're not following instructions.
+
 ## Public Repo Policy
 
 This is a public repository. Skills and configuration checked in here must be generic and reusable by anyone. Never commit company names, internal tool names, proprietary patterns, or org-specific conventions to skills or CLAUDE.md. Put org-specific knowledge in private project-local CLAUDE.md files instead.

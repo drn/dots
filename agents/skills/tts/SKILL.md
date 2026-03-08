@@ -8,7 +8,7 @@ description: >
 
 # Text-to-Speech
 
-Read content aloud to the user using the `openai_tts` MCP tool.
+Read content aloud to the user using the `tts` CLI binary.
 
 ## Arguments
 
@@ -34,10 +34,14 @@ Figure out what to speak from the user's message and conversation context:
 
 ### Step 3: Speak
 
-Use the `mcp__tts__openai_tts` tool:
+Run the `tts` command via bash:
 
-- **Speed**: 1.4
-- **Voice**: alloy (default) — user can request: echo, fable, onyx, nova, shimmer
+```bash
+tts -s 1.4 "Your text here"
+```
+
+- **Speed**: Use `-s 1.4` by default
+- **Voice**: alloy (default) — user can request others with `-v`: echo, fable, onyx, nova, shimmer
 - **Length**: Keep spoken text concise. For long content, summarize to key points rather than reading verbatim.
 
 ### Step 4: Confirm

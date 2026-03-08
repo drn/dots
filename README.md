@@ -147,7 +147,7 @@ Run `dots install agents` to symlink them to `~/.claude/agents/`.
 │   ├── path/                  # Path helpers (FromDots, FromHome)
 │   └── cache/                 # File-based caching with TTL
 │
-├── cmd/                       # 22 standalone Go utilities
+├── cmd/                       # 23 standalone Go utilities
 │   ├── git-ancestor/          # Common ancestor between branches
 │   ├── git-canonical-branch/  # Canonical branch name
 │   ├── git-killme/            # Delete branch and switch to master
@@ -165,7 +165,8 @@ Run `dots install agents` to symlink them to `~/.claude/agents/`.
 │   ├── search-github/         # GitHub search
 │   ├── home-scp/              # SCP helper
 │   ├── slack/                  # Slack read-only client
-│   └── gmail/                  # Gmail read-only client
+│   ├── gmail/                  # Gmail read-only client
+│   └── tts/                    # Text-to-speech via OpenAI API
 │
 ├── bin/                       # 35 shell scripts installed to ~/bin
 ├── home/                      # Dotfiles symlinked to ~/
