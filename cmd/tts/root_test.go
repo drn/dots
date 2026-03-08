@@ -9,6 +9,12 @@ import (
 	"testing"
 )
 
+func stubMic(active bool) func() {
+	orig := micActive
+	micActive = func() bool { return active }
+	return func() { micActive = orig }
+}
+
 func TestBuildRequest_PayloadFields(t *testing.T) {
 	t.Setenv("OPENAI_API_KEY", "test-key")
 
@@ -53,8 +59,19 @@ func TestBuildRequest_PayloadFields(t *testing.T) {
 	}
 }
 
+func TestSpeak_SkipsWhenMicActive(t *testing.T) {
+	defer stubMic(true)()
+
+	// If speak doesn't skip, it would fail since no API key or server is set
+	err := speak("test", "alloy", 1.0, "tts-1")
+	if err != nil {
+		t.Errorf("expected nil error when mic active, got: %v", err)
+	}
+}
+
 func TestSpeak_Success(t *testing.T) {
 	t.Setenv("OPENAI_API_KEY", "test-key")
+	defer stubMic(false)()
 
 	// Mock OpenAI API returning fake audio bytes
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -88,6 +105,7 @@ func TestSpeak_Success(t *testing.T) {
 
 func TestSpeak_APIError(t *testing.T) {
 	t.Setenv("OPENAI_API_KEY", "test-key")
+	defer stubMic(false)()
 
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		w.WriteHeader(http.StatusUnauthorized)
@@ -110,6 +128,7 @@ func TestSpeak_APIError(t *testing.T) {
 
 func TestSpeak_WritesAndCleansUpTempFile(t *testing.T) {
 	t.Setenv("OPENAI_API_KEY", "test-key")
+	defer stubMic(false)()
 
 	audioData := "fake-mp3-content"
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {

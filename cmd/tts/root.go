@@ -84,6 +84,10 @@ func buildRequest(text, voice, model string, speed float64) (*http.Request, erro
 }
 
 func speak(text, voice string, speed float64, model string) error {
+	if micActive() {
+		return nil
+	}
+
 	req, err := buildRequest(text, voice, model, speed)
 	if err != nil {
 		return err
