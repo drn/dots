@@ -16,15 +16,7 @@ Read content aloud to the user using the `tts` CLI binary.
 
 ## Instructions
 
-### Step 1: Check Mic
-
-```bash
-mic-check
-```
-
-If exit code is 0 (mic active), tell the user: "Skipping TTS — your mic is active (likely on a call)." Stop here.
-
-### Step 2: Determine Content
+### Step 1: Determine Content
 
 Figure out what to speak from the user's message and conversation context:
 
@@ -32,7 +24,7 @@ Figure out what to speak from the user's message and conversation context:
 - If the user referenced specific content ("read the summary", "say the plan"), speak a concise version of that content.
 - If the user provided literal text ("say hello world"), speak exactly that.
 
-### Step 3: Speak
+### Step 2: Speak
 
 Run the `tts` command via bash:
 
@@ -44,6 +36,6 @@ tts -s 1.4 "Your text here"
 - **Voice**: alloy (default) — user can request others with `-v`: echo, fable, onyx, nova, shimmer
 - **Length**: Keep spoken text concise. For long content, summarize to key points rather than reading verbatim.
 
-### Step 4: Confirm
+### Step 3: Confirm
 
 After speaking, briefly confirm what was read (e.g., "Spoke the deployment summary."). Do not repeat the full text in chat.
