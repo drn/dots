@@ -34,7 +34,7 @@ Figure out what to speak from the user's message and conversation context:
 
 ### Step 3: Speak
 
-Use the `openai_tts` tool:
+Use the `mcp__tts__openai_tts` tool:
 
 - **Speed**: 1.4
 - **Voice**: alloy (default) — user can request: echo, fable, onyx, nova, shimmer

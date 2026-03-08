@@ -22,7 +22,7 @@ If mic is **active**, skip TTS entirely — user is in a call. Do not speak.
 
 When mic is inactive, use TTS:
 ` + "```" + `
-Tool: openai_tts
+Tool: mcp__tts__openai_tts
 Speed: 1.4
 Words: 2-4 max (e.g., "Done", "Updated config", "Need input")
 ` + "```" + `
