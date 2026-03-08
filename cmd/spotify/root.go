@@ -22,7 +22,7 @@ import (
 )
 
 func main() {
-	godotenv.Load(path.FromHome(".dots/env"))
+	godotenv.Load(path.FromHome(".dots/sys/env"))
 
 	action := "toggle"
 	if len(os.Args) >= 2 {

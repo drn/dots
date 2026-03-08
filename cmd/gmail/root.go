@@ -22,7 +22,7 @@ import (
 const gmailBase = "https://gmail.googleapis.com"
 
 func init() {
-	godotenv.Load(path.FromHome(".dots/env"))
+	godotenv.Load(path.FromHome(".dots/sys/env"))
 }
 
 var configDir = filepath.Join(os.Getenv("HOME"), ".google-mcp")

@@ -9,7 +9,7 @@ Search and read Gmail messages using the `gmail` CLI.
 
 ## Instructions
 
-You are helping read Gmail data. Auth uses OAuth tokens stored at `~/.google-mcp/tokens/`. Additional env vars (if any) are loaded from `~/.dots/env`.
+You are helping read Gmail data. Auth uses OAuth tokens stored at `~/.google-mcp/tokens/`. Additional env vars (if any) are loaded from `~/.dots/sys/env`.
 
 ### Operations
 
