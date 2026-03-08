@@ -55,7 +55,8 @@ dots doctor                                   # Run diagnostics
 │   └── install/              # Component installers
 ├── agents/
 │   ├── skills/               # Cross-agent skills (SKILL.md per skill)
-│   └── custom/               # Custom agent types (.md per agent → ~/.claude/agents/)
+│   ├── custom/               # Custom agent types (.md per agent → ~/.claude/agents/)
+│   └── hooks/                # Claude Code hooks (merged into ~/.claude/settings.json)
 ├── cmd/                      # 22 standalone utilities
 └── pkg/                      # Shared utilities (log, run, cache, path)
 ```
@@ -93,7 +94,7 @@ dots doctor                                   # Run diagnostics
 | vim | Vim configuration |
 | hammerspoon | Window management |
 | osx | macOS defaults |
-| agents | Agent skills and custom agents (symlinks agents/skills → ~/.claude/skills + ~/.agents/skills, agents/custom → ~/.claude/agents) |
+| agents | Agent skills, custom agents, and hooks (symlinks skills/custom, merges hooks into ~/.claude/settings.json) |
 
 ## Writing Skills / Slash Commands
 

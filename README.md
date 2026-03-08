@@ -53,7 +53,7 @@ dots docker stop-all     # Stop all Docker containers
 
 | Component | What it installs |
 |-----------|------------------|
-| `agents` | Agent skills and custom agents (symlinks `agents/skills/` → `~/.claude/skills/` + `~/.agents/skills/`, `agents/custom/` → `~/.claude/agents/`) |
+| `agents` | Agent skills, custom agents, and hooks (symlinks skills/custom, merges `agents/hooks/hooks.json` into `~/.claude/settings.json`) |
 | `bin` | Custom shell scripts and Go utilities to `~/bin` |
 | `git` | `.gitconfig`, `.gitignore_global`, git extensions |
 | `home` | Dotfiles symlinked to `~/` (`.zshrc`, `.vimrc`, `.tmux.conf`, `.gitconfig`, etc.) |
@@ -124,6 +124,18 @@ Dots also ships 3 reusable custom agent definitions in `agents/custom/`. These a
 
 Run `dots install agents` to symlink them to `~/.claude/agents/`.
 
+### Hooks
+
+Claude Code hooks in `agents/hooks/` provide deterministic automation that fires at specific lifecycle events. Unlike skills (which Claude chooses to use), hooks always execute.
+
+| Hook | Event | Purpose |
+|------|-------|---------|
+| `protect-files.sh` | PreToolUse (Edit/Write) | Blocks writes to `.env`, keys, credentials |
+| `auto-format.sh` | PostToolUse (Edit/Write) | Auto-formats files (gofmt, prettier, rubocop, ruff) |
+| `compact-context.sh` | SessionStart (compact) | Re-injects context from `.claude/compact-context.md` after compaction |
+
+Run `dots install agents` to merge hooks into `~/.claude/settings.json`.
+
 ## Project Structure
 
 ```
@@ -177,8 +189,10 @@ Run `dots install agents` to symlink them to `~/.claude/agents/`.
 │
 ├── agents/                    # Agent configuration
 │   ├── skills/                # 39 reusable skills (SKILL.md per skill)
-│   └── custom/                # 3 custom agent types (.md per agent)
-│       └── tests/             # Skill test suite
+│   ├── custom/                # 3 custom agent types (.md per agent)
+│   │   └── tests/             # Skill test suite
+│   └── hooks/                 # Claude Code hooks (merged into settings.json)
+│       └── scripts/           # Hook shell scripts
 │
 └── openspec/                  # Change proposal system
 ```
