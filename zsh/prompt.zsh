@@ -111,9 +111,9 @@ terminal_prompt_precmd() {
   unset cmd_timestamp
   # rename tmux window depending on current directory
   if [[ "$TERM" = "screen"* ]] && [ -n "$TMUX" ]; then
-    if [[ $PWD == *"/Development/thanx/"* ]]; then
+    if [[ -n "$TMUX_PROJECT_DIR" ]] && [[ $PWD == *"$TMUX_PROJECT_DIR"* ]]; then
       if [ "$(tmux display-message -p '#{window_panes}')" = "1" ]; then
-        tmux rename-window $(echo $PWD | sed 's/.*\/thanx\///')
+        tmux rename-window $(echo $PWD | sed "s|.*$TMUX_PROJECT_DIR||")
       fi
     fi
   fi

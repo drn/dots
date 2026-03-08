@@ -73,6 +73,11 @@ dots doctor                                   # Run diagnostics
 
 3. **Logging**: Use `pkg/log` for consistent output
 
+4. **Testing**: All new Go code must include tests
+   - Pure logic functions must have unit tests (`*_test.go` in the same package)
+   - Skill scripts with testable logic should have bash tests in `.github/skill-tests/`
+   - CI runs `go test ./...` and `bash .github/skill-tests/run_all.sh` — both must pass
+
 ## Component Reference
 
 | Component | Installs |

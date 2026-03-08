@@ -48,7 +48,7 @@ func authorize() {
 	params := url.Values{
 		"response_type": {"code"},
 		"client_id":     {os.Getenv("SPOTIFY_CLIENT_ID")},
-		"redirect_uri":  {"https://console.drn.dev/"},
+		"redirect_uri":  {os.Getenv("SPOTIFY_REDIRECT_URI")},
 		"scope": {
 			strings.Join([]string{
 				"user-read-currently-playing",
@@ -86,7 +86,7 @@ func exchangeAuthorizationCode(code string) (string, string) {
 		"grant_type":    "authorization_code",
 		"client_id":     os.Getenv("SPOTIFY_CLIENT_ID"),
 		"client_secret": os.Getenv("SPOTIFY_CLIENT_SECRET"),
-		"redirect_uri":  "https://console.drn.dev/",
+		"redirect_uri":  os.Getenv("SPOTIFY_REDIRECT_URI"),
 	}
 
 	response, err := req.Post(url, params)
@@ -110,7 +110,7 @@ func exchangeRefreshToken(code string) string {
 		"grant_type":    "refresh_token",
 		"client_id":     os.Getenv("SPOTIFY_CLIENT_ID"),
 		"client_secret": os.Getenv("SPOTIFY_CLIENT_SECRET"),
-		"redirect_uri":  "https://console.drn.dev/",
+		"redirect_uri":  os.Getenv("SPOTIFY_REDIRECT_URI"),
 	}
 
 	response, err := req.Post(url, params)

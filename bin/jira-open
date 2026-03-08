@@ -13,7 +13,8 @@ branch=${branch//./} # strip periods
 decorated="\033[01;37m$branch\033[0m"
 if [[ "$branch" =~ ^[A-Z]+-.* ]]; then
   echo -e "\033[00;32mOpening JIRA issue $decorated\033[00;32m...\033[0m"
-  open "https://thanxapp.atlassian.net/browse/$branch"
+  base_url="${JIRA_BASE_URL:-https://your-org.atlassian.net}"
+  open "$base_url/browse/$branch"
 else
   echo -e "\033[00;31mBranch $decorated\033[00;31m is not a JIRA issue...\033[0m"
 fi

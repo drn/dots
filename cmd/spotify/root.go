@@ -1,9 +1,9 @@
 // Requires creation of a Spotify API application here:
 //   https://developer.spotify.com/dashboard/applications
-//   Redirect URI: https://console.drn.dev/
 // The following ENV variables must exist:
 //   SPOTIFY_CLIENT_ID
 //   SPOTIFY_CLIENT_SECRET
+//   SPOTIFY_REDIRECT_URI
 
 // This package provides a Spotify CLI to toggle, save, and remove the current
 // song
