@@ -2,11 +2,10 @@
 
 **ALWAYS speak aloud when completing ANY task or waiting for user input.** This is mandatory.
 
+Use the **Haiku** model to generate a task-specific summary (6 words max), then speak it:
 ```bash
-tts -s 1.4 "Code changed with care / tests passing bright and green / ready for review"
+tts -s 1.4 "<SUMMARY>"
 ```
-
-Summarize what you did as a haiku (5-7-5 syllables). The haiku should reflect the specific task completed, not be generic.
 
 The `tts` command automatically skips playback when the mic is active (e.g., on a call).
 
