@@ -166,6 +166,7 @@ When the user's message matches a phrase below, read and follow the correspondin
 | "email", "gmail", "search email", "read email", "inbox", "email labels" | `agents/skills/email/SKILL.md` |
 | "notion", "read notion", "notion page", "notion database" | `agents/skills/notion/SKILL.md` |
 | "speak to me", "read to me", "read this aloud", "say this", "speak the summary" | `agents/skills/tts/SKILL.md` |
+| "loop", "poll", "recurring", "every N minutes", "babysit", "monitor periodically", "run on interval" | `agents/skills/loop/SKILL.md` |
 
 ## Public Repo Policy
 
