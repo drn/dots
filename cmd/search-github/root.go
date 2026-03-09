@@ -16,7 +16,7 @@ func main() {
 		os.Exit(1)
 	}
 	org := os.Args[1]
-	searchTerm := strings.Join(os.Args[2:len(os.Args)], " ")
+	searchTerm := strings.Join(os.Args[2:], " ")
 
 	run.Silent(
 		"open 'https://github.com/search?type=code&q=org:%s %s'",
