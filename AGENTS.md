@@ -162,7 +162,7 @@ When the user's message matches a phrase below, read and follow the correspondin
 | "swarm", "parallel agents", "agent team in conductor", "multi-agent", "spawn agents" | `agents/skills/swarm/SKILL.md` |
 | "skill gap analysis", "missing skills", "missing agents", "equip project", "bootstrap skills from spec", "what skills do I need" | `agents/skills/equip/SKILL.md` |
 | "write a plan", "implementation plan", "plan from PRD", "plan from spike", "break down this spec", "planning" | `agents/skills/plan/SKILL.md` |
-| "slack", "channel history", "slack search", "slack messages", "find channel", "find user slack" | `agents/skills/slack/SKILL.md` |
+| "slack", "channel history", "slack search", "slack messages", "find channel", "find user slack", any `#channel-name` reference (e.g. `#app-reviews`, `#rnd-leadership`, `#general`) | `agents/skills/slack/SKILL.md` |
 | "email", "gmail", "search email", "read email", "inbox", "email labels" | `agents/skills/email/SKILL.md` |
 | "notion", "read notion", "notion page", "notion database" | `agents/skills/notion/SKILL.md` |
 | "speak to me", "read to me", "read this aloud", "say this", "speak the summary" | `agents/skills/tts/SKILL.md` |
