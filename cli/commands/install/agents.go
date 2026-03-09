@@ -16,22 +16,28 @@ func Agents() {
 	customSource := path.FromDots("agents/custom")
 
 	// Claude Code: ensure ~/.claude exists and symlink skills + custom agents
-	ensureDir(path.FromHome(".claude"))
+	if !ensureDir(path.FromHome(".claude")) {
+		return
+	}
 	link.Soft(skillsSource, path.FromHome(".claude/skills"))
 	link.Soft(customSource, path.FromHome(".claude/agents"))
 
 	// Codex: ensure ~/.agents exists and symlink skills
-	ensureDir(path.FromHome(".agents"))
+	if !ensureDir(path.FromHome(".agents")) {
+		return
+	}
 	link.Soft(skillsSource, path.FromHome(".agents/skills"))
 
 	// Symlink global CLAUDE.md
 	link.Soft(path.FromDots("agents/AGENTS.md"), path.FromHome(".claude/CLAUDE.md"))
 }
 
-func ensureDir(dir string) {
+func ensureDir(dir string) bool {
 	if _, err := os.Stat(dir); os.IsNotExist(err) {
 		if err := os.MkdirAll(dir, 0755); err != nil {
 			log.Error("Failed to create directory %s: %s", dir, err.Error())
+			return false
 		}
 	}
+	return true
 }
