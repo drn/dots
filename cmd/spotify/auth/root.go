@@ -2,7 +2,6 @@
 package auth
 
 import (
-	"bytes"
 	"errors"
 	"fmt"
 	"net/url"
@@ -43,8 +42,6 @@ func FetchAccessToken() string {
 }
 
 func authorize() {
-	var buffer bytes.Buffer
-	buffer.WriteString("https://accounts.spotify.com/authorize?")
 	params := url.Values{
 		"response_type": {"code"},
 		"client_id":     {os.Getenv("SPOTIFY_CLIENT_ID")},
@@ -58,9 +55,8 @@ func authorize() {
 		},
 		"state": {"spotify"},
 	}
-	buffer.WriteString(params.Encode())
-	url := buffer.String()
-	run.Execute(`open "` + url + `"`)
+	authURL := "https://accounts.spotify.com/authorize?" + params.Encode()
+	run.Execute(`open "` + authURL + `"`)
 }
 
 func refreshNeeded(accessToken string) bool {
@@ -75,7 +71,7 @@ func Headers(accessToken string) req.Header {
 	return req.Header{
 		"Accept":        "application/json",
 		"Content-Type":  "application/json",
-		"Authorization": fmt.Sprintf("Bearer %s", accessToken),
+		"Authorization": "Bearer " + accessToken,
 	}
 }
 
