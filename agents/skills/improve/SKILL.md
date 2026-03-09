@@ -99,7 +99,7 @@ For each skill identified, analyze:
 2. **Friction points** — where did the user need to iterate, correct, or re-run?
 3. **Technical discoveries** — new knowledge about how the underlying tool/script works
 4. **Incorrect assumptions** — anything the skill file says that turned out wrong
-5. **Missing capabilities** — things the user asked for that the skill did not cover
+5. **Missing capabilities** — things the user asked for that the skill did not cover, OR operations the agent performed via raw commands that could have been CLI commands if the codebase supported them
 
 ### Step 3: Classify Each Skill by Location
 
@@ -209,6 +209,15 @@ Review the session for codebase gaps that were discovered or worked around but n
 - **Missing error handling** — failures that surfaced during the session because a code path had no guard
 - **Configuration gaps** — env vars, CI steps, linter rules, or build config that caused friction
 - **Undocumented patterns** — conventions the codebase follows implicitly that tripped up work during the session
+- **Manual workarounds bypassing existing abstractions** — raw shell commands, curl calls, or inline scripts that hit APIs or services the project already has clients/CLI for, but lacked the specific operation needed. Scan the session for:
+  - `curl` or `Bash` tool calls that hit APIs the project already has clients for (e.g., curl to Prowlarr when a Prowlarr client exists)
+  - Inline data parsing (Python, jq, awk) that processes responses from services the project wraps
+  - Multi-step sequences that combine existing client capabilities in a pattern not yet captured as a CLI command or actor
+
+  For each detected workaround, propose:
+  - Which client method(s) are missing
+  - Which CLI command(s) would eliminate the manual steps
+  - Whether an actor is needed for orchestration
 
 For each gap found:
 1. Describe the gap and how it caused friction
