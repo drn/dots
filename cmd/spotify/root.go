@@ -10,7 +10,6 @@
 package main
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/drn/dots/cmd/spotify/auth"
@@ -86,8 +85,8 @@ func alternateDeviceID(currentDeviceID string) string {
 func currentDevice(accessToken string) string {
 	url := "https://api.spotify.com/v1/me/player/devices"
 
-	response, err := req.Get(url, headers(accessToken))
-	handleRequestError(err)
+	response, err := req.Get(url, auth.Headers(accessToken))
+	auth.HandleRequestError(err)
 
 	i := 0
 	for i < 10 {
@@ -104,8 +103,8 @@ func currentDevice(accessToken string) string {
 func transferPlayback(accessToken string, deviceID string) {
 	url := "https://api.spotify.com/v1/me/player"
 	json := req.BodyJSON(map[string]interface{}{"device_ids": []string{deviceID}})
-	response, err := req.Put(url, headers(accessToken), json)
-	handleRequestError(err)
+	response, err := req.Put(url, auth.Headers(accessToken), json)
+	auth.HandleRequestError(err)
 	if response.Response().StatusCode != 204 {
 		println(response.Dump())
 		log.Error("Failed to transfer device")
@@ -118,8 +117,8 @@ func saveTrack(accessToken string, trackID string) {
 	url := "https://api.spotify.com/v1/me/tracks"
 
 	params := req.QueryParam{"ids": trackID}
-	response, err := req.Put(url, headers(accessToken), params)
-	handleRequestError(err)
+	response, err := req.Put(url, auth.Headers(accessToken), params)
+	auth.HandleRequestError(err)
 	if response.Response().StatusCode != 200 {
 		log.Error("Failed to save track")
 		os.Exit(1)
@@ -131,8 +130,8 @@ func removeTrack(accessToken string, trackID string) {
 	url := "https://api.spotify.com/v1/me/tracks"
 
 	params := req.QueryParam{"ids": trackID}
-	response, err := req.Delete(url, headers(accessToken), params)
-	handleRequestError(err)
+	response, err := req.Delete(url, auth.Headers(accessToken), params)
+	auth.HandleRequestError(err)
 	if response.Response().StatusCode != 200 {
 		log.Error("Failed to remove track")
 		os.Exit(1)
@@ -144,8 +143,8 @@ func isTrackSaved(accessToken string, trackID string) bool {
 	url := "https://api.spotify.com/v1/me/tracks/contains"
 
 	params := req.Param{"ids": trackID}
-	response, err := req.Get(url, headers(accessToken), params)
-	handleRequestError(err)
+	response, err := req.Get(url, auth.Headers(accessToken), params)
+	auth.HandleRequestError(err)
 
 	return jsoniter.Get(response.Bytes(), 0).ToBool()
 }
@@ -154,8 +153,8 @@ func isTrackSaved(accessToken string, trackID string) bool {
 func currentTrackInfo(accessToken string) (string, string, string) {
 	url := "https://api.spotify.com/v1/me/player/currently-playing"
 
-	response, err := req.Get(url, headers(accessToken))
-	handleRequestError(err)
+	response, err := req.Get(url, auth.Headers(accessToken))
+	auth.HandleRequestError(err)
 	id := jsoniter.Get(response.Bytes(), "item", "id").ToString()
 	name := jsoniter.Get(response.Bytes(), "item", "name").ToString()
 	artist := jsoniter.Get(response.Bytes(), "item", "artists", 0, "name").ToString()
@@ -163,18 +162,3 @@ func currentTrackInfo(accessToken string) (string, string, string) {
 	return id, name, artist
 }
 
-func handleRequestError(err error) {
-	if err == nil {
-		return
-	}
-	fmt.Println(err)
-	os.Exit(1)
-}
-
-func headers(accessToken string) req.Header {
-	return req.Header{
-		"Accept":        "application/json",
-		"Content-Type":  "application/json",
-		"Authorization": fmt.Sprintf("Bearer %s", accessToken),
-	}
-}

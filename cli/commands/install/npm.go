@@ -8,7 +8,7 @@ import (
 )
 
 // Npm - Installs global npm packages
-func (i Install) Npm() {
+func Npm() {
 	log.Action("Install npm packages")
 	npm([]string{
 		"bower",

@@ -8,7 +8,7 @@ import (
 )
 
 // Homebrew - Installs Homebrew dependencies
-func (i Install) Homebrew() {
+func Homebrew() {
 	log.Action("Installing Homebrew dependencies")
 	exec("brew update")
 	exec("brew bundle --file=%s", path.FromDots("Brewfile"))

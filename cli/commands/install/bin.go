@@ -7,7 +7,7 @@ import (
 )
 
 // Bin - Symlinks ~/bin directory
-func (i Install) Bin() {
+func Bin() {
 	log.Action("Install Bin")
 	link.Soft(
 		path.FromDots("bin"),

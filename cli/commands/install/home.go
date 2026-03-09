@@ -9,7 +9,7 @@ import (
 )
 
 // Home - Symlinks ~/.* configuration
-func (i Install) Home() {
+func Home() {
 	log.Action("Install Home")
 
 	files, err := os.ReadDir(path.FromDots("home"))

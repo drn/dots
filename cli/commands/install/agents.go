@@ -9,7 +9,7 @@ import (
 )
 
 // Agents - Installs agent skills and custom agents for Claude Code and Codex
-func (i Install) Agents() {
+func Agents() {
 	log.Action("Install Agents")
 
 	skillsSource := path.FromDots("agents/skills")
