@@ -22,13 +22,7 @@ func Command(command string) bool {
 
 // Tmux - Returns true if currently running tmux.
 func Tmux() bool {
-	if !strings.Contains(os.Getenv("TERM"), "screen") {
-		return false
-	}
-	if os.Getenv("TMUX") == "" {
-		return false
-	}
-	return true
+	return strings.Contains(os.Getenv("TERM"), "screen") && os.Getenv("TMUX") != ""
 }
 
 // Osx - Returns true if operating system is OSX.

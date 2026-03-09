@@ -1,4 +1,4 @@
-// Prints the current battery remaining percentage
+// Prints the current battery charging state (charging or battery)
 package main
 
 import (
