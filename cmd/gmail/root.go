@@ -30,6 +30,7 @@ func init() {
 }
 
 var configDir = path.FromHome(".dots/sys/gmail")
+var debugMode bool
 
 type tokenData struct {
 	Email        string `json:"email"`
@@ -85,14 +86,41 @@ func loadToken(account string) *tokenData {
 	return &td
 }
 
+func (td *tokenData) tokenValid() bool {
+	if td.Expiry == "" {
+		return false
+	}
+	exp, err := time.Parse(time.RFC3339, td.Expiry)
+	if err != nil {
+		if debugMode {
+			fmt.Fprintf(os.Stderr, "debug: failed to parse expiry %q: %v\n", td.Expiry, err)
+		}
+		return false
+	}
+	return time.Now().Before(exp)
+}
+
 func (td *tokenData) refreshIfNeeded(account string) {
 	if td.Expiry != "" {
 		exp, err := time.Parse(time.RFC3339, td.Expiry)
+		if debugMode {
+			fmt.Fprintf(os.Stderr, "debug: expiry=%q parseErr=%v now=%s exp=%s\n",
+				td.Expiry, err, time.Now().Format(time.RFC3339), exp.Format(time.RFC3339))
+		}
 		if err == nil && time.Now().Add(60*time.Second).Before(exp) {
+			if debugMode {
+				fmt.Fprintln(os.Stderr, "debug: token still valid, skipping refresh")
+			}
 			return
+		}
+		if debugMode {
+			fmt.Fprintln(os.Stderr, "debug: token expired or expiring soon, attempting refresh")
 		}
 	}
 	if td.RefreshToken == "" {
+		if debugMode {
+			fmt.Fprintln(os.Stderr, "debug: no refresh token, skipping refresh")
+		}
 		return
 	}
 	resp, err := http.PostForm(td.TokenURI, url.Values{
@@ -102,12 +130,23 @@ func (td *tokenData) refreshIfNeeded(account string) {
 		"client_secret": {td.ClientSecret},
 	})
 	if err != nil {
+		if td.tokenValid() {
+			fmt.Fprintf(os.Stderr, "Warning: token refresh failed, using existing access token\n")
+			return
+		}
 		fmt.Fprintf(os.Stderr, "Token refresh failed: %v\n", err)
 		os.Exit(1)
 	}
 	defer resp.Body.Close()
 	body, _ := io.ReadAll(resp.Body)
 	if resp.StatusCode != 200 {
+		if td.tokenValid() {
+			fmt.Fprintf(os.Stderr, "Warning: token refresh failed, using existing access token\n")
+			if debugMode {
+				fmt.Fprintf(os.Stderr, "debug: refresh response: %s\n", body)
+			}
+			return
+		}
 		fmt.Fprintf(os.Stderr, "Token refresh failed: %s\n", body)
 		os.Exit(1)
 	}
@@ -647,6 +686,7 @@ func main() {
 		},
 	}
 
+	root.PersistentFlags().BoolVar(&debugMode, "debug", false, "Show debug output for token refresh")
 	root.AddCommand(searchCmd, readCmd, labelsCmd, accountsCmd, authCmd)
 	root.Execute()
 }
