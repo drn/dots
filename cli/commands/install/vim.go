@@ -23,7 +23,7 @@ func Vim() {
 
 func vimLinkConfig() {
 	log.Info("Ensuring all vim configuration is linked:")
-	if err := os.Mkdir(path.FromHome(".vim"), os.ModePerm); err != nil && !os.IsExist(err) {
+	if err := os.MkdirAll(path.FromHome(".vim"), os.ModePerm); err != nil {
 		log.Warning("Failed to create .vim directory: %s", err.Error())
 	}
 	files, err := os.ReadDir(path.FromDots("vim"))
@@ -40,7 +40,7 @@ func vimLinkConfig() {
 }
 
 func vimLinkNeovim() {
-	if err := os.Mkdir(path.FromHome(".config"), os.ModePerm); err != nil && !os.IsExist(err) {
+	if err := os.MkdirAll(path.FromHome(".config"), os.ModePerm); err != nil {
 		log.Warning("Failed to create .config directory: %s", err.Error())
 	}
 	link.Soft(
