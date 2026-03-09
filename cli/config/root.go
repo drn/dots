@@ -66,25 +66,25 @@ func Write(path string, value string) bool {
 	if section == nil || key == nil {
 		return false
 	}
-	config := config()
-	config.Section(*section).Key(*key).SetValue(value)
-	save(config)
+	cfg := config()
+	cfg.Section(*section).Key(*key).SetValue(value)
+	save(cfg)
 	return true
 }
 
-// Delete - Delete the config at the spcified config path.
+// Delete - Delete the config at the specified config path.
 func Delete(path string) {
 	section, key := parsePath(path)
 	if section == nil {
 		return
 	}
-	config := config()
+	cfg := config()
 	if key == nil {
-		config.DeleteSection(*section)
+		cfg.DeleteSection(*section)
 	} else {
-		config.Section(*section).DeleteKey(*key)
+		cfg.Section(*section).DeleteKey(*key)
 	}
-	save(config)
+	save(cfg)
 }
 
 // ask - Prompts user for input for the given config section and key.
@@ -127,12 +127,12 @@ func parsePath(key string) (*string, *string) {
 	return &parts[0], &parts[1]
 }
 
-func save(config *ini.File) {
+func save(cfg *ini.File) {
 	if err := os.MkdirAll(path.FromHome(".dots/sys"), os.ModePerm); err != nil {
 		log.Warning("Failed to create config directory: %s", err.Error())
 		return
 	}
-	config.SaveTo(configPath())
+	cfg.SaveTo(configPath())
 }
 
 func config() *ini.File {
