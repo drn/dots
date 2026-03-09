@@ -7,15 +7,14 @@ description: Analyze codebase for code smells and refactor to drastically improv
 
 Analyze a codebase for code smells, SOLID violations, and anti-patterns, then refactor with surgical precision. Produces a prioritized finding report and applies fixes iteratively with test verification.
 
-## Prerequisites
+## Orchestration Mode
 
-Agent teams must be enabled in Claude Code settings:
+This skill supports two orchestration modes. Both produce identical analysis quality.
 
-```
-CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1
-```
+1. **Agent teams** (when `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` is set): Uses TeamCreate/SendMessage for coordination. Follow Phases 0-5 as written with team-based instructions.
+2. **Parallel agents fallback** (default): Uses parallel `Agent` tool calls with `subagent_type: "code-analyst"` and `run_in_background: true`. Each agent receives its checklist prompt and file contents, then returns findings directly. No TeamCreate/SendMessage/TeamDelete needed.
 
-If agent teams are not enabled, report: "Agent teams required. Add `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` to your Claude Code settings (env section)." and stop.
+Detect the mode at the start of Phase 0. If team creation fails or is not available, silently fall back to parallel agents mode.
 
 ## Arguments
 
@@ -53,8 +52,21 @@ You do NOT analyze or refactor yourself. You coordinate the analysis team, prior
    ELIF on a feature branch with changed files:
      Analyze changed files on this branch
    ELSE:
-     Ask the user to specify a scope (analyzing everything is rarely useful)
+     Analyze the full codebase (see Large Codebase Strategy below)
    ```
+
+   **Large Codebase Strategy (>50 files):** Split by directory/concern rather than arbitrary chunks. Suggest a split to the user in the analysis plan. Each group gets its own set of analyzers running in parallel. Example split for a Rails app:
+
+   | Group | Directories | Focus |
+   |-------|-------------|-------|
+   | Models | app/models/ | Domain logic, validations, associations, scopes |
+   | Interactors/Services | app/interactors/, app/services/ | Business logic, orchestration, SRP |
+   | Lib/Clients | lib/ | External integrations, HTTP clients, utility code |
+   | API Layer | app/api/, app/serializers/ | Endpoint design, parameter handling, response shape |
+   | Controllers | app/controllers/ | Request handling, authorization, response flow |
+   | Background Jobs | app/jobs/, app/workers/ | Async processing, error handling, idempotency |
+
+   Adapt the groups to the actual project structure. Each group spawns its own set of code-analyst agents (in parallel agents fallback mode) or analyzer tasks (in teams mode).
 
 2. **Detect language and tooling** from the Context section:
    - Language (Ruby, Go, Python, JS/TS, etc.)
@@ -84,13 +96,14 @@ You do NOT analyze or refactor yourself. You coordinate the analysis team, prior
 
    Wait for user approval.
 
-5. **Create the team:**
+5. **Set up orchestration:**
+
+   **Agent teams mode:**
    ```
    TeamDelete() -- ignore if no existing team
    TeamCreate(team_name: "polish-session", description: "Polish: {brief scope}")
    ```
-
-6. **Create the task list** with TaskCreate:
+   Create the task list with TaskCreate:
    - "Analyze: structure and size" -- for structure-analyzer
    - "Analyze: design and SOLID" -- for design-analyzer
    - "Analyze: smells and duplication" -- for smell-detector
@@ -99,13 +112,29 @@ You do NOT analyze or refactor yourself. You coordinate the analysis team, prior
    - "Refactor: batch 1" -- blocked by consolidation
    - "Verify: run tests" -- blocked by refactoring
 
-7. **Spawn all 4 analyzers** in a single message with 4 Task tool calls. Use the agent briefings below. Use `model: "sonnet"` for all.
+   Spawn all 4 analyzers in a single message with 4 Task tool calls. Use the agent briefings below. Use `model: "sonnet"` for all.
+
+   **Parallel agents fallback:**
+   Spawn all 4 analyzers in a single message with 4 `Agent` tool calls:
+   ```
+   Agent(
+     subagent_type: "code-analyst",
+     run_in_background: true,
+     name: "{analyzer-name}",
+     prompt: "{analyzer briefing + checklist + file contents}"
+   )
+   ```
+   Each agent gets: the base analyzer briefing from references/BRIEFINGS.md, the specific checklist from references/ANALYZERS.md, and the full file contents. Wait for all 4 to complete.
 
 ---
 
 ## Phase 1: Parallel Analysis
 
-Send each analyzer their assignment via SendMessage. Include the full file contents for all files in scope. Read [references/ANALYZERS.md](references/ANALYZERS.md) for the detailed checklist prompts for each analyzer (structure, design, smells, idioms).
+Read [references/ANALYZERS.md](references/ANALYZERS.md) for the detailed checklist prompts for each analyzer (structure, design, smells, idioms). Include the full file contents for all files in scope.
+
+**Agent teams mode:** Send each analyzer their assignment via SendMessage.
+
+**Parallel agents fallback:** The agents were already spawned with their prompts in Phase 0 step 5. Their results will be returned when they complete.
 
 **Wait** for all 4 analyzers to report.
 
@@ -250,14 +279,14 @@ Report: CLEAN or list concerns.
 
 ## Phase 5: Shutdown and Summary
 
-1. **Shut down all teammates:**
+1. **Shut down (agent teams mode only):**
    ```
    For each active agent:
      SendMessage(type: "shutdown_request", recipient: {name}, content: "Clean code session complete.")
    ```
-   Wait for confirmations.
+   Wait for confirmations. Clean up with TeamDelete.
 
-2. **Clean up the team** with TeamDelete.
+   In parallel agents fallback mode, agents terminate automatically when their task completes. No shutdown needed.
 
 3. **Produce the final report:**
 
@@ -330,5 +359,5 @@ If the user says "just analyze" or "report only" or "no refactoring":
 | Refactoring breaks tests (2 retries exhausted) | Revert that batch. Note in summary as "attempted but reverted." Proceed to next batch. |
 | User wants to stop mid-refactoring | Stop immediately. Report what was completed and what remains. |
 | No test suite exists | Warn the user: "No tests detected. Refactoring without tests is risky. Proceed anyway?" If yes, proceed but rely on linter and manual review only. |
-| Scope too large (>50 files) | Suggest narrowing scope. If user insists, split files across analyzers by directory. |
-| Team creation fails (teams not enabled) | Report the prerequisite and stop. |
+| Scope too large (>50 files) | Suggest splitting by directory/concern. Launch one analyzer group per major directory, each with a focused checklist for its file type. Example split for a Rails app: models, interactors/services, lib/clients, API endpoints, controllers, MCP tools/jobs. Each group gets all 4 analysis dimensions but only its own files. |
+| Team creation fails (teams not enabled) | Fall back to parallel agents mode automatically. See "Orchestration Mode" above. |
