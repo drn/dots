@@ -113,14 +113,14 @@ func battery() string {
 
 	color := ""
 	switch {
-	case percent <= 20 && status == "charging":
-		color = col.C3Bc20
-	case percent <= 20 && status == "battery":
-		color = col.C3Bb20
 	case percent <= 10 && status == "charging":
 		color = col.C3Bc10
 	case percent <= 10 && status == "battery":
 		color = col.C3Bb10
+	case percent <= 20 && status == "charging":
+		color = col.C3Bc20
+	case percent <= 20 && status == "battery":
+		color = col.C3Bb20
 	}
 
 	return fmt.Sprintf("%s%d%%", color, percent)

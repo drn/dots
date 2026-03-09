@@ -18,7 +18,7 @@ func Info(output string, args ...interface{}) {
 	color.Blue(output, args...)
 }
 
-// Success - Logs error in appropriate color
+// Success - Logs success in appropriate color
 func Success(output string, args ...interface{}) {
 	color.Green(output, args...)
 }

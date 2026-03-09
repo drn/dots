@@ -31,7 +31,8 @@ func Run() {
 }
 
 func checkClean() {
-	if cache.Warm("dots-clean", 10080) { // 7 days
+	const weekInMinutes = 7 * 24 * 60
+	if cache.Warm("dots-clean", weekInMinutes) {
 		return
 	}
 	clean.Run()

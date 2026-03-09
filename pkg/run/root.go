@@ -48,7 +48,7 @@ func Verbose(command string, args ...interface{}) error {
 	return cmd.Run()
 }
 
-// Silent - Runs the specified command without suppressing STDOUT.
+// Silent - Runs the specified command without logging it first.
 func Silent(command string, args ...interface{}) error {
 	resolvedCommand := fmt.Sprintf(command, args...)
 	cmd := exec.Command("zsh", "-c", resolvedCommand)
