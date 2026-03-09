@@ -8,6 +8,7 @@ package main
 
 import (
 	"os"
+	"slices"
 	"strings"
 
 	"github.com/drn/dots/cli/git"
@@ -62,22 +63,14 @@ func main() {
 	}
 }
 
+var protectedBranches = []string{
+	"dev", "main", "master", "sandbox", "staging", "production",
+	"ops-sandbox", "ops-staging", "ops-production",
+}
+
 func prune(remote string, branch string) {
-	protectedBranches := []string{
-		"dev",
-		"main",
-		"master",
-		"sandbox",
-		"staging",
-		"production",
-		"ops-sandbox",
-		"ops-staging",
-		"ops-production",
-	}
-	for _, protectedBranch := range protectedBranches {
-		if branch == protectedBranch {
-			return
-		}
+	if slices.Contains(protectedBranches, branch) {
+		return
 	}
 
 	if !git.RemoteHasBranch(remote, branch) {
