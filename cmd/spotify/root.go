@@ -25,10 +25,11 @@ func main() {
 
 	action := "toggle"
 	if len(os.Args) >= 2 {
-		if os.Args[1] == "save" || os.Args[1] == "remove" || os.Args[1] == "transfer" {
+		switch os.Args[1] {
+		case "save", "remove", "transfer":
 			action = os.Args[1]
-		} else {
-			log.Error("Usage: spotify [save|remove]?")
+		default:
+			log.Error("Usage: spotify [save|remove|transfer]?")
 			os.Exit(1)
 		}
 	}
@@ -88,14 +89,15 @@ func currentDevice(accessToken string) string {
 	response, err := req.Get(url, auth.Headers(accessToken))
 	auth.HandleRequestError(err)
 
-	i := 0
-	for i < 10 {
+	const maxDevices = 10
+	for i := 0; i < maxDevices; i++ {
 		id := jsoniter.Get(response.Bytes(), "devices", i, "id").ToString()
-		isActive := jsoniter.Get(response.Bytes(), "devices", i, "is_active").ToBool()
-		if isActive {
+		if id == "" {
+			break
+		}
+		if jsoniter.Get(response.Bytes(), "devices", i, "is_active").ToBool() {
 			return id
 		}
-		i++
 	}
 	return ""
 }
