@@ -17,6 +17,26 @@ import (
 	"github.com/drn/dots/pkg/run"
 )
 
+type semver struct {
+	tag                 string
+	major, minor, patch int
+}
+
+func parseSemver(tag string) (semver, bool) {
+	v := strings.TrimPrefix(tag, "v")
+	parts := strings.SplitN(v, ".", 3)
+	if len(parts) != 3 {
+		return semver{}, false
+	}
+	major, e1 := strconv.Atoi(parts[0])
+	minor, e2 := strconv.Atoi(parts[1])
+	patch, e3 := strconv.Atoi(parts[2])
+	if e1 != nil || e2 != nil || e3 != nil {
+		return semver{}, false
+	}
+	return semver{tag, major, minor, patch}, true
+}
+
 func main() {
 	bump := "patch"
 	message := ""
@@ -62,27 +82,12 @@ func latestTag() string {
 	if raw == "" {
 		return ""
 	}
-	tags := strings.Split(raw, "\n")
 
-	// Parse and sort by semver to find the true latest
-	type semver struct {
-		tag                  string
-		major, minor, patch int
-	}
 	var versions []semver
-	for _, tag := range tags {
-		v := strings.TrimPrefix(tag, "v")
-		parts := strings.SplitN(v, ".", 3)
-		if len(parts) != 3 {
-			continue
+	for _, tag := range strings.Split(raw, "\n") {
+		if v, ok := parseSemver(tag); ok {
+			versions = append(versions, v)
 		}
-		major, e1 := strconv.Atoi(parts[0])
-		minor, e2 := strconv.Atoi(parts[1])
-		patch, e3 := strconv.Atoi(parts[2])
-		if e1 != nil || e2 != nil || e3 != nil {
-			continue
-		}
-		versions = append(versions, semver{tag, major, minor, patch})
 	}
 
 	if len(versions) == 0 {
@@ -114,19 +119,14 @@ func nextVersion(latest string, bump string) string {
 		}
 	}
 
-	v := strings.TrimPrefix(latest, "v")
-	parts := strings.SplitN(v, ".", 3)
-	major, _ := strconv.Atoi(parts[0])
-	minor, _ := strconv.Atoi(parts[1])
-	patch, _ := strconv.Atoi(parts[2])
-
+	v, _ := parseSemver(latest)
 	switch bump {
 	case "major":
-		return fmt.Sprintf("v%d.0.0", major+1)
+		return fmt.Sprintf("v%d.0.0", v.major+1)
 	case "minor":
-		return fmt.Sprintf("v%d.%d.0", major, minor+1)
+		return fmt.Sprintf("v%d.%d.0", v.major, v.minor+1)
 	default:
-		return fmt.Sprintf("v%d.%d.%d", major, minor, patch+1)
+		return fmt.Sprintf("v%d.%d.%d", v.major, v.minor, v.patch+1)
 	}
 }
 
