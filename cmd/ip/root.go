@@ -9,6 +9,8 @@ import (
 	"github.com/jessevdk/go-flags"
 )
 
+var ipPattern = regexp.MustCompile(`^\d+\.\d+\.\d+\.\d+$`)
+
 // Options - Parsed input flags schema
 var opts struct {
 	Local    bool `short:"l" long:"local" description:"Return local IP of the specified interface (defaults to en0)"`
@@ -44,6 +46,5 @@ func main() {
 }
 
 func isValid(data string) bool {
-	result, _ := regexp.MatchString("^\\d+.\\d+.\\d+.\\d+$", data)
-	return result
+	return ipPattern.MatchString(data)
 }
