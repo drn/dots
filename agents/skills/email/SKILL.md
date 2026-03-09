@@ -9,7 +9,7 @@ Search and read Gmail messages using the `gmail` CLI.
 
 ## Instructions
 
-You are helping read Gmail data. Auth uses OAuth tokens stored at `~/.google-mcp/tokens/`. Additional env vars (if any) are loaded from `~/.dots/sys/env`.
+You are helping read Gmail data. Auth uses OAuth tokens stored at `~/.dots/sys/gmail/tokens/`. Additional env vars (if any) are loaded from `~/.dots/sys/env`.
 
 ### Operations
 
@@ -25,13 +25,24 @@ gmail read MESSAGE_ID                         # Read full email by ID
 # List labels with message counts
 gmail labels
 
+# List configured accounts
+gmail accounts
+
 # Use a specific account
 gmail search "budget" --account personal
 gmail labels --account work
 
+# Re-authenticate an account (opens browser for OAuth)
+gmail auth personal
+
 # JSON output
 gmail search "quarterly review" --json
+gmail accounts --json
 ```
+
+### Accounts
+
+Run `gmail accounts` to see configured accounts with names and emails. The default account is marked with `*`.
 
 ### Common Tasks
 
@@ -56,9 +67,9 @@ gmail labels
 ### Account Resolution
 
 The CLI resolves accounts in this order:
-1. `--account NAME` flag — uses `~/.google-mcp/tokens/NAME.json`
-2. Default account from `~/.google-mcp/accounts.json`
-3. First token file found in `~/.google-mcp/tokens/`
+1. `--account NAME` flag — uses `~/.dots/sys/gmail/tokens/NAME.json`
+2. Default account from `~/.dots/sys/gmail/accounts.json`
+3. First token file found in `~/.dots/sys/gmail/tokens/`
 
 ### Search Syntax
 
@@ -77,9 +88,17 @@ Gmail search supports standard Gmail query operators:
 - **Email search**: Full Gmail query syntax with pagination
 - **Email reading**: Full message content including headers, body text, and attachment metadata
 - **Label listing**: All labels with message counts (total and unread)
+- **Account listing**: Show all configured accounts with default marker
+
+## Troubleshooting
+
+If a search or read fails with `invalid_grant` or `Token has been expired or revoked`, re-authenticate:
+```bash
+gmail auth ACCOUNT_NAME
+```
+This opens the browser for OAuth consent and saves the new token.
 
 ## Limitations
 
 - **Read-only** — Cannot send, draft, archive, or modify emails. For composing replies, draft the text in the conversation for manual copy/paste.
 - Message body is truncated at 5000 characters
-- OAuth tokens must be pre-configured in `~/.google-mcp/tokens/`
