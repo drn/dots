@@ -65,12 +65,13 @@ func authorize() {
 
 func refreshNeeded(accessToken string) bool {
 	url := "https://api.spotify.com/v1/me"
-	response, err := req.Put(url, headers(accessToken))
-	handleRequestError(err)
+	response, err := req.Put(url, Headers(accessToken))
+	HandleRequestError(err)
 	return response.Response().StatusCode == 401
 }
 
-func headers(accessToken string) req.Header {
+// Headers returns the standard Spotify API request headers.
+func Headers(accessToken string) req.Header {
 	return req.Header{
 		"Accept":        "application/json",
 		"Content-Type":  "application/json",
@@ -90,7 +91,7 @@ func exchangeAuthorizationCode(code string) (string, string) {
 	}
 
 	response, err := req.Post(url, params)
-	handleRequestError(err)
+	HandleRequestError(err)
 
 	if response.Response().StatusCode != 200 {
 		fmt.Println(string(response.Bytes()))
@@ -114,7 +115,7 @@ func exchangeRefreshToken(code string) string {
 	}
 
 	response, err := req.Post(url, params)
-	handleRequestError(err)
+	HandleRequestError(err)
 
 	if response.Response().StatusCode != 200 {
 		fmt.Println(string(response.Bytes()))
@@ -146,7 +147,8 @@ func validateInput(input string) error {
 	return nil
 }
 
-func handleRequestError(err error) {
+// HandleRequestError exits if the error is non-nil.
+func HandleRequestError(err error) {
 	if err == nil {
 		return
 	}

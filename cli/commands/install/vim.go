@@ -13,7 +13,7 @@ import (
 )
 
 // Vim - Installs vim configuration
-func (i Install) Vim() {
+func Vim() {
 	log.Action("Installing vim config")
 	vimLinkConfig()
 	vimLinkNeovim()

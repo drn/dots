@@ -7,25 +7,21 @@ import (
 	"github.com/drn/dots/pkg/run"
 )
 
-// Install - Struct containing all install commands
-type Install struct{}
-
 // Call - Call install command by name
 func Call(command string) {
-	var i Install
 	installers := map[string]func(){
-		"agents":      i.Agents,
-		"bin":         i.Bin,
-		"fonts":       i.Fonts,
-		"git":         i.Git,
-		"hammerspoon": i.Hammerspoon,
-		"home":        i.Home,
-		"homebrew":    i.Homebrew,
-		"languages":   i.Languages,
-		"npm":         i.Npm,
-		"osx":         i.Osx,
-		"vim":         i.Vim,
-		"zsh":         i.Zsh,
+		"agents":      Agents,
+		"bin":         Bin,
+		"fonts":       Fonts,
+		"git":         Git,
+		"hammerspoon": Hammerspoon,
+		"home":        Home,
+		"homebrew":    Homebrew,
+		"languages":   Languages,
+		"npm":         Npm,
+		"osx":         Osx,
+		"vim":         Vim,
+		"zsh":         Zsh,
 	}
 	if fn, ok := installers[command]; ok {
 		fn()

@@ -8,7 +8,7 @@ import (
 )
 
 // Osx - Sets OSX configuration
-func (i Install) Osx() {
+func Osx() {
 	log.Action("Installing OSX config")
 
 	if !is.Osx() {

@@ -7,7 +7,7 @@ import (
 )
 
 // Git - Installs git configuration
-func (i Install) Git() {
+func Git() {
 	log.Action("Install Git")
 	link.Soft(
 		path.FromDots("git/functions"),

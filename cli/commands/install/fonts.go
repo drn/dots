@@ -9,7 +9,7 @@ import (
 )
 
 // Fonts - Installs fonts
-func (i Install) Fonts() {
+func Fonts() {
 	log.Action("Install Fonts")
 
 	files, err := os.ReadDir(path.FromDots("fonts"))

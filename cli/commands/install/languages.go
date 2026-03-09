@@ -18,7 +18,7 @@ var versions = map[string]string{
 }
 
 // Languages - Installs asdf & languages
-func (i Install) Languages() {
+func Languages() {
 	log.Action("Installing asdf")
 	log.Info("Ensuring asdf is installed")
 	exec("brew install asdf")

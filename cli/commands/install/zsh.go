@@ -6,7 +6,7 @@ import (
 )
 
 // Zsh - Installs ZSH configuration
-func (i Install) Zsh() {
+func Zsh() {
 	log.Action("Install Zsh")
 
 	// delete /etc/zprofile - added by os x 10.11
