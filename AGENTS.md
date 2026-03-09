@@ -170,7 +170,15 @@ When the user's message matches a phrase below, read and follow the correspondin
 
 ## Public Repo Policy
 
-This is a public repository. Skills and configuration checked in here must be generic and reusable by anyone. Never commit company names, internal tool names, proprietary patterns, or org-specific conventions to skills or CLAUDE.md. Put org-specific knowledge in private project-local CLAUDE.md files instead.
+This is a public repository. Skills and configuration checked in here must be generic and reusable by anyone.
+
+**Never commit to tracked files:**
+- Email addresses, usernames, account names, or other personal identifiers
+- Company names, internal tool names, proprietary patterns, or org-specific conventions
+- API keys, tokens, secrets, or credential paths that reveal identity
+- Hardcoded account lists or user-specific configuration — use dynamic lookups instead (e.g., `gmail accounts` instead of a static table)
+
+Put personal or org-specific knowledge in private project-local CLAUDE.md files, `~/.dots/sys/`, or gitignored directories instead.
 
 ## Skill Handoffs from ~/.dots
 

@@ -3,14 +3,18 @@
 package main
 
 import (
+	"context"
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"io"
+	"net"
 	"net/http"
 	"net/url"
 	"os"
+	"os/exec"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"time"
 
@@ -25,7 +29,7 @@ func init() {
 	godotenv.Load(path.FromHome(".dots/sys/env"))
 }
 
-var configDir = filepath.Join(os.Getenv("HOME"), ".google-mcp")
+var configDir = path.FromHome(".dots/sys/gmail")
 
 type tokenData struct {
 	Email        string `json:"email"`
@@ -60,7 +64,7 @@ func resolveAccount(account string) string {
 			}
 		}
 	}
-	fmt.Fprintln(os.Stderr, "No Google accounts configured in ~/.google-mcp/tokens/")
+	fmt.Fprintln(os.Stderr, "No Google accounts configured in ~/.dots/sys/gmail/tokens/")
 	os.Exit(1)
 	return ""
 }
@@ -212,6 +216,17 @@ func extractBody(payload map[string]interface{}) (string, string) {
 		}
 	}
 	return textBody, htmlBody
+}
+
+func openBrowser(url string) {
+	switch runtime.GOOS {
+	case "darwin":
+		exec.Command("open", url).Start()
+	case "linux":
+		exec.Command("xdg-open", url).Start()
+	default:
+		fmt.Printf("Open this URL in your browser:\n%s\n", url)
+	}
 }
 
 func printJSON(v interface{}) {
@@ -449,6 +464,189 @@ func main() {
 	labelsCmd.Flags().StringVarP(&accountFlag, "account", "a", "", "Account name")
 	labelsCmd.Flags().BoolVar(&jsonFlag, "json", false, "JSON output")
 
-	root.AddCommand(searchCmd, readCmd, labelsCmd)
+	accountsCmd := &cobra.Command{
+		Use:   "accounts",
+		Short: "List configured Gmail accounts",
+		Run: func(_ *cobra.Command, _ []string) {
+			accountsFile := filepath.Join(configDir, "accounts.json")
+			var defaultAccount string
+			if data, err := os.ReadFile(accountsFile); err == nil {
+				var accts map[string]interface{}
+				if json.Unmarshal(data, &accts) == nil {
+					defaultAccount, _ = accts["default"].(string)
+				}
+			}
+
+			tokensDir := filepath.Join(configDir, "tokens")
+			entries, err := os.ReadDir(tokensDir)
+			if err != nil {
+				fmt.Fprintln(os.Stderr, "No accounts configured in ~/.dots/sys/gmail/tokens/")
+				os.Exit(1)
+			}
+
+			type acctInfo struct {
+				Name    string `json:"name"`
+				Email   string `json:"email"`
+				Default bool   `json:"default"`
+			}
+			var accounts []acctInfo
+			for _, e := range entries {
+				if !strings.HasSuffix(e.Name(), ".json") {
+					continue
+				}
+				name := strings.TrimSuffix(e.Name(), ".json")
+				var email string
+				if data, err := os.ReadFile(filepath.Join(tokensDir, e.Name())); err == nil {
+					var td tokenData
+					if json.Unmarshal(data, &td) == nil {
+						email = td.Email
+					}
+				}
+				accounts = append(accounts, acctInfo{
+					Name:    name,
+					Email:   email,
+					Default: name == defaultAccount,
+				})
+			}
+
+			if jsonFlag {
+				printJSON(accounts)
+				return
+			}
+			for _, a := range accounts {
+				marker := "  "
+				if a.Default {
+					marker = "* "
+				}
+				fmt.Printf("%s%-12s %s\n", marker, a.Name, a.Email)
+			}
+		},
+	}
+	accountsCmd.Flags().BoolVar(&jsonFlag, "json", false, "JSON output")
+
+	authCmd := &cobra.Command{
+		Use:   "auth ACCOUNT",
+		Short: "Authenticate or re-authenticate a Gmail account",
+		Args:  cobra.ExactArgs(1),
+		Run: func(_ *cobra.Command, args []string) {
+			account := args[0]
+			tokenPath := filepath.Join(configDir, "tokens", account+".json")
+
+			// Load existing token to reuse client credentials
+			var td tokenData
+			if data, err := os.ReadFile(tokenPath); err == nil {
+				json.Unmarshal(data, &td)
+			}
+			if td.ClientID == "" || td.ClientSecret == "" {
+				fmt.Fprintln(os.Stderr, "No existing token with client credentials found.")
+				fmt.Fprintf(os.Stderr, "Create %s with client_id and client_secret first.\n", tokenPath)
+				os.Exit(1)
+			}
+			if td.TokenURI == "" {
+				td.TokenURI = "https://oauth2.googleapis.com/token"
+			}
+
+			// Find a free port for the callback
+			listener, err := net.Listen("tcp", "localhost:0")
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "Failed to open listener: %v\n", err)
+				os.Exit(1)
+			}
+			port := listener.Addr().(*net.TCPAddr).Port
+			redirectURI := fmt.Sprintf("http://localhost:%d/callback", port)
+
+			// Build the OAuth URL
+			authURL := fmt.Sprintf(
+				"https://accounts.google.com/o/oauth2/v2/auth?client_id=%s&redirect_uri=%s&response_type=code&scope=%s&access_type=offline&prompt=consent",
+				url.QueryEscape(td.ClientID),
+				url.QueryEscape(redirectURI),
+				url.QueryEscape("https://www.googleapis.com/auth/gmail.readonly"),
+			)
+
+			codeCh := make(chan string, 1)
+			errCh := make(chan error, 1)
+
+			mux := http.NewServeMux()
+			mux.HandleFunc("/callback", func(w http.ResponseWriter, r *http.Request) {
+				code := r.URL.Query().Get("code")
+				if code == "" {
+					errMsg := r.URL.Query().Get("error")
+					fmt.Fprintf(w, "Authorization failed: %s", errMsg)
+					errCh <- fmt.Errorf("authorization failed: %s", errMsg)
+					return
+				}
+				fmt.Fprint(w, "Authorization successful! You can close this tab.")
+				codeCh <- code
+			})
+
+			srv := &http.Server{Handler: mux}
+			go srv.Serve(listener)
+
+			fmt.Printf("Opening browser for %s account authorization...\n", account)
+			openBrowser(authURL)
+			fmt.Println("Waiting for authorization...")
+
+			var code string
+			select {
+			case code = <-codeCh:
+			case err := <-errCh:
+				fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+				os.Exit(1)
+			case <-time.After(2 * time.Minute):
+				fmt.Fprintln(os.Stderr, "Timed out waiting for authorization")
+				os.Exit(1)
+			}
+			srv.Shutdown(context.Background())
+
+			// Exchange code for tokens
+			resp, err := http.PostForm(td.TokenURI, url.Values{
+				"grant_type":    {"authorization_code"},
+				"code":          {code},
+				"redirect_uri":  {redirectURI},
+				"client_id":     {td.ClientID},
+				"client_secret": {td.ClientSecret},
+			})
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "Token exchange failed: %v\n", err)
+				os.Exit(1)
+			}
+			defer resp.Body.Close()
+			body, _ := io.ReadAll(resp.Body)
+			if resp.StatusCode != 200 {
+				fmt.Fprintf(os.Stderr, "Token exchange failed: %s\n", body)
+				os.Exit(1)
+			}
+
+			var result map[string]interface{}
+			json.Unmarshal(body, &result)
+			if at, ok := result["access_token"].(string); ok {
+				td.Token = at
+			}
+			if rt, ok := result["refresh_token"].(string); ok {
+				td.RefreshToken = rt
+			}
+			if ei, ok := result["expires_in"].(float64); ok {
+				td.Expiry = time.Now().Add(time.Duration(ei) * time.Second).Format(time.RFC3339)
+			}
+
+			// Fetch email address from profile
+			profileURL := fmt.Sprintf("%s/gmail/v1/users/me/profile", gmailBase)
+			if profile, err := gmailGet(td.Token, profileURL); err == nil {
+				if email, ok := profile["emailAddress"].(string); ok {
+					td.Email = email
+				}
+			}
+
+			os.MkdirAll(filepath.Join(configDir, "tokens"), 0700)
+			data, _ := json.MarshalIndent(td, "", "  ")
+			if err := os.WriteFile(tokenPath, data, 0600); err != nil {
+				fmt.Fprintf(os.Stderr, "Failed to save token: %v\n", err)
+				os.Exit(1)
+			}
+			fmt.Printf("Authenticated %s (%s)\n", account, td.Email)
+		},
+	}
+
+	root.AddCommand(searchCmd, readCmd, labelsCmd, accountsCmd, authCmd)
 	root.Execute()
 }
