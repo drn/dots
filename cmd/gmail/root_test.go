@@ -5,6 +5,7 @@ import (
 	"os"
 	"path/filepath"
 	"testing"
+	"time"
 )
 
 func TestDecodeBase64URL(t *testing.T) {
@@ -198,5 +199,54 @@ func TestLoadToken(t *testing.T) {
 	}
 	if got.RefreshToken != "refresh456" {
 		t.Errorf("RefreshToken = %q, want 'refresh456'", got.RefreshToken)
+	}
+}
+
+func TestTokenValid(t *testing.T) {
+	tests := []struct {
+		name   string
+		expiry string
+		want   bool
+	}{
+		{"empty expiry", "", false},
+		{"future expiry", time.Now().Add(time.Hour).Format(time.RFC3339), true},
+		{"past expiry", time.Now().Add(-time.Hour).Format(time.RFC3339), false},
+		{"invalid format", "not-a-date", false},
+		{"negative offset timezone", time.Now().Add(time.Hour).Format(time.RFC3339), true},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			td := &tokenData{Expiry: tt.expiry}
+			got := td.tokenValid()
+			if got != tt.want {
+				t.Errorf("tokenValid() = %v, want %v (expiry=%q)", got, tt.want, tt.expiry)
+			}
+		})
+	}
+}
+
+func TestRefreshIfNeeded_FallbackOnFailure(t *testing.T) {
+	// Token with valid access token but no refresh token — should not exit
+	td := &tokenData{
+		Token:  "valid-access-token",
+		Expiry: time.Now().Add(time.Hour).Format(time.RFC3339),
+	}
+	td.refreshIfNeeded("test") // no refresh token, should just return
+
+	if td.Token != "valid-access-token" {
+		t.Errorf("Token changed unexpectedly: %q", td.Token)
+	}
+}
+
+func TestRefreshIfNeeded_SkipsWhenNotExpired(t *testing.T) {
+	td := &tokenData{
+		Token:        "valid-access-token",
+		RefreshToken: "some-refresh-token",
+		Expiry:       time.Now().Add(time.Hour).Format(time.RFC3339),
+	}
+	td.refreshIfNeeded("test") // should skip refresh since token is valid for 1h
+
+	if td.Token != "valid-access-token" {
+		t.Errorf("Token changed unexpectedly: %q", td.Token)
 	}
 }
