@@ -10,57 +10,33 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var commands = []map[string]string{
-	{
-		"command":     "bin",
-		"description": "Installs ~/bin/* commands",
-	},
-	{
-		"command":     "git",
-		"description": "Installs git extensions",
-	},
-	{
-		"command":     "home",
-		"description": "Installs ~/.* config files",
-	},
-	{
-		"command":     "zsh",
-		"description": "Installs zsh config files",
-	},
-	{
-		"command":     "fonts",
-		"description": "Installs fonts",
-	},
-	{
-		"command":     "homebrew",
-		"description": "Installs Homebrew dependencies",
-		"alias":       "brew",
-	},
-	{
-		"command":     "npm",
-		"description": "Installs npm packages",
-	},
-	{
-		"command":     "languages",
-		"description": "Installs asdf & languages",
-	},
-	{
-		"command":     "vim",
-		"description": "Installs vim config",
-	},
-	{
-		"command":     "hammerspoon",
-		"description": "Installs hammerspoon configuration",
-		"alias":       "hs",
-	},
-	{
-		"command":     "osx",
-		"description": "Installs OSX configuration",
-	},
-	{
-		"command":     "agents",
-		"description": "Installs agent skills (Claude Code + Codex)",
-	},
+type component struct {
+	Name        string
+	Description string
+	Alias       string
+}
+
+var components = []component{
+	{"bin", "Installs ~/bin/* commands", ""},
+	{"git", "Installs git extensions", ""},
+	{"home", "Installs ~/.* config files", ""},
+	{"zsh", "Installs zsh config files", ""},
+	{"fonts", "Installs fonts", ""},
+	{"homebrew", "Installs Homebrew dependencies", "brew"},
+	{"npm", "Installs npm packages", ""},
+	{"languages", "Installs asdf & languages", ""},
+	{"vim", "Installs vim config", ""},
+	{"hammerspoon", "Installs hammerspoon configuration", "hs"},
+	{"osx", "Installs OSX configuration", ""},
+	{"agents", "Installs agent skills (Claude Code + Codex)", ""},
+}
+
+func componentNames() []string {
+	names := make([]string, len(components))
+	for i, c := range components {
+		names[i] = c.Name
+	}
+	return names
 }
 
 var cmdInstall = &cobra.Command{
@@ -72,13 +48,7 @@ var cmdInstall = &cobra.Command{
 			os.Exit(1)
 		}
 
-		items := make([]string, len(commands)+1)
-		items[0] = "all"
-		i := 1
-		for _, command := range commands {
-			items[i] = command["command"]
-			i++
-		}
+		items := append([]string{"all"}, componentNames()...)
 
 		prompt := promptui.Select{
 			Label: "Select component to install",
@@ -109,17 +79,15 @@ func init() {
 		},
 	)
 
-	for _, command := range commands {
+	for _, c := range components {
 		var aliases []string
-		if alias, ok := command["alias"]; ok {
-			aliases = []string{alias}
-		} else {
-			aliases = []string{}
+		if c.Alias != "" {
+			aliases = []string{c.Alias}
 		}
 		cmd := &cobra.Command{
-			Use:     command["command"],
+			Use:     c.Name,
 			Aliases: aliases,
-			Short:   command["description"],
+			Short:   c.Description,
 			Run: func(cmd *cobra.Command, _ []string) {
 				install.Call(cmd.Use)
 			},
@@ -137,13 +105,7 @@ func installAll() {
 		os.Exit(1)
 	}
 
-	items := make([]string, len(commands))
-	i := 0
-	for _, command := range commands {
-		items[i] = command["command"]
-		i++
-	}
-	for _, item := range items {
-		install.Call(item)
+	for _, name := range componentNames() {
+		install.Call(name)
 	}
 }

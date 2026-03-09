@@ -1,4 +1,4 @@
-// Package git provides git-releated helper functions
+// Package git provides git-related helper functions
 package git
 
 import (
@@ -59,7 +59,7 @@ func CanonicalRemote() string {
 	return ""
 }
 
-// CanonicalBranch - Returns the canonical git remote
+// CanonicalBranch - Returns the canonical git branch
 func CanonicalBranch() string {
 	remote := CanonicalRemote()
 	if remote == "" {

@@ -17,7 +17,7 @@ func (i Install) Zsh() {
 	}
 
 	// install tmux tpm
-	log.Info("Installing tmux pluin manager")
+	log.Info("Installing tmux plugin manager")
 	exec(
 		"git clone %s ~/.tmux/plugins/tpm 2>/dev/null || true",
 		"https://github.com/tmux-plugins/tpm",

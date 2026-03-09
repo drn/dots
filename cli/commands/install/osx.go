@@ -42,11 +42,6 @@ func (i Install) Osx() {
 		"defaults write -g NSAutomaticSpellingCorrectionEnabled -bool false",
 	)
 
-	log.Info("Disable natural scroll")
-	exec(
-		"defaults write NSGlobalDomain com.apple.swipescrolldirection -bool false",
-	)
-
 	log.Info("Disable screenshot previews")
 	exec(
 		"defaults write com.apple.screencapture show-thumbnail -bool false",
