@@ -16,27 +16,22 @@ func Agents() {
 	customSource := path.FromDots("agents/custom")
 
 	// Claude Code: ensure ~/.claude exists and symlink skills + custom agents
-	claudeDir := path.FromHome(".claude")
-	if _, err := os.Stat(claudeDir); os.IsNotExist(err) {
-		if err := os.MkdirAll(claudeDir, 0755); err != nil {
-			log.Error("Failed to create ~/.claude directory: %s", err.Error())
-			return
-		}
-	}
+	ensureDir(path.FromHome(".claude"))
 	link.Soft(skillsSource, path.FromHome(".claude/skills"))
 	link.Soft(customSource, path.FromHome(".claude/agents"))
 
 	// Codex: ensure ~/.agents exists and symlink skills
-	agentsDir := path.FromHome(".agents")
-	if _, err := os.Stat(agentsDir); os.IsNotExist(err) {
-		if err := os.MkdirAll(agentsDir, 0755); err != nil {
-			log.Error("Failed to create ~/.agents directory: %s", err.Error())
-			return
-		}
-	}
+	ensureDir(path.FromHome(".agents"))
 	link.Soft(skillsSource, path.FromHome(".agents/skills"))
 
 	// Symlink global CLAUDE.md
-	claudeMDSource := path.FromDots("agents/AGENTS.md")
-	link.Soft(claudeMDSource, path.FromHome(".claude/CLAUDE.md"))
+	link.Soft(path.FromDots("agents/AGENTS.md"), path.FromHome(".claude/CLAUDE.md"))
+}
+
+func ensureDir(dir string) {
+	if _, err := os.Stat(dir); os.IsNotExist(err) {
+		if err := os.MkdirAll(dir, 0755); err != nil {
+			log.Error("Failed to create directory %s: %s", dir, err.Error())
+		}
+	}
 }
