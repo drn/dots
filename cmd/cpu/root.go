@@ -1,4 +1,4 @@
-// Outputs the current laptop battery %
+// Outputs the current CPU load average percentage
 package main
 
 import (
