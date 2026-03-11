@@ -44,10 +44,10 @@ Generate appropriate names:
 
 ### Step 4: Generate PDF
 
-Write the content to a temporary markdown file and convert to PDF:
+Write the content to a temporary markdown file using a **Bash heredoc** (do NOT use the Write tool — it may be sandboxed to the workspace directory and reject `/tmp` paths), then convert to PDF:
 
 ```bash
-# Write content to temp file
+# Write content to temp file — MUST use Bash heredoc, not the Write tool
 cat << 'CONTENT_EOF' > /tmp/export_content.md
 {markdown content here}
 CONTENT_EOF
@@ -58,6 +58,8 @@ python ~/.claude/skills/pdf/scripts/md_to_pdf.py \
   --output ~/Downloads/{filename}.pdf \
   --title "{title}"
 ```
+
+**Important:** Always use the Bash tool with `cat << 'CONTENT_EOF' > /tmp/...` for the temp file. The Write tool is sandboxed in some environments (e.g., Conductor workspaces) and will refuse paths outside the workspace.
 
 ### Step 5: Confirm and Offer Options
 
