@@ -23,9 +23,16 @@ source $HOME/.dots/sys/env 2>/dev/null
 source $HOME/.dots/sys/env.local 2>/dev/null
 
 # autoload tmux if on main dev machine
-if [[ "$TMUX" = "" && "$HOST" != "sanguinemini"* && -z "$CONDUCTOR_ROOT_PATH" && -z "$SUPERSET_ENV" ]]; then
+# skip if already in tmux, on mini, or inside conductor/superset
+_parent_cmd=$(ps -o comm= -p $PPID 2>/dev/null)
+if [[ "$TMUX" = "" \
+  && "$HOST" != "sanguinemini"* \
+  && "$_parent_cmd" != *"Conductor"* \
+  && "$_parent_cmd" != *"Superset"* \
+]]; then
   tmux-start master && exit
 fi
+unset _parent_cmd
 
 if [[ -n "$TMUX" || "$HOST" == "sanguinemini"* ]]; then
   # Load zoxide
