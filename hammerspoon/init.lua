@@ -55,6 +55,7 @@ local bindings = {
     Things3               = "'",
     [ 'Google Calendar' ] = '/',
     Conductor             = 'k',
+    Superset              = 'j',
   },
   [{ 'cmd', 'shift'}] = {
     [ 'Superhuman' ] = '/'
