@@ -165,15 +165,7 @@ do_merge() {
     return 0
   fi
 
-  info "Auto-merge failed, falling back to rebase merge..."
-
-  # Attempt 4: rebase merge
-  if gh pr merge "$PR_NUMBER" --repo "$REPO_SLUG" --rebase 2>/dev/null; then
-    MERGE_METHOD="rebase"
-    return 0
-  fi
-
-  die 1 "All merge strategies failed for PR #${PR_NUMBER}"
+  die 1 "All squash merge strategies failed for PR #${PR_NUMBER}"
 }
 
 update_local_master() {
