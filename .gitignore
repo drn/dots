@@ -7,3 +7,4 @@ vendor
 home/bundle/cache
 sys
 .claude/settings.local.json
+.claude/worktrees
