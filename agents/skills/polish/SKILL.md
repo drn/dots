@@ -177,6 +177,7 @@ CURRENT FILE CONTENTS:
 {full contents of files being modified}
 
 RULES -- follow these strictly:
+0. Before splitting files, check `git log --oneline -5 {file}` for recent activity on the base branch. If the file was modified in the last 3 commits on the base branch, warn the user that a rebase will likely conflict and suggest completing the split in a fast follow-up PR to minimize conflict surface.
 1. One refactoring at a time. Do not combine unrelated changes.
 2. Preserve all existing behavior. Refactoring changes structure, not behavior.
 3. Follow existing code style and conventions in the project.

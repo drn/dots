@@ -230,6 +230,7 @@ You are the GO IDIOM SPECIALIST. Check every item:
 - [ ] Context not propagated through call chain
 - [ ] Missing defer for resource cleanup
 - [ ] Goroutine leaks (goroutines without shutdown mechanism)
+- [ ] Bubble Tea View() methods with multiple switch/if blocks dispatching on the same state variable — consolidate into a single switch
 
 For each finding, report file, line, current code, idiomatic alternative, severity, and concrete benefit.
 

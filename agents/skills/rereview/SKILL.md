@@ -97,6 +97,22 @@ Use `subagent_type="general-purpose"` and `model: "sonnet"` for all reviewers.
 
 Each Task call should use the reviewer briefing template below, with only the reviewer name changed (ALPHA, BRAVO, CHARLIE).
 
+### Large Diff Handling
+
+If the diff exceeds 30KB, save it to a temp file instead of passing it inline:
+
+```bash
+git diff {base}...HEAD > /tmp/review-diff-{branch}.txt
+```
+
+Then replace the `FULL DIFF` section in the briefing with:
+
+```
+FULL DIFF: Read the diff from /tmp/review-diff-{branch}.txt
+```
+
+This prevents context window overflow in reviewer agents.
+
 ### Reviewer Briefing Template
 
 ```
