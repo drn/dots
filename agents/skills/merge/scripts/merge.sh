@@ -211,8 +211,8 @@ print_summary() {
   echo "pr:       ${PR_URL}"
   echo "branch:   ${BRANCH} → master"
   echo "commits:  ${COMMIT_COUNT}"
-  [[ -n "${MASTER_COMMIT:-}" ]] && echo "commit:   ${MASTER_COMMIT}"
-  [[ -n "${DOTS_SYNCED:-}" ]] && echo "~/.dots:  synced → ${DOTS_SYNCED}"
+  if [[ -n "${MASTER_COMMIT:-}" ]]; then echo "commit:   ${MASTER_COMMIT}"; fi
+  if [[ -n "${DOTS_SYNCED:-}" ]]; then echo "~/.dots:  synced → ${DOTS_SYNCED}"; fi
 }
 
 # --- Main ---
