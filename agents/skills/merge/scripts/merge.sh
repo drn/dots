@@ -66,10 +66,12 @@ check_commits() {
   info "Commits to merge: $count"
 }
 
-do_rebase() {
+do_fetch() {
   info "Fetching ${TARGET}..."
   git fetch "$TARGET"
+}
 
+do_rebase() {
   info "Rebasing onto ${TARGET}/master..."
   if ! git rebase "${TARGET}/master"; then
     echo "REBASE_CONFLICT" >&2
@@ -240,6 +242,7 @@ ${COAUTHOR}"
 
   determine_target
   get_branch
+  do_fetch
   check_commits
 
   if [[ "$skip_rebase" == false ]]; then
