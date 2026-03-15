@@ -12,7 +12,7 @@ var root = &cobra.Command{
 	Use:   "dots",
 	Short: "The dots CLI manages your development environment dependencies",
 	Run: func(cmd *cobra.Command, _ []string) {
-		cmd.Help()
+		_ = cmd.Help()
 	},
 }
 

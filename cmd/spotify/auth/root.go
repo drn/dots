@@ -75,51 +75,38 @@ func Headers(accessToken string) req.Header {
 	}
 }
 
+const spotifyTokenURL = "https://accounts.spotify.com/api/token"
+
 func exchangeAuthorizationCode(code string) (string, string) {
-	url := "https://accounts.spotify.com/api/token"
-
-	params := req.Param{
-		"code":          code,
-		"grant_type":    "authorization_code",
-		"client_id":     os.Getenv("SPOTIFY_CLIENT_ID"),
-		"client_secret": os.Getenv("SPOTIFY_CLIENT_SECRET"),
-		"redirect_uri":  os.Getenv("SPOTIFY_REDIRECT_URI"),
-	}
-
-	response, err := req.Post(url, params)
-	HandleRequestError(err)
-
-	if response.Response().StatusCode != 200 {
-		fmt.Println(string(response.Bytes()))
-		os.Exit(1)
-	}
-	accessToken := jsoniter.Get(response.Bytes(), "access_token").ToString()
-	refreshToken := jsoniter.Get(response.Bytes(), "refresh_token").ToString()
-
-	return accessToken, refreshToken
+	data := exchangeToken(req.Param{
+		"code":       code,
+		"grant_type": "authorization_code",
+	})
+	return jsoniter.Get(data, "access_token").ToString(),
+		jsoniter.Get(data, "refresh_token").ToString()
 }
 
 func exchangeRefreshToken(code string) string {
-	url := "https://accounts.spotify.com/api/token"
-
-	params := req.Param{
+	data := exchangeToken(req.Param{
 		"refresh_token": code,
 		"grant_type":    "refresh_token",
-		"client_id":     os.Getenv("SPOTIFY_CLIENT_ID"),
-		"client_secret": os.Getenv("SPOTIFY_CLIENT_SECRET"),
-		"redirect_uri":  os.Getenv("SPOTIFY_REDIRECT_URI"),
-	}
+	})
+	return jsoniter.Get(data, "access_token").ToString()
+}
 
-	response, err := req.Post(url, params)
+func exchangeToken(params req.Param) []byte {
+	params["client_id"] = os.Getenv("SPOTIFY_CLIENT_ID")
+	params["client_secret"] = os.Getenv("SPOTIFY_CLIENT_SECRET")
+	params["redirect_uri"] = os.Getenv("SPOTIFY_REDIRECT_URI")
+
+	response, err := req.Post(spotifyTokenURL, params)
 	HandleRequestError(err)
 
 	if response.Response().StatusCode != 200 {
 		fmt.Println(string(response.Bytes()))
 		os.Exit(1)
 	}
-	accessToken := jsoniter.Get(response.Bytes(), "access_token").ToString()
-
-	return accessToken
+	return response.Bytes()
 }
 
 func inputCode() string {

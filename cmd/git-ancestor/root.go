@@ -10,12 +10,13 @@ import (
 	"github.com/drn/dots/pkg/run"
 )
 
-var maxAncestors = 100
-var remote = baseRemote()
-var dev = fmt.Sprintf("%s/dev", remote)
-var master = fmt.Sprintf("%s/master", remote)
+const maxAncestors = 100
 
 func main() {
+	remote := baseRemote()
+	dev := fmt.Sprintf("%s/dev", remote)
+	master := fmt.Sprintf("%s/master", remote)
+
 	ancestors := ancestors()
 
 	if len(ancestors) < 2 {
@@ -28,7 +29,7 @@ func main() {
 			continue
 		}
 
-		identified := identify(branches)
+		identified := identify(branches, remote, dev, master)
 
 		// if a branch is identified, use it
 		if identified != "" {
@@ -41,7 +42,7 @@ func main() {
 	os.Exit(1)
 }
 
-func identify(branches []string) string {
+func identify(branches []string, remote, dev, master string) string {
 	identified := ""
 
 	for _, branch := range branches {

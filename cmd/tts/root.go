@@ -65,7 +65,10 @@ func main() {
 	root.Flags().Float64VarP(&speed, "speed", "s", 1.0, "Speed (0.25-4.0)")
 	root.Flags().StringVarP(&model, "model", "m", "tts-1", "Model (tts-1, tts-1-hd)")
 
-	root.Execute()
+	if err := root.Execute(); err != nil {
+		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+		os.Exit(1)
+	}
 }
 
 // buildRequest constructs the OpenAI TTS API request.

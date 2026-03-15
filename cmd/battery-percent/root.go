@@ -9,11 +9,19 @@ import (
 )
 
 func main() {
-	info := run.Capture("pmset -g ps")
-	info = strings.Split(info, "\n")[1]
-	// extract percent from pmset metadata
-	percent := strings.Fields(info)[2]
-	// remove trailing ;
-	percent = percent[:len(percent)-1]
+	lines := strings.Split(run.Capture("pmset -g ps"), "\n")
+	if len(lines) < 2 {
+		fmt.Println("0%")
+		return
+	}
+	fields := strings.Fields(lines[1])
+	if len(fields) < 3 {
+		fmt.Println("0%")
+		return
+	}
+	percent := fields[2]
+	if len(percent) > 0 {
+		percent = strings.TrimRight(percent, ";")
+	}
 	fmt.Println(percent)
 }

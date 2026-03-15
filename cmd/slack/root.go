@@ -14,6 +14,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/drn/dots/pkg/jsonutil"
 	"github.com/drn/dots/pkg/path"
 	"github.com/joho/godotenv"
 	"github.com/spf13/cobra"
@@ -25,23 +26,17 @@ func init() {
 	godotenv.Load(path.FromHome(".dots/sys/env"))
 }
 
-func userToken() string {
-	if t := os.Getenv("SLACK_XOXP_TOKEN"); t != "" {
+func requiredEnv(name string) string {
+	if t := os.Getenv(name); t != "" {
 		return t
 	}
-	fmt.Fprintln(os.Stderr, "SLACK_XOXP_TOKEN not set")
+	fmt.Fprintf(os.Stderr, "%s not set\n", name)
 	os.Exit(1)
 	return ""
 }
 
-func botToken() string {
-	if t := os.Getenv("SLACK_XOXB_TOKEN"); t != "" {
-		return t
-	}
-	fmt.Fprintln(os.Stderr, "SLACK_XOXB_TOKEN not set")
-	os.Exit(1)
-	return ""
-}
+func userToken() string { return requiredEnv("SLACK_XOXP_TOKEN") }
+func botToken() string  { return requiredEnv("SLACK_XOXB_TOKEN") }
 
 func slackGet(token, method string, params url.Values) (map[string]interface{}, error) {
 	u := slackAPIBase + "/" + method
@@ -130,11 +125,6 @@ func hoursAgoTS(hours int) string {
 	return fmt.Sprintf("%f", float64(time.Now().Add(-time.Duration(hours)*time.Hour).Unix()))
 }
 
-func printJSON(v interface{}) {
-	enc := json.NewEncoder(os.Stdout)
-	enc.SetIndent("", "  ")
-	enc.Encode(v)
-}
 
 func resolveChannelID(name string) string {
 	if len(name) > 0 && (name[0] == 'C' || name[0] == 'G' || name[0] == 'D') {
@@ -190,7 +180,7 @@ func main() {
 				os.Exit(1)
 			}
 			if jsonFlag {
-				printJSON(data)
+				jsonutil.Print(data)
 				return
 			}
 			fmt.Println("Authentication successful!")
@@ -215,7 +205,7 @@ func main() {
 				os.Exit(1)
 			}
 			if jsonFlag {
-				printJSON(channels)
+				jsonutil.Print(channels)
 				return
 			}
 			fmt.Printf("Found %d channels:\n\n", len(channels))
@@ -258,7 +248,7 @@ func main() {
 				m, _ := ch.(map[string]interface{})
 				if n, _ := m["name"].(string); strings.ToLower(n) == clean {
 					if jsonFlag {
-						printJSON(m)
+						jsonutil.Print(m)
 						return
 					}
 					fmt.Printf("Found: #%s (%s)\n", m["name"], m["id"])
@@ -289,7 +279,7 @@ func main() {
 				os.Exit(1)
 			}
 			if jsonFlag {
-				printJSON(messages)
+				jsonutil.Print(messages)
 				return
 			}
 			fmt.Printf("Last %d messages from %s:\n\n", len(messages), channelID)
@@ -326,7 +316,7 @@ func main() {
 				os.Exit(1)
 			}
 			if jsonFlag {
-				printJSON(messages)
+				jsonutil.Print(messages)
 				return
 			}
 			fmt.Printf("Thread replies (%d):\n\n", len(messages))
@@ -368,7 +358,7 @@ func main() {
 			msgs, _ := data["messages"].(map[string]interface{})
 			matches, _ := msgs["matches"].([]interface{})
 			if jsonFlag {
-				printJSON(matches)
+				jsonutil.Print(matches)
 				return
 			}
 			fmt.Printf("Found %d messages matching '%s':\n\n", len(matches), query)
@@ -414,7 +404,7 @@ func main() {
 				}
 			}
 			if jsonFlag {
-				printJSON(active)
+				jsonutil.Print(active)
 				return
 			}
 			fmt.Printf("Found %d users:\n\n", len(active))
@@ -460,7 +450,7 @@ func main() {
 					strings.Contains(strings.ToLower(realName), search) ||
 					strings.Contains(strings.ToLower(displayName), search) {
 					if jsonFlag {
-						printJSON(m)
+						jsonutil.Print(m)
 						return
 					}
 					email := ""
@@ -498,7 +488,7 @@ func main() {
 				allDMs = append(allDMs, dms...)
 			}
 			if jsonFlag {
-				printJSON(allDMs)
+				jsonutil.Print(allDMs)
 				return
 			}
 			fmt.Printf("Found %d DM conversations:\n\n", len(allDMs))
@@ -522,5 +512,8 @@ func main() {
 	dmsCmd.Flags().BoolVar(&jsonFlag, "json", false, "JSON output")
 
 	root.AddCommand(authTestCmd, channelsCmd, findChannelCmd, historyCmd, threadCmd, searchCmd, usersCmd, findUserCmd, dmsCmd)
-	root.Execute()
+	if err := root.Execute(); err != nil {
+		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+		os.Exit(1)
+	}
 }

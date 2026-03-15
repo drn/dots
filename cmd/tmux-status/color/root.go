@@ -1,12 +1,9 @@
 // Package color contains tmux-status color constants
 package color //revive:disable-line:var-naming
 
-// Color -
-type Color string
-
 const (
 	// C1 - color 1
-	C1 Color = "#[fg=colour236,bg=colour103]"
+	C1 = "#[fg=colour236,bg=colour103]"
 	// C1_2 - color 1 to 2 transition
 	C1_2 = "#[fg=colour103,bg=colour239,nobold,nounderscore,noitalics]"
 	// C1_3 - color 1 to 3 transition

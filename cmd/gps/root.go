@@ -3,7 +3,6 @@ package main
 
 import (
 	"os"
-	"strings"
 
 	"github.com/drn/dots/pkg/cache"
 	"github.com/drn/dots/pkg/log"
@@ -12,7 +11,9 @@ import (
 )
 
 func main() {
-	cache.Log("gps", 15)
+	if cache.Log("gps", 15) {
+		return
+	}
 	coords := coordinates()
 	if coords == "" {
 		os.Exit(1)
@@ -27,6 +28,5 @@ func coordinates() string {
 }
 
 func capture(command string, args ...interface{}) string {
-	data := run.Capture(command+" 2>/dev/null", args...)
-	return strings.Trim(data, "\"")
+	return run.CaptureClean(command, args...)
 }

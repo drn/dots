@@ -10,45 +10,21 @@ import (
 	"github.com/spf13/cobra"
 )
 
-type component struct {
-	Name        string
-	Description string
-	Alias       string
-}
-
-var components = []component{
-	{"bin", "Installs ~/bin/* commands", ""},
-	{"git", "Installs git extensions", ""},
-	{"home", "Installs ~/.* config files", ""},
-	{"zsh", "Installs zsh config files", ""},
-	{"fonts", "Installs fonts", ""},
-	{"homebrew", "Installs Homebrew dependencies", "brew"},
-	{"npm", "Installs npm packages", ""},
-	{"languages", "Installs asdf & languages", ""},
-	{"vim", "Installs vim config", ""},
-	{"hammerspoon", "Installs hammerspoon configuration", "hs"},
-	{"osx", "Installs OSX configuration", ""},
-	{"agents", "Installs agent skills (Claude Code + Codex)", ""},
-}
-
-func componentNames() []string {
-	names := make([]string, len(components))
-	for i, c := range components {
-		names[i] = c.Name
-	}
-	return names
-}
-
 var cmdInstall = &cobra.Command{
 	Use:   "install",
 	Short: "Installs configuration",
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) > 0 {
-			cmd.Help()
+			_ = cmd.Help()
 			os.Exit(1)
 		}
 
-		items := append([]string{"all"}, componentNames()...)
+		components := install.Components()
+		names := make([]string, len(components))
+		for i, c := range components {
+			names[i] = c.Name
+		}
+		items := append([]string{"all"}, names...)
 
 		prompt := promptui.Select{
 			Label: "Select component to install",
@@ -79,7 +55,7 @@ func init() {
 		},
 	)
 
-	for _, c := range components {
+	for _, c := range install.Components() {
 		var aliases []string
 		if c.Alias != "" {
 			aliases = []string{c.Alias}
@@ -105,7 +81,7 @@ func installAll() {
 		os.Exit(1)
 	}
 
-	for _, name := range componentNames() {
-		install.Call(name)
+	for _, c := range install.Components() {
+		install.Call(c.Name)
 	}
 }

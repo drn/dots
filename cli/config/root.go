@@ -132,7 +132,9 @@ func save(cfg *ini.File) {
 		log.Warning("Failed to create config directory: %s", err.Error())
 		return
 	}
-	cfg.SaveTo(configPath())
+	if err := cfg.SaveTo(configPath()); err != nil {
+		log.Warning("Failed to save config: %s", err.Error())
+	}
 }
 
 func config() *ini.File {

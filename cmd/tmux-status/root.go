@@ -12,9 +12,14 @@ import (
 	"github.com/drn/dots/pkg/log"
 )
 
+const (
+	minWidth = 90
+	medWidth = 150
+)
+
 var side string
 
-// Position -
+// Position defines the interface for responsive tmux status sections.
 type Position interface {
 	Min()
 	Med()
@@ -59,9 +64,9 @@ func sides() {
 	}
 
 	switch {
-	case width < 90:
+	case width < minWidth:
 		position.Min()
-	case width < 150:
+	case width < medWidth:
 		position.Med()
 	default:
 		position.Max()

@@ -48,6 +48,12 @@ func Verbose(command string, args ...interface{}) error {
 	return cmd.Run()
 }
 
+// CaptureClean - Like Capture but suppresses stderr and trims quotes.
+func CaptureClean(command string, args ...interface{}) string {
+	data := Capture(command+" 2>/dev/null", args...)
+	return strings.Trim(data, "\"")
+}
+
 // Silent - Runs the specified command without logging it first.
 func Silent(command string, args ...interface{}) error {
 	resolvedCommand := fmt.Sprintf(command, args...)
