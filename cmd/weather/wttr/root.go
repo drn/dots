@@ -23,6 +23,9 @@ func Info() string {
 }
 
 func formatTemp(temp string) string {
+	if len(temp) < 2 {
+		return temp
+	}
 	return temp[1 : len(temp)-1]
 }
 

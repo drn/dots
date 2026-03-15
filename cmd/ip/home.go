@@ -9,8 +9,8 @@ import (
 )
 
 func home(useCache bool) {
-	if useCache {
-		cache.Log("ip-home", 5)
+	if useCache && cache.Log("ip-home", 5) {
+		return
 	}
 	ip := run.Capture("dig +short %s +tries=1 +time=1", os.Getenv("HOME_WAN"))
 	if !isValid(ip) {

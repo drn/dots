@@ -102,8 +102,8 @@ func Create(branch string) bool {
 }
 
 // ResetHard - Hard resets to the specified address
-func ResetHard(address string) {
-	run.Verbose("git reset --hard %s", address)
+func ResetHard(address string) bool {
+	return run.Verbose("git reset --hard %s", address) == nil
 }
 
 // Delete - Deletes the specified branch

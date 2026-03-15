@@ -29,7 +29,7 @@ func printSSID(ssid string) {
 			ssid = fmt.Sprintf("%s…", strings.Join(parts[:2], " "))
 		}
 		if utf8.RuneCountInString(ssid) > 12 {
-			ssid = fmt.Sprintf("%s…", ssid[:12])
+			ssid = fmt.Sprintf("%s…", string([]rune(ssid)[:12]))
 		}
 	}
 	fmt.Println(ssid)

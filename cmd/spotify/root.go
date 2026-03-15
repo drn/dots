@@ -20,6 +20,14 @@ import (
 	jsoniter "github.com/json-iterator/go"
 )
 
+const (
+	spotifyTracksURL    = "https://api.spotify.com/v1/me/tracks"
+	spotifyPlayerURL    = "https://api.spotify.com/v1/me/player"
+	spotifyDevicesURL   = "https://api.spotify.com/v1/me/player/devices"
+	spotifyNowPlaying   = "https://api.spotify.com/v1/me/player/currently-playing"
+	spotifyContainsURL  = "https://api.spotify.com/v1/me/tracks/contains"
+)
+
 func main() {
 	godotenv.Load(path.FromHome(".dots/sys/env"))
 
@@ -84,9 +92,7 @@ func alternateDeviceID(currentDeviceID string) string {
 }
 
 func currentDevice(accessToken string) string {
-	url := "https://api.spotify.com/v1/me/player/devices"
-
-	response, err := req.Get(url, auth.Headers(accessToken))
+	response, err := req.Get(spotifyDevicesURL, auth.Headers(accessToken))
 	auth.HandleRequestError(err)
 
 	const maxDevices = 10
@@ -103,9 +109,8 @@ func currentDevice(accessToken string) string {
 }
 
 func transferPlayback(accessToken string, deviceID string) {
-	url := "https://api.spotify.com/v1/me/player"
 	json := req.BodyJSON(map[string]interface{}{"device_ids": []string{deviceID}})
-	response, err := req.Put(url, auth.Headers(accessToken), json)
+	response, err := req.Put(spotifyPlayerURL, auth.Headers(accessToken), json)
 	auth.HandleRequestError(err)
 	if response.Response().StatusCode != 204 {
 		println(response.Dump())
@@ -116,10 +121,8 @@ func transferPlayback(accessToken string, deviceID string) {
 
 // https://developer.spotify.com/documentation/web-api/reference/library/save-tracks-user/
 func saveTrack(accessToken string, trackID string) {
-	url := "https://api.spotify.com/v1/me/tracks"
-
 	params := req.QueryParam{"ids": trackID}
-	response, err := req.Put(url, auth.Headers(accessToken), params)
+	response, err := req.Put(spotifyTracksURL, auth.Headers(accessToken), params)
 	auth.HandleRequestError(err)
 	if response.Response().StatusCode != 200 {
 		log.Error("Failed to save track")
@@ -129,10 +132,8 @@ func saveTrack(accessToken string, trackID string) {
 
 // https://developer.spotify.com/documentation/web-api/reference/library/remove-tracks-user/
 func removeTrack(accessToken string, trackID string) {
-	url := "https://api.spotify.com/v1/me/tracks"
-
 	params := req.QueryParam{"ids": trackID}
-	response, err := req.Delete(url, auth.Headers(accessToken), params)
+	response, err := req.Delete(spotifyTracksURL, auth.Headers(accessToken), params)
 	auth.HandleRequestError(err)
 	if response.Response().StatusCode != 200 {
 		log.Error("Failed to remove track")
@@ -142,10 +143,8 @@ func removeTrack(accessToken string, trackID string) {
 
 // https://developer.spotify.com/documentation/web-api/reference/library/check-users-saved-tracks/
 func isTrackSaved(accessToken string, trackID string) bool {
-	url := "https://api.spotify.com/v1/me/tracks/contains"
-
 	params := req.Param{"ids": trackID}
-	response, err := req.Get(url, auth.Headers(accessToken), params)
+	response, err := req.Get(spotifyContainsURL, auth.Headers(accessToken), params)
 	auth.HandleRequestError(err)
 
 	return jsoniter.Get(response.Bytes(), 0).ToBool()
@@ -153,9 +152,7 @@ func isTrackSaved(accessToken string, trackID string) bool {
 
 // https://developer.spotify.com/documentation/web-api/reference/player/get-the-users-currently-playing-track/
 func currentTrackInfo(accessToken string) (string, string, string) {
-	url := "https://api.spotify.com/v1/me/player/currently-playing"
-
-	response, err := req.Get(url, auth.Headers(accessToken))
+	response, err := req.Get(spotifyNowPlaying, auth.Headers(accessToken))
 	auth.HandleRequestError(err)
 	id := jsoniter.Get(response.Bytes(), "item", "id").ToString()
 	name := jsoniter.Get(response.Bytes(), "item", "name").ToString()

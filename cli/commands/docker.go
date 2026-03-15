@@ -11,7 +11,7 @@ var cmdDocker = &cobra.Command{
 	Aliases: []string{"dock"},
 	Short:   "Docker command aliases",
 	Run: func(cmd *cobra.Command, _ []string) {
-		cmd.Help()
+		_ = cmd.Help()
 	},
 }
 

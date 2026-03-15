@@ -14,7 +14,7 @@ var cmdSpinner = &cobra.Command{
 	Use:   "spinner",
 	Short: "Runs simple CLI spinners",
 	Run: func(cmd *cobra.Command, _ []string) {
-		cmd.Help()
+		_ = cmd.Help()
 	},
 }
 

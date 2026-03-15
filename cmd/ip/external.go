@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"os"
-	"strings"
 
 	"github.com/drn/dots/pkg/cache"
 	"github.com/drn/dots/pkg/log"
@@ -21,8 +20,8 @@ var services = []string{
 }
 
 func external(useCache bool) {
-	if useCache {
-		cache.Log("ip-external", 5)
+	if useCache && cache.Log("ip-external", 5) {
+		return
 	}
 	check(google())
 	check(opendns())
@@ -53,6 +52,5 @@ func curl(endpoint string) string {
 }
 
 func capture(command string, args ...interface{}) string {
-	data := run.Capture(command+" 2>/dev/null", args...)
-	return strings.Trim(data, "\"")
+	return run.CaptureClean(command, args...)
 }

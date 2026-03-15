@@ -29,8 +29,8 @@ func main() {
 		os.Exit(1)
 	}
 
-	if !opts.SkipCache {
-		cache.Log("weather", 15)
+	if !opts.SkipCache && cache.Log("weather", 15) {
+		return
 	}
 
 	weather := weather()

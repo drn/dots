@@ -101,15 +101,18 @@ func battery() string {
 	info := strings.Split(run.Capture("pmset -g ps"), "\n")
 
 	status := "battery"
-	if strings.Contains(info[0], "AC Power") {
+	if len(info) > 0 && strings.Contains(info[0], "AC Power") {
 		status = "charging"
 	}
 
-	// extract percent from pmset metadata
-	percentString := strings.Fields(info[1])[2]
-	// strip trailing %;
-	percentString = percentString[:len(percentString)-2]
-	percent, _ := strconv.Atoi(percentString)
+	percent := 0
+	if len(info) > 1 {
+		fields := strings.Fields(info[1])
+		if len(fields) > 2 {
+			percentString := strings.TrimRight(fields[2], "%;")
+			percent, _ = strconv.Atoi(percentString)
+		}
+	}
 
 	color := ""
 	switch {

@@ -10,7 +10,6 @@ import (
 
 func main() {
 	info := run.Capture("pmset -g ps")
-	info = strings.Split(info, "\n")[0]
 	if strings.Contains(info, "AC Power") {
 		fmt.Println("charging")
 	} else {

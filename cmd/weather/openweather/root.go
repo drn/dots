@@ -69,7 +69,7 @@ func conditions(data string) string {
 
 func isNight(data string) bool {
 	icon := jsoniter.Get([]byte(data), "weather", 0, "icon").ToString()
-	return icon[len(icon)-1:] == "n"
+	return len(icon) > 0 && icon[len(icon)-1:] == "n"
 }
 
 func fetchWeatherJSON() string {

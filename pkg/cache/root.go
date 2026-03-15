@@ -12,13 +12,14 @@ import (
 )
 
 // Log - logs data from input cache key if less than specified TTL (in minutes)
-// and exits with a successful status, otherwise returns
-func Log(key string, ttl float64) {
+// and returns true if a cached value was found and logged
+func Log(key string, ttl float64) bool {
 	data := Read(key, ttl)
 	if data != "" {
 		log.Info(data)
-		os.Exit(0)
+		return true
 	}
+	return false
 }
 
 // Warm - returns true if the last write to the cache key less than the

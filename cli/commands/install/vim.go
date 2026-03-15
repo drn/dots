@@ -67,7 +67,7 @@ func vimUpdatePlug() {
 func vimUpdatePlugins() {
 	log.Info("Updating vim plugins:")
 	tempPath := "/tmp/vim-update-result"
-	os.Remove(tempPath)
+	_ = os.Remove(tempPath)
 	run.Silent(
 		"nvim -c \"%s\"",
 		strings.Join(

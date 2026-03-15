@@ -18,6 +18,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/drn/dots/pkg/jsonutil"
 	"github.com/drn/dots/pkg/path"
 	"github.com/joho/godotenv"
 	"github.com/spf13/cobra"
@@ -151,7 +152,10 @@ func (td *tokenData) refreshIfNeeded(account string) {
 		os.Exit(1)
 	}
 	var result map[string]interface{}
-	json.Unmarshal(body, &result)
+	if err := json.Unmarshal(body, &result); err != nil {
+		fmt.Fprintf(os.Stderr, "Warning: failed to parse refresh response: %v\n", err)
+		return
+	}
 	if at, ok := result["access_token"].(string); ok {
 		td.Token = at
 	}
@@ -159,9 +163,15 @@ func (td *tokenData) refreshIfNeeded(account string) {
 		td.Expiry = time.Now().Add(time.Duration(ei) * time.Second).Format(time.RFC3339)
 	}
 	account = resolveAccount(account)
-	path := filepath.Join(configDir, "tokens", account+".json")
-	data, _ := json.MarshalIndent(td, "", "  ")
-	os.WriteFile(path, data, 0600)
+	tokenPath := filepath.Join(configDir, "tokens", account+".json")
+	data, err := json.MarshalIndent(td, "", "  ")
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Warning: failed to marshal token: %v\n", err)
+		return
+	}
+	if err := os.WriteFile(tokenPath, data, 0600); err != nil {
+		fmt.Fprintf(os.Stderr, "Warning: failed to save token: %v\n", err)
+	}
 }
 
 func getAccessToken(account string) string {
@@ -268,11 +278,6 @@ func openBrowser(url string) {
 	}
 }
 
-func printJSON(v interface{}) {
-	enc := json.NewEncoder(os.Stdout)
-	enc.SetIndent("", "  ")
-	enc.Encode(v)
-}
 
 func main() {
 	var jsonFlag bool
@@ -333,7 +338,7 @@ func main() {
 			}
 
 			if jsonFlag {
-				printJSON(results)
+				jsonutil.Print(results)
 				return
 			}
 			if len(results) == 0 {
@@ -379,7 +384,7 @@ func main() {
 			textBody, htmlBody := extractBody(payload)
 
 			if jsonFlag {
-				printJSON(map[string]interface{}{
+				jsonutil.Print(map[string]interface{}{
 					"id":        data["id"],
 					"from":      from,
 					"to":        to,
@@ -465,7 +470,7 @@ func main() {
 			}
 
 			if jsonFlag {
-				printJSON(results)
+				jsonutil.Print(results)
 				return
 			}
 
@@ -549,7 +554,7 @@ func main() {
 			}
 
 			if jsonFlag {
-				printJSON(accounts)
+				jsonutil.Print(accounts)
 				return
 			}
 			for _, a := range accounts {
@@ -657,7 +662,10 @@ func main() {
 			}
 
 			var result map[string]interface{}
-			json.Unmarshal(body, &result)
+			if err := json.Unmarshal(body, &result); err != nil {
+				fmt.Fprintf(os.Stderr, "Failed to parse token response: %v\n", err)
+				os.Exit(1)
+			}
 			if at, ok := result["access_token"].(string); ok {
 				td.Token = at
 			}
@@ -676,7 +684,10 @@ func main() {
 				}
 			}
 
-			os.MkdirAll(filepath.Join(configDir, "tokens"), 0700)
+			if err := os.MkdirAll(filepath.Join(configDir, "tokens"), 0700); err != nil {
+				fmt.Fprintf(os.Stderr, "Failed to create tokens directory: %v\n", err)
+				os.Exit(1)
+			}
 			data, _ := json.MarshalIndent(td, "", "  ")
 			if err := os.WriteFile(tokenPath, data, 0600); err != nil {
 				fmt.Fprintf(os.Stderr, "Failed to save token: %v\n", err)
@@ -688,5 +699,8 @@ func main() {
 
 	root.PersistentFlags().BoolVar(&debugMode, "debug", false, "Show debug output for token refresh")
 	root.AddCommand(searchCmd, readCmd, labelsCmd, accountsCmd, authCmd)
-	root.Execute()
+	if err := root.Execute(); err != nil {
+		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+		os.Exit(1)
+	}
 }
