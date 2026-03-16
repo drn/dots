@@ -16,8 +16,8 @@ Re-review all branch changes from scratch with independent competing reviewers. 
 - Current branch: !`git branch --show-current`
 - Base ref: !`git branch -r 2>/dev/null | grep -oE 'origin/(main|master)' | head -1`
 - Git status: !`git status --short`
-- Project type: !`find . -maxdepth 1 \( -name go.mod -o -name Gemfile -o -name package.json -o -name Cargo.toml -o -name pyproject.toml \) 2>/dev/null | head -5`
-- Test framework: !`find . -maxdepth 4 -name "*_test.*" -o -name "*.test.*" -o -name "*_spec.*" 2>/dev/null | head -10`
+- Project type: !`ls go.mod Gemfile package.json Cargo.toml pyproject.toml 2>/dev/null | head -5`
+- Test framework: !`git ls-files 2>/dev/null | grep -E '_test\.|\.test\.|_spec\.' | head -10`
 - Changes vs main: !`git diff --stat HEAD...origin/main 2>/dev/null | head -50`
 - Changes vs master: !`git diff --stat HEAD...origin/master 2>/dev/null | head -50`
 
