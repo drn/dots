@@ -105,11 +105,14 @@ For each skill identified, analyze:
 
 For each skill with proposed changes, determine where it lives:
 
-1. **Read the SKILL.md** — resolve its path (e.g., `~/.claude/skills/<name>/SKILL.md`)
-2. **Check if it is inside the current git repo** — compare the SKILL.md real path against `git rev-parse --show-toplevel`
-3. **Classify:**
-   - **Local skill** — the SKILL.md is inside the current repo. Changes can be applied directly.
-   - **External skill** — the SKILL.md lives in a different repo (e.g., `~/.dots/agents/skills/`). **Never edit external skills directly.** Always generate a handoff prompt instead.
+1. **Read the SKILL.md** — note its apparent path (e.g., `~/.claude/skills/<name>/SKILL.md`)
+2. **Resolve symlinks** — run `readlink -f <path>` to get the real path. Skill directories like `~/.claude/skills/` are often symlinks into a separate repo (e.g., `~/.dots/agents/skills/`). The apparent path is not reliable; always use the resolved path.
+3. **Check if the resolved path is inside the current worktree** — compare against `git rev-parse --show-toplevel`. The resolved path must be a descendant of the worktree root to be local.
+4. **Classify:**
+   - **Local skill** — the resolved SKILL.md path is inside the current worktree. Changes can be applied directly.
+   - **External skill** — the resolved path falls outside the current worktree (different repo or different worktree). **Never edit external skills directly.** Always generate a handoff prompt instead.
+
+**Symlink trap:** `~/.claude/skills/` commonly symlinks to a separate dotfiles repo. Editing a file through that path writes to the symlink target repo, not the current worktree — even if the edit appears to succeed. Always resolve with `readlink -f` before classifying.
 
 **Default: local project.** All improvements and new skills target the current project unless there is a strong reason to modify an external skill. When an external skill needs changes, generate a handoff prompt (Step 5) — do not edit it even if you have write access.
 
@@ -224,6 +227,8 @@ For each gap found:
 2. Propose a specific fix (as a diff when possible)
 3. **Apply immediately by default** — straightforward fixes (missing CLI flags, error handling, docs, tests) should be implemented and committed without asking. Only pause for approval on risky changes (breaking API changes, large refactors, changes to shared interfaces).
 
+**Worktree safety:** Before writing any file, resolve the target path against `git rev-parse --show-toplevel` (shown in the Context section above as "Current repo"). Never hardcode absolute paths like `~/Development/repo/` or `~/project/`. In a git worktree session, `git rev-parse --show-toplevel` returns the worktree root — edits to a hardcoded main repo path land on the wrong branch and will not be included in the current PR.
+
 Only fix gaps that were actually encountered during the session. Do not speculatively audit the codebase.
 
 #### Agent Guidance Updates
@@ -260,6 +265,7 @@ Update existing context files in `context/` directory as appropriate (requires `
 - Create new files as needed for distinct topics (e.g., `context/research/`, `context/plans/`)
 - Update CLAUDE.md if the context applies broadly across tasks
 - **Never** write to `memory/`, `memory/memory.md`, or auto memory — all context goes in `context/`
+- **Worktree safety:** Resolve all file paths against `git rev-parse --show-toplevel` (shown in the Context section as "Current repo"). Never hardcode absolute paths like `~/Development/repo/`. In a worktree session, the worktree root is the correct write target — hardcoded paths write to a different branch.
 
 **Part B: Knowledge Graph**
 
