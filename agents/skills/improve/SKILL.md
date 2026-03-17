@@ -224,6 +224,8 @@ For each gap found:
 2. Propose a specific fix (as a diff when possible)
 3. **Apply immediately by default** — straightforward fixes (missing CLI flags, error handling, docs, tests) should be implemented and committed without asking. Only pause for approval on risky changes (breaking API changes, large refactors, changes to shared interfaces).
 
+**Worktree safety:** Before writing any file, resolve the target path against `git rev-parse --show-toplevel` (shown in the Context section above as "Current repo"). Never hardcode absolute paths like `~/Development/repo/` or `~/project/`. In a git worktree session, `git rev-parse --show-toplevel` returns the worktree root — edits to a hardcoded main repo path land on the wrong branch and will not be included in the current PR.
+
 Only fix gaps that were actually encountered during the session. Do not speculatively audit the codebase.
 
 #### Agent Guidance Updates
@@ -260,6 +262,7 @@ Update existing context files in `context/` directory as appropriate (requires `
 - Create new files as needed for distinct topics (e.g., `context/research/`, `context/plans/`)
 - Update CLAUDE.md if the context applies broadly across tasks
 - **Never** write to `memory/`, `memory/memory.md`, or auto memory — all context goes in `context/`
+- **Worktree safety:** Resolve all file paths against `git rev-parse --show-toplevel` (shown in the Context section as "Current repo"). Never hardcode absolute paths like `~/Development/repo/`. In a worktree session, the worktree root is the correct write target — hardcoded paths write to a different branch.
 
 **Part B: Knowledge Graph**
 
