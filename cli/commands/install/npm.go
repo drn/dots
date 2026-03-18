@@ -21,7 +21,6 @@ func Npm() {
 		"semver",
 		"underscore-cli",
 		"vtop",
-		"yarn",
 	})
 }
 
