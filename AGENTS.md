@@ -167,6 +167,7 @@ When the user's message matches a phrase below, read and follow the correspondin
 | "notion", "read notion", "notion page", "notion database" | `agents/skills/notion/SKILL.md` |
 | "speak to me", "read to me", "read this aloud", "say this", "speak the summary" | `agents/skills/tts/SKILL.md` |
 | "loop", "poll", "recurring", "every N minutes", "babysit", "monitor periodically", "run on interval" | `agents/skills/loop/SKILL.md` |
+| "compare PRs", "combine PRs", "combine these PRs", "cherry-pick between PRs", "competing implementations", "competing PRs" | `agents/skills/combine-prs/SKILL.md` |
 
 ## Public Repo Policy
 
