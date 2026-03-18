@@ -11,15 +11,11 @@ import (
 func Npm() {
 	log.Action("Install npm packages")
 	npm([]string{
-		"bower",
 		"catj",
 		"diff-so-fancy",
 		"eslint",
 		"fast-cli",
 		"fkill-cli",
-		"fx",
-		"git-standup",
-		"grunt-cli",
 		"json-diff",
 		"neovim",
 		"semver",
