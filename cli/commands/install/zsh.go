@@ -26,7 +26,7 @@ func Zsh() {
 
 	// install zinit
 	log.Info("Installing ZSH plugin manager")
-	zinitPath := "~/.local/share/zinit"
+	zinitPath := "~/.local/share/zinit/zinit.git"
 	exec("mkdir -p %s", zinitPath)
 	exec(
 		"git clone %s %s 2>/dev/null || true",
