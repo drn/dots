@@ -18,5 +18,8 @@
       "filetypes": ["go"]
     }
   },
-  "snippets.ultisnips.directories": [ "~/.vim/snips" ]
+  "snippets.ultisnips.directories": [
+    "~/.vim/snips"
+  ],
+  "snippets.ultisnips.pythonPrompt": false
 }
