@@ -13,6 +13,7 @@ cask '1password-cli'
 cask 'alacritty'
 cask 'avifquicklook' # Finder QuickLook support for .avif files
 cask 'brave-browser'
+cask 'claude'
 cask 'cyberduck'
 cask 'discord'
 cask 'docker'
