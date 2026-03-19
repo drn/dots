@@ -13,6 +13,7 @@ cask '1password-cli'
 cask 'alacritty'
 cask 'avifquicklook' # Finder QuickLook support for .avif files
 cask 'brave-browser'
+cask 'chatgpt'
 cask 'claude'
 cask 'cyberduck'
 cask 'discord'
@@ -37,6 +38,7 @@ cask 'tableplus'
 cask 'the-unarchiver'
 cask 'timemachineeditor'
 cask 'vlc'
+cask 'wispr-flow'
 
 # formulae
 brew 'amazon-ecs-cli'
