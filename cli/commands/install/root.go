@@ -29,6 +29,7 @@ func Components() []Component {
 		{"languages", "Installs asdf & languages", "", Languages},
 		{"vim", "Installs vim config", "", Vim},
 		{"hammerspoon", "Installs hammerspoon configuration", "hs", Hammerspoon},
+		{"tools", "Installs dev tools (Devbox, Claude Code, Codex)", "", Tools},
 		{"osx", "Installs OSX configuration", "", Osx},
 		{"agents", "Installs agent skills (Claude Code + Codex)", "", Agents},
 	}

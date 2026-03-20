@@ -92,6 +92,7 @@ dots doctor                                   # Run diagnostics
 | languages | asdf & runtimes |
 | vim | Vim configuration |
 | hammerspoon | Window management |
+| tools | Devbox, Claude Code, Codex |
 | osx | macOS defaults |
 | agents | Agent skills and custom agents (symlinks agents/skills → ~/.claude/skills + ~/.agents/skills, agents/custom → ~/.claude/agents) |
 
