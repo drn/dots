@@ -40,6 +40,21 @@ _UNICODE_MAP = {
     "\u00a0": " ",
     "\u2032": "'",
     "\u2033": '"',
+    "\u2192": "->",
+    "\u2190": "<-",
+    "\u2193": "v",
+    "\u2191": "^",
+    "\u21d2": "=>",
+    "\u2265": ">=",
+    "\u2264": "<=",
+    "\u2260": "!=",
+    "\u2713": "[x]",
+    "\u2717": "[ ]",
+    "\u00b7": ".",
+    "\u2502": "|",
+    "\u251c": "|",
+    "\u2514": "|",
+    "\u2500": "-",
 }
 _SANITIZE_RE = re.compile("|".join(re.escape(k) for k in _UNICODE_MAP))
 
@@ -286,13 +301,32 @@ def _render_tokens(pdf, tokens):
             pdf.set_fill_color(246, 248, 250)
             pdf.set_font("Courier", "", 9)
             code = sanitize(token.get("raw", "")).rstrip("\n")
+            code_width = 190
             x = pdf.get_x()
             for code_line in code.split("\n"):
-                pdf.set_x(x)
-                pdf.cell(
-                    190, 5, code_line, fill=True,
-                    new_x=XPos.LMARGIN, new_y=YPos.NEXT,
-                )
+                # Wrap long lines that exceed the code block width
+                if pdf.get_string_width(code_line) > code_width - 2:
+                    # Character-level wrap
+                    remaining = code_line
+                    while remaining:
+                        # Find how many chars fit
+                        fit = len(remaining)
+                        while fit > 0 and pdf.get_string_width(remaining[:fit]) > code_width - 2:
+                            fit -= 1
+                        if fit == 0:
+                            fit = 1  # at least one char per line
+                        pdf.set_x(x)
+                        pdf.cell(
+                            code_width, 5, remaining[:fit], fill=True,
+                            new_x=XPos.LMARGIN, new_y=YPos.NEXT,
+                        )
+                        remaining = remaining[fit:]
+                else:
+                    pdf.set_x(x)
+                    pdf.cell(
+                        code_width, 5, code_line, fill=True,
+                        new_x=XPos.LMARGIN, new_y=YPos.NEXT,
+                    )
             pdf.set_font("Helvetica", "", 11)
             pdf.ln(2)
 
