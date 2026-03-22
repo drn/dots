@@ -170,6 +170,7 @@ When the user's message matches a phrase below, read and follow the correspondin
 | "loop", "poll", "recurring", "every N minutes", "babysit", "monitor periodically", "run on interval" | `agents/skills/loop/SKILL.md` |
 | "compare PRs", "combine PRs", "combine these PRs", "cherry-pick between PRs", "competing implementations", "competing PRs" | `agents/skills/combine-prs/SKILL.md` |
 | "improve skills", "capture learnings", "upgrade context", "learn from session" | `agents/skills/improve/SKILL.md` |
+| "amend", "amend commit", "rewrite commit message", "improve commit message", "fix commit message" | `agents/skills/amend/SKILL.md` |
 
 ## Public Repo Policy
 
