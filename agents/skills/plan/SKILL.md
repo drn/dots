@@ -18,6 +18,23 @@ Read a PRD, tech spike, or feature spec and produce a concrete implementation pl
 - Recent commits: !`git log --oneline -10 2>/dev/null | head -10`
 - Prior plans: !`find .context/plans -name "*.md" 2>/dev/null | head -10`
 - Prior spikes: !`find context/spikes -name "*.md" 2>/dev/null | head -10`
+- Phase artifacts: !`ls -t .context/phases/*.md 2>/dev/null | head -10`
+
+## Phase Protocol
+
+This skill participates in a phase chain. Read `~/.claude/skills/_shared/resources/phase-protocol.md` for the full protocol.
+
+**Before starting:** Check `.context/phases/` for prior artifacts:
+- If `critique-*.md` exists → read the latest critique. This is a **second pass** — incorporate the critique's concerns into a refined plan. Write output as `plan-{ts}.md`.
+- If no critique exists → this is a **first pass** (thinking/exploration). Write output as `think-{ts}.md`.
+
+**After completing Step 4:** Write the phase artifact to `.context/phases/`:
+
+```bash
+mkdir -p .context/phases
+```
+
+Use the artifact format from the phase protocol. The **Handoff** section should include: key decisions, implementation phases, open questions, and risks — everything `/dev` needs to start building.
 
 ## Instructions
 

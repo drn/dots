@@ -98,7 +98,13 @@ IF $ARGUMENTS contains "--write" OR user confirms:
   4. Report what was written
 ```
 
-### Step 6: Report
+### Step 6: Write Phase Artifact
+
+This skill participates in a phase chain (see `~/.claude/skills/_shared/resources/phase-protocol.md`).
+
+After tests complete, write a `test-{ts}.md` artifact to `.context/phases/` (create with `mkdir -p .context/phases`). The **Detail** section should include pass/fail status, coverage metrics, and failing test details. The **Handoff** section should state: ready to ship or needs fixes (with specifics).
+
+### Step 7: Report
 
 ```markdown
 ## Test Results

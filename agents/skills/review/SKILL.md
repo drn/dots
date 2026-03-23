@@ -18,6 +18,16 @@ Run a comprehensive code review (security, architecture, clarity) against your c
 - Changes vs main: !`git diff --stat HEAD...origin/main 2>/dev/null | head -50`
 - Changes vs master: !`git diff --stat HEAD...origin/master 2>/dev/null | head -50`
 
+## Phase Protocol
+
+This skill participates in a phase chain. Read `~/.claude/skills/_shared/resources/phase-protocol.md` for the full protocol.
+
+**Before starting:** Check `.context/phases/` for prior artifacts:
+- Read the latest `plan-*.md` for the original intent and decisions — review the diff against plan expectations, flagging deviations.
+- Read the latest `build-*.md` for what was built and any notes from the implementer.
+
+**After Step 4 (report):** Write a `review-{ts}.md` artifact to `.context/phases/` (create with `mkdir -p .context/phases`). The **Handoff** section should state: PASS (ready to ship) or FAIL (needs changes, list what), plus any warnings `/pr` should include in the PR description.
+
 ## Instructions
 
 You run a code review and produce a consolidated report.
