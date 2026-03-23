@@ -14,6 +14,14 @@ description: Merge current branch to master via GitHub PR merge. Use when ready 
 - Diff stat (upstream): !`git diff upstream/master..HEAD --stat 2>/dev/null | head -50`
 - Diff stat (origin): !`git diff origin/master..HEAD --stat 2>/dev/null | head -50`
 
+## Phase Protocol
+
+This skill participates in a phase chain. Read `~/.claude/skills/_shared/resources/phase-protocol.md` for the full protocol.
+
+**Before merging:** Read the latest `.context/phases/ship-*.md` for the PR number/URL if available.
+
+**After merge completes:** Write a `land-{ts}.md` artifact to `.context/phases/` (create with `mkdir -p .context/phases`). The **Detail** section should include the merge commit SHA and PR URL. Optionally archive all phase artifacts: `mkdir -p .context/phases/archive && mv .context/phases/*.md .context/phases/archive/`.
+
 ## Your task
 
 Merge the current branch into master via GitHub PR merge. An existing PR is NOT required — one will be created if needed.

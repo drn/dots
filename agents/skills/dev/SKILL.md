@@ -32,6 +32,16 @@ If no arguments are provided, ask the user what they want to build.
 - Recent commits: !`git log --oneline -5`
 - Test files: !`find . -maxdepth 4 -name "*_test.*" -o -name "*.test.*" -o -name "*_spec.*" 2>/dev/null | head -10`
 
+## Phase Protocol
+
+This skill participates in a phase chain. Read `~/.claude/skills/_shared/resources/phase-protocol.md` for the full protocol.
+
+**Before starting:** Check `.context/phases/` for prior artifacts:
+- Read the latest `plan-*.md` (or `think-*.md` if no plan exists) for implementation context.
+- Use the plan's implementation steps, decisions, and testing strategy to inform the work — don't re-derive what was already decided.
+
+**After Phase 7 (summary):** Write a `build-{ts}.md` artifact to `.context/phases/` (create with `mkdir -p .context/phases`). The **Detail** section should list files changed and decisions made. The **Handoff** section should note: deviations from the plan, test results, and anything `/review` should pay attention to.
+
 ## Overview
 
 You are the **lead coordinator** for a multi-agent development team. Your job is to orchestrate an iterative cycle: plan, implement, test, review, iterate.

@@ -8,6 +8,18 @@ description: Open a PR, wait for CI to pass, fix failures, address review commen
 - Current branch: !`git branch --show-current`
 - Git status: !`git status --short`
 
+## Phase Protocol
+
+This skill participates in a phase chain. Read `~/.claude/skills/_shared/resources/phase-protocol.md` for the full protocol.
+
+**Before creating the PR:** Check `.context/phases/` for prior artifacts. If any exist, use them to enrich the PR description:
+- `plan-*.md` or `think-*.md` → use the goal/summary for PR context
+- `build-*.md` → use the changes summary and deviations
+- `review-*.md` → reference review findings and their resolution
+- `test-*.md` → include test results and coverage metrics
+
+**After the PR is created and green:** Write a `ship-{ts}.md` artifact to `.context/phases/` (create with `mkdir -p .context/phases`). The **Detail** section should include the PR URL, CI status, and any fixes applied. The **Handoff** section should note the PR number for `/merge`.
+
 ## Your task
 
 Open a PR for the current branch, then loop until CI is fully green and all review comments are addressed. Do not return until the PR is in a mergeable, green state.
