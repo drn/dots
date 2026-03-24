@@ -11,6 +11,6 @@ SESSION=$(echo "$INPUT" | jq -r '.session_id // empty')
 CWD=$(echo "$INPUT" | jq -r '.cwd // empty')
 TS=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 
-mkdir -p ~/.dots/sys
+mkdir -p ~/.dots/sys/skill-usage
 jq -nc --arg ts "$TS" --arg skill "$SKILL" --arg session_id "$SESSION" --arg cwd "$CWD" \
-  '{ts:$ts,skill:$skill,session_id:$session_id,cwd:$cwd}' >> ~/.dots/sys/skill-usage.jsonl
+  '{ts:$ts,skill:$skill,session_id:$session_id,cwd:$cwd}' >> ~/.dots/sys/skill-usage/usage.jsonl

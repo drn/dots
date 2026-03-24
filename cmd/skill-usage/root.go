@@ -19,7 +19,7 @@ import (
 )
 
 // logPath is the JSONL log file, overridable for testing.
-var logPath = path.FromDots("sys/skill-usage.jsonl")
+var logPath = path.FromDots("sys/skill-usage/usage.jsonl")
 
 // skillsDir is the directory containing installed skills, overridable for testing.
 var skillsDir = path.FromHome(".claude/skills")
