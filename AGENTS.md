@@ -55,8 +55,9 @@ dots doctor                                   # Run diagnostics
 │   └── install/              # Component installers
 ├── agents/
 │   ├── skills/               # Cross-agent skills (SKILL.md per skill)
+│   ├── hooks/                # Claude Code hooks (registered via dots install agents)
 │   └── custom/               # Custom agent types (.md per agent → ~/.claude/agents/)
-├── cmd/                      # 22 standalone utilities
+├── cmd/                      # 25 standalone utilities
 └── pkg/                      # Shared utilities (log, run, cache, path)
 ```
 
@@ -94,7 +95,7 @@ dots doctor                                   # Run diagnostics
 | hammerspoon | Window management |
 | tools | Devbox, Claude Code, Codex |
 | osx | macOS defaults |
-| agents | Agent skills and custom agents (symlinks agents/skills → ~/.claude/skills + ~/.agents/skills, agents/custom → ~/.claude/agents) |
+| agents | Agent skills, custom agents, and hooks (symlinks agents/skills → ~/.claude/skills + ~/.agents/skills, agents/custom → ~/.claude/agents, registers agents/hooks/ in settings.json) |
 
 ## Writing Skills / Slash Commands
 
@@ -172,6 +173,7 @@ When the user's message matches a phrase below, read and follow the correspondin
 | "improve skills", "capture learnings", "upgrade context", "learn from session" | `agents/skills/improve/SKILL.md` |
 | "amend", "amend commit", "rewrite commit message", "improve commit message", "fix commit message" | `agents/skills/amend/SKILL.md` |
 | "explain like I'm 5", "eli5", "explain simply", "dumb it down", "explain in simple terms" | `agents/skills/eli5/SKILL.md` |
+| "skill usage", "which skills do I use", "unused skills", "skill stats", "skill suggestions" | `agents/skills/skill-usage/SKILL.md` |
 
 ## Public Repo Policy
 

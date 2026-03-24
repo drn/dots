@@ -53,7 +53,7 @@ dots docker stop-all     # Stop all Docker containers
 
 | Component | What it installs |
 |-----------|------------------|
-| `agents` | Agent skills and custom agents (symlinks `agents/skills/` → `~/.claude/skills/` + `~/.agents/skills/`, `agents/custom/` → `~/.claude/agents/`) |
+| `agents` | Agent skills, custom agents, and hooks (symlinks `agents/skills/` → `~/.claude/skills/` + `~/.agents/skills/`, `agents/custom/` → `~/.claude/agents/`, registers `agents/hooks/` in settings.json) |
 | `bin` | Custom shell scripts and Go utilities to `~/bin` |
 | `git` | `.gitconfig`, `.gitignore_global`, git extensions |
 | `home` | Dotfiles symlinked to `~/` (`.zshrc`, `.vimrc`, `.tmux.conf`, `.gitconfig`, etc.) |
@@ -68,7 +68,7 @@ dots docker stop-all     # Stop all Docker containers
 
 ## Agent Skills
 
-Dots includes 45 reusable slash-command skills for AI coding agents, following the [Agent Skills](https://agentskills.io) open standard. Each skill lives in `agents/skills/<name>/SKILL.md` and is available as `/<name>` in Claude Code after running `dots install agents`.
+Dots includes 46 reusable slash-command skills for AI coding agents, following the [Agent Skills](https://agentskills.io) open standard. Each skill lives in `agents/skills/<name>/SKILL.md` and is available as `/<name>` in Claude Code after running `dots install agents`.
 
 | Skill | Description |
 |-------|-------------|
@@ -111,6 +111,7 @@ Dots includes 45 reusable slash-command skills for AI coding agents, following t
 | `/equip` | Analyze a spec or codebase to identify missing skills and agents, then write them |
 | `/cross-agent` | Set up cross-agent skill infrastructure for multi-agent compatibility |
 | `/loop` | Run a prompt on a recurring interval for polling, monitoring, and babysitting |
+| `/skill-usage` | Show skill usage statistics, charts, and suggestions for pruning unused skills |
 
 Skills use YAML frontmatter for metadata and dynamic context injection via shell commands. Some skills delegate to standalone bash scripts in `agents/skills/<name>/scripts/`. See `/write-skill` for the full authoring guide.
 
@@ -179,7 +180,7 @@ Run `dots install agents` to symlink them to `~/.claude/agents/`.
 ├── fonts/                     # Developer fonts
 │
 ├── agents/                    # Agent configuration
-│   ├── skills/                # 45 reusable skills (SKILL.md per skill)
+│   ├── skills/                # 46 reusable skills (SKILL.md per skill)
 │   └── custom/                # 3 custom agent types (.md per agent)
 │       └── tests/             # Skill test suite
 │
