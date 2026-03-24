@@ -1,6 +1,6 @@
 ---
 name: ship
-description: "Review, address findings, improve, address improvements, then merge. Full ship pipeline: /review + fix + /improve + fix + /merge in one command."
+description: "Full ship pipeline: /review + fix + /improve + fix + /merge in one command. Use when ready to ship a branch end-to-end."
 disable-model-invocation: true
 ---
 
@@ -39,7 +39,7 @@ If any phase has nothing to do (no findings, no improvements), skip it and move 
 
 Invoke the `/review` skill to analyze the current branch changes. Wait for the full report.
 
-If the review returns **no blocking issues and no warnings**, print:
+If the review returns **no blocking issues, no warnings, and no suggestions**, print:
 
 > Review clean — skipping to Phase 3.
 
@@ -61,20 +61,27 @@ If there are no blocking issues, skip to 2b.
 ### 2b: Fix WARNING issues
 
 For each warning in the review report:
-1. Read the referenced file and evaluate the warning
-2. If it is a real issue, fix it and commit
-3. If it is a false positive or intentional design choice, skip it
+1. Read the referenced file and understand the warning
+2. Make the minimal fix and commit
+3. Do NOT skip warnings — treat every warning as actionable and fix it
 
-### 2c: Verify fixes
+### 2c: Fix SUGGESTION / INFO issues
 
-After addressing findings, run the test suite to confirm nothing broke:
+For each suggestion or INFO-level finding in the review report:
+1. Read the referenced file and understand the suggestion
+2. Apply the improvement and commit
+3. Do NOT skip suggestions — apply all of them
+
+### 2d: Verify fixes
+
+After addressing all findings (blocking, warnings, and suggestions), run the test suite to confirm nothing broke:
 - Detect test runner from project type (go.mod, package.json, Gemfile, Cargo.toml, pyproject.toml)
 - Run the tests
 - If tests fail, diagnose and fix before proceeding
 
 Print a summary of what was addressed:
 
-> Phase 2 complete: fixed N blocking issues, N warnings. Tests passing.
+> Phase 2 complete: fixed N blocking issues, N warnings, N suggestions. Tests passing.
 
 ## Phase 3: Improve
 
@@ -82,12 +89,14 @@ Check if `$ARGUMENTS` contains "skip-improve". If so, skip to Phase 5.
 
 Invoke the `/improve` skill. This will analyze the session for skill improvements, codebase gaps, and knowledge updates.
 
-**Important:** When `/improve` asks for approval on changes, auto-approve all changes EXCEPT:
-- New skill creation (let the user decide)
-- External skill handoffs (present to user)
-- Large refactors or breaking changes (present to user)
+**Important:** Auto-apply ALL changes from `/improve` without asking for approval. This includes:
+- Skill improvements (local skills only — external handoffs are still presented to user)
+- Codebase gap fixes
+- Agent guidance updates
+- Knowledge captures
+- New skill creation proposals
 
-For straightforward fixes (docs, missing error handling, agent guidance updates, knowledge captures), apply them directly.
+Do NOT pause for confirmation. Apply everything directly and commit. The only exception is external skill handoffs (different repo), which are printed as handoff prompts for the user.
 
 ## Phase 4: Address Improvements
 
@@ -124,8 +133,8 @@ After the pipeline completes (or aborts), print:
 
 | Phase | Status | Details |
 |-------|--------|---------|
-| Review | {done/skipped} | {N blocking, N warnings found} |
-| Address Review | {done/skipped} | {N fixed, N skipped} |
+| Review | {done/skipped} | {N blocking, N warnings, N suggestions found} |
+| Address Review | {done/skipped} | {N blocking fixed, N warnings fixed, N suggestions applied} |
 | Improve | {done/skipped} | {N improvements applied} |
 | Address Improvements | {done/skipped} | {N commits} |
 | Merge | {done/blocked/failed} | {PR URL or error} |
