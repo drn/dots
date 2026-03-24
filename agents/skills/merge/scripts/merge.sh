@@ -193,7 +193,7 @@ update_local_master() {
 }
 
 sync_dots() {
-  if [[ "${CONDUCTOR_ROOT_PATH:-}" != *"/.dots/"* && "${CONDUCTOR_ROOT_PATH:-}" != *"/.dots" ]]; then
+  if [[ "${REPO_SLUG:-}" != */dots ]]; then
     return 0
   fi
 
