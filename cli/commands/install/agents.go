@@ -41,7 +41,12 @@ func Agents() {
 func registerSkillTrackingHook() {
 	settingsPath := path.FromHome(".claude/settings.json")
 
-	// Read existing settings
+	// Read existing settings, preserving file mode
+	fileMode := os.FileMode(0600)
+	if info, err := os.Stat(settingsPath); err == nil {
+		fileMode = info.Mode()
+	}
+
 	data, err := os.ReadFile(settingsPath)
 	if err != nil {
 		if os.IsNotExist(err) {
@@ -59,7 +64,7 @@ func registerSkillTrackingHook() {
 	}
 
 	// Build the hook entry
-	hookCmd := "bash " + path.FromDots("agents/hooks/track-skill-use.sh")
+	hookCmd := "bash \"" + path.FromDots("agents/hooks/track-skill-use.sh") + "\""
 	hookEntry := map[string]any{
 		"matcher": "Skill",
 		"hooks": []any{
@@ -99,7 +104,7 @@ func registerSkillTrackingHook() {
 	}
 	out = append(out, '\n')
 
-	if err := os.WriteFile(settingsPath, out, 0644); err != nil {
+	if err := os.WriteFile(settingsPath, out, fileMode); err != nil {
 		log.Warning("Failed to write settings: %s", err.Error())
 		return
 	}

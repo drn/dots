@@ -136,6 +136,9 @@ func loadEntries(logFile string, cutoff time.Time) []entry {
 		}
 		entries = append(entries, e)
 	}
+	if err := scanner.Err(); err != nil {
+		fmt.Fprintf(os.Stderr, "Warning: error reading log: %v\n", err)
+	}
 	return entries
 }
 
@@ -244,6 +247,9 @@ type suggestion struct {
 	RarelyUsed []skillCount `json:"rarely_used"`
 }
 
+// rarelyUsedThreshold is the max invocation count to classify a skill as "rarely used".
+const rarelyUsedThreshold = 2
+
 // buildSuggestion creates a structured suggestion from usage data.
 func buildSuggestion(counts map[string]int, allSkills []string) suggestion {
 	sorted := sortedCounts(counts)
@@ -259,7 +265,7 @@ func buildSuggestion(counts map[string]int, allSkills []string) suggestion {
 		c := counts[skill]
 		if c == 0 {
 			neverUsed = append(neverUsed, skill)
-		} else if c <= 2 {
+		} else if c <= rarelyUsedThreshold {
 			rarelyUsed = append(rarelyUsed, skillCount{Name: skill, Count: c})
 		}
 	}

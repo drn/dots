@@ -18,11 +18,11 @@ func writeTestLog(t *testing.T, lines string) string {
 }
 
 func TestLoadEntries_ParsesJSONL(t *testing.T) {
-	log := `{"ts":"2026-03-20T10:00:00Z","skill":"pr","session_id":"s1","cwd":"/tmp"}
+	logData := `{"ts":"2026-03-20T10:00:00Z","skill":"pr","session_id":"s1","cwd":"/tmp"}
 {"ts":"2026-03-21T10:00:00Z","skill":"test","session_id":"s2","cwd":"/tmp"}
 {"ts":"2026-03-22T10:00:00Z","skill":"pr","session_id":"s3","cwd":"/tmp"}
 `
-	p := writeTestLog(t, log)
+	p := writeTestLog(t, logData)
 	entries := loadEntries(p, time.Time{})
 	if len(entries) != 3 {
 		t.Fatalf("got %d entries, want 3", len(entries))
@@ -33,10 +33,10 @@ func TestLoadEntries_ParsesJSONL(t *testing.T) {
 }
 
 func TestLoadEntries_FiltersByCutoff(t *testing.T) {
-	log := `{"ts":"2026-03-01T10:00:00Z","skill":"old","session_id":"s1","cwd":"/tmp"}
+	logData := `{"ts":"2026-03-01T10:00:00Z","skill":"old","session_id":"s1","cwd":"/tmp"}
 {"ts":"2026-03-22T10:00:00Z","skill":"new","session_id":"s2","cwd":"/tmp"}
 `
-	p := writeTestLog(t, log)
+	p := writeTestLog(t, logData)
 	cutoff := time.Date(2026, 3, 15, 0, 0, 0, 0, time.UTC)
 	entries := loadEntries(p, cutoff)
 	if len(entries) != 1 {
@@ -48,11 +48,11 @@ func TestLoadEntries_FiltersByCutoff(t *testing.T) {
 }
 
 func TestLoadEntries_SkipsMalformedLines(t *testing.T) {
-	log := `not json
+	logData := `not json
 {"ts":"2026-03-22T10:00:00Z","skill":"","session_id":"s1","cwd":"/tmp"}
 {"ts":"2026-03-22T10:00:00Z","skill":"good","session_id":"s2","cwd":"/tmp"}
 `
-	p := writeTestLog(t, log)
+	p := writeTestLog(t, logData)
 	entries := loadEntries(p, time.Time{})
 	if len(entries) != 1 {
 		t.Fatalf("got %d entries, want 1", len(entries))
