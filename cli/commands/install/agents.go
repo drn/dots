@@ -34,14 +34,17 @@ func Agents() {
 
 	// Register skill usage tracking hook
 	registerSkillTrackingHook()
+
+	// Register status line
+	registerStatusLine()
 }
 
-// registerSkillTrackingHook adds a PreToolUse hook for the Skill tool to
-// ~/.claude/settings.json so that skill invocations are logged.
-func registerSkillTrackingHook() {
+// mutateSettings reads ~/.claude/settings.json, applies a mutation function,
+// and writes the result back. The mutation function returns true if changes
+// were made and should be persisted.
+func mutateSettings(mutate func(settings map[string]any) bool) bool {
 	settingsPath := path.FromHome(".claude/settings.json")
 
-	// Read existing settings, preserving file mode
 	fileMode := os.FileMode(0600)
 	if info, err := os.Stat(settingsPath); err == nil {
 		fileMode = info.Mode()
@@ -53,71 +56,105 @@ func registerSkillTrackingHook() {
 			data = []byte("{}")
 		} else {
 			log.Warning("Failed to read settings: %s", err.Error())
-			return
+			return false
 		}
 	}
 
 	var settings map[string]any
 	if err := json.Unmarshal(data, &settings); err != nil {
 		log.Warning("Failed to parse settings: %s", err.Error())
-		return
+		return false
 	}
 
-	// Build the hook entry
-	hookCmd := "bash \"" + path.FromDots("agents/hooks/track-skill-use.sh") + "\""
-	hookEntry := map[string]any{
-		"matcher": "Skill",
-		"hooks": []any{
-			map[string]any{
-				"type":    "command",
-				"command": hookCmd,
-			},
-		},
+	if !mutate(settings) {
+		return false
 	}
 
-	// Get or create hooks.PreToolUse array
-	hooks, _ := settings["hooks"].(map[string]any)
-	if hooks == nil {
-		hooks = make(map[string]any)
-	}
-
-	preToolUse, _ := hooks["PreToolUse"].([]any)
-
-	// Check if a Skill matcher already exists
-	for _, existing := range preToolUse {
-		if entry, ok := existing.(map[string]any); ok {
-			if entry["matcher"] == "Skill" {
-				return // already registered
-			}
-		}
-	}
-
-	preToolUse = append(preToolUse, hookEntry)
-	hooks["PreToolUse"] = preToolUse
-	settings["hooks"] = hooks
-
-	// Write back
 	out, err := json.MarshalIndent(settings, "", "  ")
 	if err != nil {
 		log.Warning("Failed to marshal settings: %s", err.Error())
-		return
+		return false
 	}
 	out = append(out, '\n')
 
 	if err := os.WriteFile(settingsPath, out, fileMode); err != nil {
 		log.Warning("Failed to write settings: %s", err.Error())
-		return
+		return false
 	}
 
-	log.Success("Registered skill usage tracking hook")
+	return true
+}
+
+// registerSkillTrackingHook adds a PreToolUse hook for the Skill tool to
+// ~/.claude/settings.json so that skill invocations are logged.
+func registerSkillTrackingHook() {
+	changed := mutateSettings(func(settings map[string]any) bool {
+		hookCmd := "bash \"" + path.FromDots("agents/hooks/track-skill-use.sh") + "\""
+		hookEntry := map[string]any{
+			"matcher": "Skill",
+			"hooks": []any{
+				map[string]any{
+					"type":    "command",
+					"command": hookCmd,
+				},
+			},
+		}
+
+		hooks, _ := settings["hooks"].(map[string]any)
+		if hooks == nil {
+			hooks = make(map[string]any)
+		}
+
+		preToolUse, _ := hooks["PreToolUse"].([]any)
+
+		for _, existing := range preToolUse {
+			if entry, ok := existing.(map[string]any); ok {
+				if entry["matcher"] == "Skill" {
+					return false // already registered
+				}
+			}
+		}
+
+		preToolUse = append(preToolUse, hookEntry)
+		hooks["PreToolUse"] = preToolUse
+		settings["hooks"] = hooks
+		return true
+	})
+
+	if changed {
+		log.Success("Registered skill usage tracking hook")
+	}
+}
+
+// registerStatusLine configures the Claude Code status line to show context
+// window usage and compaction proximity via ~/.claude/settings.json.
+func registerStatusLine() {
+	changed := mutateSettings(func(settings map[string]any) bool {
+		scriptPath := path.FromDots("agents/hooks/statusline.sh")
+		statusLine := map[string]any{
+			"type":    "command",
+			"command": "bash \"" + scriptPath + "\"",
+		}
+
+		if existing, ok := settings["statusLine"].(map[string]any); ok {
+			if existing["command"] == statusLine["command"] {
+				return false // already registered
+			}
+		}
+
+		settings["statusLine"] = statusLine
+		return true
+	})
+
+	if changed {
+		log.Success("Registered status line (context usage)")
+	}
 }
 
 func ensureDir(dir string) bool {
-	if _, err := os.Stat(dir); os.IsNotExist(err) {
-		if err := os.MkdirAll(dir, 0755); err != nil {
-			log.Error("Failed to create directory %s: %s", dir, err.Error())
-			return false
-		}
+	if err := os.MkdirAll(dir, 0755); err != nil {
+		log.Error("Failed to create directory %s: %s", dir, err.Error())
+		return false
 	}
 	return true
 }
