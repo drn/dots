@@ -53,7 +53,7 @@ dots docker stop-all     # Stop all Docker containers
 
 | Component | What it installs |
 |-----------|------------------|
-| `agents` | Agent skills, custom agents, and hooks (symlinks `agents/skills/` → `~/.claude/skills/` + `~/.agents/skills/`, `agents/custom/` → `~/.claude/agents/`, registers `agents/hooks/` in settings.json) |
+| `agents` | Agent skills, custom agents, hooks, and status line (symlinks `agents/skills/` → `~/.claude/skills/` + `~/.agents/skills/`, `agents/custom/` → `~/.claude/agents/`, registers hooks and status line in `~/.claude/settings.json`) |
 | `bin` | Custom shell scripts and Go utilities to `~/bin` |
 | `git` | `.gitconfig`, `.gitignore_global`, git extensions |
 | `home` | Dotfiles symlinked to `~/` (`.zshrc`, `.vimrc`, `.tmux.conf`, `.gitconfig`, etc.) |

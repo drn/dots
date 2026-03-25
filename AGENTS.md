@@ -95,7 +95,7 @@ dots doctor                                   # Run diagnostics
 | hammerspoon | Window management |
 | tools | Devbox, Claude Code, Codex |
 | osx | macOS defaults |
-| agents | Agent skills, custom agents, and hooks (symlinks agents/skills → ~/.claude/skills + ~/.agents/skills, agents/custom → ~/.claude/agents, registers agents/hooks/ in settings.json) |
+| agents | Agent skills, custom agents, hooks, and status line (symlinks agents/skills → ~/.claude/skills + ~/.agents/skills, agents/custom → ~/.claude/agents, registers hooks and status line in ~/.claude/settings.json) |
 
 ## Writing Skills / Slash Commands
 
