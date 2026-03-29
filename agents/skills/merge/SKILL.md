@@ -26,6 +26,27 @@ This skill participates in a phase chain. Read `~/.claude/skills/_shared/resourc
 
 Merge the current branch into master via GitHub PR merge. An existing PR is NOT required — one will be created if needed.
 
+### Step 0: Preflight — ahead/behind check
+
+Before committing anything, verify the branch is in a mergeable state.
+
+Run:
+
+```bash
+TARGET=$(git remote | grep -q '^upstream$' && echo upstream || echo origin)
+git fetch "$TARGET" 2>/dev/null | head -0
+AHEAD=$(git log "$TARGET/master..HEAD" --oneline 2>/dev/null | wc -l | tr -d ' ')
+BEHIND=$(git log "HEAD..$TARGET/master" --oneline 2>/dev/null | wc -l | tr -d ' ')
+DIRTY=$(git status --short 2>/dev/null | wc -l | tr -d ' ')
+echo "ahead=$AHEAD behind=$BEHIND dirty=$DIRTY"
+```
+
+Decide based on the output:
+
+- **ahead=0 and dirty=0** — Stop. Reply: "Nothing to merge — branch has no commits ahead of master and working tree is clean."
+- **behind > 0** — Stop regardless of dirty count. Reply: "Branch is N commit(s) behind master. Rebase onto current master before running /merge — merging from an old base would create a misleading reverse-diff PR."
+- **Otherwise** (ahead > 0, or dirty > 0 with behind = 0) — Proceed to Step 1.
+
 ### Step 1: Commit uncommitted changes
 
 If git status shows uncommitted changes, stage and commit them with an appropriate message. Skip if working tree is clean.
