@@ -12,7 +12,7 @@ import (
 )
 
 // Info - symbol temperature
-// eg. 敖 49°
+// eg. 󰖑 49°
 func Info() string {
 	data := fetchWeatherJSON()
 	if data == "" || jsoniter.Get([]byte(data), "cod").ToInt() != 200 {
@@ -34,34 +34,34 @@ func conditions(data string) string {
 	switch {
 	case code >= 200 && code <= 232 && (code <= 202 || code >= 230):
 		// Thunderstorm (with rain)
-		return "\ufb7c "
+		return "\U000f067e "
 	case code >= 210 && code <= 221:
 		// Thunderstorm (no rain)
-		return "\ufa92"
+		return "\U000f0593"
 	case code >= 300 && code <= 321:
 		// Drizzle
-		return "\ufa96"
+		return "\U000f0597"
 	case code >= 500 && code <= 531:
 		// Rain
-		return "\ufa95"
+		return "\U000f0596"
 	case code >= 600 && code <= 622:
 		// Snow
-		return "\ufa97"
+		return "\U000f0598"
 	case code >= 701 && code <= 762:
 		// Mist, Smoke, Haze, Dust, Fog, Sand, Ash
-		return "\ufa90"
+		return "\U000f0591"
 	case code == 771 || code == 781:
 		// Squall, Tornado
 		return "\ue351 "
 	case code == 800:
 		// Clear
 		if isNight(data) {
-			return "\ufa93"
+			return "\U000f0594"
 		}
-		return "\ufa98"
+		return "\U000f0599"
 	case code >= 801 && code <= 804:
 		// Clouds
-		return "\ufa94"
+		return "\U000f0595"
 	default:
 		return "\ue348 "
 	}

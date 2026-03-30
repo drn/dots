@@ -37,7 +37,7 @@ func (pos Position) Med() {
 // Max - full display
 func (pos Position) Max() {
 	second := second()
-	third := string('\ufaa9')
+	third := string('\U000f05aa')
 	if second != "Offline" {
 		third = externalIP()
 	}
@@ -56,7 +56,7 @@ func (pos Position) Max() {
 func first() string {
 	return fmt.Sprintf(
 		"#S%s%s",
-		fmt.Sprintf("#{?window_zoomed_flag, %s \uf848,}", sep.R2),
+		fmt.Sprintf("#{?window_zoomed_flag, %s \U000f0349,}", sep.R2),
 		fmt.Sprintf("#{?window_marked_flag, %s \uf041,}", sep.R2),
 	)
 }
@@ -76,15 +76,15 @@ func localIP() string {
 func externalIP() string {
 	externalIP := run.Capture("ip")
 	if externalIP == "" {
-		return string('\ufaa9')
+		return string('\U000f05aa')
 	}
 	homeIP := run.Capture("ip --home")
 	if homeIP == "" {
-		return string('\ufaa9')
+		return string('\U000f05aa')
 	}
-	symbol := '\uf7b6' // globe
+	symbol := '\U000f02b7' // globe
 	if externalIP == homeIP {
-		symbol = '\ufccf' // home
+		symbol = '\U000f07d1' // home
 	}
 	return fmt.Sprintf("%s %c", externalIP, symbol)
 }

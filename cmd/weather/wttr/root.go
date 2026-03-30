@@ -9,7 +9,7 @@ import (
 )
 
 // Info - symbol temperature
-// eg. 敖 49°
+// eg. 󰖑 49°
 func Info() string {
 	weather := run.Capture("curl -s -m 0.5 'wttr.in?u&format=%%t+%%x'")
 	parts := strings.Split(weather, " ")
@@ -35,27 +35,27 @@ func formatTemp(temp string) string {
 func conditionSymbol(condition string) rune {
 	switch condition {
 	case "mmm", "mm": // VeryCloudy, Cloudy
-		return '\ufa8f'
+		return '\U000f0590'
 	case "=": // Fog
-		return '\ufa90'
+		return '\U000f0591'
 	case "///", "//": // HeavyRain, HeavyShowers
-		return '\ufa95'
+		return '\U000f0596'
 	case "**", "*/*", "*": // HeavySnow, HeavySnowShowers, LightSnow
-		return '\ufa97'
+		return '\U000f0598'
 	case "/", ".": // LightRain, LightShowers
-		return '\ufa96'
+		return '\U000f0597'
 	case "x", "x/": // LightSleet, LightSleetShowers
-		return '\ufa91'
+		return '\U000f0592'
 	case "*/": // LightSnowShowers
-		return '\ufb7d'
+		return '\U000f067f'
 	case "m": // PartlyCloudy
-		return '\ufa94'
+		return '\U000f0595'
 	case "o": // Sunny
-		return '\ufa98'
+		return '\U000f0599'
 	case "/!/", "!/": // ThunderyHeavyRain, ThunderyShowers
-		return '\ufb7c'
+		return '\U000f067e'
 	case "*!*": // ThunderySnowShowers
-		return '\ufa92'
+		return '\U000f0593'
 	}
 	// Unknown
 	return '\ue348'
