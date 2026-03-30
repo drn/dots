@@ -11,40 +11,40 @@ func TestConditions(t *testing.T) {
 		want string
 	}{
 		// Thunderstorm with rain
-		{200, "\ufb7c "},
-		{201, "\ufb7c "},
-		{202, "\ufb7c "},
-		{230, "\ufb7c "},
-		{231, "\ufb7c "},
-		{232, "\ufb7c "},
+		{200, "\U000f067e "},
+		{201, "\U000f067e "},
+		{202, "\U000f067e "},
+		{230, "\U000f067e "},
+		{231, "\U000f067e "},
+		{232, "\U000f067e "},
 		// Thunderstorm no rain
-		{210, "\ufa92"},
-		{211, "\ufa92"},
-		{212, "\ufa92"},
-		{221, "\ufa92"},
+		{210, "\U000f0593"},
+		{211, "\U000f0593"},
+		{212, "\U000f0593"},
+		{221, "\U000f0593"},
 		// Drizzle
-		{300, "\ufa96"},
-		{301, "\ufa96"},
-		{321, "\ufa96"},
+		{300, "\U000f0597"},
+		{301, "\U000f0597"},
+		{321, "\U000f0597"},
 		// Rain
-		{500, "\ufa95"},
-		{501, "\ufa95"},
-		{531, "\ufa95"},
+		{500, "\U000f0596"},
+		{501, "\U000f0596"},
+		{531, "\U000f0596"},
 		// Snow
-		{600, "\ufa97"},
-		{601, "\ufa97"},
-		{622, "\ufa97"},
+		{600, "\U000f0598"},
+		{601, "\U000f0598"},
+		{622, "\U000f0598"},
 		// Mist, Smoke, Haze, Dust, Fog, Sand, Ash
-		{701, "\ufa90"},
-		{711, "\ufa90"},
-		{762, "\ufa90"},
+		{701, "\U000f0591"},
+		{711, "\U000f0591"},
+		{762, "\U000f0591"},
 		// Squall, Tornado
 		{771, "\ue351 "},
 		{781, "\ue351 "},
 		// Clouds
-		{801, "\ufa94"},
-		{802, "\ufa94"},
-		{804, "\ufa94"},
+		{801, "\U000f0595"},
+		{802, "\U000f0595"},
+		{804, "\U000f0595"},
 		// Unknown
 		{999, "\ue348 "},
 		{0, "\ue348 "},
@@ -61,12 +61,12 @@ func TestConditions(t *testing.T) {
 
 func TestConditions_Clear_DayVsNight(t *testing.T) {
 	day := buildWeatherJSON(800, "01d")
-	if got := conditions(day); got != "\ufa98" {
+	if got := conditions(day); got != "\U000f0599" {
 		t.Errorf("conditions(800, day) = %q, want sun icon", got)
 	}
 
 	night := buildWeatherJSON(800, "01n")
-	if got := conditions(night); got != "\ufa93" {
+	if got := conditions(night); got != "\U000f0594" {
 		t.Errorf("conditions(800, night) = %q, want moon icon", got)
 	}
 }
