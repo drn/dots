@@ -188,7 +188,10 @@ Multi-agent skills (like `/dev`, `/debug`, `/explore`) use the Task tool to spaw
 
 ### Step 4: Validate
 
-After writing, check the skill for:
+After writing, run two validation passes. Fix issues silently — only flag if the fix would change the skill's intent.
+
+#### Syntax and Safety
+
 - [ ] No `$()` in any dynamic context line
 - [ ] No `||` or `&&` operators in any dynamic context line
 - [ ] Error-prone commands use `2>/dev/null | head -N` (suppresses stderr AND neutralizes exit code)
@@ -198,5 +201,29 @@ After writing, check the skill for:
 - [ ] No contractions (don't, can't, won't) in the skill body
 - [ ] Destructive skills have `disable-model-invocation: true`
 - [ ] No company-specific names, internal tools, or proprietary patterns (this is a public repo)
+
+#### Content Quality
+
+Scan the skill for these failure patterns. Fix any you find — these are the patterns that cause skills to waste tokens, loop endlessly, or produce wrong results.
+
+**Task clarity**
+- [ ] No vague verbs ("help with", "handle", "deal with") — replace with precise operations ("refactor", "extract", "migrate")
+- [ ] Single responsibility — skill does one thing, not two unrelated tasks bundled together
+- [ ] Success criteria defined — the skill states what "done" looks like, not just what to do
+
+**Scope control**
+- [ ] Skills that edit code specify file/directory boundaries, not global instructions
+- [ ] Skills that spawn agents scope each agent to specific files or responsibilities
+- [ ] No unbounded work — complex tasks are broken into numbered steps with clear boundaries
+
+**Stop conditions**
+- [ ] Agentic skills (using Task tool, running commands, editing files) have explicit stop/abort conditions
+- [ ] Looping skills cap retries (already covered in best practice #5, but verify it is present)
+- [ ] Skills that call external services have failure modes defined ("if X fails, do Y" not infinite retry)
+
+**Context efficiency**
+- [ ] Dynamic context pulls only what the skill needs — no exploratory commands that dump large output
+- [ ] Instructions tell Claude what to do, not background theory on how it works
+- [ ] No redundant context — if CLAUDE.md already provides information, the skill does not re-derive it
 
 Report the validation results and the file path of the new/updated skill.
