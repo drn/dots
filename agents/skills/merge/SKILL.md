@@ -34,7 +34,7 @@ Run:
 
 ```bash
 TARGET=$(git remote | grep -q '^upstream$' && echo upstream || echo origin)
-git fetch "$TARGET" 2>/dev/null | head -0
+git fetch "$TARGET" >/dev/null 2>&1 || true
 AHEAD=$(git log "$TARGET/master..HEAD" --oneline 2>/dev/null | wc -l | tr -d ' ')
 BEHIND=$(git log "HEAD..$TARGET/master" --oneline 2>/dev/null | wc -l | tr -d ' ')
 DIRTY=$(git status --short 2>/dev/null | wc -l | tr -d ' ')

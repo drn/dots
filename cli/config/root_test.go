@@ -3,6 +3,8 @@ package config
 import (
 	"os"
 	"testing"
+
+	"github.com/drn/dots/pkg/path"
 )
 
 func TestParsePath_TwoSegments(t *testing.T) {
@@ -50,12 +52,17 @@ func TestValidateInput_Valid(t *testing.T) {
 	}
 }
 
-func TestReadWriteDelete(t *testing.T) {
+func setupTestHome(t *testing.T) string {
+	t.Helper()
 	tmpDir := t.TempDir()
-	t.Setenv("HOME", tmpDir)
-
-	// Create the config directory
+	path.SetHome(tmpDir)
+	t.Cleanup(func() { path.SetHome("") })
 	os.MkdirAll(tmpDir+"/.dots/sys", 0755)
+	return tmpDir
+}
+
+func TestReadWriteDelete(t *testing.T) {
+	setupTestHome(t)
 
 	// Write
 	ok := Write("test.key", "myvalue")
@@ -78,9 +85,7 @@ func TestReadWriteDelete(t *testing.T) {
 }
 
 func TestAll(t *testing.T) {
-	tmpDir := t.TempDir()
-	t.Setenv("HOME", tmpDir)
-	os.MkdirAll(tmpDir+"/.dots/sys", 0755)
+	setupTestHome(t)
 
 	Write("section1.key1", "val1")
 	Write("section1.key2", "val2")
@@ -96,9 +101,7 @@ func TestAll(t *testing.T) {
 }
 
 func TestRead_MissingKey(t *testing.T) {
-	tmpDir := t.TempDir()
-	t.Setenv("HOME", tmpDir)
-	os.MkdirAll(tmpDir+"/.dots/sys", 0755)
+	setupTestHome(t)
 
 	value := Read("nonexistent.key")
 	if value != "" {

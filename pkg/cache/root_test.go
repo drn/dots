@@ -11,11 +11,20 @@ import (
 // testKey generates a unique cache key for testing to avoid collisions
 const testPrefix = "_test_cache_"
 
+func setupTestHome(t *testing.T) {
+	t.Helper()
+	tmpDir := t.TempDir()
+	path.SetHome(tmpDir)
+	t.Cleanup(func() { path.SetHome("") })
+	os.MkdirAll(tmpDir+"/.dots/sys/cache", 0755)
+}
+
 func cleanupKey(key string) {
 	os.Remove(path.FromCache(key))
 }
 
 func TestWriteAndRead(t *testing.T) {
+	setupTestHome(t)
 	key := testPrefix + "write-read"
 	defer cleanupKey(key)
 
@@ -27,6 +36,7 @@ func TestWriteAndRead(t *testing.T) {
 }
 
 func TestReadMissingKey(t *testing.T) {
+	setupTestHome(t)
 	data := Read(testPrefix+"nonexistent", 60)
 	if data != "" {
 		t.Errorf("expected empty string for missing key, got '%s'", data)
@@ -34,6 +44,7 @@ func TestReadMissingKey(t *testing.T) {
 }
 
 func TestReadExpiredTTL(t *testing.T) {
+	setupTestHome(t)
 	key := testPrefix + "expired"
 	defer cleanupKey(key)
 
@@ -51,6 +62,7 @@ func TestReadExpiredTTL(t *testing.T) {
 }
 
 func TestWarm(t *testing.T) {
+	setupTestHome(t)
 	key := testPrefix + "warm"
 	defer cleanupKey(key)
 
@@ -65,6 +77,7 @@ func TestWarm(t *testing.T) {
 }
 
 func TestTouch(t *testing.T) {
+	setupTestHome(t)
 	key := testPrefix + "touch"
 	defer cleanupKey(key)
 

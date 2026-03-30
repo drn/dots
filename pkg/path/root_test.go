@@ -18,6 +18,20 @@ func TestHome(t *testing.T) {
 	}
 }
 
+func TestSetHome(t *testing.T) {
+	original := Home()
+
+	SetHome("/tmp/test-home")
+	if got := Home(); got != "/tmp/test-home" {
+		t.Errorf("Home() after SetHome = %s, want /tmp/test-home", got)
+	}
+
+	SetHome("")
+	if got := Home(); got != original {
+		t.Errorf("Home() after clear = %s, want %s", got, original)
+	}
+}
+
 func TestDots(t *testing.T) {
 	// Test with DOTS env set
 	original := os.Getenv("DOTS")

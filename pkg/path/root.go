@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/user"
 	"strings"
+	"sync"
 )
 
 // Pretty - Pretty prints the input path
@@ -29,8 +30,30 @@ func FromDots(path string, args ...interface{}) string {
 	return fmt.Sprintf("%s/%s", Dots(), fmt.Sprintf(path, args...))
 }
 
+// homeOverride allows tests to redirect Home() to a temp directory.
+// Not intended for production use — call only from test code.
+var (
+	homeOverride string
+	homeMu       sync.RWMutex
+)
+
+// SetHome overrides the home directory for testing. Pass "" to clear.
+// This is not goroutine-safe with concurrent callers in production;
+// use only from test setup/teardown via t.Cleanup.
+func SetHome(dir string) {
+	homeMu.Lock()
+	homeOverride = dir
+	homeMu.Unlock()
+}
+
 // Home - Returns $HOME path
 func Home() string {
+	homeMu.RLock()
+	override := homeOverride
+	homeMu.RUnlock()
+	if override != "" {
+		return override
+	}
 	u, err := user.Current()
 	if err != nil {
 		if home := os.Getenv("HOME"); home != "" {
