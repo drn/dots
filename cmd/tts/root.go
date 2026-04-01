@@ -11,6 +11,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"regexp"
 	"strings"
 	"syscall"
 
@@ -48,9 +49,14 @@ var voiceMap = map[string]string{
 var hfCacheDir = filepath.Join(os.Getenv("HOME"), ".cache", "huggingface", "hub",
 	"models--hexgrad--Kokoro-82M", "snapshots")
 
+var validVoice = regexp.MustCompile(`^[a-z][a-z0-9_]*$`)
+
 // ensureVoiceCached checks if a Kokoro voice .pt file is in the local HF cache.
 // If not, it downloads it via huggingface_hub (requires network access).
 func ensureVoiceCached(voice string) {
+	if !validVoice.MatchString(voice) {
+		return
+	}
 	matches, err := filepath.Glob(filepath.Join(hfCacheDir, "*", "voices", voice+".pt"))
 	if err == nil && len(matches) > 0 {
 		return
@@ -61,8 +67,18 @@ func ensureVoiceCached(voice string) {
 		voice,
 	)
 	cmd := exec.Command(kokoroPython, "-c", script)
-	cmd.Env = append(os.Environ(), "HF_HUB_OFFLINE=")
-	cmd.Run() // best-effort; if it fails, the TTS call will report the error
+	// Filter out existing HF_HUB_OFFLINE so the download can proceed
+	env := os.Environ()
+	filtered := env[:0]
+	for _, e := range env {
+		if !strings.HasPrefix(e, "HF_HUB_OFFLINE=") {
+			filtered = append(filtered, e)
+		}
+	}
+	cmd.Env = filtered
+	if err := cmd.Run(); err != nil {
+		fmt.Fprintf(os.Stderr, "warning: failed to cache voice %s: %v\n", voice, err)
+	}
 }
 
 // resolveVoice maps a short name to a Kokoro voice ID.

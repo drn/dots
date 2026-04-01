@@ -41,12 +41,33 @@ func TestEnsureVoiceCached_DownloadsWhenMissing(t *testing.T) {
 	hfCacheDir = dir
 	defer func() { hfCacheDir = orig }()
 
-	// Use "true" as Python so the download command "succeeds" (no-op)
+	// Use a script that creates a marker file to prove it was called
+	marker := filepath.Join(dir, "download-called")
 	origPython := kokoroPython
-	kokoroPython = "true"
+	kokoroPython = "bash"
 	defer func() { kokoroPython = origPython }()
 
-	ensureVoiceCached("af_alloy") // should attempt download without panicking
+	// bash -c "touch <marker>" won't match, so use a wrapper script
+	script := filepath.Join(dir, "fake-python")
+	os.WriteFile(script, []byte("#!/bin/bash\ntouch "+marker+"\n"), 0755)
+	kokoroPython = script
+
+	ensureVoiceCached("af_alloy")
+
+	if _, err := os.Stat(marker); os.IsNotExist(err) {
+		t.Error("expected download command to be invoked, but marker file not created")
+	}
+}
+
+func TestEnsureVoiceCached_RejectsInvalidVoice(_ *testing.T) {
+	origPython := kokoroPython
+	kokoroPython = "false" // would fail if called
+	defer func() { kokoroPython = origPython }()
+
+	// Should return early without calling Python for invalid names
+	ensureVoiceCached("'; import os; os.system('whoami') #")
+	ensureVoiceCached("../../../etc/passwd")
+	ensureVoiceCached("")
 }
 
 func TestResolveVoice(t *testing.T) {
