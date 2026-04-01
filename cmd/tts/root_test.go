@@ -130,6 +130,10 @@ func TestSpeak_WritesAndCleansUpTempFile(t *testing.T) {
 	t.Setenv("OPENAI_API_KEY", "test-key")
 	defer stubMic(false)()
 
+	// Use a dedicated temp dir so we only check files created by this test
+	tmpDir := t.TempDir()
+	t.Setenv("TMPDIR", tmpDir)
+
 	audioData := "fake-mp3-content"
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		w.WriteHeader(http.StatusOK)
@@ -141,7 +145,6 @@ func TestSpeak_WritesAndCleansUpTempFile(t *testing.T) {
 	apiURL = server.URL
 	defer func() { apiURL = origURL }()
 
-	// Use a script that captures the temp file path so we can verify cleanup
 	origPlay := playCmd
 	playCmd = "true"
 	defer func() { playCmd = origPlay }()
@@ -151,8 +154,8 @@ func TestSpeak_WritesAndCleansUpTempFile(t *testing.T) {
 		t.Fatalf("speak returned error: %v", err)
 	}
 
-	// Verify temp files are cleaned up (no tts-*.mp3 in temp dir)
-	matches, _ := os.ReadDir(os.TempDir())
+	// Verify temp files are cleaned up in our isolated dir
+	matches, _ := os.ReadDir(tmpDir)
 	for _, m := range matches {
 		if len(m.Name()) > 4 && m.Name()[:4] == "tts-" {
 			t.Errorf("temp file not cleaned up: %s", m.Name())
