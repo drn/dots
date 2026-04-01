@@ -101,6 +101,29 @@ test_skip_rebase_flag() {
   assert_not_contains "$_CAPTURED" "REBASE_CONFLICT" "should not have rebase conflict"
 }
 
+test_squash_flag_accepted() {
+  make_test_repo >/dev/null
+  add_test_remote "origin" >/dev/null
+  git checkout -q -b feature/test
+  git commit -q --allow-empty -m "work"
+
+  # --squash is a no-op (squash is already the default) but should not error
+  capture bash "$MERGE" --squash "test title" "test body"
+  # It will fail at push/PR stage, but should not fail at flag parsing
+  assert_not_contains "$_CAPTURED" "Unknown flag" "should accept --squash without error"
+}
+
+test_unknown_flag_rejected() {
+  make_test_repo >/dev/null
+  add_test_remote "origin" >/dev/null
+  git checkout -q -b feature/test
+  git commit -q --allow-empty -m "work"
+
+  capture bash "$MERGE" --bogus "test title" "test body"
+  assert_eq "$_CAPTURED_EXIT" "1" "should exit 1 on unknown flag"
+  assert_contains "$_CAPTURED" "Unknown flag: --bogus" "should report the unknown flag"
+}
+
 test_coauthor_appended() {
   _source_merge
   # The COAUTHOR line should be defined

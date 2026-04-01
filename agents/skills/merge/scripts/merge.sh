@@ -3,7 +3,7 @@ set -euo pipefail
 
 # merge.sh — Merge current branch to master via GitHub PR
 #
-# Usage: merge.sh [--skip-rebase] "<title>" "<body>"
+# Usage: merge.sh [--skip-rebase] [--squash] "<title>" "<body>"
 #
 # Exit codes:
 #   0 — success (merge completed or auto-merge enabled)
@@ -170,7 +170,21 @@ do_merge() {
   die 1 "All squash merge strategies failed for PR #${PR_NUMBER}"
 }
 
+fetch_merge_commit() {
+  if [[ "$MERGE_STATUS" != "merged" ]]; then
+    return 0  # no merge commit yet for auto-merge
+  fi
+
+  local commit_line
+  commit_line=$(gh pr view "$PR_NUMBER" --repo "$REPO_SLUG" --json mergeCommit \
+    --jq '.mergeCommit | "\(.oid[0:7]) \(.messageHeadline)"' 2>/dev/null || echo "")
+  if [[ -n "$commit_line" ]]; then
+    MASTER_COMMIT="$commit_line"
+  fi
+}
+
 update_local_master() {
+  # MASTER_COMMIT is already set by fetch_merge_commit (called before this)
   if [[ "$MERGE_STATUS" != "merged" ]]; then
     return 0  # skip for auto-merge (not yet merged)
   fi
@@ -179,7 +193,6 @@ update_local_master() {
 
   if git checkout master 2>/dev/null; then
     git pull "$TARGET" master
-    MASTER_COMMIT=$(git log -1 --oneline)
     git checkout "$BRANCH" 2>/dev/null || true
   else
     local worktree_path
@@ -187,7 +200,6 @@ update_local_master() {
     if [[ -n "$worktree_path" ]]; then
       info "Pulling master in worktree: ${worktree_path}"
       git -C "$worktree_path" pull "$TARGET" master 2>/dev/null || true
-      MASTER_COMMIT=$(git -C "$worktree_path" log -1 --oneline 2>/dev/null || echo "")
     fi
   fi
 }
@@ -222,11 +234,14 @@ print_summary() {
 main() {
   local skip_rebase=false
 
-  # Parse --skip-rebase flag
-  if [[ "${1:-}" == "--skip-rebase" ]]; then
-    skip_rebase=true
-    shift
-  fi
+  # Parse flags
+  while [[ "${1:-}" == --* ]]; do
+    case "$1" in
+      --skip-rebase) skip_rebase=true; shift ;;
+      --squash)      shift ;;  # no-op: squash is already the default
+      *)             die 1 "Unknown flag: $1 — usage: merge.sh [--skip-rebase] [--squash] \"<title>\" \"<body>\"" ;;
+    esac
+  done
 
   local title="${1:?Usage: merge.sh [--skip-rebase] \"<title>\" \"<body>\"}"
   local body="${2:-}"
@@ -253,6 +268,7 @@ ${COAUTHOR}"
   ensure_pr "$title" "$body"
   check_pr_state
   do_merge "$title" "$body"
+  fetch_merge_commit       # must precede update_local_master (uses GitHub API, not local state)
   update_local_master
   sync_dots
   print_summary
