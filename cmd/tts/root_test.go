@@ -15,6 +15,33 @@ func stubMic(active bool) func() {
 	return func() { micActive = orig }
 }
 
+func TestResolveVoice(t *testing.T) {
+	tests := []struct {
+		input string
+		want  string
+	}{
+		{"heart", "af_heart"},
+		{"alloy", "af_alloy"},
+		{"echo", "am_echo"},
+		{"fable", "bm_fable"},
+		{"nova", "af_nova"},
+		{"onyx", "am_onyx"},
+		{"shimmer", "af_sky"},
+		{"ash", "am_adam"},
+		{"coral", "af_bella"},
+		{"sage", "am_michael"},
+		{"bella", "af_bella"},
+		{"sky", "af_sky"},
+		{"af_heart", "af_heart"},
+		{"am_michael", "am_michael"},
+	}
+	for _, tt := range tests {
+		if got := resolveVoice(tt.input); got != tt.want {
+			t.Errorf("resolveVoice(%q) = %q, want %q", tt.input, got, tt.want)
+		}
+	}
+}
+
 func TestBuildRequest_PayloadFields(t *testing.T) {
 	t.Setenv("OPENAI_API_KEY", "test-key")
 
@@ -59,21 +86,45 @@ func TestBuildRequest_PayloadFields(t *testing.T) {
 	}
 }
 
-func TestSpeak_SkipsWhenMicActive(t *testing.T) {
+func TestSpeakLocal_SkipsWhenMicActive(t *testing.T) {
 	defer stubMic(true)()
 
-	// If speak doesn't skip, it would fail since no API key or server is set
-	err := speak("test", "alloy", 1.0, "tts-1")
+	err := speakLocal("test", "af_heart", 1.0)
 	if err != nil {
 		t.Errorf("expected nil error when mic active, got: %v", err)
 	}
 }
 
-func TestSpeak_Success(t *testing.T) {
+func TestSpeakLocal_Success(t *testing.T) {
+	defer stubMic(false)()
+
+	origPython := kokoroPython
+	kokoroPython = "true"
+	defer func() { kokoroPython = origPython }()
+
+	origPlay := playCmd
+	playCmd = "true"
+	defer func() { playCmd = origPlay }()
+
+	err := speakLocal("test speech", "af_heart", 1.0)
+	if err != nil {
+		t.Errorf("speakLocal returned error: %v", err)
+	}
+}
+
+func TestSpeakRemote_SkipsWhenMicActive(t *testing.T) {
+	defer stubMic(true)()
+
+	err := speakRemote("test", "alloy", 1.0, "tts-1")
+	if err != nil {
+		t.Errorf("expected nil error when mic active, got: %v", err)
+	}
+}
+
+func TestSpeakRemote_Success(t *testing.T) {
 	t.Setenv("OPENAI_API_KEY", "test-key")
 	defer stubMic(false)()
 
-	// Mock OpenAI API returning fake audio bytes
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		body, _ := io.ReadAll(r.Body)
 		var payload map[string]interface{}
@@ -92,18 +143,17 @@ func TestSpeak_Success(t *testing.T) {
 	apiURL = server.URL
 	defer func() { apiURL = origURL }()
 
-	// Use "true" as the play command (no-op success)
 	origPlay := playCmd
 	playCmd = "true"
 	defer func() { playCmd = origPlay }()
 
-	err := speak("test speech", "alloy", 1.4, "tts-1")
+	err := speakRemote("test speech", "alloy", 1.4, "tts-1")
 	if err != nil {
-		t.Errorf("speak returned error: %v", err)
+		t.Errorf("speakRemote returned error: %v", err)
 	}
 }
 
-func TestSpeak_APIError(t *testing.T) {
+func TestSpeakRemote_APIError(t *testing.T) {
 	t.Setenv("OPENAI_API_KEY", "test-key")
 	defer stubMic(false)()
 
@@ -117,7 +167,7 @@ func TestSpeak_APIError(t *testing.T) {
 	apiURL = server.URL
 	defer func() { apiURL = origURL }()
 
-	err := speak("test", "alloy", 1.0, "tts-1")
+	err := speakRemote("test", "alloy", 1.0, "tts-1")
 	if err == nil {
 		t.Fatal("expected error for 401 response, got nil")
 	}
@@ -126,18 +176,16 @@ func TestSpeak_APIError(t *testing.T) {
 	}
 }
 
-func TestSpeak_WritesAndCleansUpTempFile(t *testing.T) {
+func TestSpeakRemote_WritesAndCleansUpTempFile(t *testing.T) {
 	t.Setenv("OPENAI_API_KEY", "test-key")
 	defer stubMic(false)()
 
-	// Use a dedicated temp dir so we only check files created by this test
 	tmpDir := t.TempDir()
 	t.Setenv("TMPDIR", tmpDir)
 
-	audioData := "fake-mp3-content"
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(audioData))
+		w.Write([]byte("fake-mp3-content"))
 	}))
 	defer server.Close()
 
@@ -149,12 +197,11 @@ func TestSpeak_WritesAndCleansUpTempFile(t *testing.T) {
 	playCmd = "true"
 	defer func() { playCmd = origPlay }()
 
-	err := speak("test", "alloy", 1.0, "tts-1")
+	err := speakRemote("test", "alloy", 1.0, "tts-1")
 	if err != nil {
-		t.Fatalf("speak returned error: %v", err)
+		t.Fatalf("speakRemote returned error: %v", err)
 	}
 
-	// Verify temp files are cleaned up in our isolated dir
 	matches, _ := os.ReadDir(tmpDir)
 	for _, m := range matches {
 		if len(m.Name()) > 4 && m.Name()[:4] == "tts-" {
