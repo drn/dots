@@ -8,7 +8,7 @@ description: >
 
 # Text-to-Speech
 
-Read content aloud to the user using the `tts` CLI binary.
+Read content aloud using the `tts` CLI (Kokoro TTS locally, or OpenAI with `--remote`).
 
 ## Arguments
 
@@ -33,7 +33,9 @@ tts -s 1.4 "Your text here"
 ```
 
 - **Speed**: Use `-s 1.4` by default
-- **Voice**: alloy (default) — user can request others with `-v`: echo, fable, onyx, nova, shimmer
+- **Voice**: heart (default) — user can request others with `-v`: alloy, nova, bella, sky, echo, onyx, or any Kokoro voice ID (af_heart, am_adam, etc.)
+- **Remote**: Add `--remote` to use OpenAI TTS API instead of local Kokoro
+- **Daemon**: A persistent daemon auto-starts on first use to keep the model warm (~3s vs ~6.5s cold start). Use `tts serve` / `tts stop` to manage manually.
 - **Length**: Keep spoken text concise. For long content, summarize to key points rather than reading verbatim.
 
 ### Step 3: Confirm
