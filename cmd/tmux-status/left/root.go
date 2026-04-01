@@ -63,10 +63,13 @@ func first() string {
 
 func second() string {
 	ssid := run.Capture("ssid --short")
-	if ssid == "" {
-		return "Offline"
+	if ssid != "" {
+		return fmt.Sprintf("%s %s %s", ssid, sep.R2, localIP())
 	}
-	return fmt.Sprintf("%s %s %s", ssid, sep.R2, localIP())
+	if ip := localIP(); ip != "127.0.0.1" {
+		return fmt.Sprintf("Ethernet %s %s", sep.R2, ip)
+	}
+	return "Offline"
 }
 
 func localIP() string {
