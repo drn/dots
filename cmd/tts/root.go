@@ -11,6 +11,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"regexp"
 	"strings"
 	"syscall"
 
@@ -42,6 +43,42 @@ var voiceMap = map[string]string{
 	"ash":     "am_adam",
 	"coral":   "af_bella",
 	"sage":    "am_michael",
+}
+
+// hfCacheDir is the HuggingFace cache directory for voice files, overridable for testing.
+var hfCacheDir = filepath.Join(os.Getenv("HOME"), ".cache", "huggingface", "hub",
+	"models--hexgrad--Kokoro-82M", "snapshots")
+
+var validVoice = regexp.MustCompile(`^[a-z][a-z0-9_]*$`)
+
+// ensureVoiceCached checks if a Kokoro voice .pt file is in the local HF cache.
+// If not, it downloads it via huggingface_hub (requires network access).
+func ensureVoiceCached(voice string) {
+	if !validVoice.MatchString(voice) {
+		return
+	}
+	matches, err := filepath.Glob(filepath.Join(hfCacheDir, "*", "voices", voice+".pt"))
+	if err == nil && len(matches) > 0 {
+		return
+	}
+	// Download the missing voice file
+	script := fmt.Sprintf(
+		"from huggingface_hub import hf_hub_download; hf_hub_download('hexgrad/Kokoro-82M', 'voices/%s.pt')",
+		voice,
+	)
+	cmd := exec.Command(kokoroPython, "-c", script)
+	// Filter out existing HF_HUB_OFFLINE so the download can proceed
+	env := os.Environ()
+	filtered := env[:0]
+	for _, e := range env {
+		if !strings.HasPrefix(e, "HF_HUB_OFFLINE=") {
+			filtered = append(filtered, e)
+		}
+	}
+	cmd.Env = filtered
+	if err := cmd.Run(); err != nil {
+		fmt.Fprintf(os.Stderr, "warning: failed to cache voice %s: %v\n", voice, err)
+	}
 }
 
 // resolveVoice maps a short name to a Kokoro voice ID.
@@ -186,6 +223,8 @@ func speakLocal(text, voice string, speed float64) error {
 	if micActive() {
 		return nil
 	}
+
+	ensureVoiceCached(voice)
 
 	tmp, err := os.CreateTemp("", "tts-*.wav")
 	if err != nil {

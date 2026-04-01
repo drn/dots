@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"os"
+	"path/filepath"
 	"testing"
 )
 
@@ -13,6 +14,60 @@ func stubMic(active bool) func() {
 	orig := micActive
 	micActive = func() bool { return active }
 	return func() { micActive = orig }
+}
+
+func TestEnsureVoiceCached_SkipsWhenPresent(t *testing.T) {
+	dir := t.TempDir()
+	snap := filepath.Join(dir, "abc123", "voices")
+	os.MkdirAll(snap, 0755)
+	os.WriteFile(filepath.Join(snap, "af_heart.pt"), []byte("fake"), 0644)
+
+	orig := hfCacheDir
+	hfCacheDir = dir
+	defer func() { hfCacheDir = orig }()
+
+	// Should return immediately without calling Python
+	origPython := kokoroPython
+	kokoroPython = "false" // would fail if called
+	defer func() { kokoroPython = origPython }()
+
+	ensureVoiceCached("af_heart") // no error = success
+}
+
+func TestEnsureVoiceCached_DownloadsWhenMissing(t *testing.T) {
+	dir := t.TempDir()
+
+	orig := hfCacheDir
+	hfCacheDir = dir
+	defer func() { hfCacheDir = orig }()
+
+	// Use a script that creates a marker file to prove it was called
+	marker := filepath.Join(dir, "download-called")
+	origPython := kokoroPython
+	kokoroPython = "bash"
+	defer func() { kokoroPython = origPython }()
+
+	// bash -c "touch <marker>" won't match, so use a wrapper script
+	script := filepath.Join(dir, "fake-python")
+	os.WriteFile(script, []byte("#!/bin/bash\ntouch "+marker+"\n"), 0755)
+	kokoroPython = script
+
+	ensureVoiceCached("af_alloy")
+
+	if _, err := os.Stat(marker); os.IsNotExist(err) {
+		t.Error("expected download command to be invoked, but marker file not created")
+	}
+}
+
+func TestEnsureVoiceCached_RejectsInvalidVoice(_ *testing.T) {
+	origPython := kokoroPython
+	kokoroPython = "false" // would fail if called
+	defer func() { kokoroPython = origPython }()
+
+	// Should return early without calling Python for invalid names
+	ensureVoiceCached("'; import os; os.system('whoami') #")
+	ensureVoiceCached("../../../etc/passwd")
+	ensureVoiceCached("")
 }
 
 func TestResolveVoice(t *testing.T) {
