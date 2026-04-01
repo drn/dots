@@ -44,6 +44,27 @@ var voiceMap = map[string]string{
 	"sage":    "am_michael",
 }
 
+// hfCacheDir is the HuggingFace cache directory for voice files, overridable for testing.
+var hfCacheDir = filepath.Join(os.Getenv("HOME"), ".cache", "huggingface", "hub",
+	"models--hexgrad--Kokoro-82M", "snapshots")
+
+// ensureVoiceCached checks if a Kokoro voice .pt file is in the local HF cache.
+// If not, it downloads it via huggingface_hub (requires network access).
+func ensureVoiceCached(voice string) {
+	matches, err := filepath.Glob(filepath.Join(hfCacheDir, "*", "voices", voice+".pt"))
+	if err == nil && len(matches) > 0 {
+		return
+	}
+	// Download the missing voice file
+	script := fmt.Sprintf(
+		"from huggingface_hub import hf_hub_download; hf_hub_download('hexgrad/Kokoro-82M', 'voices/%s.pt')",
+		voice,
+	)
+	cmd := exec.Command(kokoroPython, "-c", script)
+	cmd.Env = append(os.Environ(), "HF_HUB_OFFLINE=")
+	cmd.Run() // best-effort; if it fails, the TTS call will report the error
+}
+
 // resolveVoice maps a short name to a Kokoro voice ID.
 func resolveVoice(name string) string {
 	if strings.Contains(name, "_") {
@@ -186,6 +207,8 @@ func speakLocal(text, voice string, speed float64) error {
 	if micActive() {
 		return nil
 	}
+
+	ensureVoiceCached(voice)
 
 	tmp, err := os.CreateTemp("", "tts-*.wav")
 	if err != nil {

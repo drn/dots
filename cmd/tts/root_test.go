@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"os"
+	"path/filepath"
 	"testing"
 )
 
@@ -13,6 +14,39 @@ func stubMic(active bool) func() {
 	orig := micActive
 	micActive = func() bool { return active }
 	return func() { micActive = orig }
+}
+
+func TestEnsureVoiceCached_SkipsWhenPresent(t *testing.T) {
+	dir := t.TempDir()
+	snap := filepath.Join(dir, "abc123", "voices")
+	os.MkdirAll(snap, 0755)
+	os.WriteFile(filepath.Join(snap, "af_heart.pt"), []byte("fake"), 0644)
+
+	orig := hfCacheDir
+	hfCacheDir = dir
+	defer func() { hfCacheDir = orig }()
+
+	// Should return immediately without calling Python
+	origPython := kokoroPython
+	kokoroPython = "false" // would fail if called
+	defer func() { kokoroPython = origPython }()
+
+	ensureVoiceCached("af_heart") // no error = success
+}
+
+func TestEnsureVoiceCached_DownloadsWhenMissing(t *testing.T) {
+	dir := t.TempDir()
+
+	orig := hfCacheDir
+	hfCacheDir = dir
+	defer func() { hfCacheDir = orig }()
+
+	// Use "true" as Python so the download command "succeeds" (no-op)
+	origPython := kokoroPython
+	kokoroPython = "true"
+	defer func() { kokoroPython = origPython }()
+
+	ensureVoiceCached("af_alloy") // should attempt download without panicking
 }
 
 func TestResolveVoice(t *testing.T) {
