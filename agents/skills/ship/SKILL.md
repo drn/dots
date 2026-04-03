@@ -117,6 +117,8 @@ Invoke the `/improve` skill. This will analyze the session for skill improvement
 
 Do NOT pause for confirmation. Apply everything directly and commit. The only exception is external skill handoffs (different repo), which are printed as handoff prompts for the user.
 
+**CRITICAL: After `/improve` completes, DO NOT stop or wait for user input. Immediately proceed to Phase 4 and then Phase 5. The entire pipeline must complete in a single uninterrupted flow unless an abort condition is hit.** The `/improve` skill returns a report — treat that report as input to the next phase, not as the end of the conversation.
+
 ## Phase 4: Address Improvements
 
 If `/improve` produced code changes (codebase gaps, agent guidance updates):
