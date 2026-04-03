@@ -51,15 +51,24 @@ var hfCacheDir = filepath.Join(os.Getenv("HOME"), ".cache", "huggingface", "hub"
 
 var validVoice = regexp.MustCompile(`^[a-z][a-z0-9_]*$`)
 
-// ensureVoiceCached checks if a Kokoro voice .pt file is in the local HF cache.
-// If not, it downloads it via huggingface_hub (requires network access).
-func ensureVoiceCached(voice string) {
+const defaultVoice = "af_heart"
+
+// isVoiceCached checks if a Kokoro voice .pt file exists in the local HF cache.
+func isVoiceCached(voice string) bool {
 	if !validVoice.MatchString(voice) {
-		return
+		return false
 	}
 	matches, err := filepath.Glob(filepath.Join(hfCacheDir, "*", "voices", voice+".pt"))
-	if err == nil && len(matches) > 0 {
-		return
+	return err == nil && len(matches) > 0
+}
+
+// ensureVoiceCached downloads a missing voice file and returns whether it is cached.
+func ensureVoiceCached(voice string) bool {
+	if isVoiceCached(voice) {
+		return true
+	}
+	if !validVoice.MatchString(voice) {
+		return false
 	}
 	// Download the missing voice file
 	script := fmt.Sprintf(
@@ -68,9 +77,8 @@ func ensureVoiceCached(voice string) {
 	)
 	cmd := exec.Command(kokoroPython, "-c", script)
 	// Filter out existing HF_HUB_OFFLINE so the download can proceed
-	env := os.Environ()
-	filtered := env[:0]
-	for _, e := range env {
+	var filtered []string
+	for _, e := range os.Environ() {
 		if !strings.HasPrefix(e, "HF_HUB_OFFLINE=") {
 			filtered = append(filtered, e)
 		}
@@ -79,6 +87,7 @@ func ensureVoiceCached(voice string) {
 	if err := cmd.Run(); err != nil {
 		fmt.Fprintf(os.Stderr, "warning: failed to cache voice %s: %v\n", voice, err)
 	}
+	return isVoiceCached(voice)
 }
 
 // resolveVoice maps a short name to a Kokoro voice ID.
@@ -224,7 +233,12 @@ func speakLocal(text, voice string, speed float64) error {
 		return nil
 	}
 
-	ensureVoiceCached(voice)
+	cached := ensureVoiceCached(voice)
+	if !cached {
+		fmt.Fprintf(os.Stderr, "warning: voice %q not available, falling back to %s\n", voice, defaultVoice)
+		voice = defaultVoice
+		cached = ensureVoiceCached(voice)
+	}
 
 	tmp, err := os.CreateTemp("", "tts-*.wav")
 	if err != nil {
@@ -239,7 +253,11 @@ func speakLocal(text, voice string, speed float64) error {
 		startDaemonBackground()
 
 		cmd := exec.Command(kokoroPython, "-c", kokoroScript, text, voice, fmt.Sprintf("%.2f", speed), tmp.Name())
-		cmd.Env = append(os.Environ(), "PYTORCH_ENABLE_MPS_FALLBACK=1", "HF_HUB_OFFLINE=1")
+		env := append(os.Environ(), "PYTORCH_ENABLE_MPS_FALLBACK=1")
+		if cached {
+			env = append(env, "HF_HUB_OFFLINE=1")
+		}
+		cmd.Env = env
 		var stderr bytes.Buffer
 		cmd.Stderr = &stderr
 		if err := cmd.Run(); err != nil {

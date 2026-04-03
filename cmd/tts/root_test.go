@@ -31,7 +31,9 @@ func TestEnsureVoiceCached_SkipsWhenPresent(t *testing.T) {
 	kokoroPython = "false" // would fail if called
 	defer func() { kokoroPython = origPython }()
 
-	ensureVoiceCached("af_heart") // no error = success
+	if !ensureVoiceCached("af_heart") {
+		t.Error("expected true for cached voice")
+	}
 }
 
 func TestEnsureVoiceCached_DownloadsWhenMissing(t *testing.T) {
@@ -59,15 +61,49 @@ func TestEnsureVoiceCached_DownloadsWhenMissing(t *testing.T) {
 	}
 }
 
-func TestEnsureVoiceCached_RejectsInvalidVoice(_ *testing.T) {
+func TestEnsureVoiceCached_RejectsInvalidVoice(t *testing.T) {
 	origPython := kokoroPython
 	kokoroPython = "false" // would fail if called
 	defer func() { kokoroPython = origPython }()
 
-	// Should return early without calling Python for invalid names
-	ensureVoiceCached("'; import os; os.system('whoami') #")
-	ensureVoiceCached("../../../etc/passwd")
-	ensureVoiceCached("")
+	// Should return false without calling Python for invalid names
+	for _, name := range []string{
+		"'; import os; os.system('whoami') #",
+		"../../../etc/passwd",
+		"",
+	} {
+		if ensureVoiceCached(name) {
+			t.Errorf("expected false for invalid voice %q", name)
+		}
+	}
+}
+
+func TestSpeakLocal_FallsBackOnUncachedVoice(t *testing.T) {
+	defer stubMic(false)()
+
+	// Set up cache dir with only the default voice
+	dir := t.TempDir()
+	snap := filepath.Join(dir, "abc123", "voices")
+	os.MkdirAll(snap, 0755)
+	os.WriteFile(filepath.Join(snap, defaultVoice+".pt"), []byte("fake"), 0644)
+
+	orig := hfCacheDir
+	hfCacheDir = dir
+	defer func() { hfCacheDir = orig }()
+
+	origPython := kokoroPython
+	kokoroPython = "true"
+	defer func() { kokoroPython = origPython }()
+
+	origPlay := playCmd
+	playCmd = "true"
+	defer func() { playCmd = origPlay }()
+
+	// Should not error — falls back to default voice
+	err := speakLocal("test", "af_nonexistent", 1.0)
+	if err != nil {
+		t.Errorf("expected fallback to default voice, got error: %v", err)
+	}
 }
 
 func TestResolveVoice(t *testing.T) {
