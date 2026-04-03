@@ -44,8 +44,7 @@ echo "ahead=$AHEAD behind=$BEHIND dirty=$DIRTY"
 Decide based on the output:
 
 - **ahead=0 and dirty=0** — Stop. Reply: "Nothing to merge — branch has no commits ahead of master and working tree is clean."
-- **behind > 0** — Stop regardless of dirty count. Reply: "Branch is N commit(s) behind master. Rebase onto current master before running /merge — merging from an old base would create a misleading reverse-diff PR."
-- **Otherwise** (ahead > 0, or dirty > 0 with behind = 0) — Proceed to Step 1.
+- **Otherwise** (ahead > 0, or dirty > 0) — Proceed to Step 1. The merge script handles fetch + rebase automatically, so being behind master is fine.
 
 ### Step 1: Commit uncommitted changes
 
