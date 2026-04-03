@@ -22,9 +22,10 @@ Run the full review-fix-improve-fix-merge pipeline to ship the current branch.
 
 ## Overview
 
-You orchestrate a 5-phase pipeline to take the current branch from "done coding" to "merged into master." Each phase must complete before advancing to the next.
+You orchestrate a 6-phase pipeline to take the current branch from "done coding" to "merged into master." Each phase must complete before advancing to the next.
 
 **Phases:**
+0. **Commit** — commit any uncommitted changes so downstream phases see them
 1. **Review** — run `/review` to get findings
 2. **Address review** — fix blocking issues and warnings
 3. **Improve** — run `/improve` to capture learnings and fix gaps
@@ -34,6 +35,24 @@ You orchestrate a 5-phase pipeline to take the current branch from "done coding"
 If any phase has nothing to do (no findings, no improvements), skip it and move on.
 
 ---
+
+## Phase 0: Commit Uncommitted Changes
+
+Before running review, ensure all changes are committed. The review phase uses `git diff origin/master...HEAD` which only sees committed changes — uncommitted work would be invisible to the reviewer.
+
+Check `git status --short`. If there are staged or unstaged changes to tracked files (or untracked files that are clearly part of the work):
+
+1. Stage the relevant changes: `git add` the modified/new files
+2. Craft a concise commit message summarizing the changes
+3. Commit
+
+If there are uncommitted changes AND existing commits ahead of master, commit the uncommitted changes as a separate commit to preserve the existing commit history.
+
+If the working tree is clean, skip this phase.
+
+Print:
+
+> Phase 0: committed uncommitted changes. (or "Phase 0: working tree clean — skipped.")
 
 ## Phase 1: Review
 
@@ -133,6 +152,7 @@ After the pipeline completes (or aborts), print:
 
 | Phase | Status | Details |
 |-------|--------|---------|
+| Commit | {done/skipped} | {committed N files / working tree clean} |
 | Review | {done/skipped} | {N blocking, N warnings, N suggestions found} |
 | Address Review | {done/skipped} | {N blocking fixed, N warnings fixed, N suggestions applied} |
 | Improve | {done/skipped} | {N improvements applied} |
