@@ -21,9 +21,9 @@ End-of-session sweep that detects loose ends and routes to the right follow-up a
 
 ## Instructions
 
-Run through each check below. For each one that fires, report the finding and suggest the action. At the end, present a summary with recommended next steps.
-
 **Do NOT automatically run any of the suggested skills.** Present the full report first, then let the user pick which actions to take.
+
+Run through each check below. For each one that fires, report the finding and suggest the action. At the end, present a summary with recommended next steps.
 
 ### Check 1: Uncommitted Changes
 
@@ -92,7 +92,7 @@ If not: note that context will be lost unless captured
 
 ### Summary
 
-Present findings as a checklist:
+Present findings as a checklist. Only list items that need attention — omit clean items entirely.
 
 ```markdown
 ## Session Wrapup
@@ -101,7 +101,6 @@ Present findings as a checklist:
 - [ ] **Uncommitted changes** — N files modified (list key ones)
 - [ ] **Unpushed commits** — N commits on `branch-name`
 - [ ] **No PR open** — branch has work ready for review
-- [x] **Open PRs** — none needing attention
 
 ### Capture Opportunities
 - [ ] **Learnings detected** — skill friction worth capturing via `/improve`
@@ -109,14 +108,15 @@ Present findings as a checklist:
 - [ ] **Knowledge** — decisions/context worth preserving
 
 ### Suggested Actions (pick any)
+Only list actions whose corresponding check fired above.
 1. `/commit` — commit uncommitted changes
 2. `/pr` — open a PR for this branch
 3. `/improve` — capture learnings and improve skills
 4. `/handoff` — generate context for next session
-5. Push to remote — `git push -u origin <branch>`
+5. Push to remote — `git push -u origin <branch-name>`
 ```
 
-Omit any section where all items are clean (checked off). If everything is clean, say:
+Omit any section where all items are clean. If everything is clean, say:
 
 > All clear — no loose ends detected. Session is clean to close.
 
