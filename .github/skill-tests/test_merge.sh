@@ -141,7 +141,7 @@ test_summary_format() {
   BRANCH="feature/test"
   DEFAULT_BRANCH="master"
   COMMIT_COUNT="3"
-  MASTER_COMMIT="abc1234 Some commit"
+  MERGE_COMMIT="abc1234 Some commit"
   DOTS_SYNCED=""
 
   local output
