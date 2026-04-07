@@ -28,11 +28,15 @@ You orchestrate a 6-phase pipeline to take the current branch from "done coding"
 0. **Commit** — commit any uncommitted changes so downstream phases see them
 1. **Review** — run `/review` to get findings
 2. **Address review** — fix blocking issues and warnings
-3. **Improve** — run `/improve` to capture learnings and fix gaps
+3. **Improve** — analyze session for learnings and fix gaps (inline, not via `/improve`)
 4. **Address improvements** — apply approved improvements
 5. **Merge** — run `/merge` to land the branch
 
 If any phase has nothing to do (no findings, no improvements), skip it and move on.
+
+## Continue Protocol
+
+**All 6 phases must execute in a single unbroken sequence.** After any sub-skill returns (`/review`, `/merge`) or any inline analysis completes, immediately proceed to the next phase. Never treat a sub-skill return or analysis report as the end of your task. The pipeline is only complete after Phase 5 finishes or an abort condition is hit.
 
 ---
 
@@ -106,28 +110,32 @@ Print a summary of what was addressed:
 
 Check if `$ARGUMENTS` contains "skip-improve". If so, skip to Phase 5.
 
-Invoke the `/improve` skill. This will analyze the session for skill improvements, codebase gaps, and knowledge updates.
+**PIPELINE CONTINUATION RULE: You are mid-pipeline. After the improve analysis completes, you MUST continue to Phase 4 and Phase 5. Do NOT stop, summarize, or wait for user input. The /ship pipeline is not complete until Phase 5 finishes.**
 
-**Important:** Auto-apply ALL changes from `/improve` without asking for approval. This includes:
-- Skill improvements (local skills only — external handoffs are still presented to user)
-- Codebase gap fixes
-- Agent guidance updates
-- Knowledge captures
-- New skill creation proposals
+Run the improve analysis inline using these abbreviated steps (do NOT invoke `/improve` as a separate skill):
 
-Do NOT pause for confirmation. Apply everything directly and commit. The only exception is external skill handoffs (different repo), which are printed as handoff prompts for the user.
+1. Scan the conversation for skills that were used and any friction points encountered
+2. For each skill with issues, check if it is local (inside this worktree) or external (generate a handoff prompt)
+3. Auto-apply all local skill improvements, codebase gap fixes, and agent guidance updates without asking
+4. Commit applied changes with descriptive messages
+5. Print external handoff prompts for the user (if any)
+6. Skip knowledge capture, voice profile, and new skill proposals — these are not needed in the ship pipeline
 
-**CRITICAL: After `/improve` completes, DO NOT stop or wait for user input. Immediately proceed to Phase 4 and then Phase 5. The entire pipeline must complete in a single uninterrupted flow unless an abort condition is hit.** The `/improve` skill returns a report — treat that report as input to the next phase, not as the end of the conversation.
+Print:
+
+> Phase 3 complete: analyzed session, applied N improvements, N handoff prompts generated.
+
+**Immediately continue to Phase 4.**
 
 ## Phase 4: Address Improvements
 
-If `/improve` produced code changes (codebase gaps, agent guidance updates):
+If Phase 3 produced code changes:
 1. Verify the changes compile/pass tests
 2. Commit any uncommitted improvement changes with descriptive messages
 
-If `/improve` produced no code changes, skip this phase.
+If Phase 3 produced no code changes, skip this phase.
 
-Print a summary:
+Print:
 
 > Phase 4 complete: applied N improvements. Tests passing.
 
