@@ -264,7 +264,7 @@ Review the session for extractable operational context:
 Update existing context files in `context/` directory as appropriate (requires `context/` to exist from Step 0):
 - Create new files as needed for distinct topics (e.g., `context/research/`, `context/plans/`)
 - Update CLAUDE.md if the context applies broadly across tasks
-- **Never** write to `memory/`, `memory/memory.md`, or auto memory — all context goes in `context/`
+- **Never** write to local `memory/` directories or `memory/memory.md` — all local context goes in `context/`. (argus-kb `memory/` paths are separate; see global CLAUDE.md Memory section.)
 - **Worktree safety:** Resolve all file paths against `git rev-parse --show-toplevel` (shown in the Context section as "Current repo"). Never hardcode absolute paths like `~/Development/repo/`. In a worktree session, the worktree root is the correct write target — hardcoded paths write to a different branch.
 
 **Part B: Knowledge Graph**
@@ -373,7 +373,7 @@ Do not overwrite existing voice profile entries — add to or refine them. If a 
 - Do not change the fundamental purpose or structure of a skill
 - Do not add improvements based on speculation — only from actual session experience
 - Do not create a knowledge base outside the `context/` directory pattern — use Step 0 to initialize
-- **Never** save context or knowledge to `memory/`, `memory/memory.md`, or auto memory — always use `context/` directory
+- **Never** save context or knowledge to local `memory/` directories or `memory/memory.md` — always use `context/` directory. (argus-kb `memory/` paths are separate; see global CLAUDE.md Memory section.)
 
 ## Example Output
 
