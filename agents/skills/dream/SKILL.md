@@ -1,7 +1,7 @@
 ---
 name: dream
 description: Audit and fix knowledge base hygiene — missing frontmatter, oversized docs, naming violations, stale redirects. Use for KB maintenance, knowledge base cleanup, dream consolidation, or memory hygiene.
-allowed-tools: mcp__argus-kb__kb_list, mcp__argus-kb__kb_read, mcp__argus-kb__kb_ingest, mcp__argus-kb__kb_search
+allowed-tools: mcp__argus-kb__kb_list, mcp__argus-kb__kb_read, mcp__argus-kb__kb_ingest
 ---
 
 # Dream — Knowledge Base Hygiene
@@ -11,10 +11,6 @@ Audit all documents in the argus-kb knowledge base against the documented schema
 ## Arguments
 
 - `$ARGUMENTS` - Optional: `--dry-run` to report violations without fixing, or a path prefix to scope the audit (e.g. `thanx/`)
-
-## Context
-
-- KB doc count: !`echo "Use kb_list to get actual count at runtime"`
 
 ## Instructions
 
@@ -30,7 +26,9 @@ If `$ARGUMENTS` contains a path prefix (no leading `--`), pass it to kb_list as 
 
 ### Phase 2: Gather Signal
 
-Read every document with `kb_read` and check each against these rules from the kb_ingest schema:
+Read every document with `kb_read` and check each against these rules. If the vault has more than 50 documents, warn the user and process in batches of 20, reporting progress after each batch.
+
+Rules from the kb_ingest schema:
 
 **Frontmatter (required)**
 - Has YAML frontmatter between `---` fences
@@ -40,7 +38,7 @@ Read every document with `kb_read` and check each against these rules from the k
 **Content structure**
 - Leads with a key insight sentence (first line after frontmatter is not a heading)
 - Uses `## H2` for subtopics (not H1 or H3 as top-level sections)
-- Bolds key terms in bullet lists
+- Bolds key terms in bullet lists (flag for manual attention if missing — do not auto-fix)
 
 **Size and scope**
 - Word count is between 50 and 500 words (body only, excluding frontmatter)
@@ -74,7 +72,9 @@ Record each violation with: document path, rule violated, current value, and sug
 
 ### Phase 3: Consolidate (Auto-Fix)
 
-For each violation, apply the fix if it is safe. Safe fixes:
+Before applying any fixes, print a summary of all planned changes and ask the user for confirmation. If the user declines, treat the run as `--dry-run` for the remainder.
+
+For each approved violation, apply the fix if it is safe. Safe fixes:
 
 | Violation | Auto-fix |
 |-----------|----------|
@@ -88,7 +88,7 @@ For each violation, apply the fix if it is safe. Safe fixes:
 | Markdown links to KB docs | Convert `[text](folder/file.md)` to `[[file\|text]]` |
 | Bold path references | Convert `**folder/file.md**` to `[[file]]` |
 | Wikilinks with extensions | Convert `[[file.md]]` to `[[file]]` |
-| Wikilinks with folder paths | Convert `[[folder/file]]` to `[[file]]` (Obsidian resolves by filename) |
+| Wikilinks with folder paths | Convert `[[folder/file]]` to `[[file]]` only when the filename is unique across the vault — if duplicates exist, keep the path for disambiguation |
 | Inline hashtags | Move `#tag-name` from body into frontmatter `tags` array, remove from body text |
 | Uppercase/underscore tags | Normalize to lowercase kebab-case in frontmatter (e.g. `TechStack` becomes `tech-stack`) |
 
