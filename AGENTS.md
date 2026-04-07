@@ -172,6 +172,7 @@ When the user's message matches a phrase below, read and follow the correspondin
 | "compare PRs", "combine PRs", "combine these PRs", "cherry-pick between PRs", "competing implementations", "competing PRs" | `agents/skills/combine-prs/SKILL.md` |
 | "improve skills", "capture learnings", "upgrade context", "learn from session" | `agents/skills/improve/SKILL.md` |
 | "amend", "amend commit", "rewrite commit message", "improve commit message", "fix commit message" | `agents/skills/amend/SKILL.md` |
+| "squash", "squash commits", "condense commits", "squash branch", "clean up commits" | `agents/skills/squash/SKILL.md` |
 | "explain like I'm 5", "eli5", "explain simply", "dumb it down", "explain in simple terms" | `agents/skills/eli5/SKILL.md` |
 | "skill usage", "which skills do I use", "unused skills", "skill stats", "skill suggestions" | `agents/skills/skill-usage/SKILL.md` |
 
