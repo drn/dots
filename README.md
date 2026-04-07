@@ -68,7 +68,7 @@ dots docker stop-all     # Stop all Docker containers
 
 ## Agent Skills
 
-Dots includes 46 reusable slash-command skills for AI coding agents, following the [Agent Skills](https://agentskills.io) open standard. Each skill lives in `agents/skills/<name>/SKILL.md` and is available as `/<name>` in Claude Code after running `dots install agents`.
+Dots includes 47 reusable slash-command skills for AI coding agents, following the [Agent Skills](https://agentskills.io) open standard. Each skill lives in `agents/skills/<name>/SKILL.md` and is available as `/<name>` in Claude Code after running `dots install agents`.
 
 | Skill | Description |
 |-------|-------------|
@@ -107,6 +107,7 @@ Dots includes 46 reusable slash-command skills for AI coding agents, following t
 | `/perf` | Performance analysis |
 | `/prune` | Branch cleanup |
 | `/rebase` | Rebase automation |
+| `/squash` | Squash all branch commits into one and update open PRs |
 | `/prioritize` | RICE-scored backlog prioritization for sprint planning |
 | `/equip` | Analyze a spec or codebase to identify missing skills and agents, then write them |
 | `/cross-agent` | Set up cross-agent skill infrastructure for multi-agent compatibility |
@@ -180,7 +181,7 @@ Run `dots install agents` to symlink them to `~/.claude/agents/`.
 ├── fonts/                     # Developer fonts
 │
 ├── agents/                    # Agent configuration
-│   ├── skills/                # 46 reusable skills (SKILL.md per skill)
+│   ├── skills/                # 47 reusable skills (SKILL.md per skill)
 │   └── custom/                # 3 custom agent types (.md per agent)
 │       └── tests/             # Skill test suite
 │
