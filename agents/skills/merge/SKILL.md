@@ -1,7 +1,7 @@
 ---
 name: merge
 allowed-tools: Bash(git add:*), Bash(git commit:*), Bash(git log:*), Bash(git diff:*), Bash(git status:*), Bash(git rebase:*), Bash(git checkout:*), Bash(bash ~/.claude/skills/merge/scripts/merge.sh:*), Bash(bash agents/skills/merge/scripts/merge.sh:*)
-description: Merge current branch to master via GitHub PR merge. Use when ready to merge a PR or land a branch.
+description: Merge current branch to the default branch via GitHub PR merge. Use when ready to merge a PR or land a branch.
 ---
 
 ## Context
@@ -9,10 +9,15 @@ description: Merge current branch to master via GitHub PR merge. Use when ready 
 - Current branch: !`git branch --show-current`
 - Git status: !`git status --short`
 - Remotes: !`git remote -v 2>/dev/null | head -10`
-- Commits (upstream): !`git log upstream/master..HEAD --oneline 2>/dev/null | head -50`
-- Commits (origin): !`git log origin/master..HEAD --oneline 2>/dev/null | head -50`
-- Diff stat (upstream): !`git diff upstream/master..HEAD --stat 2>/dev/null | head -50`
-- Diff stat (origin): !`git diff origin/master..HEAD --stat 2>/dev/null | head -50`
+- Base ref: !`git branch -r 2>/dev/null | grep -oE 'origin/(main|master)' | head -1`
+- Commits vs main (upstream): !`git log upstream/main..HEAD --oneline 2>/dev/null | head -50`
+- Commits vs master (upstream): !`git log upstream/master..HEAD --oneline 2>/dev/null | head -50`
+- Commits vs main (origin): !`git log origin/main..HEAD --oneline 2>/dev/null | head -50`
+- Commits vs master (origin): !`git log origin/master..HEAD --oneline 2>/dev/null | head -50`
+- Diff stat vs main (upstream): !`git diff upstream/main..HEAD --stat 2>/dev/null | head -50`
+- Diff stat vs master (upstream): !`git diff upstream/master..HEAD --stat 2>/dev/null | head -50`
+- Diff stat vs main (origin): !`git diff origin/main..HEAD --stat 2>/dev/null | head -50`
+- Diff stat vs master (origin): !`git diff origin/master..HEAD --stat 2>/dev/null | head -50`
 
 ## Phase Protocol
 
@@ -24,7 +29,7 @@ This skill participates in a phase chain. Read `~/.claude/skills/_shared/resourc
 
 ## Your task
 
-Merge the current branch into master via GitHub PR merge. An existing PR is NOT required — one will be created if needed.
+Merge the current branch into the default branch via GitHub PR merge. An existing PR is NOT required — one will be created if needed.
 
 ### Step 0: Preflight — ahead/behind check
 
@@ -35,16 +40,18 @@ Run:
 ```bash
 TARGET=$(git remote | grep -q '^upstream$' && echo upstream || echo origin)
 git fetch "$TARGET" >/dev/null 2>&1 || true
-AHEAD=$(git log "$TARGET/master..HEAD" --oneline 2>/dev/null | wc -l | tr -d ' ')
-BEHIND=$(git log "HEAD..$TARGET/master" --oneline 2>/dev/null | wc -l | tr -d ' ')
+DEFAULT_BRANCH=$(git branch -r 2>/dev/null | grep -oE "${TARGET}/(main|master)" | head -1 | sed "s|${TARGET}/||")
+[ -z "$DEFAULT_BRANCH" ] && DEFAULT_BRANCH="master"
+AHEAD=$(git log "$TARGET/$DEFAULT_BRANCH..HEAD" --oneline 2>/dev/null | wc -l | tr -d ' ')
+BEHIND=$(git log "HEAD..$TARGET/$DEFAULT_BRANCH" --oneline 2>/dev/null | wc -l | tr -d ' ')
 DIRTY=$(git status --short 2>/dev/null | wc -l | tr -d ' ')
-echo "ahead=$AHEAD behind=$BEHIND dirty=$DIRTY"
+echo "ahead=$AHEAD behind=$BEHIND dirty=$DIRTY default_branch=$DEFAULT_BRANCH"
 ```
 
 Decide based on the output:
 
-- **ahead=0 and dirty=0** — Stop. Reply: "Nothing to merge — branch has no commits ahead of master and working tree is clean."
-- **Otherwise** (ahead > 0, or dirty > 0) — Proceed to Step 1. The merge script handles fetch + rebase automatically, so being behind master is fine.
+- **ahead=0 and dirty=0** — Stop. Reply: "Nothing to merge — branch has no commits ahead of $DEFAULT_BRANCH and working tree is clean."
+- **Otherwise** (ahead > 0, or dirty > 0) — Proceed to Step 1. The merge script handles fetch + rebase automatically, so being behind the default branch is fine.
 
 ### Step 1: Commit uncommitted changes
 
@@ -52,7 +59,7 @@ If git status shows uncommitted changes, stage and commit them with an appropria
 
 ### Step 2: Analyze commits and craft PR metadata
 
-Review all commits and the full diff since the branch diverged from master. Determine:
+Review all commits and the full diff since the branch diverged from the default branch. Determine:
 
 - **Title**: Concise imperative summary of what the branch accomplishes (not individual commits). Under 72 characters.
 - **Body**: Short description of the changes. Do NOT include Co-Authored-By — the script adds it.
@@ -80,6 +87,6 @@ Handle the exit code:
   5. Repeat if more conflicts
   6. Re-run: `bash <script-path> --skip-rebase "<title>" "<body>"`
   7. Show the output block verbatim
-- **Exit 3** — Tell the user: "Nothing to merge — branch has no commits ahead of master."
+- **Exit 3** — Tell the user: "Nothing to merge — branch has no commits ahead of the default branch."
 - **Exit 4 (review blocked)** — The PR requires review and auto-merge is not available. Tell the user: "PR requires an approving review before it can merge. Auto-merge is not enabled on this repository — ask a reviewer to approve, then re-run /merge."
 - **Exit 1** — Report the error from stderr.
