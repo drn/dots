@@ -59,7 +59,14 @@ Review the full conversation history and synthesize a handoff prompt. Use this f
 
 Keep it concise but complete enough that the receiving agent can continue without re-discovering context.
 
-Print the handoff inside a fenced code block so the user can copy it.
+### Output procedure
+
+1. Write the handoff text (raw markdown, no wrapping code fence) to `/tmp/handoff.md` using the Write tool.
+2. Display the file contents to the user inside a fenced code block.
+3. Copy to clipboard: `cat /tmp/handoff.md | pbcopy`
+4. Confirm: "Copied to clipboard."
+
+Writing to a file first guarantees the clipboard content preserves all newlines and formatting exactly as displayed.
 
 ---
 
