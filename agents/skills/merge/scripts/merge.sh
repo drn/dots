@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# merge.sh — Merge current branch to master via GitHub PR
+# merge.sh — Merge current branch to the default branch via GitHub PR
 #
 # Usage: merge.sh [--skip-rebase] [--squash] "<title>" "<body>"
 #
@@ -17,13 +17,14 @@ COAUTHOR="Co-Authored-By: Claude <noreply@anthropic.com>"
 # --- Globals set during execution ---
 TARGET=""
 BRANCH=""
+DEFAULT_BRANCH=""
 COMMIT_COUNT=""
 PR_NUMBER=""
 PR_URL=""
 REPO_SLUG=""
 MERGE_METHOD=""
 MERGE_STATUS="merged"
-MASTER_COMMIT=""
+MERGE_COMMIT=""
 DOTS_SYNCED=""
 PR_MERGE_STATE=""
 PR_REVIEW_DECISION=""
@@ -51,6 +52,41 @@ determine_target() {
   info "Target remote: $TARGET"
 }
 
+detect_default_branch() {
+  REPO_SLUG=$(git remote get-url "$TARGET" | sed 's|.*github.com[:/]||;s|\.git$||')
+
+  # Primary: ask GitHub API for the actual default branch
+  local api_default
+  api_default=$(gh api "repos/${REPO_SLUG}" --jq '.default_branch' 2>/dev/null || echo "")
+  if [[ -n "$api_default" ]]; then
+    DEFAULT_BRANCH="$api_default"
+    info "Default branch (from GitHub API): $DEFAULT_BRANCH"
+    return 0
+  fi
+
+  # Fallback: detect from remote refs
+  local ref
+  ref=$(git branch -r 2>/dev/null | grep -oE "${TARGET}/(main|master)" | head -1 | sed "s|${TARGET}/||" || echo "")
+  if [[ -n "$ref" ]]; then
+    DEFAULT_BRANCH="$ref"
+    info "Default branch (from remote refs): $DEFAULT_BRANCH"
+    return 0
+  fi
+
+  # Last resort
+  DEFAULT_BRANCH="master"
+  info "Default branch (fallback): $DEFAULT_BRANCH"
+}
+
+repair_remote_head() {
+  local current_head_ref
+  current_head_ref=$(git symbolic-ref "refs/remotes/${TARGET}/HEAD" 2>/dev/null | sed "s|refs/remotes/${TARGET}/||" || echo "")
+  if [[ -n "$current_head_ref" && "$current_head_ref" != "$DEFAULT_BRANCH" ]]; then
+    info "Stale ${TARGET}/HEAD → ${current_head_ref} (expected ${DEFAULT_BRANCH}), repairing..."
+    git remote set-head "$TARGET" "$DEFAULT_BRANCH" 2>/dev/null || true
+  fi
+}
+
 get_branch() {
   BRANCH=$(git branch --show-current)
   [[ -z "$BRANCH" ]] && die 1 "Detached HEAD — cannot merge"
@@ -60,8 +96,8 @@ get_branch() {
 
 check_commits() {
   local count
-  count=$(git log "${TARGET}/master..HEAD" --oneline 2>/dev/null | wc -l | tr -d ' ')
-  [[ "$count" -eq 0 ]] && die 3 "No commits ahead of ${TARGET}/master — nothing to merge"
+  count=$(git log "${TARGET}/${DEFAULT_BRANCH}..HEAD" --oneline 2>/dev/null | wc -l | tr -d ' ')
+  [[ "$count" -eq 0 ]] && die 3 "No commits ahead of ${TARGET}/${DEFAULT_BRANCH} — nothing to merge"
   COMMIT_COUNT="$count"
   info "Commits to merge: $count"
 }
@@ -72,8 +108,8 @@ do_fetch() {
 }
 
 do_rebase() {
-  info "Rebasing onto ${TARGET}/master..."
-  if ! git rebase "${TARGET}/master"; then
+  info "Rebasing onto ${TARGET}/${DEFAULT_BRANCH}..."
+  if ! git rebase "${TARGET}/${DEFAULT_BRANCH}"; then
     echo "REBASE_CONFLICT" >&2
     git diff --name-only --diff-filter=U >&2 || true
     exit 2
@@ -87,8 +123,7 @@ do_push() {
 
 ensure_pr() {
   local title="$1" body="$2"
-
-  REPO_SLUG=$(git remote get-url "$TARGET" | sed 's|.*github.com[:/]||;s|\.git$||')
+  [[ -z "$REPO_SLUG" ]] && die 1 "REPO_SLUG not set — detect_default_branch must run first"
 
   local existing
   existing=$(gh pr list --head "$BRANCH" --state open --repo "$REPO_SLUG" --json number,url --jq '.[0]' 2>/dev/null || echo "")
@@ -99,8 +134,8 @@ ensure_pr() {
     info "Updating existing PR #${PR_NUMBER}..."
     gh pr edit "$PR_NUMBER" --title "$title" --body "$body"
   else
-    info "Creating PR..."
-    PR_URL=$(gh pr create --base master --head "$BRANCH" --title "$title" --body "$body" 2>&1 | grep -o 'https://github.com/[^ ]*' | head -1)
+    info "Creating PR against ${DEFAULT_BRANCH}..."
+    PR_URL=$(gh pr create --base "$DEFAULT_BRANCH" --head "$BRANCH" --title "$title" --body "$body" 2>&1 | grep -o 'https://github.com/[^ ]*' | head -1)
     PR_NUMBER=$(echo "$PR_URL" | grep -o '[0-9]*$')
   fi
   info "PR: ${PR_URL}"
@@ -179,27 +214,27 @@ fetch_merge_commit() {
   commit_line=$(gh pr view "$PR_NUMBER" --repo "$REPO_SLUG" --json mergeCommit \
     --jq '.mergeCommit | "\(.oid[0:7]) \(.messageHeadline)"' 2>/dev/null || echo "")
   if [[ -n "$commit_line" ]]; then
-    MASTER_COMMIT="$commit_line"
+    MERGE_COMMIT="$commit_line"
   fi
 }
 
 update_local_master() {
-  # MASTER_COMMIT is already set by fetch_merge_commit (called before this)
+  # MERGE_COMMIT is already set by fetch_merge_commit (called before this)
   if [[ "$MERGE_STATUS" != "merged" ]]; then
     return 0  # skip for auto-merge (not yet merged)
   fi
 
-  info "Updating local master..."
+  info "Updating local ${DEFAULT_BRANCH}..."
 
-  if git checkout master 2>/dev/null; then
-    git pull "$TARGET" master
+  if git checkout "$DEFAULT_BRANCH" 2>/dev/null; then
+    git pull "$TARGET" "$DEFAULT_BRANCH"
     git checkout "$BRANCH" 2>/dev/null || true
   else
     local worktree_path
-    worktree_path=$(git worktree list | grep '\[master\]' | awk '{print $1}' || echo "")
+    worktree_path=$(git worktree list | grep "\[${DEFAULT_BRANCH}\]" | awk '{print $1}' || echo "")
     if [[ -n "$worktree_path" ]]; then
-      info "Pulling master in worktree: ${worktree_path}"
-      git -C "$worktree_path" pull "$TARGET" master 2>/dev/null || true
+      info "Pulling ${DEFAULT_BRANCH} in worktree: ${worktree_path}"
+      git -C "$worktree_path" pull "$TARGET" "$DEFAULT_BRANCH" 2>/dev/null || true
     fi
   fi
 }
@@ -212,9 +247,10 @@ sync_dots() {
   local dots_home="$HOME/.dots"
   [[ ! -d "$dots_home" ]] && return 0
 
+  # ~/.dots uses the same default branch as the current repo (always drn/dots)
   info "Syncing ~/.dots..."
   git -C "$dots_home" fetch origin
-  git -C "$dots_home" reset --hard origin/master
+  git -C "$dots_home" reset --hard "origin/${DEFAULT_BRANCH}"
   DOTS_SYNCED=$(git -C "$dots_home" log -1 --oneline)
 }
 
@@ -223,9 +259,9 @@ print_summary() {
   echo "status:   ${MERGE_STATUS}"
   echo "method:   ${MERGE_METHOD}"
   echo "pr:       ${PR_URL}"
-  echo "branch:   ${BRANCH} → master"
+  echo "branch:   ${BRANCH} → ${DEFAULT_BRANCH}"
   echo "commits:  ${COMMIT_COUNT}"
-  if [[ -n "${MASTER_COMMIT:-}" ]]; then echo "commit:   ${MASTER_COMMIT}"; fi
+  if [[ -n "${MERGE_COMMIT:-}" ]]; then echo "commit:   ${MERGE_COMMIT}"; fi
   if [[ -n "${DOTS_SYNCED:-}" ]]; then echo "~/.dots:  synced → ${DOTS_SYNCED}"; fi
 }
 
@@ -258,6 +294,8 @@ ${COAUTHOR}"
   determine_target
   get_branch
   do_fetch
+  detect_default_branch
+  repair_remote_head
   check_commits
 
   if [[ "$skip_rebase" == false ]]; then

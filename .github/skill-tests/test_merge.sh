@@ -65,6 +65,7 @@ test_check_commits_zero() {
 
   _source_merge
   TARGET="origin"
+  DEFAULT_BRANCH="master"
   capture check_commits
   assert_eq "$_CAPTURED_EXIT" "3" "should exit 3 when no commits"
 }
@@ -77,6 +78,7 @@ test_check_commits_nonzero() {
 
   _source_merge
   TARGET="origin"
+  DEFAULT_BRANCH="master"
   check_commits 2>/dev/null
 
   assert_eq "$COMMIT_COUNT" "1" "should count 1 commit"
@@ -137,8 +139,9 @@ test_summary_format() {
   MERGE_METHOD="squash"
   PR_URL="https://github.com/test/repo/pull/1"
   BRANCH="feature/test"
+  DEFAULT_BRANCH="master"
   COMMIT_COUNT="3"
-  MASTER_COMMIT="abc1234 Some commit"
+  MERGE_COMMIT="abc1234 Some commit"
   DOTS_SYNCED=""
 
   local output
@@ -147,6 +150,7 @@ test_summary_format() {
   assert_contains "$output" "status:   merged" "should show status"
   assert_contains "$output" "method:   squash" "should show method"
   assert_contains "$output" "pr:       https://github.com/test/repo/pull/1" "should show PR URL"
+  assert_contains "$output" "branch:   feature/test → master" "should show branch arrow with default branch"
   assert_contains "$output" "commits:  3" "should show commit count"
   assert_contains "$output" "commit:   abc1234" "should show master commit"
   assert_not_contains "$output" "~/.dots:" "should not show dots when empty"
