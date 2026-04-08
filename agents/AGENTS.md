@@ -14,7 +14,7 @@
 After finishing work, generate a task-specific summary (6 words max) and speak it:
 ```bash
 tts -s 1.1 "<SUMMARY>"           # default
-tts -s 1.1 -v alloy "<SUMMARY>"  # for thanx repos (git remote contains "thanx")
+tts -s 1.3 -v alloy "<SUMMARY>"  # for thanx repos (git remote contains "thanx")
 ```
 
 ## Memory
