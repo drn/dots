@@ -118,6 +118,9 @@ func daemonRunning() bool {
 }
 
 func runDaemon(background bool) error {
+	if !kokoroAvailable() {
+		return fmt.Errorf(errNoVenv)
+	}
 	scriptPath := filepath.Join(filepath.Dir(kokoroPython), "..", "serve.py")
 	// Only rewrite if content has changed to avoid unnecessary TOCTOU window.
 	existing, err := os.ReadFile(scriptPath)
