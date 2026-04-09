@@ -181,7 +181,33 @@ func main() {
 		},
 	}
 
-	root.AddCommand(serveCmd, stopCmd)
+	cacheCmd := &cobra.Command{
+		Use:   "cache VOICE [VOICE...]",
+		Short: "Pre-download Kokoro voice files for offline use",
+		Args:  cobra.MinimumNArgs(1),
+		Run: func(_ *cobra.Command, args []string) {
+			failed := false
+			for _, name := range args {
+				voice := resolveVoice(name)
+				if isVoiceCached(voice) {
+					fmt.Printf("%s: already cached\n", voice)
+					continue
+				}
+				fmt.Printf("%s: downloading...\n", voice)
+				if ensureVoiceCached(voice) {
+					fmt.Printf("%s: cached\n", voice)
+				} else {
+					fmt.Fprintf(os.Stderr, "%s: failed to cache\n", voice)
+					failed = true
+				}
+			}
+			if failed {
+				os.Exit(1)
+			}
+		},
+	}
+
+	root.AddCommand(serveCmd, stopCmd, cacheCmd)
 
 	if err := root.Execute(); err != nil {
 		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
