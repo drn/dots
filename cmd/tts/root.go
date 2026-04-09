@@ -4,6 +4,7 @@ package main
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -14,6 +15,7 @@ import (
 	"regexp"
 	"strings"
 	"syscall"
+	"time"
 
 	"github.com/drn/dots/pkg/path"
 	"github.com/joho/godotenv"
@@ -70,12 +72,11 @@ func ensureVoiceCached(voice string) bool {
 	if !validVoice.MatchString(voice) {
 		return false
 	}
-	// Download the missing voice file
-	script := fmt.Sprintf(
-		"from huggingface_hub import hf_hub_download; hf_hub_download('hexgrad/Kokoro-82M', 'voices/%s.pt')",
-		voice,
-	)
-	cmd := exec.Command(kokoroPython, "-c", script)
+	// Download the missing voice file — pass voice as argv to avoid code injection
+	script := "import sys; from huggingface_hub import hf_hub_download; hf_hub_download('hexgrad/Kokoro-82M', 'voices/' + sys.argv[1] + '.pt')"
+	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Minute)
+	defer cancel()
+	cmd := exec.CommandContext(ctx, kokoroPython, "-c", script, voice)
 	// Filter out existing HF_HUB_OFFLINE so the download can proceed
 	var filtered []string
 	for _, e := range os.Environ() {
@@ -87,6 +88,7 @@ func ensureVoiceCached(voice string) bool {
 	if err := cmd.Run(); err != nil {
 		fmt.Fprintf(os.Stderr, "warning: failed to cache voice %s: %v\n", voice, err)
 	}
+	// Re-check even on error — another process may have downloaded it concurrently
 	return isVoiceCached(voice)
 }
 
@@ -98,6 +100,7 @@ func resolveVoice(name string) string {
 	if v, ok := voiceMap[name]; ok {
 		return v
 	}
+	// Default to female American English voice prefix
 	return "af_" + name
 }
 
@@ -181,7 +184,38 @@ func main() {
 		},
 	}
 
-	root.AddCommand(serveCmd, stopCmd)
+	cacheCmd := &cobra.Command{
+		Use:   "cache VOICE [VOICE...]",
+		Short: "Pre-download Kokoro voice files for offline use (e.g. alloy, af_alloy)",
+		Args:  cobra.MinimumNArgs(1),
+		Run: func(_ *cobra.Command, args []string) {
+			failed := false
+			for _, name := range args {
+				resolved := resolveVoice(name)
+				if !validVoice.MatchString(resolved) {
+					fmt.Fprintf(os.Stderr, "%s: invalid voice name\n", name)
+					failed = true
+					continue
+				}
+				if isVoiceCached(resolved) {
+					fmt.Printf("%s: already cached\n", resolved)
+					continue
+				}
+				fmt.Printf("%s: downloading...\n", resolved)
+				if ensureVoiceCached(resolved) {
+					fmt.Printf("%s: cached\n", resolved)
+				} else {
+					fmt.Fprintf(os.Stderr, "%s: failed to cache\n", resolved)
+					failed = true
+				}
+			}
+			if failed {
+				os.Exit(1)
+			}
+		},
+	}
+
+	root.AddCommand(serveCmd, stopCmd, cacheCmd)
 
 	if err := root.Execute(); err != nil {
 		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
