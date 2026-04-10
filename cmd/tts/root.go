@@ -6,6 +6,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -31,8 +32,11 @@ var playCmd = "afplay"
 // lockPath is the file used for cross-process mutual exclusion of playback.
 var lockPath = "/tmp/tts.lock"
 
+// kokoroVenvDir is the Kokoro TTS Python venv directory, overridable for testing.
+var kokoroVenvDir = filepath.Join(os.Getenv("HOME"), ".kokoro-tts")
+
 // kokoroPython is the path to the Kokoro venv Python, overridable for testing.
-var kokoroPython = filepath.Join(os.Getenv("HOME"), ".kokoro-tts", "bin", "python3")
+var kokoroPython = filepath.Join(kokoroVenvDir, "bin", "python3")
 
 // voiceMap maps OpenAI voice names to Kokoro voice IDs.
 var voiceMap = map[string]string{
@@ -58,10 +62,13 @@ const defaultVoice = "af_heart"
 // setupPkgs lists the Python packages installed by `tts setup`.
 var setupPkgs = []string{"kokoro", "soundfile", "huggingface_hub"}
 
-// kokoroAvailable returns true if the Kokoro venv Python binary exists.
+// kokoroAvailable returns true if the Kokoro venv Python binary exists and is executable.
 func kokoroAvailable() bool {
-	_, err := os.Stat(kokoroPython)
-	return err == nil
+	info, err := os.Stat(kokoroPython)
+	if err != nil {
+		return false
+	}
+	return !info.IsDir() && info.Mode().Perm()&0111 != 0
 }
 
 // errNoVenv is the error message shown when the venv is missing.
@@ -237,10 +244,10 @@ func main() {
 		Args:  cobra.NoArgs,
 		Run: func(_ *cobra.Command, _ []string) {
 			if kokoroAvailable() {
-				fmt.Println("Kokoro venv already exists at", filepath.Dir(kokoroPython))
+				fmt.Println("Kokoro venv already exists at", kokoroVenvDir)
 				return
 			}
-			venvDir := filepath.Dir(filepath.Dir(kokoroPython))
+			venvDir := kokoroVenvDir
 			fmt.Printf("Creating venv at %s...\n", venvDir)
 			if err := exec.Command("python3", "-m", "venv", venvDir).Run(); err != nil {
 				fmt.Fprintf(os.Stderr, "Error creating venv: %v\n", err)
@@ -312,7 +319,7 @@ func speakLocal(text, voice string, speed float64) error {
 	}
 
 	if !kokoroAvailable() {
-		return fmt.Errorf(errNoVenv)
+		return errors.New(errNoVenv)
 	}
 
 	cached := ensureVoiceCached(voice)

@@ -18,8 +18,8 @@ func stubMic(active bool) func() {
 	return func() { micActive = orig }
 }
 
-// stubPython creates a fake python3 (actually /usr/bin/true) in a temp dir
-// and overrides kokoroPython to point at it. Returns a cleanup function.
+// stubPython overrides kokoroPython to point at the system `true` binary
+// so that kokoroAvailable() passes. Returns a cleanup function.
 func stubPython(t *testing.T) func() {
 	t.Helper()
 	truePath, err := exec.LookPath("true")
