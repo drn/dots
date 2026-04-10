@@ -59,6 +59,9 @@ var validVoice = regexp.MustCompile(`^[a-z][a-z0-9_]*$`)
 
 const defaultVoice = "af_heart"
 
+// kokoroRepoID is the HuggingFace repository for the Kokoro TTS model.
+const kokoroRepoID = "hexgrad/Kokoro-82M"
+
 // setupPkgs lists the Python packages installed by `tts setup`.
 var setupPkgs = []string{"kokoro", "soundfile", "huggingface_hub"}
 
@@ -95,10 +98,25 @@ func findPython() string {
 	return "python3"
 }
 
-// isModelCached checks if the Kokoro model config exists in the local HF cache.
+// envWithoutHFOffline returns os.Environ() with HF_HUB_OFFLINE removed so downloads can proceed.
+func envWithoutHFOffline() []string {
+	var filtered []string
+	for _, e := range os.Environ() {
+		if !strings.HasPrefix(e, "HF_HUB_OFFLINE=") {
+			filtered = append(filtered, e)
+		}
+	}
+	return filtered
+}
+
+// isModelCached checks if the Kokoro model files (config + weights) exist in the local HF cache.
 func isModelCached() bool {
-	matches, err := filepath.Glob(filepath.Join(hfCacheDir, "*", "config.json"))
-	return err == nil && len(matches) > 0
+	cfgMatches, err := filepath.Glob(filepath.Join(hfCacheDir, "*", "config.json"))
+	if err != nil || len(cfgMatches) == 0 {
+		return false
+	}
+	wgtMatches, err := filepath.Glob(filepath.Join(hfCacheDir, "*", "kokoro*.pth"))
+	return err == nil && len(wgtMatches) > 0
 }
 
 // ensureModelCached downloads the Kokoro model files if not already cached.
@@ -109,17 +127,11 @@ func ensureModelCached() bool {
 	if !kokoroAvailable() {
 		return false
 	}
-	script := "from kokoro import KModel; KModel(repo_id='hexgrad/Kokoro-82M')"
+	script := "from kokoro import KModel; KModel(repo_id='" + kokoroRepoID + "')"
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
 	defer cancel()
 	cmd := exec.CommandContext(ctx, kokoroPython, "-c", script)
-	var filtered []string
-	for _, e := range os.Environ() {
-		if !strings.HasPrefix(e, "HF_HUB_OFFLINE=") {
-			filtered = append(filtered, e)
-		}
-	}
-	cmd.Env = filtered
+	cmd.Env = envWithoutHFOffline()
 	cmd.Stderr = os.Stderr
 	if err := cmd.Run(); err != nil {
 		fmt.Fprintf(os.Stderr, "warning: failed to cache model: %v\n", err)
@@ -149,18 +161,11 @@ func ensureVoiceCached(voice string) bool {
 		return false
 	}
 	// Download the missing voice file — pass voice as argv to avoid code injection
-	script := "import sys; from huggingface_hub import hf_hub_download; hf_hub_download('hexgrad/Kokoro-82M', 'voices/' + sys.argv[1] + '.pt')"
+	script := "import sys; from huggingface_hub import hf_hub_download; hf_hub_download('" + kokoroRepoID + "', 'voices/' + sys.argv[1] + '.pt')"
 	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Minute)
 	defer cancel()
 	cmd := exec.CommandContext(ctx, kokoroPython, "-c", script, voice)
-	// Filter out existing HF_HUB_OFFLINE so the download can proceed
-	var filtered []string
-	for _, e := range os.Environ() {
-		if !strings.HasPrefix(e, "HF_HUB_OFFLINE=") {
-			filtered = append(filtered, e)
-		}
-	}
-	cmd.Env = filtered
+	cmd.Env = envWithoutHFOffline()
 	if err := cmd.Run(); err != nil {
 		fmt.Fprintf(os.Stderr, "warning: failed to cache voice %s: %v\n", voice, err)
 	}
@@ -312,7 +317,7 @@ func main() {
 				fmt.Println("Run with --force to recreate.")
 				return
 			}
-			if setupForce {
+			if setupForce && venvDir != "" {
 				fmt.Printf("Removing existing venv at %s...\n", venvDir)
 				os.RemoveAll(venvDir)
 			}

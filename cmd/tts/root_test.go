@@ -321,9 +321,7 @@ func TestFindPython_ReturnsExecutable(t *testing.T) {
 
 func TestFindPython_FallsBackToPython3(t *testing.T) {
 	// When PATH is empty, findPython should still return "python3" as fallback.
-	origPath := os.Getenv("PATH")
 	t.Setenv("PATH", "")
-	defer os.Setenv("PATH", origPath)
 
 	p := findPython()
 	if p != "python3" {
