@@ -6,6 +6,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -31,8 +32,11 @@ var playCmd = "afplay"
 // lockPath is the file used for cross-process mutual exclusion of playback.
 var lockPath = "/tmp/tts.lock"
 
+// kokoroVenvDir is the Kokoro TTS Python venv directory, overridable for testing.
+var kokoroVenvDir = filepath.Join(os.Getenv("HOME"), ".kokoro-tts")
+
 // kokoroPython is the path to the Kokoro venv Python, overridable for testing.
-var kokoroPython = filepath.Join(os.Getenv("HOME"), ".kokoro-tts", "bin", "python3")
+var kokoroPython = filepath.Join(kokoroVenvDir, "bin", "python3")
 
 // voiceMap maps OpenAI voice names to Kokoro voice IDs.
 var voiceMap = map[string]string{
@@ -55,6 +59,21 @@ var validVoice = regexp.MustCompile(`^[a-z][a-z0-9_]*$`)
 
 const defaultVoice = "af_heart"
 
+// setupPkgs lists the Python packages installed by `tts setup`.
+var setupPkgs = []string{"kokoro", "soundfile", "huggingface_hub"}
+
+// kokoroAvailable returns true if the Kokoro venv Python binary exists and is executable.
+func kokoroAvailable() bool {
+	info, err := os.Stat(kokoroPython)
+	if err != nil {
+		return false
+	}
+	return !info.IsDir() && info.Mode().Perm()&0111 != 0
+}
+
+// errNoVenv is the error message shown when the venv is missing.
+const errNoVenv = "kokoro venv not found — run `tts setup` first"
+
 // isVoiceCached checks if a Kokoro voice .pt file exists in the local HF cache.
 func isVoiceCached(voice string) bool {
 	if !validVoice.MatchString(voice) {
@@ -70,6 +89,10 @@ func ensureVoiceCached(voice string) bool {
 		return true
 	}
 	if !validVoice.MatchString(voice) {
+		return false
+	}
+	if !kokoroAvailable() {
+		fmt.Fprintln(os.Stderr, errNoVenv)
 		return false
 	}
 	// Download the missing voice file — pass voice as argv to avoid code injection
@@ -215,7 +238,35 @@ func main() {
 		},
 	}
 
-	root.AddCommand(serveCmd, stopCmd, cacheCmd)
+	setupCmd := &cobra.Command{
+		Use:   "setup",
+		Short: "Create the Kokoro TTS Python venv and install dependencies",
+		Args:  cobra.NoArgs,
+		Run: func(_ *cobra.Command, _ []string) {
+			if kokoroAvailable() {
+				fmt.Println("Kokoro venv already exists at", kokoroVenvDir)
+				return
+			}
+			venvDir := kokoroVenvDir
+			fmt.Printf("Creating venv at %s...\n", venvDir)
+			if err := exec.Command("python3", "-m", "venv", venvDir).Run(); err != nil {
+				fmt.Fprintf(os.Stderr, "Error creating venv: %v\n", err)
+				os.Exit(1)
+			}
+			pip := filepath.Join(venvDir, "bin", "pip")
+			fmt.Printf("Installing packages: %s\n", strings.Join(setupPkgs, ", "))
+			cmd := exec.Command(pip, append([]string{"install"}, setupPkgs...)...)
+			cmd.Stdout = os.Stdout
+			cmd.Stderr = os.Stderr
+			if err := cmd.Run(); err != nil {
+				fmt.Fprintf(os.Stderr, "Error installing packages: %v\n", err)
+				os.Exit(1)
+			}
+			fmt.Println("Setup complete.")
+		},
+	}
+
+	root.AddCommand(serveCmd, stopCmd, cacheCmd, setupCmd)
 
 	if err := root.Execute(); err != nil {
 		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
@@ -265,6 +316,10 @@ func playWithLock(audioPath string) error {
 func speakLocal(text, voice string, speed float64) error {
 	if micActive() {
 		return nil
+	}
+
+	if !kokoroAvailable() {
+		return errors.New(errNoVenv)
 	}
 
 	cached := ensureVoiceCached(voice)

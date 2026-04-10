@@ -6,7 +6,9 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"os"
+	"os/exec"
 	"path/filepath"
+	"strings"
 	"testing"
 )
 
@@ -14,6 +16,19 @@ func stubMic(active bool) func() {
 	orig := micActive
 	micActive = func() bool { return active }
 	return func() { micActive = orig }
+}
+
+// stubPython overrides kokoroPython to point at the system `true` binary
+// so that kokoroAvailable() passes. Returns a cleanup function.
+func stubPython(t *testing.T) func() {
+	t.Helper()
+	truePath, err := exec.LookPath("true")
+	if err != nil {
+		t.Skip("true not found in PATH")
+	}
+	orig := kokoroPython
+	kokoroPython = truePath
+	return func() { kokoroPython = orig }
 }
 
 func TestEnsureVoiceCached_SkipsWhenPresent(t *testing.T) {
@@ -91,9 +106,7 @@ func TestSpeakLocal_FallsBackOnUncachedVoice(t *testing.T) {
 	hfCacheDir = dir
 	defer func() { hfCacheDir = orig }()
 
-	origPython := kokoroPython
-	kokoroPython = "true"
-	defer func() { kokoroPython = origPython }()
+	defer stubPython(t)()
 
 	origPlay := playCmd
 	playCmd = "true"
@@ -189,9 +202,7 @@ func TestSpeakLocal_SkipsWhenMicActive(t *testing.T) {
 func TestSpeakLocal_Success(t *testing.T) {
 	defer stubMic(false)()
 
-	origPython := kokoroPython
-	kokoroPython = "true"
-	defer func() { kokoroPython = origPython }()
+	defer stubPython(t)()
 
 	origPlay := playCmd
 	playCmd = "true"
@@ -264,6 +275,63 @@ func TestSpeakRemote_APIError(t *testing.T) {
 	}
 	if got := err.Error(); got != `OpenAI API error (401): {"error": "invalid api key"}` {
 		t.Errorf("unexpected error message: %q", got)
+	}
+}
+
+func TestKokoroAvailable_True(t *testing.T) {
+	dir := t.TempDir()
+	binDir := filepath.Join(dir, "bin")
+	os.MkdirAll(binDir, 0755)
+	py := filepath.Join(binDir, "python3")
+	os.WriteFile(py, []byte("#!/bin/sh\n"), 0755)
+
+	orig := kokoroPython
+	kokoroPython = py
+	defer func() { kokoroPython = orig }()
+
+	if !kokoroAvailable() {
+		t.Error("expected true when python3 exists")
+	}
+}
+
+func TestKokoroAvailable_False(t *testing.T) {
+	orig := kokoroPython
+	kokoroPython = "/nonexistent/path/python3"
+	defer func() { kokoroPython = orig }()
+
+	if kokoroAvailable() {
+		t.Error("expected false when python3 does not exist")
+	}
+}
+
+func TestSpeakLocal_ErrorsWhenNoVenv(t *testing.T) {
+	defer stubMic(false)()
+
+	orig := kokoroPython
+	kokoroPython = "/nonexistent/path/python3"
+	defer func() { kokoroPython = orig }()
+
+	err := speakLocal("test", "af_heart", 1.0)
+	if err == nil {
+		t.Fatal("expected error when venv missing, got nil")
+	}
+	if !strings.Contains(err.Error(), "tts setup") {
+		t.Errorf("error should mention 'tts setup', got: %v", err)
+	}
+}
+
+func TestEnsureVoiceCached_ErrorsWhenNoVenv(t *testing.T) {
+	dir := t.TempDir()
+	orig := hfCacheDir
+	hfCacheDir = dir
+	defer func() { hfCacheDir = orig }()
+
+	origPython := kokoroPython
+	kokoroPython = "/nonexistent/path/python3"
+	defer func() { kokoroPython = origPython }()
+
+	if ensureVoiceCached("af_alloy") {
+		t.Error("expected false when venv missing")
 	}
 }
 
