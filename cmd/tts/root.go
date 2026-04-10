@@ -74,6 +74,59 @@ func kokoroAvailable() bool {
 // errNoVenv is the error message shown when the venv is missing.
 const errNoVenv = "kokoro venv not found — run `tts setup` first"
 
+// findPython returns the best Python 3.10+ binary for creating the venv.
+// It prefers stable, well-supported versions (3.12, 3.13) over bleeding-edge
+// ones where ML packages may lack wheels.
+func findPython() string {
+	// Preferred order: 3.12 and 3.13 have broad ML package support;
+	// 3.14+ may lack wheels for torch/spacy; 3.10-3.11 are acceptable fallbacks.
+	candidates := []string{
+		"python3.12", "python3.13", "python3.11", "python3.10", "python3.14",
+	}
+	for _, c := range candidates {
+		if p, err := exec.LookPath(c); err == nil {
+			return p
+		}
+	}
+	// Fall back to whatever python3 resolves to.
+	if p, err := exec.LookPath("python3"); err == nil {
+		return p
+	}
+	return "python3"
+}
+
+// isModelCached checks if the Kokoro model config exists in the local HF cache.
+func isModelCached() bool {
+	matches, err := filepath.Glob(filepath.Join(hfCacheDir, "*", "config.json"))
+	return err == nil && len(matches) > 0
+}
+
+// ensureModelCached downloads the Kokoro model files if not already cached.
+func ensureModelCached() bool {
+	if isModelCached() {
+		return true
+	}
+	if !kokoroAvailable() {
+		return false
+	}
+	script := "from kokoro import KModel; KModel(repo_id='hexgrad/Kokoro-82M')"
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
+	defer cancel()
+	cmd := exec.CommandContext(ctx, kokoroPython, "-c", script)
+	var filtered []string
+	for _, e := range os.Environ() {
+		if !strings.HasPrefix(e, "HF_HUB_OFFLINE=") {
+			filtered = append(filtered, e)
+		}
+	}
+	cmd.Env = filtered
+	cmd.Stderr = os.Stderr
+	if err := cmd.Run(); err != nil {
+		fmt.Fprintf(os.Stderr, "warning: failed to cache model: %v\n", err)
+	}
+	return isModelCached()
+}
+
 // isVoiceCached checks if a Kokoro voice .pt file exists in the local HF cache.
 func isVoiceCached(voice string) bool {
 	if !validVoice.MatchString(voice) {
@@ -209,9 +262,18 @@ func main() {
 
 	cacheCmd := &cobra.Command{
 		Use:   "cache VOICE [VOICE...]",
-		Short: "Pre-download Kokoro voice files for offline use (e.g. alloy, af_alloy)",
+		Short: "Pre-download Kokoro model and voice files for offline use (e.g. alloy, af_alloy)",
 		Args:  cobra.MinimumNArgs(1),
 		Run: func(_ *cobra.Command, args []string) {
+			if !isModelCached() {
+				fmt.Println("model: downloading...")
+				if ensureModelCached() {
+					fmt.Println("model: cached")
+				} else {
+					fmt.Fprintln(os.Stderr, "model: failed to cache")
+					os.Exit(1)
+				}
+			}
 			failed := false
 			for _, name := range args {
 				resolved := resolveVoice(name)
@@ -238,22 +300,36 @@ func main() {
 		},
 	}
 
+	var setupForce bool
 	setupCmd := &cobra.Command{
 		Use:   "setup",
 		Short: "Create the Kokoro TTS Python venv and install dependencies",
 		Args:  cobra.NoArgs,
 		Run: func(_ *cobra.Command, _ []string) {
-			if kokoroAvailable() {
-				fmt.Println("Kokoro venv already exists at", kokoroVenvDir)
+			venvDir := kokoroVenvDir
+			if kokoroAvailable() && !setupForce {
+				fmt.Println("Kokoro venv already exists at", venvDir)
+				fmt.Println("Run with --force to recreate.")
 				return
 			}
-			venvDir := kokoroVenvDir
-			fmt.Printf("Creating venv at %s...\n", venvDir)
-			if err := exec.Command("python3", "-m", "venv", venvDir).Run(); err != nil {
+			if setupForce {
+				fmt.Printf("Removing existing venv at %s...\n", venvDir)
+				os.RemoveAll(venvDir)
+			}
+			pythonBin := findPython()
+			fmt.Printf("Creating venv at %s (using %s)...\n", venvDir, pythonBin)
+			if err := exec.Command(pythonBin, "-m", "venv", venvDir).Run(); err != nil {
 				fmt.Fprintf(os.Stderr, "Error creating venv: %v\n", err)
 				os.Exit(1)
 			}
 			pip := filepath.Join(venvDir, "bin", "pip")
+			fmt.Println("Upgrading pip...")
+			upCmd := exec.Command(pip, "install", "--upgrade", "pip")
+			upCmd.Stdout = os.Stdout
+			upCmd.Stderr = os.Stderr
+			if err := upCmd.Run(); err != nil {
+				fmt.Fprintf(os.Stderr, "Warning: failed to upgrade pip: %v\n", err)
+			}
 			fmt.Printf("Installing packages: %s\n", strings.Join(setupPkgs, ", "))
 			cmd := exec.Command(pip, append([]string{"install"}, setupPkgs...)...)
 			cmd.Stdout = os.Stdout
@@ -265,6 +341,7 @@ func main() {
 			fmt.Println("Setup complete.")
 		},
 	}
+	setupCmd.Flags().BoolVar(&setupForce, "force", false, "Remove and recreate the venv from scratch")
 
 	root.AddCommand(serveCmd, stopCmd, cacheCmd, setupCmd)
 
@@ -343,7 +420,7 @@ func speakLocal(text, voice string, speed float64) error {
 
 		cmd := exec.Command(kokoroPython, "-c", kokoroScript, text, voice, fmt.Sprintf("%.2f", speed), tmp.Name())
 		env := append(os.Environ(), "PYTORCH_ENABLE_MPS_FALLBACK=1")
-		if cached {
+		if cached && isModelCached() {
 			env = append(env, "HF_HUB_OFFLINE=1")
 		}
 		cmd.Env = env

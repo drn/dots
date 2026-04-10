@@ -131,7 +131,11 @@ func runDaemon(background bool) error {
 		}
 	}
 	cmd := exec.Command(kokoroPython, scriptPath)
-	cmd.Env = append(os.Environ(), "PYTORCH_ENABLE_MPS_FALLBACK=1", "HF_HUB_OFFLINE=1")
+	env := append(os.Environ(), "PYTORCH_ENABLE_MPS_FALLBACK=1")
+	if isModelCached() {
+		env = append(env, "HF_HUB_OFFLINE=1")
+	}
+	cmd.Env = env
 	if background {
 		cmd.SysProcAttr = &syscall.SysProcAttr{Setpgid: true}
 		return cmd.Start()

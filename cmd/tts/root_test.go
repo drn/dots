@@ -304,6 +304,33 @@ func TestKokoroAvailable_False(t *testing.T) {
 	}
 }
 
+func TestFindPython_ReturnsExecutable(t *testing.T) {
+	p := findPython()
+	if p == "" {
+		t.Fatal("findPython returned empty string")
+	}
+	// The returned path should be executable.
+	info, err := os.Stat(p)
+	if err != nil {
+		t.Skipf("findPython returned %q which does not exist on this system", p)
+	}
+	if info.Mode().Perm()&0111 == 0 {
+		t.Errorf("findPython returned %q which is not executable", p)
+	}
+}
+
+func TestFindPython_FallsBackToPython3(t *testing.T) {
+	// When PATH is empty, findPython should still return "python3" as fallback.
+	origPath := os.Getenv("PATH")
+	t.Setenv("PATH", "")
+	defer os.Setenv("PATH", origPath)
+
+	p := findPython()
+	if p != "python3" {
+		t.Errorf("expected fallback to 'python3', got %q", p)
+	}
+}
+
 func TestSpeakLocal_ErrorsWhenNoVenv(t *testing.T) {
 	defer stubMic(false)()
 
