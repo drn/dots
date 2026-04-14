@@ -1,0 +1,93 @@
+#!/bin/bash
+
+#
+# Report dev laptop hardware specs: CPU, RAM, disk.
+# Usage: bash dev-specs  (or: curl -fsSL <url> | bash)
+#
+
+set -uo pipefail
+
+divider() { printf -- '----------------------------------------\n'; }
+
+os=$(uname -s)
+arch=$(uname -m)
+host=$(hostname -s 2>/dev/null || hostname)
+
+divider
+echo "Host: $host"
+echo "OS:   $os $(uname -r)"
+divider
+
+if [[ "$os" == "Darwin" ]]; then
+  # CPU
+  brand=$(sysctl -n machdep.cpu.brand_string 2>/dev/null || echo "unknown")
+  chip="$brand"
+  # Cache system_profiler output (slow ~1-2s per call)
+  sp_hw=$(system_profiler SPHardwareDataType 2>/dev/null || true)
+
+  # Apple Silicon reports brand like "Apple M3 Pro"
+  if [[ "$arch" == "arm64" ]]; then
+    sp_chip=$(echo "$sp_hw" | awk -F': ' '/Chip/ {print $2; exit}')
+    [[ -n "$sp_chip" ]] && chip="$sp_chip"
+    cpu_kind="Apple Silicon"
+  else
+    cpu_kind="Intel"
+  fi
+  cores=$(sysctl -n hw.ncpu 2>/dev/null || echo "?")
+  pcores=$(sysctl -n hw.perflevel0.physicalcpu 2>/dev/null || echo "")
+  ecores=$(sysctl -n hw.perflevel1.physicalcpu 2>/dev/null || echo "")
+
+  # GPU cores (Apple Silicon)
+  gpu_cores=$(system_profiler SPDisplaysDataType 2>/dev/null | awk -F': ' '/Total Number of Cores/ {print $2; exit}')
+
+  echo "CPU:   $chip ($cpu_kind, $arch)"
+  if [[ -n "$pcores" && -n "$ecores" ]]; then
+    echo "Cores: $cores CPU ($pcores performance / $ecores efficiency)${gpu_cores:+ / $gpu_cores GPU}"
+  else
+    echo "Cores: $cores CPU${gpu_cores:+ / $gpu_cores GPU}"
+  fi
+
+  # RAM
+  mem_bytes=$(sysctl -n hw.memsize 2>/dev/null || echo 0)
+  mem_gb=$(( mem_bytes / 1024 / 1024 / 1024 ))
+  echo "RAM:   ${mem_gb} GB"
+
+  # Model
+  model=$(echo "$sp_hw" | awk -F': ' '/Model Name/ {print $2; exit}')
+  model_id=$(sysctl -n hw.model 2>/dev/null || echo "unknown")
+  [[ -n "$model" ]] && echo "Model: $model ($model_id)"
+
+  # Disk (root volume)
+  divider
+  echo "Disk (root volume):"
+  df -h / | awk 'NR==1 || NR==2 {print "  " $0}'
+
+  # Data volume on APFS (where user files actually live)
+  if df -h /System/Volumes/Data >/dev/null 2>&1; then
+    echo "Disk (data volume):"
+    df -h /System/Volumes/Data | awk 'NR==2 {print "  " $0}'
+  fi
+
+elif [[ "$os" == "Linux" ]]; then
+  # CPU
+  cpu=$(awk -F': ' '/model name/ {print $2; exit}' /proc/cpuinfo 2>/dev/null)
+  [[ -z "$cpu" ]] && cpu=$(awk -F': ' '/Model/ {print $2; exit}' /proc/cpuinfo 2>/dev/null)
+  cores=$(nproc 2>/dev/null || echo "?")
+  echo "CPU:   ${cpu:-unknown} ($arch)"
+  echo "Cores: $cores"
+
+  # RAM
+  mem_kb=$(awk '/MemTotal/ {print $2}' /proc/meminfo 2>/dev/null || echo 0)
+  mem_gb=$(( mem_kb / 1024 / 1024 ))  # KB → GB
+  echo "RAM:   ${mem_gb} GB"
+
+  divider
+  echo "Disk (root):"
+  df -h / | awk 'NR==1 || NR==2 {print "  " $0}'
+
+else
+  echo "Unsupported OS: $os" >&2
+  exit 1
+fi
+
+divider
