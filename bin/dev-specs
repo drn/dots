@@ -57,16 +57,10 @@ if [[ "$os" == "Darwin" ]]; then
   model_id=$(sysctl -n hw.model 2>/dev/null || echo "unknown")
   [[ -n "$model" ]] && echo "Model: $model ($model_id)"
 
-  # Disk (root volume)
-  divider
-  echo "Disk (root volume):"
-  df -h / | awk 'NR==1 || NR==2 {print "  " $0}'
-
-  # Data volume on APFS (where user files actually live)
-  if df -h /System/Volumes/Data >/dev/null 2>&1; then
-    echo "Disk (data volume):"
-    df -h /System/Volumes/Data | awk 'NR==2 {print "  " $0}'
-  fi
+  # Disk size
+  disk_size=$(df -h /System/Volumes/Data 2>/dev/null | awk 'NR==2 {print $2}')
+  [[ -z "$disk_size" ]] && disk_size=$(df -h / | awk 'NR==2 {print $2}')
+  echo "Disk:  $disk_size"
 
 elif [[ "$os" == "Linux" ]]; then
   # CPU
@@ -81,9 +75,8 @@ elif [[ "$os" == "Linux" ]]; then
   mem_gb=$(( mem_kb / 1024 / 1024 ))  # KB → GB
   echo "RAM:   ${mem_gb} GB"
 
-  divider
-  echo "Disk (root):"
-  df -h / | awk 'NR==1 || NR==2 {print "  " $0}'
+  disk_size=$(df -h / | awk 'NR==2 {print $2}')
+  echo "Disk:  $disk_size"
 
 else
   echo "Unsupported OS: $os" >&2
