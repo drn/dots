@@ -16,6 +16,7 @@ end
 function browser.openProfileMenu()
   local app = app()
   if app == nil then return end
+  if app:name() == 'Safari' then return end
   app:activate()
   -- focus on menubar if auto-hidden
   hs.eventtap.keyStroke({'fn', 'ctrl'}, 'f2')
@@ -26,10 +27,9 @@ function browser.closeOtherTabs()
   local app = app()
   if app == nil then return end
   alert.show('Closing Other Tabs')
-  local name = app:name()
-  local _cmd
-  if name == 'Safari' then
-    _cmd = [[
+  -- Safari uses object identity; Chromium browsers use active tab index
+  local scripts = {
+    ['Safari'] = [[
       tell application "Safari"
         set currentTab to current tab of window 1
         set tabList to every tab of window 1
@@ -39,10 +39,9 @@ function browser.closeOtherTabs()
           end if
         end repeat
       end tell
-    ]]
-  else
-    _cmd = ([[
-      tell application "]] .. name .. [["
+    ]],
+    ['Brave Browser'] = [[
+      tell application "Brave Browser"
         set tabList to every tab of window 1
         set activeTabIndex to active tab index of window 1
         set counter to 1
@@ -53,8 +52,10 @@ function browser.closeOtherTabs()
           set counter to counter + 1
         end repeat
       end tell
-    ]])
-  end
+    ]]
+  }
+  local _cmd = scripts[app:name()]
+  if _cmd == nil then return end
   as.applescript(_cmd)
 end
 
