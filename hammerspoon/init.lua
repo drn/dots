@@ -61,7 +61,8 @@ local bindings = {
     [ 'Superhuman' ] = '/'
   },
   [{ 'cmd', 'alt'}] = {
-    [ 'Brave Browser' ] = 'return'
+    [ 'Brave Browser' ] = 'return',
+    [ 'Safari' ]        = "'"
   }
 }
 for modifiers,apps in pairs(bindings) do
