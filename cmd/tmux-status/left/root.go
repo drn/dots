@@ -62,18 +62,23 @@ func first() string {
 }
 
 func second() string {
+	ip := localIP()
 	ssid := run.Capture("ssid --short")
 	if ssid != "" {
-		return fmt.Sprintf("%s %s %s", ssid, sep.R2, localIP())
+		return fmt.Sprintf("%s %s %s", ssid, sep.R2, ip)
 	}
-	if ip := localIP(); ip != "127.0.0.1" {
+	if ip != "127.0.0.1" {
 		return fmt.Sprintf("Ethernet %s %s", sep.R2, ip)
 	}
 	return "Offline"
 }
 
 func localIP() string {
-	return run.Capture("ip --local en7 || ip --local || echo 127.0.0.1")
+	iface := run.Capture("route -n get default | awk '/interface:/{print $2}'")
+	if iface == "" {
+		return "127.0.0.1"
+	}
+	return run.Capture("ip --local %s || echo 127.0.0.1", iface)
 }
 
 func externalIP() string {
