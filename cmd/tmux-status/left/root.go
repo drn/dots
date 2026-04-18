@@ -73,7 +73,7 @@ func second() string {
 }
 
 func localIP() string {
-	return run.Capture("ip --local en7 || ip --local || echo 127.0.0.1")
+	return run.Capture("ip --local $(route -n get default | awk '/interface:/{print $2}') || echo 127.0.0.1")
 }
 
 func externalIP() string {
