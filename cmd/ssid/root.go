@@ -29,7 +29,8 @@ func main() {
 	if ssid == "" {
 		os.Exit(0)
 	}
-	printSSID(ssid)
+	short := len(os.Args) > 1 && os.Args[1] == "--short"
+	fmt.Println(formatSSID(ssid, short))
 }
 
 func pickSSID(primary, fallback func() string) string {
@@ -98,15 +99,16 @@ func extractSSID(data []byte) string {
 	return ""
 }
 
-func printSSID(ssid string) {
-	if len(os.Args) > 1 && os.Args[1] == "--short" {
-		parts := strings.Split(ssid, " ")
-		if len(parts) > 2 {
-			ssid = fmt.Sprintf("%s…", strings.Join(parts[:2], " "))
-		}
-		if utf8.RuneCountInString(ssid) > 12 {
-			ssid = fmt.Sprintf("%s…", string([]rune(ssid)[:12]))
-		}
+func formatSSID(ssid string, short bool) string {
+	if !short {
+		return ssid
 	}
-	fmt.Println(ssid)
+	parts := strings.Split(ssid, " ")
+	if len(parts) > 2 {
+		ssid = fmt.Sprintf("%s…", strings.Join(parts[:2], " "))
+	}
+	if utf8.RuneCountInString(ssid) > 12 {
+		ssid = fmt.Sprintf("%s…", string([]rune(ssid)[:12]))
+	}
+	return ssid
 }

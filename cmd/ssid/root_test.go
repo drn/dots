@@ -41,6 +41,29 @@ func TestExtractSSIDInvalid(t *testing.T) {
 	}
 }
 
+func TestFormatSSID(t *testing.T) {
+	cases := []struct {
+		name  string
+		in    string
+		short bool
+		want  string
+	}{
+		{"no short flag passes through", "Some Long Network Name Here", false, "Some Long Network Name Here"},
+		{"short one word under 12", "Home", true, "Home"},
+		{"short two words under 12", "My WiFi", true, "My WiFi"},
+		{"short three words gets elided", "Coffee Shop WiFi", true, "Coffee Shop…"},
+		{"short over 12 runes gets truncated", "SuperLongNetworkName", true, "SuperLongNet…"},
+		{"short unicode truncated by rune count", "日本語ネットワーク名前テスト", true, "日本語ネットワーク名前テ…"},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			if got := formatSSID(tc.in, tc.short); got != tc.want {
+				t.Errorf("formatSSID(%q, %v) = %q, want %q", tc.in, tc.short, got, tc.want)
+			}
+		})
+	}
+}
+
 func TestPickSSID(t *testing.T) {
 	cases := []struct {
 		name             string
