@@ -20,25 +20,33 @@ import (
 	"github.com/drn/dots/pkg/run"
 )
 
+// redacted is what macOS 14+ returns from public SSID APIs when the process
+// lacks Location Services permission.
 const redacted = "<redacted>"
 
 func main() {
-	ssid := currentSSID()
+	ssid := pickSSID(ipconfigSSID, cachedScanSSID)
 	if ssid == "" {
 		os.Exit(0)
 	}
 	printSSID(ssid)
 }
 
-func currentSSID() string {
-	s := run.Capture("ipconfig getsummary en0 | awk -F ' SSID : '  '/ SSID : / {print $2}'")
-	if s != "" && s != redacted {
+func pickSSID(primary, fallback func() string) string {
+	if s := primary(); s != "" && s != redacted {
 		return s
 	}
-	return cachedScanSSID()
+	return fallback()
+}
+
+func ipconfigSSID() string {
+	return run.Capture("ipconfig getsummary en0 | awk -F ' SSID : '  '/ SSID : / {print $2}'")
 }
 
 func cachedScanSSID() string {
+	// scutil formats the line as:
+	//   CachedScanRecord : <data> 0x<hex>
+	// so field $4 is the hex-encoded bplist.
 	out := run.Capture(`echo "show State:/Network/Interface/en0/AirPort" | scutil | awk '/CachedScanRecord/ {print $4}'`)
 	data, err := hex.DecodeString(strings.TrimPrefix(out, "0x"))
 	if err != nil {

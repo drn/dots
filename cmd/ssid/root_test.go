@@ -41,6 +41,27 @@ func TestExtractSSIDInvalid(t *testing.T) {
 	}
 }
 
+func TestPickSSID(t *testing.T) {
+	cases := []struct {
+		name             string
+		primary, fallbk  string
+		want             string
+	}{
+		{"primary wins", "MyNet", "Fallback", "MyNet"},
+		{"empty primary falls back", "", "Fallback", "Fallback"},
+		{"redacted primary falls back", "<redacted>", "Fallback", "Fallback"},
+		{"both empty", "", "", ""},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			got := pickSSID(func() string { return tc.primary }, func() string { return tc.fallbk })
+			if got != tc.want {
+				t.Errorf("pickSSID(%q, %q) = %q, want %q", tc.primary, tc.fallbk, got, tc.want)
+			}
+		})
+	}
+}
+
 func synthBplist(t *testing.T, ssid string) []byte {
 	t.Helper()
 	archive := map[string]interface{}{
