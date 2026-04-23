@@ -69,6 +69,7 @@ alias sickchill='acorn ./bin/sickchill'
 alias st="search-github \$GITHUB_ORG"
 alias starwars='caffeinate -d telnet towel.blinkenlights.nl'
 alias tf='terraform'
+alias t='thanx-cli'
 alias thanx='thanx-cli'
 alias top='vtop'
 alias uncognito='HISTFILE=~/.zsh_history'
