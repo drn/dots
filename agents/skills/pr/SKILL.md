@@ -38,6 +38,26 @@ If there are uncommitted changes (check git status), stage and commit them with 
 
 ### Step 2: Push the branch
 
+#### 2a: Pre-push markdown formatting check
+
+If the pending push touches any `.md` files, run `prettier --check` against them first. Markdown table edits (e.g., adding a row to one table) often force prettier to realign column widths in *other* tables in the same file, which trips `qlty fmt` in CI. Catching it before push avoids burning a CI cycle.
+
+```bash
+md_files=$(git diff --name-only "$base_branch"...HEAD | grep -E '\.md$' || true)
+if [ -n "$md_files" ]; then
+  if ! npx --yes prettier@3.3.3 --check $md_files; then
+    echo ":: prettier reformatted markdown — running --write and re-staging"
+    npx --yes prettier@3.3.3 --write $md_files
+    git add $md_files
+    git commit -m "Format markdown via prettier"
+  fi
+fi
+```
+
+The check is cheap (~2s for a typical PR) and catches the most common qlty fmt failure mode. Skip if no `.md` files are in the diff.
+
+#### 2b: Push
+
 Push the current branch to origin. Use `git push -u origin HEAD` if no upstream is set. If there is nothing new to push, that is fine — continue to Step 3.
 
 ### Step 3: Open a PR (or use existing one)

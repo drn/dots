@@ -21,6 +21,8 @@ Migrate a repository's skills to the Agent Skills open standard so they work acr
 - CLAUDE.md type: !`file CLAUDE.md 2>/dev/null | head -1`
 - claude.md (lowercase) exists: !`find . -maxdepth 1 -type f 2>/dev/null | grep '/claude\.md$' | head -1`
 - Copilot instructions: !`find .github -maxdepth 1 -name copilot-instructions.md 2>/dev/null | head -1`
+- Subtree CLAUDE.md files: !`find . -mindepth 2 -maxdepth 4 -name CLAUDE.md -not -path './.git/*' 2>/dev/null | head -20`
+- Subtree AGENTS.md files: !`find . -mindepth 2 -maxdepth 4 -name AGENTS.md -not -path './.git/*' 2>/dev/null | head -20`
 - Git root: !`git rev-parse --show-toplevel 2>/dev/null | head -1`
 
 ## Instructions
@@ -47,6 +49,18 @@ Classify the repo:
 - **PARTIAL**: `.agents/skills/` exists but missing infrastructure (no AGENTS.md, no Copilot instructions, no sync scripts).
 - **COMPLETE**: `.agents/skills/` exists with all infrastructure. Run validation only.
 
+#### Subtree scan (monorepos)
+
+Also scan for subtree-level `CLAUDE.md` / `AGENTS.md` files (any depth ≥ 2 inside the repo, excluding `.git`). For each subtree directory, classify:
+
+- **CLAUDE-only** — only `CLAUDE.md` exists → `git mv` to `AGENTS.md` and add `CLAUDE.md` symlink
+- **AGENTS-only** — only `AGENTS.md` exists → add `CLAUDE.md` symlink
+- **Both, identical** — `cmp -s CLAUDE.md AGENTS.md` returns 0 → drop `CLAUDE.md`, replace with symlink
+- **Both, divergent** — content differs → **merge required** (see Step 7 validation rules)
+- **Symlink already** — `CLAUDE.md` is a symlink to `AGENTS.md` → skip
+
+Treat subtrees as a first-class migration target, not an "out of scope" observation. The user expects `cross-agent` to migrate the entire monorepo in one pass.
+
 ### Step 2: Present Migration Plan
 
 Show the user:
@@ -68,10 +82,19 @@ State: [GREENFIELD/CLAUDE-ONLY/PARTIAL/COMPLETE]
 - [ ] CLAUDE.md symlink to AGENTS.md
 - [ ] .claude/skills symlink to .agents/skills
 - [ ] .github/copilot-instructions.md
+
+### Per-Subtree Migration (omit this section if no subtree CLAUDE.md / AGENTS.md found)
+| Subtree | State | Action |
+|---|---|---|
+| `nucleus/`        | CLAUDE-only        | git mv CLAUDE.md AGENTS.md; symlink CLAUDE.md → AGENTS.md |
+| `services/admin/` | Both, divergent    | merge CLAUDE.md + AGENTS.md → AGENTS.md (verify both); symlink CLAUDE.md |
+| `services/api/`   | Both, identical    | rm CLAUDE.md; symlink CLAUDE.md → AGENTS.md |
+| `services/web/`   | AGENTS-only        | symlink CLAUDE.md → AGENTS.md |
+
 Proceed? (waiting for confirmation)
 ```
 
-Wait for confirmation before making changes.
+Wait for confirmation before making changes. The subtree table must show the **action** per subtree, not a passive observation. The user should be able to approve subtree migration in one step alongside the root migration.
 
 ### Step 3: Create Directory Structure
 
@@ -108,6 +131,20 @@ For each existing canonical skill:
 1. Read `SKILL.md` and verify `name:` field exists in frontmatter
 2. If missing, add it
 3. Do not modify the body
+
+### Step 4.5: Apply Per-Subtree Migration
+
+If the Step 1 subtree scan found any subtree-level CLAUDE.md / AGENTS.md files, walk each entry from the approved per-subtree table and apply the action. **Use `git mv` for tracked files** so history is preserved. Always create a **relative** symlink within the subtree (e.g., `cd nucleus/ && ln -s AGENTS.md CLAUDE.md`).
+
+Per-state actions:
+
+- **CLAUDE-only** — `git mv <subtree>/CLAUDE.md <subtree>/AGENTS.md`, then create symlink `<subtree>/CLAUDE.md → AGENTS.md`.
+- **AGENTS-only** — create symlink `<subtree>/CLAUDE.md → AGENTS.md`.
+- **Both, identical** — `git rm <subtree>/CLAUDE.md`, then create symlink `<subtree>/CLAUDE.md → AGENTS.md`.
+- **Both, divergent** — merge both into `<subtree>/AGENTS.md` (apply the Step 7 "Validation: divergent-content merge" rules), then `git rm <subtree>/CLAUDE.md` and create symlink `<subtree>/CLAUDE.md → AGENTS.md`.
+- **Symlink already** — verify it points to `AGENTS.md`; otherwise repair it.
+
+After processing all subtrees, sanity-check that every former CLAUDE.md location now resolves to its AGENTS.md sibling: `find . -name CLAUDE.md -not -path './.git/*' -exec test -L {} \; -exec readlink {} \; -print`.
 
 ### Step 5: Set Up Agent Discovery Symlinks
 
@@ -167,6 +204,19 @@ The goal is for `CLAUDE.md` to be a symlink to `AGENTS.md` so both Claude Code a
 3. Replace CLAUDE.md with a symlink to AGENTS.md
 4. Report what was merged so the user can review
 
+#### Validation: divergent-content merge
+
+When **both** CLAUDE.md and AGENTS.md exist with different content (not just one missing), the merge MUST preserve the substantive content of both files. Naive section-level appending can silently drop content if a section header matches but the body diverges (e.g., one file says `try devbox first → fallback to bundle exec`, the other just says `bundle exec rubocop`).
+
+Before committing the merged AGENTS.md and replacing CLAUDE.md with a symlink:
+
+1. Extract non-trivial content lines from each source file. A useful heuristic: every header (lines starting with `#`), every fenced code block, and every sentence longer than ~30 characters that isn't pure boilerplate.
+2. Run `grep -F` for each extracted snippet against the merged AGENTS.md. Any snippet that does not appear in the merged file indicates content was dropped.
+3. If anything is missing, re-merge to include it (or escalate to the user with the specific snippets that were dropped).
+4. Only after the grep verification passes, replace CLAUDE.md with the symlink.
+
+Apply the same validation when merging subtree CLAUDE.md / AGENTS.md pairs (Step 4 / Step 1 subtree scan classified as "Both, divergent").
+
 ### Step 8: Generate Copilot Instructions
 
 Create `.github/copilot-instructions.md` if it does not exist:
@@ -205,6 +255,8 @@ Verify the setup by checking:
 4. `CLAUDE.md` is a symlink to `AGENTS.md`
 5. `.github/copilot-instructions.md` exists
 6. No lowercase `claude.md` exists
+7. **Subtrees:** every subtree `CLAUDE.md` (any depth ≥ 2) is a symlink resolving to a sibling `AGENTS.md`. Run: `find . -name CLAUDE.md -not -path './.git/*' -not -path './CLAUDE.md'` and verify each is `-L` (symlink) with `readlink` returning `AGENTS.md`.
+8. **Divergent merges:** for each subtree where Step 1 classified as "Both, divergent", confirm the post-merge `grep -F` snippet check (Step 7 validation) was applied. If unsure, re-run the grep against the source content captured before the merge.
 
 Report results. If any checks fail, explain what needs fixing and offer to fix it.
 
