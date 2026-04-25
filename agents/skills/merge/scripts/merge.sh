@@ -3,7 +3,13 @@ set -euo pipefail
 
 # merge.sh — Merge current branch to the default branch via GitHub PR
 #
-# Usage: merge.sh [--skip-rebase] [--squash] "<title>" "<body>"
+# Usage: merge.sh [--skip-rebase] [--method <squash|merge|rebase>] [--squash|--merge|--rebase] "<title>" "<body>"
+#
+# Without an explicit method, merge.sh probes the repo's allowed methods and
+# tries them in preference order (squash → rebase → merge). Pass --method (or
+# the matching shorthand) to force a single method — useful when the user
+# deliberately split a branch into multiple commits and wants `gh pr merge
+# --rebase` to preserve them on master, even on a repo that allows squash.
 #
 # Exit codes:
 #   0 — success (merge completed or auto-merge enabled)
@@ -30,6 +36,7 @@ DOTS_SYNCED=""
 PR_MERGE_STATE=""
 PR_REVIEW_DECISION=""
 LAST_GH_ERR=""
+MERGE_METHOD_FLAG=""  # input flag (squash|merge|rebase|""); narrows ALLOWED_METHODS when set
 
 # --- Helpers ---
 
@@ -362,12 +369,20 @@ main() {
   while [[ "${1:-}" == --* ]]; do
     case "$1" in
       --skip-rebase) skip_rebase=true; shift ;;
-      --squash)      shift ;;  # no-op: squash is the preferred method when allowed
-      *)             die 1 "Unknown flag: $1 — usage: merge.sh [--skip-rebase] [--squash] \"<title>\" \"<body>\"" ;;
+      --squash)      MERGE_METHOD_FLAG="squash"; shift ;;
+      --merge)       MERGE_METHOD_FLAG="merge";  shift ;;
+      --rebase)      MERGE_METHOD_FLAG="rebase"; shift ;;
+      --method)      MERGE_METHOD_FLAG="${2:?--method requires squash|merge|rebase}"; shift 2 ;;
+      *)             die 1 "Unknown flag: $1 — usage: merge.sh [--skip-rebase] [--method <squash|merge|rebase>] [--squash|--merge|--rebase] \"<title>\" \"<body>\"" ;;
     esac
   done
 
-  local title="${1:?Usage: merge.sh [--skip-rebase] \"<title>\" \"<body>\"}"
+  case "$MERGE_METHOD_FLAG" in
+    ""|squash|merge|rebase) ;;
+    *) die 1 "Invalid --method '${MERGE_METHOD_FLAG}' — must be squash, merge, or rebase" ;;
+  esac
+
+  local title="${1:?Usage: merge.sh [--skip-rebase] [--method <squash|merge|rebase>] \"<title>\" \"<body>\"}"
   local body="${2:-}"
 
   # Append co-author line
@@ -394,6 +409,14 @@ ${COAUTHOR}"
   ensure_pr "$title" "$body"
   check_pr_state
   detect_allowed_methods
+  if [[ -n "$MERGE_METHOD_FLAG" ]]; then
+    # User-forced method: narrow the strategy list to just this one. We
+    # intentionally do NOT cross-check against the probe — if the user asked
+    # for `--method rebase` on a squash-only repo, let gh produce the actual
+    # error rather than guessing from a possibly stale probe.
+    info "Method override: using only ${MERGE_METHOD_FLAG} (skipping probe-based fallback)"
+    ALLOWED_METHODS=("$MERGE_METHOD_FLAG")
+  fi
   do_merge "$title" "$body"
   fetch_merge_commit       # must precede update_local_master (uses GitHub API, not local state)
   update_local_master
