@@ -147,7 +147,7 @@ Invoke the `/merge` skill to land the branch into master.
 
 Handle merge script exit codes as documented in the `/merge` skill (conflicts, nothing to merge, review blocked, errors).
 
-**If CI fails on tests unrelated to your PR**, fix them inline as part of `/ship` rather than rebasing or treating the merge as blocked. Pre-existing flakes (timing-sensitive tests, data races on shared mutable state, environment-dependent assertions) are normal during a `/ship` cycle on a project with sparse CI history. Capture each fix as its own commit with a message that names the flake and the cause (e.g., "fix TestSession_RecentOutput sleep timing on slower CI") so the rationale stays clear in history. Then re-run `/merge`.
+**If CI fails on tests unrelated to your PR**, fix them inline as part of `/ship` rather than rebasing or treating the merge as blocked. Pre-existing flakes (timing-sensitive tests, data races on shared mutable state, environment-dependent assertions) are normal during a `/ship` cycle on a project with sparse CI history. Capture each fix as its own commit with a message that names the flake and the cause (e.g., "fix flaky-test sleep timing on slower CI" or "fix data race on shared buffer under -race") so the rationale stays clear in history. Then re-run `/merge`.
 
 ---
 
