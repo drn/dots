@@ -22,12 +22,14 @@ COMMIT_COUNT=""
 PR_NUMBER=""
 PR_URL=""
 REPO_SLUG=""
+ALLOWED_METHODS=()
 MERGE_METHOD=""
 MERGE_STATUS="merged"
 MERGE_COMMIT=""
 DOTS_SYNCED=""
 PR_MERGE_STATE=""
 PR_REVIEW_DECISION=""
+LAST_GH_ERR=""
 
 # --- Helpers ---
 
@@ -54,6 +56,12 @@ determine_target() {
 
 detect_default_branch() {
   REPO_SLUG=$(git remote get-url "$TARGET" | sed 's|.*github.com[:/]||;s|\.git$||')
+
+  # Reject malformed slugs early — anything other than owner/repo (allowing
+  # standard GitHub characters) would corrupt later `gh api` and `gh pr merge`
+  # calls, since REPO_SLUG is interpolated into URL/argv positions.
+  [[ "$REPO_SLUG" =~ ^[A-Za-z0-9._-]+/[A-Za-z0-9._-]+$ ]] \
+    || die 1 "Could not parse owner/repo from ${TARGET} remote URL (got: '${REPO_SLUG}')"
 
   # Primary: ask GitHub API for the actual default branch
   local api_default
@@ -138,6 +146,9 @@ ensure_pr() {
     PR_URL=$(gh pr create --base "$DEFAULT_BRANCH" --head "$BRANCH" --title "$title" --body "$body" 2>&1 | grep -o 'https://github.com/[^ ]*' | head -1)
     PR_NUMBER=$(echo "$PR_URL" | grep -o '[0-9]*$')
   fi
+  # Guard against silent fall-through to gh's "current branch" PR detection if
+  # parsing failed — every later gh call would otherwise target the wrong PR.
+  [[ -z "$PR_NUMBER" ]] && die 1 "Could not determine PR number (PR_URL=${PR_URL:-<empty>})"
   info "PR: ${PR_URL}"
 }
 
@@ -152,57 +163,134 @@ check_pr_state() {
   fi
 }
 
+detect_allowed_methods() {
+  [[ -z "$REPO_SLUG" ]] && die 1 "REPO_SLUG not set — detect_default_branch must run first"
+
+  # Probe repo settings as TSV (squash<TAB>rebase<TAB>merge), each "true" or "false".
+  # Preference order: squash → rebase → merge-commit.
+  local probe
+  probe=$(gh api "repos/${REPO_SLUG}" \
+    --jq '[.allow_squash_merge,.allow_rebase_merge,.allow_merge_commit] | @tsv' \
+    2>/dev/null || echo "")
+
+  ALLOWED_METHODS=()
+  if [[ -n "$probe" ]]; then
+    local squash rebase merge_commit
+    IFS=$'\t' read -r squash rebase merge_commit <<<"$probe"
+    [[ "$squash"       == "true" ]] && ALLOWED_METHODS+=("squash")
+    [[ "$rebase"       == "true" ]] && ALLOWED_METHODS+=("rebase")
+    [[ "$merge_commit" == "true" ]] && ALLOWED_METHODS+=("merge")
+  fi
+
+  if [[ ${#ALLOWED_METHODS[@]} -eq 0 ]]; then
+    # Probe failed or returned nothing — try every method in preference order.
+    ALLOWED_METHODS=(squash rebase merge)
+    info "Allowed merge methods unknown; will try: ${ALLOWED_METHODS[*]}"
+  else
+    info "Allowed merge methods: ${ALLOWED_METHODS[*]}"
+  fi
+}
+
+_gh_merge() {
+  # Run `gh pr merge` for the given method, optionally with --admin or --auto.
+  # Returns gh's exit code; on failure, stderr is captured into LAST_GH_ERR so
+  # the terminal die can surface the underlying error instead of silently
+  # exhausting all methods × tiers.
+  # --subject/--body apply to squash and merge-commit only; rebase keeps the
+  # original commits and rejects those flags.
+  local method="$1" extra="$2" title="$3" body="$4"
+
+  local flag
+  case "$method" in
+    squash) flag="--squash" ;;
+    rebase) flag="--rebase" ;;
+    merge)  flag="--merge"  ;;
+    *) return 99 ;;
+  esac
+
+  local args=("$PR_NUMBER" --repo "$REPO_SLUG" "$flag")
+  [[ -n "$extra" ]] && args+=("$extra")
+  [[ "$method" != "rebase" ]] && args+=(--subject "$title" --body "$body")
+
+  local err_file rc
+  err_file=$(mktemp)
+  if gh pr merge "${args[@]}" 2>"$err_file"; then
+    rc=0
+    # --admin bypasses branch protection (required reviewers, status checks).
+    # Make the bypass visible so it never happens silently.
+    [[ "$extra" == "--admin" ]] && info "WARNING: merged via --admin (branch protection bypassed)"
+  else
+    rc=$?
+    LAST_GH_ERR=$(cat "$err_file")
+  fi
+  rm -f "$err_file"
+  return "$rc"
+}
+
 do_merge() {
   local title="$1" body="$2"
+  local method
 
   info "Merging PR #${PR_NUMBER}..."
 
-  # If review is blocking the merge, skip immediate merge and try admin/auto-merge
+  # If review is blocking the merge, skip plain merge and try admin/auto.
   if [[ "$PR_REVIEW_DECISION" == "REVIEW_REQUIRED" || "$PR_REVIEW_DECISION" == "CHANGES_REQUESTED" ]]; then
     local reason="review required"
     [[ "$PR_REVIEW_DECISION" == "CHANGES_REQUESTED" ]] && reason="changes requested"
     info "PR blocked (${reason}) — trying admin merge..."
 
-    if gh pr merge "$PR_NUMBER" --repo "$REPO_SLUG" --squash --admin --subject "$title" --body "$body" 2>/dev/null; then
-      MERGE_METHOD="squash (admin)"
-      return 0
-    fi
+    for method in "${ALLOWED_METHODS[@]}"; do
+      if _gh_merge "$method" "--admin" "$title" "$body"; then
+        MERGE_METHOD="${method} (admin)"
+        return 0
+      fi
+    done
 
     info "Admin merge failed, enabling auto-merge..."
 
-    if gh pr merge "$PR_NUMBER" --repo "$REPO_SLUG" --squash --auto --subject "$title" --body "$body" 2>/dev/null; then
-      MERGE_METHOD="squash (auto-merge)"
-      MERGE_STATUS="auto-merge enabled (${reason})"
+    for method in "${ALLOWED_METHODS[@]}"; do
+      if _gh_merge "$method" "--auto" "$title" "$body"; then
+        MERGE_METHOD="${method} (auto-merge)"
+        MERGE_STATUS="auto-merge enabled (${reason})"
+        return 0
+      fi
+    done
+
+    die 4 "PR #${PR_NUMBER} is blocked (${reason}) and auto-merge is not available on this repository${LAST_GH_ERR:+
+  Last gh error: ${LAST_GH_ERR}}"
+  fi
+
+  # Tier 1: plain merge with each allowed method (preferred order).
+  for method in "${ALLOWED_METHODS[@]}"; do
+    if _gh_merge "$method" "" "$title" "$body"; then
+      MERGE_METHOD="$method"
       return 0
     fi
+  done
 
-    die 4 "PR #${PR_NUMBER} is blocked (${reason}) and auto-merge is not available on this repository"
-  fi
+  info "Plain merge failed, trying admin merge..."
 
-  # Attempt 1: squash merge
-  if gh pr merge "$PR_NUMBER" --repo "$REPO_SLUG" --squash --subject "$title" --body "$body" 2>/dev/null; then
-    MERGE_METHOD="squash"
-    return 0
-  fi
-
-  info "Squash merge failed, trying admin merge..."
-
-  # Attempt 2: admin squash (bypasses branch protection)
-  if gh pr merge "$PR_NUMBER" --repo "$REPO_SLUG" --squash --admin --subject "$title" --body "$body" 2>/dev/null; then
-    MERGE_METHOD="squash (admin)"
-    return 0
-  fi
+  # Tier 2: --admin (bypasses branch protection if the user has admin).
+  for method in "${ALLOWED_METHODS[@]}"; do
+    if _gh_merge "$method" "--admin" "$title" "$body"; then
+      MERGE_METHOD="${method} (admin)"
+      return 0
+    fi
+  done
 
   info "Admin merge failed, trying auto-merge..."
 
-  # Attempt 3: squash with auto-merge
-  if gh pr merge "$PR_NUMBER" --repo "$REPO_SLUG" --squash --auto --subject "$title" --body "$body" 2>/dev/null; then
-    MERGE_METHOD="squash (auto-merge)"
-    MERGE_STATUS="auto-merge enabled"
-    return 0
-  fi
+  # Tier 3: --auto (queues the merge for when checks pass).
+  for method in "${ALLOWED_METHODS[@]}"; do
+    if _gh_merge "$method" "--auto" "$title" "$body"; then
+      MERGE_METHOD="${method} (auto-merge)"
+      MERGE_STATUS="auto-merge enabled"
+      return 0
+    fi
+  done
 
-  die 1 "All squash merge strategies failed for PR #${PR_NUMBER}"
+  die 1 "All merge strategies failed for PR #${PR_NUMBER} (tried: ${ALLOWED_METHODS[*]})${LAST_GH_ERR:+
+  Last gh error: ${LAST_GH_ERR}}"
 }
 
 fetch_merge_commit() {
@@ -274,7 +362,7 @@ main() {
   while [[ "${1:-}" == --* ]]; do
     case "$1" in
       --skip-rebase) skip_rebase=true; shift ;;
-      --squash)      shift ;;  # no-op: squash is already the default
+      --squash)      shift ;;  # no-op: squash is the preferred method when allowed
       *)             die 1 "Unknown flag: $1 — usage: merge.sh [--skip-rebase] [--squash] \"<title>\" \"<body>\"" ;;
     esac
   done
@@ -305,6 +393,7 @@ ${COAUTHOR}"
   do_push
   ensure_pr "$title" "$body"
   check_pr_state
+  detect_allowed_methods
   do_merge "$title" "$body"
   fetch_merge_commit       # must precede update_local_master (uses GitHub API, not local state)
   update_local_master
