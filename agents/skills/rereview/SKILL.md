@@ -192,6 +192,8 @@ Check every item -- do not skip any:
 - [ ] SSRF potential
 - [ ] Open redirect potential
 
+**Auth-gate symmetry check:** When evaluating destructive or configuration-mutating endpoints for auth gates, enumerate **every** parallel CRUD group in the routes table (e.g., projects + backends + tokens). Flag any group where some members are gated and others aren't. Asymmetry is a bug — if `DELETE /projects/:id` requires master auth but `DELETE /backends/:id` doesn't, that is almost certainly an oversight, not an intentional policy. Do not stop after finding one or two examples; walk the full route list.
+
 ### Analysis 4: Architecture and Design
 
 Check every item:
@@ -226,6 +228,8 @@ Go through the diff line by line. For each hunk:
 ---
 
 ## Output Format
+
+**Length budget:** keep your individual report (you are one of three reviewers — this budget is per-reviewer, not for all three combined) under 4 KB. Use one-line entries in tables; one or two sentences per finding. Don't reproduce code in the report — just file:line references. Long reports tend to get truncated when returned to the coordinator, and a truncated report is worse than a tight one. If you have many findings, prioritize BLOCKING > WARNING > INFO and keep INFO terse.
 
 Classify every finding as:
 - **BLOCKING**: Must fix before merging. Includes: any unintentional behavior change, any regression risk without test coverage, any security issue, any broken API contract.

@@ -62,6 +62,8 @@ Print:
 
 Invoke the `/review` skill to analyze the current branch changes. Wait for the full report.
 
+**Even if `/rereview` ran recently, still run `/review`.** The two skills use different prompts and surface different patterns: `/rereview` is depth-first with three independent reviewers and tends to catch security and regression risks; `/review` is breadth-first and tends to catch consistency and asymmetry issues that depth-first review misses. They are complementary, not redundant. Do not skip Phase 1 just because `/rereview` was clean. **Phase 2 acts on `/review`'s findings only** — any prior `/rereview` output is informational background, not a substitute for this phase's input.
+
 If the review returns **no blocking issues, no warnings, and no suggestions**, print:
 
 > Review clean — skipping to Phase 3.
@@ -144,6 +146,8 @@ Print:
 Invoke the `/merge` skill to land the branch into master.
 
 Handle merge script exit codes as documented in the `/merge` skill (conflicts, nothing to merge, review blocked, errors).
+
+**If CI fails on tests unrelated to your PR**, fix them inline as part of `/ship` rather than rebasing or treating the merge as blocked. Pre-existing flakes (timing-sensitive tests, data races on shared mutable state, environment-dependent assertions) are normal during a `/ship` cycle on a project with sparse CI history. Capture each fix as its own commit with a message that names the flake and the cause (e.g., "fix flaky-test sleep timing on slower CI" or "fix data race on shared buffer under -race") so the rationale stays clear in history. Then re-run `/merge`.
 
 ---
 
