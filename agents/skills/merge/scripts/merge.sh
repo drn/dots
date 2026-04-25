@@ -57,6 +57,12 @@ determine_target() {
 detect_default_branch() {
   REPO_SLUG=$(git remote get-url "$TARGET" | sed 's|.*github.com[:/]||;s|\.git$||')
 
+  # Reject malformed slugs early — anything other than owner/repo (allowing
+  # standard GitHub characters) would corrupt later `gh api` and `gh pr merge`
+  # calls, since REPO_SLUG is interpolated into URL/argv positions.
+  [[ "$REPO_SLUG" =~ ^[A-Za-z0-9._-]+/[A-Za-z0-9._-]+$ ]] \
+    || die 1 "Could not parse owner/repo from ${TARGET} remote URL (got: '${REPO_SLUG}')"
+
   # Primary: ask GitHub API for the actual default branch
   local api_default
   api_default=$(gh api "repos/${REPO_SLUG}" --jq '.default_branch' 2>/dev/null || echo "")
@@ -210,6 +216,9 @@ _gh_merge() {
   err_file=$(mktemp)
   if gh pr merge "${args[@]}" 2>"$err_file"; then
     rc=0
+    # --admin bypasses branch protection (required reviewers, status checks).
+    # Make the bypass visible so it never happens silently.
+    [[ "$extra" == "--admin" ]] && info "WARNING: merged via --admin (branch protection bypassed)"
   else
     rc=$?
     LAST_GH_ERR=$(cat "$err_file")
