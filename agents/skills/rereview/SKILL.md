@@ -229,7 +229,7 @@ Go through the diff line by line. For each hunk:
 
 ## Output Format
 
-**Length budget:** keep your full report under 4 KB. Use one-line entries in tables; one or two sentences per finding. Don't reproduce code in the report — just file:line references. Reports that exceed the budget get truncated by the agent reply layer, and a truncated report is worse than a tight one. If you have many findings, prioritize BLOCKING > WARNING > INFO and keep INFO terse.
+**Length budget:** keep your individual report (you are one of three reviewers — this budget is per-reviewer, not for all three combined) under 4 KB. Use one-line entries in tables; one or two sentences per finding. Don't reproduce code in the report — just file:line references. Long reports tend to get truncated when returned to the coordinator, and a truncated report is worse than a tight one. If you have many findings, prioritize BLOCKING > WARNING > INFO and keep INFO terse.
 
 Classify every finding as:
 - **BLOCKING**: Must fix before merging. Includes: any unintentional behavior change, any regression risk without test coverage, any security issue, any broken API contract.

@@ -62,7 +62,7 @@ Print:
 
 Invoke the `/review` skill to analyze the current branch changes. Wait for the full report.
 
-**Even if `/rereview` ran recently, still run `/review`.** The two skills use different prompts and surface different patterns: `/rereview` is depth-first with three independent reviewers and tends to catch security and regression risks; `/review` is breadth-first and tends to catch consistency and asymmetry issues that depth-first review misses. They are complementary, not redundant. Do not skip Phase 1 just because `/rereview` was clean.
+**Even if `/rereview` ran recently, still run `/review`.** The two skills use different prompts and surface different patterns: `/rereview` is depth-first with three independent reviewers and tends to catch security and regression risks; `/review` is breadth-first and tends to catch consistency and asymmetry issues that depth-first review misses. They are complementary, not redundant. Do not skip Phase 1 just because `/rereview` was clean. **Phase 2 acts on `/review`'s findings only** — any prior `/rereview` output is informational background, not a substitute for this phase's input.
 
 If the review returns **no blocking issues, no warnings, and no suggestions**, print:
 
