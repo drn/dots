@@ -86,7 +86,7 @@ State: [GREENFIELD/CLAUDE-ONLY/PARTIAL/COMPLETE]
 ### Per-Subtree Migration (omit this section if no subtree CLAUDE.md / AGENTS.md found)
 | Subtree | State | Action |
 |---|---|---|
-| `nucleus/`        | CLAUDE-only        | git mv CLAUDE.md AGENTS.md; symlink CLAUDE.md → AGENTS.md |
+| `engine/`         | CLAUDE-only        | git mv CLAUDE.md AGENTS.md; symlink CLAUDE.md → AGENTS.md |
 | `services/admin/` | Both, divergent    | merge CLAUDE.md + AGENTS.md → AGENTS.md (verify both); symlink CLAUDE.md |
 | `services/api/`   | Both, identical    | rm CLAUDE.md; symlink CLAUDE.md → AGENTS.md |
 | `services/web/`   | AGENTS-only        | symlink CLAUDE.md → AGENTS.md |
@@ -134,7 +134,7 @@ For each existing canonical skill:
 
 ### Step 4.5: Apply Per-Subtree Migration
 
-If the Step 1 subtree scan found any subtree-level CLAUDE.md / AGENTS.md files, walk each entry from the approved per-subtree table and apply the action. **Use `git mv` for tracked files** so history is preserved. Always create a **relative** symlink within the subtree (e.g., `cd nucleus/ && ln -s AGENTS.md CLAUDE.md`).
+If the Step 1 subtree scan found any subtree-level CLAUDE.md / AGENTS.md files, walk each entry from the approved per-subtree table and apply the action. **Use `git mv` for tracked files** so history is preserved. Always create a **relative** symlink within the subtree (e.g., `cd engine/ && ln -s AGENTS.md CLAUDE.md`).
 
 Per-state actions:
 
@@ -215,7 +215,7 @@ Before committing the merged AGENTS.md and replacing CLAUDE.md with a symlink:
 3. If anything is missing, re-merge to include it (or escalate to the user with the specific snippets that were dropped).
 4. Only after the grep verification passes, replace CLAUDE.md with the symlink.
 
-Apply the same validation when merging subtree CLAUDE.md / AGENTS.md pairs (Step 4 / Step 1 subtree scan classified as "Both, divergent").
+Apply the same validation when merging subtree CLAUDE.md / AGENTS.md pairs (Step 4.5 acting on a Step 1 subtree scan classified as "Both, divergent"). Step 4.5 explicitly delegates the divergent-merge rules to this section, so the `grep -F` snippet check applies identically there.
 
 ### Step 8: Generate Copilot Instructions
 

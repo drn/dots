@@ -42,19 +42,21 @@ If there are uncommitted changes (check git status), stage and commit them with 
 
 If the pending push touches any `.md` files, run `prettier --check` against them first. Markdown table edits (e.g., adding a row to one table) often force prettier to realign column widths in *other* tables in the same file, which trips `qlty fmt` in CI. Catching it before push avoids burning a CI cycle.
 
+First determine the base ref (use `git branch -r | grep -oE 'origin/(main|master)' | head -1`), then load the changed `.md` files into a bash array so paths with spaces survive correctly:
+
 ```bash
-md_files=$(git diff --name-only "$base_branch"...HEAD | grep -E '\.md$' || true)
-if [ -n "$md_files" ]; then
-  if ! npx --yes prettier@3.3.3 --check $md_files; then
+mapfile -t md_files < <(git diff --name-only "$base_branch"...HEAD | grep -E '\.md$')
+if [ ${#md_files[@]} -gt 0 ]; then
+  if ! npx --yes prettier@3.3.3 --check "${md_files[@]}"; then
     echo ":: prettier reformatted markdown — running --write and re-staging"
-    npx --yes prettier@3.3.3 --write $md_files
-    git add $md_files
+    npx --yes prettier@3.3.3 --write "${md_files[@]}"
+    git add "${md_files[@]}"
     git commit -m "Format markdown via prettier"
   fi
 fi
 ```
 
-The check is cheap (~2s for a typical PR) and catches the most common qlty fmt failure mode. Skip if no `.md` files are in the diff.
+The check is cheap (~2s for a typical PR) and catches the most common qlty fmt failure mode. Skip if no `.md` files are in the diff. If `npx`/`prettier` is not available, skip this step entirely rather than failing the push.
 
 #### 2b: Push
 
