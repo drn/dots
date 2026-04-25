@@ -156,4 +156,60 @@ test_summary_format() {
   assert_not_contains "$output" "~/.dots:" "should not show dots when empty"
 }
 
+test_summary_format_rebase_method() {
+  _source_merge
+  MERGE_STATUS="merged"
+  MERGE_METHOD="rebase"
+  PR_URL="https://github.com/test/repo/pull/2"
+  BRANCH="feature/rebase-only"
+  DEFAULT_BRANCH="main"
+  COMMIT_COUNT="2"
+  MERGE_COMMIT=""
+  DOTS_SYNCED=""
+
+  local output
+  output=$(print_summary)
+
+  assert_contains "$output" "method:   rebase" "should surface rebase method in summary"
+}
+
+test_summary_format_merge_commit_method() {
+  _source_merge
+  MERGE_STATUS="merged"
+  MERGE_METHOD="merge"
+  PR_URL="https://github.com/test/repo/pull/3"
+  BRANCH="feature/merge-only"
+  DEFAULT_BRANCH="main"
+  COMMIT_COUNT="4"
+  MERGE_COMMIT=""
+  DOTS_SYNCED=""
+
+  local output
+  output=$(print_summary)
+
+  assert_contains "$output" "method:   merge" "should surface merge-commit method in summary"
+}
+
+test_detect_allowed_methods_fallback_when_probe_fails() {
+  make_test_repo >/dev/null
+
+  _source_merge
+  # Pointing at a nonexistent repo guarantees the gh api probe returns nothing,
+  # so detect_allowed_methods should fall back to "try every method".
+  REPO_SLUG="nonexistent-org-xyz/nonexistent-repo-12345"
+  detect_allowed_methods 2>/dev/null
+
+  assert_contains "$ALLOWED_METHODS" "squash" "fallback should include squash"
+  assert_contains "$ALLOWED_METHODS" "rebase" "fallback should include rebase"
+  assert_contains "$ALLOWED_METHODS" "merge"  "fallback should include merge-commit"
+}
+
+test_detect_allowed_methods_requires_repo_slug() {
+  _source_merge
+  REPO_SLUG=""
+  capture detect_allowed_methods
+  assert_eq "$_CAPTURED_EXIT" "1" "should die if REPO_SLUG is unset"
+  assert_contains "$_CAPTURED" "REPO_SLUG not set" "should report missing REPO_SLUG"
+}
+
 run_tests
