@@ -194,14 +194,31 @@ test_detect_allowed_methods_fallback_when_probe_fails() {
   make_test_repo >/dev/null
 
   _source_merge
-  # Pointing at a nonexistent repo guarantees the gh api probe returns nothing,
-  # so detect_allowed_methods should fall back to "try every method".
-  REPO_SLUG="nonexistent-org-xyz/nonexistent-repo-12345"
+  # Stub gh to a no-op failure so the fallback path runs hermetically (no
+  # network, no auth state). detect_allowed_methods must default to all three
+  # methods in preference order.
+  gh() { return 1; }
+  REPO_SLUG="example-org/example-repo"
   detect_allowed_methods 2>/dev/null
+  unset -f gh
 
-  assert_contains "$ALLOWED_METHODS" "squash" "fallback should include squash"
-  assert_contains "$ALLOWED_METHODS" "rebase" "fallback should include rebase"
-  assert_contains "$ALLOWED_METHODS" "merge"  "fallback should include merge-commit"
+  assert_eq "${#ALLOWED_METHODS[@]}" "3" "fallback should list all 3 methods"
+  assert_eq "${ALLOWED_METHODS[*]}" "squash rebase merge" "fallback order should be squash → rebase → merge"
+}
+
+test_detect_allowed_methods_parses_probe() {
+  make_test_repo >/dev/null
+
+  _source_merge
+  # Stub gh to return TSV: squash=false, rebase=true, merge=false.
+  # detect_allowed_methods should pick only rebase.
+  gh() { printf 'false\ttrue\tfalse\n'; }
+  REPO_SLUG="example-org/rebase-only"
+  detect_allowed_methods 2>/dev/null
+  unset -f gh
+
+  assert_eq "${#ALLOWED_METHODS[@]}" "1" "should pick only the allowed method"
+  assert_eq "${ALLOWED_METHODS[0]}" "rebase" "should select rebase when only rebase is allowed"
 }
 
 test_detect_allowed_methods_requires_repo_slug() {
