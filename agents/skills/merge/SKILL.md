@@ -1,6 +1,6 @@
 ---
 name: merge
-allowed-tools: Bash(git add:*), Bash(git commit:*), Bash(git log:*), Bash(git diff:*), Bash(git status:*), Bash(git rebase:*), Bash(git checkout:*), Bash(bash ~/.claude/skills/merge/scripts/merge.sh:*), Bash(bash agents/skills/merge/scripts/merge.sh:*)
+allowed-tools: Bash(git add:*), Bash(git commit:*), Bash(git log:*), Bash(git diff:*), Bash(git status:*), Bash(git rebase:*), Bash(git checkout:*), Bash(git reset:*), Bash(bash ~/.claude/skills/merge/scripts/merge.sh:*), Bash(bash agents/skills/merge/scripts/merge.sh:*)
 description: Merge current branch to the default branch via GitHub PR merge. Use when ready to merge a PR or land a branch.
 ---
 
@@ -73,10 +73,20 @@ Resolve the script path — use the first that exists:
 2. `agents/skills/merge/scripts/merge.sh` (repo-relative, for development/workspaces)
 
 ```
-bash <script-path> "<title>" "<body>"
+bash <script-path> [--method <squash|merge|rebase>] "<title>" "<body>"
 ```
 
-Handle the exit code:
+#### Choosing a merge method
+
+The script defaults to **squash** (collapses all commits into one). Pick a different method when squash would lose intentional structure:
+
+- `--method squash` (default) — single commit, ideal for a stream of WIP commits.
+- `--method merge` (alias `--merge`) — preserves all commits via a merge commit. Use when each commit is independently meaningful and you want to keep the merge boundary visible on master.
+- `--method rebase` (alias `--rebase`) — preserves all commits linearly via fast-forward / rebase. **Use this when the user has deliberately split work into multiple commits** (e.g., the user ran `/squash` to condense 7 commits into 2 separate logical commits, and wants both on master). A naive squash merge here would silently undo that intent.
+
+Heuristic: if the branch has more than one commit AND the commit messages look distinct rather than incremental ("WIP", "fix typo"), confirm with the user before using the default squash. The deliberate-split case is common after `/squash`.
+
+#### Handle the exit code
 
 - **Exit 0** — Show the output block verbatim as your final response. Do not add commentary.
 - **Exit 2 (rebase conflict)** — Resolve conflicts:
@@ -85,8 +95,18 @@ Handle the exit code:
   3. `git add` resolved files
   4. `git rebase --continue`
   5. Repeat if more conflicts
-  6. Re-run: `bash <script-path> --skip-rebase "<title>" "<body>"`
+  6. Re-run: `bash <script-path> --skip-rebase [--method <method>] "<title>" "<body>"`
   7. Show the output block verbatim
+
+  **Special case: "distinct types" conflicts.** If the rebase reports conflicts because the branch converted regular files to symlinks (or vice versa) while master independently edited those same files, do NOT naively resolve with `--theirs` or `--ours`. Both sides "win" — the branch's symlink target was sourced from old master content, so keeping the branch's version silently loses master's content updates.
+
+  Recovery pattern:
+  1. `git rebase --abort`.
+  2. Drop the symlink-conversion commit from the branch (e.g., `git rebase -i master` and drop it, or `git reset --soft <sha-before-symlink-commit>` then re-stage selectively).
+  3. Rebase the remaining commits onto master cleanly.
+  4. Rebuild the symlink-conversion commit fresh against current master — re-source the symlink target's content from the *current* master file, not from the original AGENTS.md content captured on the branch.
+  5. Re-run the merge script with `--skip-rebase`.
+
 - **Exit 3** — Tell the user: "Nothing to merge — branch has no commits ahead of the default branch."
 - **Exit 4 (review blocked)** — The PR requires review and auto-merge is not available. Tell the user: "PR requires an approving review before it can merge. Auto-merge is not enabled on this repository — ask a reviewer to approve, then re-run /merge."
 - **Exit 1** — Report the error from stderr.

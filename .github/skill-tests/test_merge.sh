@@ -115,6 +115,51 @@ test_squash_flag_accepted() {
   assert_not_contains "$_CAPTURED" "Unknown flag" "should accept --squash without error"
 }
 
+test_method_rebase_flag_accepted() {
+  make_test_repo >/dev/null
+  add_test_remote "origin" >/dev/null
+  git checkout -q -b feature/test
+  git commit -q --allow-empty -m "work"
+
+  # --rebase is the regression case for the bash 3.2 empty-array crash
+  capture bash "$MERGE" --rebase "test title" "test body"
+  assert_not_contains "$_CAPTURED" "Unknown flag" "should accept --rebase without error"
+  assert_not_contains "$_CAPTURED" "unbound variable" "should not crash on empty subject_flags array under set -u"
+}
+
+test_method_merge_flag_accepted() {
+  make_test_repo >/dev/null
+  add_test_remote "origin" >/dev/null
+  git checkout -q -b feature/test
+  git commit -q --allow-empty -m "work"
+
+  capture bash "$MERGE" --merge "test title" "test body"
+  assert_not_contains "$_CAPTURED" "Unknown flag" "should accept --merge without error"
+  assert_not_contains "$_CAPTURED" "unbound variable" "should not crash under set -u"
+}
+
+test_method_long_flag_accepted() {
+  make_test_repo >/dev/null
+  add_test_remote "origin" >/dev/null
+  git checkout -q -b feature/test
+  git commit -q --allow-empty -m "work"
+
+  capture bash "$MERGE" --method rebase "test title" "test body"
+  assert_not_contains "$_CAPTURED" "Unknown flag" "should accept --method rebase"
+  assert_not_contains "$_CAPTURED" "unbound variable" "should not crash under set -u"
+}
+
+test_method_invalid_value_rejected() {
+  make_test_repo >/dev/null
+  add_test_remote "origin" >/dev/null
+  git checkout -q -b feature/test
+  git commit -q --allow-empty -m "work"
+
+  capture bash "$MERGE" --method bogus "test title" "test body"
+  assert_eq "$_CAPTURED_EXIT" "1" "should exit 1 on invalid --method value"
+  assert_contains "$_CAPTURED" "Invalid --method" "should report the invalid value"
+}
+
 test_unknown_flag_rejected() {
   make_test_repo >/dev/null
   add_test_remote "origin" >/dev/null
