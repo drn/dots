@@ -129,10 +129,6 @@ end)
 -- OS Bindings
 
 hs.hotkey.bind({'ctrl', 'alt', 'cmd', 'shift'}, 'l', function()
-  osx.sleep()
-end)
-
-hs.hotkey.bind({'ctrl', 'alt', 'cmd'}, 'l', function()
   osx.displaySleep()
 end)
 
