@@ -144,8 +144,19 @@ Repeat the following until CI is fully green **and** there are no unresolved rev
 
 #### 4a: Check CI status and unresolved threads
 
-- Use `gh pr checks <number> --repo <owner/repo>` to see the current state of all checks.
+**First, probe mergeability before polling.** Run a one-shot:
+
+```
+gh pr view <number> --repo <owner/repo> --json mergeStateStatus,mergeable
+```
+
+- If `mergeStateStatus == "DIRTY"` or `mergeable == "CONFLICTING"`, the branch has merge conflicts with the base. GitHub Actions may delay or skip running CI for the PR, and even if it runs, the merge step won't succeed. **Do not enter the polling loop.** Fetch the base branch (`git fetch origin <base>`), rebase onto it (`git rebase origin/<base>`), resolve any conflicts, and force-push with lease (`git push --force-with-lease`). Then re-probe `mergeStateStatus` and continue once it is no longer DIRTY.
+- Otherwise, continue to the polling loop below.
+
+Then use `gh pr checks <number> --repo <owner/repo>` to see the current state of all checks.
+
 - If checks are still running, poll `gh pr checks` with exponential backoff: wait 60s, then 120s, then 240s, capping at 300s between polls. Stop after 30 minutes total and report to the user.
+- If `gh pr checks` reports "no checks reported" for 3+ minutes **and** `mergeStateStatus` is not DIRTY, the workflow may be misconfigured, paused, or require approval — surface this to the user rather than continuing to poll silently.
 - If all checks pass, proceed to 4c to check for unresolved review threads. Only go to Step 5 when CI is green **and** 4c confirms zero unresolved threads.
 - If any checks have failed, proceed to 4b immediately — do not wait.
 
