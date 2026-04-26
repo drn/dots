@@ -20,7 +20,7 @@ Show the user their most recent screenshots from ~/Downloads.
 
 Recent image files in ~/Downloads (sorted newest first):
 
-!`ls -1t ~/Downloads/*.png ~/Downloads/*.jpg ~/Downloads/*.jpeg ~/Downloads/*.webp ~/Downloads/*.gif 2>/dev/null | head -20`
+!`/bin/ls -1t ~/Downloads/*.png ~/Downloads/*.jpg ~/Downloads/*.jpeg ~/Downloads/*.webp ~/Downloads/*.gif 2>/dev/null | head -20`
 
 ## Instructions
 
