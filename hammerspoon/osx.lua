@@ -24,4 +24,10 @@ function osx.sleep()
   os.execute("pmset sleepnow")
 end
 
+function osx.displaySleep()
+  alert.show("Display off...")
+  sleep()
+  os.execute("pmset displaysleepnow")
+end
+
 return osx
