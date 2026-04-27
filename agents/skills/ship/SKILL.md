@@ -52,6 +52,16 @@ Check `git status --short`. If there are staged or unstaged changes to tracked f
 
 If there are uncommitted changes AND existing commits ahead of master, commit the uncommitted changes as a separate commit to preserve the existing commit history.
 
+If the branch is BEHIND `origin/master` (check `git status` output for "Your branch is behind 'origin/master' by N commits"), fast-forward first or the review will diff against a stale base. With uncommitted changes that overlap incoming files:
+
+1. `git stash push -u -m "ship phase 0"` to set the work aside
+2. `git pull --ff-only` to advance to origin/master
+3. `git stash pop` and resolve any conflicts (the pull may have moved code under your edits)
+4. `make test` (or project equivalent) to confirm the resolved tree is sane
+5. Stage + commit as one feature commit
+
+If `pull --ff-only` fails because the branch has diverged (commits ahead AND behind), check whether the divergence is the **post-squash-merge pattern**: the branch has commits that were already squash-merged into master in a previous `/ship`. Detect this by comparing `git log --oneline origin/master..HEAD` against the most recent merge commit on master — if the local commit subjects match content that's already squash-landed, the resolution is to `git reset --hard origin/master && git cherry-pick <new-commits>` to drop the already-applied originals and keep only the new work. The local commits aren't lost (they remain on the remote feature branch), and a plain `git rebase origin/master` will conflict because the squashed master commit doesn't apply cleanly to the unmodified branch base. Confirm the reset+cherry-pick plan with the user before running it (it's destructive on local refs even though nothing is actually lost). For non-squash-merge divergence (true forking history), still stop and ask — don't auto-rebase.
+
 If the working tree is clean, skip this phase.
 
 Print:
