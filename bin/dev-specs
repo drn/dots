@@ -55,7 +55,24 @@ if [[ "$os" == "Darwin" ]]; then
   # Model
   model=$(echo "$sp_hw" | awk -F': ' '/Model Name/ {print $2; exit}')
   model_id=$(sysctl -n hw.model 2>/dev/null || echo "unknown")
-  [[ -n "$model" ]] && echo "Model: $model ($model_id)"
+
+  # Year — extract from marketing name (Intel Macs embed it) or infer from chip generation
+  marketing=$(ioreg -p IODeviceTree -lw 0 2>/dev/null | awk -F'"' '/"product-name"/ {print $4; exit}')
+  year=$(echo "$marketing" | grep -oE '\b(19|20)[0-9]{2}\b' | head -1)
+  if [[ -z "$year" && "$arch" == "arm64" ]]; then
+    case "$chip" in
+      *"M1 Pro"*|*"M1 Max"*) year=2021 ;;
+      *"M1 Ultra"*) year=2022 ;;
+      *M1*) year=2020 ;;
+      *"M2 Pro"*|*"M2 Max"*|*"M2 Ultra"*) year=2023 ;;
+      *M2*) year=2022 ;;
+      *M3*) year=2023 ;;
+      *M4*) year=2024 ;;
+      *M5*) year=2025 ;;
+    esac
+  fi
+
+  [[ -n "$model" ]] && echo "Model: $model ($model_id${year:+, $year})"
 
   # Disk size
   disk_size=$(df -h /System/Volumes/Data 2>/dev/null | awk 'NR==2 {print $2}')
