@@ -61,12 +61,17 @@ Keep it concise but complete enough that the receiving agent can continue withou
 
 ### Output procedure
 
-1. Write the handoff text (raw markdown, no wrapping code fence) to `/tmp/handoff.md` using the Write tool.
-2. Display the file contents to the user inside a fenced code block.
-3. Copy to clipboard: `cat /tmp/handoff.md | pbcopy`
-4. Confirm: "Copied to clipboard."
+The Argus knowledge base is the primary destination for handoffs — they persist across threads and the receiving agent can pull them with `kb_read` or `kb_search`. Clipboard is only a fallback when the KB is unavailable.
 
-Writing to a file first guarantees the clipboard content preserves all newlines and formatting exactly as displayed.
+1. Generate a short slug for the handoff: lowercase, hyphenated, derived from the title (e.g. `ci-fix`, `migrate-auth`).
+2. Compute a path: `memory/handoff/<YYYY-MM-DD-HHMM>-<slug>.md`. Get the timestamp with `date +%Y-%m-%d-%H%M`.
+3. Write the handoff text (raw markdown, no wrapping code fence) to `/tmp/handoff.md` using the Write tool.
+4. Display the file contents to the user inside a fenced code block.
+5. Save to Argus KB: call `mcp__argus__kb_ingest` (or `mcp__argus-kb__kb_ingest` — whichever tool is registered) with the computed path and the handoff content.
+   - On success, confirm: `Saved to KB at \`<path>\`. Next agent: \`kb_read("<path>")\` or \`kb_search("<slug>")\`.`
+6. If neither KB ingest tool is available, or the call fails, fall back to clipboard: run `cat /tmp/handoff.md | pbcopy` and confirm: `KB unavailable — copied to clipboard instead.`
+
+Writing to a file first guarantees the content preserves all newlines and formatting exactly as displayed, regardless of whether it ends up in the KB or the clipboard.
 
 ---
 
