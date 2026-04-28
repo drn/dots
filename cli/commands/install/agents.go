@@ -35,6 +35,12 @@ func Agents() {
 	// Register skill usage tracking hook
 	registerSkillTrackingHook()
 
+	// Register Argus KB memory injection on SessionStart
+	registerSessionStartMemoryHook()
+
+	// Register Argus KB write logging on PostToolUse
+	registerKBChangeTrackingHook()
+
 	// Register status line
 	registerStatusLine()
 }
@@ -123,6 +129,98 @@ func registerSkillTrackingHook() {
 
 	if changed {
 		log.Success("Registered skill usage tracking hook")
+	}
+}
+
+// registerSessionStartMemoryHook adds a SessionStart hook that injects Argus
+// KB user prefs and feedback into every Claude Code session via
+// hookSpecificOutput.additionalContext.
+func registerSessionStartMemoryHook() {
+	changed := mutateSettings(func(settings map[string]any) bool {
+		hookCmd := "bash \"" + path.FromDots("agents/hooks/session-start-memory.sh") + "\""
+		hookEntry := map[string]any{
+			"hooks": []any{
+				map[string]any{
+					"type":    "command",
+					"command": hookCmd,
+				},
+			},
+		}
+
+		hooks, _ := settings["hooks"].(map[string]any)
+		if hooks == nil {
+			hooks = make(map[string]any)
+		}
+
+		sessionStart, _ := hooks["SessionStart"].([]any)
+
+		for _, existing := range sessionStart {
+			entry, ok := existing.(map[string]any)
+			if !ok {
+				continue
+			}
+			inner, ok := entry["hooks"].([]any)
+			if !ok {
+				continue
+			}
+			for _, h := range inner {
+				cmd, _ := h.(map[string]any)
+				if cmd != nil && cmd["command"] == hookCmd {
+					return false // already registered
+				}
+			}
+		}
+
+		sessionStart = append(sessionStart, hookEntry)
+		hooks["SessionStart"] = sessionStart
+		settings["hooks"] = hooks
+		return true
+	})
+
+	if changed {
+		log.Success("Registered Argus KB memory injection hook (SessionStart)")
+	}
+}
+
+// registerKBChangeTrackingHook adds a PostToolUse hook that appends every
+// kb_ingest call to a JSONL change log so /dream can triage incrementally.
+func registerKBChangeTrackingHook() {
+	changed := mutateSettings(func(settings map[string]any) bool {
+		hookCmd := "bash \"" + path.FromDots("agents/hooks/track-kb-change.sh") + "\""
+		// Match both legacy and current Argus MCP server names.
+		hookEntry := map[string]any{
+			"matcher": "mcp__argus.*__kb_ingest",
+			"hooks": []any{
+				map[string]any{
+					"type":    "command",
+					"command": hookCmd,
+				},
+			},
+		}
+
+		hooks, _ := settings["hooks"].(map[string]any)
+		if hooks == nil {
+			hooks = make(map[string]any)
+		}
+
+		postToolUse, _ := hooks["PostToolUse"].([]any)
+
+		for _, existing := range postToolUse {
+			if entry, ok := existing.(map[string]any); ok {
+				if entry["matcher"] == "mcp__argus.*__kb_ingest" {
+					return false // already registered
+				}
+			}
+		}
+
+		postToolUse = append(postToolUse, hookEntry)
+		hooks["PostToolUse"] = postToolUse
+		settings["hooks"] = hooks
+		return true
+	})
+
+	if changed {
+		log.Success("Registered Argus KB change tracking hook (PostToolUse)")
 	}
 }
 
