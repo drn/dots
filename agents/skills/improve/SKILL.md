@@ -1,6 +1,7 @@
 ---
 name: improve
 description: Improve skills, capture context & knowledge. Use for skill iteration, capturing learnings, or upgrading agent context.
+allowed-tools: mcp__argus__kb_list, mcp__argus__kb_read, mcp__argus__kb_search, mcp__argus__kb_ingest, mcp__argus-kb__kb_list, mcp__argus-kb__kb_read, mcp__argus-kb__kb_search, mcp__argus-kb__kb_ingest
 ---
 # Improve Skills, Capture Context & Knowledge
 
@@ -25,12 +26,23 @@ Run `/improve` at the end of any session where:
 - Knowledge base index: !`cat context/knowledge/index.md 2>/dev/null | head -30`
 - Context directory structure: !`find context -type f 2>/dev/null | head -20`
 - Voice profile: !`find . -maxdepth 3 -name 'voice-profile.md' -o -name 'VOICE.md' -o -name 'voice.md' 2>/dev/null | head -5`
+- Argus KB available: !`command -v argus 2>/dev/null | head -1`
+- Argus KB index: !`argus kb list 2>/dev/null | head -200`
+- Argus KB recent changes: !`tail -30 ~/.dots/sys/kb-changes/changes.jsonl 2>/dev/null | head -30`
 
 ## Instructions
 
 When `/improve` is invoked:
 
-### Step 0: Ensure Context Directory Exists
+### Step 0a: Load Argus KB Context (if available)
+
+If the dynamic context above shows `argus` is on `PATH` and the KB index is non-empty, the Argus KB is the **primary durable store**. Load it before doing anything else.
+
+See `references/argus-kb.md` for the full load procedure (which docs to read, MCP tool name fallbacks, search heuristics). Summary: always-load `memory/user/` + `memory/feedback/` (or rely on the SessionStart hook), then `kb_search` on session-relevant keywords and read top matches.
+
+If `argus` is NOT available, skip this step and continue with project-local `context/` only.
+
+### Step 0b: Ensure Context Directory Exists
 
 Check whether the current repo has a `context/` directory at the repo root.
 
@@ -252,6 +264,10 @@ For each agent guidance update:
 
 ### Step 8: Capture Context & Knowledge
 
+**Part 0: Argus KB Capture (inbox-first)**
+
+If `argus` is available (see dynamic context), the Argus KB is the **primary** durable store. Capture there before falling back to project-local `context/`. Read `references/argus-kb.md` for the detailed capture procedure (search-first, frontmatter schema, routing rules). Summary: search the KB for an existing entry; if found, merge into it at the same path; otherwise write a raw capture to `memory/inbox/<YYYY-MM-DD>-<slug>.md` and let `/dream` triage it.
+
 **Part A: Operational Context**
 
 Review the session for extractable operational context:
@@ -261,17 +277,17 @@ Review the session for extractable operational context:
 - Policies and requirements (compliance, partnerships)
 - Decisions made and their rationale
 
-Update existing context files in `context/` directory as appropriate (requires `context/` to exist from Step 0):
+Update existing context files in `context/` directory as appropriate (requires `context/` to exist from Step 0b):
 - Create new files as needed for distinct topics (e.g., `context/research/`, `context/plans/`)
 - Update CLAUDE.md if the context applies broadly across tasks
-- **Never** write to local `memory/` directories or `memory/memory.md` — all local context goes in `context/`. (argus-kb `memory/` paths are separate; see global CLAUDE.md Memory section.)
+- **Never** write to local *filesystem* `memory/` directories or `memory/memory.md` — local project context goes in `context/`. The Argus KB's `memory/` namespace (Part 0 above) is separate and handled via `mcp__argus__kb_ingest`, not filesystem writes.
 - **Worktree safety:** Resolve all file paths against `git rev-parse --show-toplevel` (shown in the Context section as "Current repo"). Never hardcode absolute paths like `~/Development/repo/`. In a worktree session, the worktree root is the correct write target — hardcoded paths write to a different branch.
 
 **Part B: Knowledge Graph**
 
 Check whether the current project has a knowledge base by looking for `context/knowledge/index.md` (shown in the Context section above).
 
-**If no knowledge base exists** (and the user declined to create one in Step 0), **skip Part B entirely.** Do not fall back to auto memory or any alternative. Just move on.
+**If no knowledge base exists** (and the user declined to create one in Step 0b), **skip Part B entirely.** Do not fall back to auto memory or any alternative. Just move on.
 
 **If a knowledge base exists**, review the session for durable knowledge worth preserving:
 - Architectural decisions or constraints discovered during this session
@@ -372,8 +388,8 @@ Do not overwrite existing voice profile entries — add to or refine them. If a 
 - Do not bloat skills with edge cases that will not recur
 - Do not change the fundamental purpose or structure of a skill
 - Do not add improvements based on speculation — only from actual session experience
-- Do not create a knowledge base outside the `context/` directory pattern — use Step 0 to initialize
-- **Never** save context or knowledge to local `memory/` directories or `memory/memory.md` — always use `context/` directory. (argus-kb `memory/` paths are separate; see global CLAUDE.md Memory section.)
+- Do not create a project-local knowledge base outside the `context/` directory pattern — use Step 0b to initialize
+- **Never** save knowledge to filesystem `memory/` directories or `memory/memory.md`. Argus KB captures (Step 8 Part 0) go through `mcp__argus__kb_ingest` to the KB's `memory/` namespace; project-local context goes in `context/`
 
 ## Example Output
 
