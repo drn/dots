@@ -7,8 +7,10 @@
 # blocks a session.
 set -euo pipefail
 
+# Emit a valid empty SessionStart envelope without depending on jq, since
+# this is the fail-soft path and jq may be missing.
 emit_empty() {
-  jq -nc '{hookSpecificOutput:{hookEventName:"SessionStart",additionalContext:""}}'
+  printf '{"hookSpecificOutput":{"hookEventName":"SessionStart","additionalContext":""}}\n'
   exit 0
 }
 
@@ -54,14 +56,23 @@ trap 'rm -f "$CONTEXT_FILE"' EXIT
   dump_folder "memory/feedback" "Corrections & Feedback (memory/feedback/)"
 
   printf '\n## KB Index (search for details)\n\n```\n'
+  # 200 paths fits within typical context budget even with long folder
+  # nesting; agents can still reach more via kb_list with a prefix.
   argus kb list 2>/dev/null | head -200
   printf '```\n'
 } > "$CONTEXT_FILE"
 
-# Cap at ~50KB to protect context budget. Truncate cleanly if exceeded.
+# 50 KB cap protects the context budget. SessionStart fires every session,
+# so a runaway dump (large vault, deep memory tree) would otherwise consume
+# input tokens before any user prompt.
 MAX_BYTES=51200
 if [ "$(wc -c < "$CONTEXT_FILE")" -gt "$MAX_BYTES" ]; then
-  head -c "$MAX_BYTES" "$CONTEXT_FILE" > "${CONTEXT_FILE}.trim"
+  # Truncate at the last newline before the byte cap so we never split a
+  # multi-byte UTF-8 character in half (Obsidian notes routinely contain
+  # em-dashes, smart quotes, emoji, CJK).
+  awk -v max="$MAX_BYTES" '
+    { len += length($0) + 1; if (len > max) exit; print }
+  ' "$CONTEXT_FILE" > "${CONTEXT_FILE}.trim"
   printf '\n\n[truncated — KB exceeds 50KB budget; use kb_search for the rest]\n' >> "${CONTEXT_FILE}.trim"
   mv "${CONTEXT_FILE}.trim" "$CONTEXT_FILE"
 fi

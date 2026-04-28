@@ -13,8 +13,7 @@ Audit the argus-kb knowledge base: triage new captures from `memory/inbox/`, res
 - `$ARGUMENTS` — Optional flags and scoping:
   - `--dry-run` — report all proposed actions without applying them
   - `--auto` — skip interactive confirmation prompts and apply all safe fixes (designed for scheduled runs)
-  - `--since <date>` — only consider docs modified since `<date>` (YYYY-MM-DD); defaults to whatever the change log shows since last successful run
-  - A path prefix (no leading `--`) to scope the audit (e.g. `thanx/`)
+  - A path prefix (no leading `--`) to scope the audit (e.g. `work/`)
 
 ## Context
 
@@ -33,75 +32,17 @@ Run the seven phases below in order.
 
 - If `$ARGUMENTS` contains `--dry-run`, replace every "apply" step with "report what would change."
 - If `$ARGUMENTS` contains `--auto`, skip all interactive confirmation prompts; apply all safe fixes. At the end, write a summary to `memory/dream/<date>-report.md` instead of printing it interactively. This mode is designed for scheduled runs (e.g. via Argus scheduled tasks).
+- If `$ARGUMENTS` contains `--auto` AND the change log (`~/.dots/sys/kb-changes/changes.jsonl`) shows no writes since the timestamp of the last successful dream run (latest file under `~/.dots/sys/dream-runs/`), exit immediately with an empty report — saves work when the KB is quiet.
 - If `$ARGUMENTS` contains a bare path prefix, pass it to `kb_list` as the prefix filter to scope the audit. The triage and decay phases still scan their respective folders (`memory/inbox/`, full vault) regardless.
 
-### Phase 1: Triage Inbox
+### Phase 1: Orient
 
-The inbox holds raw captures from `/improve` (and other capture flows) that haven't been classified yet. Goal: route every inbox doc to its proper folder OR merge it into an existing entry.
+1. Call `kb_list` (with prefix filter if provided) to get all document paths.
+2. Group paths by top-level folder.
+3. Note the total document count for the summary.
+4. Collect every filename (basename without `.md`) into a map for the duplicate-filename check used in Phase 2.
 
-1. Call `kb_list` with prefix `memory/inbox/` to enumerate captures.
-2. For each inbox doc:
-   - Read it via `kb_read`
-   - Run a `kb_search` using the doc's title + key entities to find existing related entries
-   - Decide one of:
-     - **Merge** — content overlaps an existing doc. Append/integrate into that doc's body, preserve frontmatter, write back via `kb_ingest` with the existing path. Then delete the inbox source via `kb_delete`.
-     - **Re-file** — content is genuinely new. Determine the correct destination folder using the routing rules below, write via `kb_ingest` to the new path, then `kb_delete` the inbox copy.
-     - **Hold** — too ambiguous to classify (rare). Leave in inbox and flag in the report.
-
-**Routing rules** (apply in order, first match wins):
-1. Frontmatter `tags` contain a clear domain tag (`thanx`, `homelab`, `tools`, `patterns`, `health`, `home`, `personal`) → match folder
-2. Tags include `user` / `preference` → `memory/user/<topic>.md`
-3. Tags include `feedback` / `correction` → `memory/feedback/<topic>.md`
-4. Tags include `project` or title references a project name → `memory/project/<topic>.md`
-5. Tags include `reference` / `lookup` → `memory/reference/<topic>.md`
-6. Otherwise: pick the topical folder whose existing docs best match (by tag overlap or kb_search neighborhood) — when in doubt, default to `memory/reference/`.
-
-When choosing a filename, follow the existing schema (kebab-case, 2-3 words, topic noun). Strip the date prefix from inbox filenames before re-filing.
-
-In `--auto` mode, apply the merge/re-file decisions without confirmation. In interactive mode, batch the proposals and confirm before applying.
-
-### Phase 2: Conflict Detection & Supersession
-
-Find docs that contradict each other and reconcile in favor of the most recently modified entry.
-
-1. Build clusters of related docs:
-   - Group by tag overlap (≥2 shared tags AND same top-level folder)
-   - Within each cluster, scan bodies for **contradicting facts** — same entity/topic with different values (e.g. one doc says "X uses Postgres", another says "X uses MySQL"; one lists role as "engineer", another as "manager")
-2. For each conflict:
-   - Identify the **canonical** doc — the one most recently modified (use the `Modified` line in the doc body or YAML, fall back to `kb_list` modification timestamp)
-   - Identify the **superseded** doc(s)
-3. Reconciliation strategy:
-   - If the conflict is a **fact update** (e.g. role changed, version changed, vendor switched): update the canonical doc to mention the prior value as historical context (`Previously: <old value> — superseded <date>`), then mark the superseded doc with a `superseded_by: [[canonical-doc]]` field in frontmatter and add the `redirect` tag (existing dream rules already handle redirects).
-   - If the conflict is a **near-duplicate** (same topic, slightly different framing): merge content into the canonical doc, mark the other as redirect.
-   - If unsure whether two docs actually conflict (different scopes, complementary not contradictory): **do not merge** — flag in the report for manual review.
-
-In `--auto` mode, only auto-apply Strategy 1 and 2 when the contradiction is unambiguous (exact same key, different value). Flag everything else for the report.
-
-### Phase 3: Decay & Archive
-
-Age out entries that are stale and add little ongoing value.
-
-1. For every doc not in `memory/archive/` and not tagged `redirect`:
-   - Compute age = today − Modified date
-   - Compute incoming wikilinks (count from the link graph built in Phase 5)
-   - Compute outgoing wikilinks
-2. Decay decision tree (apply first match):
-   - Age > 365 days AND zero incoming wikilinks AND zero recent reads (no entry in change log in last 90 days) → **archive**
-   - Age > 180 days AND superseded by a newer doc (from Phase 2) → **archive** (the supersession redirect remains as a pointer)
-   - Age > 180 days AND tagged with a project that has been closed/migrated (heuristic: project name appears in `memory/archive/` already) → **archive**
-   - Otherwise → keep
-3. To archive: move the doc to `memory/archive/<original-path-without-memory-prefix>` via `kb_ingest` at the new path + `kb_delete` at the old path. Preserve all frontmatter and content; add an `archived: <date>` line to the body.
-4. **Never delete outright** — archive only. Archive is recoverable; deletion is not.
-
-In `--auto` mode, apply archive decisions automatically for entries that match decay rules. In interactive mode, confirm each batch.
-
-### Phase 4: Orient
-
-1. Call `kb_list` (with prefix filter if provided) to get all document paths
-2. Group paths by top-level folder
-3. Note the total document count for the summary
-
-### Phase 5: Gather Signal
+### Phase 2: Gather Signal
 
 Read every document with `kb_read` and check each against these rules. If the vault has more than 50 documents, warn the user and process in batches of 20, reporting progress after each batch.
 
@@ -146,6 +87,67 @@ Rules from the kb_ingest schema:
 - If tags contain "redirect", skip all other checks EXCEPT: internal links, tag hygiene, and vault integrity — redirects must still use wikilinks, have clean tags, and not be orphaned
 
 Record each violation with: document path, rule violated, current value, and suggested fix.
+
+### Phase 3: Triage Inbox
+
+The inbox holds raw captures from `/improve` (and other capture flows) that haven't been classified yet. Goal: route every inbox doc to its proper folder OR merge it into an existing entry.
+
+1. Filter the doc list from Phase 1 down to paths under `memory/inbox/`.
+2. For each inbox doc:
+   - The full content is already in memory from Phase 2 — re-read via `kb_read` only if truncated.
+   - Run a `kb_search` using the doc's title + key entities to find existing related entries.
+   - Decide one of:
+     - **Merge** — content overlaps an existing doc. Append/integrate into that doc's body, preserve frontmatter, write back via `kb_ingest` with the existing path. Then delete the inbox source via `kb_delete`.
+     - **Re-file** — content is genuinely new. Determine the correct destination folder using the routing rules below, write via `kb_ingest` to the new path, then `kb_delete` the inbox copy.
+     - **Hold** — too ambiguous to classify (rare). Leave in inbox and flag in the report.
+
+**Routing rules** (apply in order, first match wins):
+1. Frontmatter `tags` contain a clear domain tag matching an existing top-level folder (e.g. `homelab`, `tools`, `patterns`, `health`, `home`, `personal`, or any user-defined domain folder) → match that folder.
+2. Tags include `user` / `preference` → `memory/user/<topic>.md`.
+3. Tags include `feedback` / `correction` → `memory/feedback/<topic>.md`.
+4. Tags include `project` or title references a project name → `memory/project/<topic>.md`.
+5. Tags include `reference` / `lookup` → `memory/reference/<topic>.md`.
+6. Otherwise: pick the topical folder whose existing docs best match (by tag overlap or kb_search neighborhood) — when in doubt, default to `memory/reference/`.
+
+When choosing a filename, follow the existing schema (kebab-case, 2-3 words, topic noun). Strip the date prefix from inbox filenames before re-filing.
+
+In `--auto` mode, apply the merge/re-file decisions without confirmation. In interactive mode, batch the proposals and confirm before applying.
+
+### Phase 4: Conflict Detection & Supersession
+
+Find docs that contradict each other and reconcile in favor of the most recently modified entry. Uses the link graph and clusters from Phase 2.
+
+1. Build clusters of related docs:
+   - Group by tag overlap (≥2 shared tags AND same top-level folder).
+   - Within each cluster, scan bodies for **contradicting facts** — same entity/topic with different values (e.g. one doc says "X uses Postgres", another says "X uses MySQL"; one lists a role as "engineer", another as "manager").
+2. For each conflict:
+   - Identify the **canonical** doc — the one most recently modified (use the `Modified` line in the doc body or YAML, fall back to `kb_list` modification timestamp).
+   - Identify the **superseded** doc(s).
+3. Reconciliation strategy:
+   - If the conflict is a **fact update** (e.g. role changed, version changed, vendor switched): update the canonical doc to mention the prior value as historical context (`Previously: <old value> — superseded <date>`), then mark the superseded doc with a `superseded_by: [[canonical-doc]]` field in frontmatter and add the `redirect` tag (existing dream rules already handle redirects).
+   - If the conflict is a **near-duplicate** (same topic, slightly different framing): merge content into the canonical doc, mark the other as redirect.
+   - If unsure whether two docs actually conflict (different scopes, complementary not contradictory): **do not merge** — flag in the report for manual review.
+
+In `--auto` mode, only auto-apply the fact-update and near-duplicate strategies when the contradiction is unambiguous (exact same key, different value). Flag everything else for the report.
+
+### Phase 5: Decay & Archive
+
+Age out entries that are stale and add little ongoing value. Uses the link graph from Phase 2 and the supersession data from Phase 4.
+
+1. For every doc not in `memory/archive/` and not tagged `redirect`:
+   - Compute age = today − Modified date.
+   - Look up incoming wikilinks from the Phase 2 link graph.
+   - Look up outgoing wikilinks from the Phase 2 link graph.
+2. Decay decision tree (apply first match):
+   - Age > 365 days AND zero incoming wikilinks AND no entry in `~/.dots/sys/kb-changes/changes.jsonl` for this path in the last 90 days (i.e. not written to recently — read activity is not tracked) → **archive**.
+   - Age > 180 days AND superseded by a newer doc (from Phase 4) → **archive** (the supersession redirect remains as a pointer).
+   - Age > 180 days AND tagged with a project that has been closed/migrated (heuristic: project name appears in `memory/archive/` already) → **archive**.
+   - Otherwise → keep.
+3. To archive: move the doc to `memory/archive/<original-path-without-memory-prefix>` via `kb_ingest` at the new path + `kb_delete` at the old path. Preserve all frontmatter and content; add an `archived: <date>` line to the body.
+4. **Never delete outright** — archive only. Archive is recoverable; deletion is not.
+5. If Phase 4 was skipped (e.g. due to a scoped audit), skip the supersession-based decay rule and apply only the link-graph and closed-project rules.
+
+In `--auto` mode, apply archive decisions automatically for entries that match decay rules. In interactive mode, confirm each batch.
 
 ### Phase 6: Consolidate (Auto-Fix)
 
@@ -241,17 +243,17 @@ If `--dry-run` was specified, label the report "KB Hygiene Report (Dry Run)" and
 Add these sections to the report — they cover triage, conflicts, and decay:
 
 ```
-### Inbox Triage (Phase 1)
+### Inbox Triage (Phase 3)
 | Inbox Doc | Action | Destination |
 |-----------|--------|------------|
 | memory/inbox/<doc> | merge / re-file / hold | <new path or kept> |
 
-### Conflicts Resolved (Phase 2)
+### Conflicts Resolved (Phase 4)
 | Topic | Canonical | Superseded | Strategy |
 |-------|-----------|------------|----------|
 | <topic> | path | path | fact-update / dedupe / flagged |
 
-### Aged Out (Phase 3)
+### Aged Out (Phase 5)
 | Doc | Age (days) | Reason | Action |
 |-----|-----------|--------|--------|
 | path | N | no incoming links / superseded / closed project | archived |
@@ -266,7 +268,7 @@ Add these sections to the report — they cover triage, conflicts, and decay:
 - Writes the report to `memory/dream/<date>-report.md` instead of stdout
 - Logs run completion to `~/.dots/sys/dream-runs/<date>.log`
 
-Skip the run if the change log (`~/.dots/sys/kb-changes/changes.jsonl`) shows no writes since the last successful run — saves work when the KB is quiet.
+The "skip if no writes since last run" guard is enforced by the Instructions preamble — see the bullet under `## Instructions`.
 
 ### Obsidian Internal Link Reference
 

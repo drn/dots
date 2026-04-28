@@ -1,6 +1,7 @@
 ---
 name: improve
 description: Improve skills, capture context & knowledge. Use for skill iteration, capturing learnings, or upgrading agent context.
+allowed-tools: mcp__argus__kb_list, mcp__argus__kb_read, mcp__argus__kb_search, mcp__argus__kb_ingest, mcp__argus-kb__kb_list, mcp__argus-kb__kb_read, mcp__argus-kb__kb_search, mcp__argus-kb__kb_ingest
 ---
 # Improve Skills, Capture Context & Knowledge
 
@@ -35,13 +36,9 @@ When `/improve` is invoked:
 
 ### Step 0a: Load Argus KB Context (if available)
 
-If the dynamic context above shows `argus` is on `PATH` and the KB index is non-empty, the Argus KB is the **primary durable store**. Load it before doing anything else:
+If the dynamic context above shows `argus` is on `PATH` and the KB index is non-empty, the Argus KB is the **primary durable store**. Load it before doing anything else.
 
-1. **Always-on docs** (small, high-signal): the SessionStart hook already injects `memory/user/` and `memory/feedback/` into context. If those sections are missing from the system context (older session, hook disabled), call `mcp__argus__kb_read` for every path under `memory/user/` and `memory/feedback/` listed in the KB index.
-2. **Session-relevant docs**: derive 1-3 search queries from the current session topic (e.g. project name, repo name, key entities discussed) and call `mcp__argus__kb_search` to find related entries. Read top matches with `mcp__argus__kb_read`.
-3. **Recently-changed docs** (from the dynamic context "recent changes" log): if any of those paths are relevant, read them too.
-
-Use the KB content to inform Steps 1-8 below — particularly Step 8 (capture) where you decide whether something is *new* knowledge or a *conflict/update* of an existing entry.
+See `references/argus-kb.md` for the full load procedure (which docs to read, MCP tool name fallbacks, search heuristics). Summary: always-load `memory/user/` + `memory/feedback/` (or rely on the SessionStart hook), then `kb_search` on session-relevant keywords and read top matches.
 
 If `argus` is NOT available, skip this step and continue with project-local `context/` only.
 
@@ -269,31 +266,7 @@ For each agent guidance update:
 
 **Part 0: Argus KB Capture (inbox-first)**
 
-If `argus` is available (see dynamic context), the Argus KB is the **primary** durable store. Capture there before falling back to project-local `context/`.
-
-For each piece of durable knowledge worth preserving (people, decisions, conventions, debugging insights, non-obvious tool behavior, project context, user prefs, corrections):
-
-1. **Search first.** Call `mcp__argus__kb_search` with relevant keywords to find existing entries. If a match exists, update it via `mcp__argus__kb_ingest` with the same path and merged content rather than creating a duplicate. (See `/dream` for conflict resolution — same-path overwrites are fine; near-duplicates at different paths get reconciled later.)
-
-2. **No match? Write to inbox.** New captures go into `memory/inbox/<YYYY-MM-DD>-<slug>.md` with full frontmatter. The inbox is intentionally raw — don't agonize over the perfect destination. `/dream` will triage and re-file each entry into the right folder (`memory/{user,feedback,project,reference}/` or a topical folder like `thanx/`, `homelab/`, `tools/`).
-
-3. **Frontmatter** (required by Argus KB schema):
-   ```yaml
-   ---
-   title: "<Concise title, under 60 chars>"
-   tags: [<lowercase, kebab-case, tags>]
-   ---
-   ```
-   Add a `source: improve-<session-id-or-date>` tag and a `captured: <YYYY-MM-DD>` line in the body so `/dream` can reason about provenance and recency.
-
-4. **Body**: lead with the key insight, then supporting detail. 50-500 words. Use Obsidian wikilinks `[[topic]]` to cross-reference existing entries.
-
-**Routing rules** (only used when you're confident — otherwise default to inbox):
-- User stated a personal preference / "I prefer..." → `memory/user/<topic>.md`
-- User corrected your behavior / "don't do X" → `memory/feedback/<topic>.md`
-- Project convention or architecture detail → `memory/project/<project>-<topic>.md`
-- Reusable reference data (lookup tables, env IDs) → `memory/reference/<topic>.md`
-- Topical knowledge already covered by an existing folder (`thanx/`, `homelab/`, `tools/`, `patterns/`) → that folder
+If `argus` is available (see dynamic context), the Argus KB is the **primary** durable store. Capture there before falling back to project-local `context/`. Read `references/argus-kb.md` for the detailed capture procedure (search-first, frontmatter schema, routing rules). Summary: search the KB for an existing entry; if found, merge into it at the same path; otherwise write a raw capture to `memory/inbox/<YYYY-MM-DD>-<slug>.md` and let `/dream` triage it.
 
 **Part A: Operational Context**
 

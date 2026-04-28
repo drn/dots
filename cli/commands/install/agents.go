@@ -154,6 +154,10 @@ func registerSessionStartMemoryHook() {
 
 		sessionStart, _ := hooks["SessionStart"].([]any)
 
+		// SessionStart entries have no `matcher` field (per Claude Code spec),
+		// so we can't dedupe by matcher like the PreToolUse/PostToolUse hooks
+		// do. Walk into each entry's inner `hooks` array and compare command
+		// strings instead.
 		for _, existing := range sessionStart {
 			entry, ok := existing.(map[string]any)
 			if !ok {
