@@ -61,17 +61,28 @@ Keep it concise but complete enough that the receiving agent can continue withou
 
 ### Output procedure
 
-The Argus knowledge base is the primary destination for handoffs — they persist across threads and the receiving agent can pull them with `kb_read` or `kb_search`. Clipboard is only a fallback when the KB is unavailable.
+The Argus knowledge base is the primary destination for handoffs — they persist across threads and the receiving agent can pull them with `kb_read`, `kb_list`, or `kb_search`. Clipboard is only a fallback when the KB is unavailable.
 
-1. Generate a short slug for the handoff: lowercase, hyphenated, derived from the title (e.g. `ci-fix`, `migrate-auth`).
-2. Compute a path: `memory/handoff/<YYYY-MM-DD-HHMM>-<slug>.md`. Get the timestamp with `date +%Y-%m-%d-%H%M`.
-3. Write the handoff text (raw markdown, no wrapping code fence) to `/tmp/handoff.md` using the Write tool.
-4. Display the file contents to the user inside a fenced code block.
-5. Save to Argus KB: call `mcp__argus__kb_ingest` (or `mcp__argus-kb__kb_ingest` — whichever tool is registered) with the computed path and the handoff content.
-   - On success, confirm: `Saved to KB at \`<path>\`. Next agent: \`kb_read("<path>")\` or \`kb_search("<slug>")\`.`
-6. If neither KB ingest tool is available, or the call fails, fall back to clipboard: run `cat /tmp/handoff.md | pbcopy` and confirm: `KB unavailable — copied to clipboard instead.`
+1. **Slug.** Derive a slug from the handoff title: lowercase kebab-case. Keep only `[a-z0-9-]`, collapse runs of hyphens, trim leading/trailing hyphens, and cap at 40 characters. If empty after sanitization, use `handoff`. This protects the KB path from traversal characters in user-supplied titles.
+2. **Timestamp.** Run `date +%Y-%m-%d-%H%M%S`. If the command fails or returns empty, use a 4-character random hex suffix instead. Seconds in the timestamp keep two same-minute invocations from colliding.
+3. **Paths.** KB path: `memory/handoff/<timestamp>-<slug>.md`. Temp file: `/tmp/handoff-<timestamp>.md` (timestamped so concurrent invocations don't overwrite each other).
+4. **Document.** Build the full document with YAML frontmatter at the top — Argus KB requires `title` and `tags`:
 
-Writing to a file first guarantees the content preserves all newlines and formatting exactly as displayed, regardless of whether it ends up in the KB or the clipboard.
+   ```
+   ---
+   title: "<handoff title>"
+   tags: [handoff, <slug>]
+   ---
+
+   <handoff body>
+   ```
+
+5. Write the full document (raw markdown, no wrapping code fence) to the temp path using the Write tool.
+6. Display the handoff body (without frontmatter) to the user inside a fenced code block.
+7. **Save to KB.** Call `mcp__argus__kb_ingest` with the KB path and the full document. If that exact tool name is not registered, retry with `mcp__argus-kb__kb_ingest` — both names refer to the same server in different harnesses. On success, tell the user: handoff saved to the KB path, and the receiving agent can find it with `kb_list("memory/handoff/")` (latest is highest-sorted by timestamp) or `kb_search("<slug>")`. Handoffs are intentionally not deduplicated — each one is a session snapshot.
+8. **Clipboard fallback.** If the Argus KB MCP server is not running (both tool names return tool-not-found, or the ingest call returns a server error), run `cat <temp path> | pbcopy` and report: KB unavailable — copied to clipboard instead.
+
+Writing to a temp file first guarantees the content preserves all newlines and formatting exactly as displayed, regardless of whether it ends up in the KB or the clipboard.
 
 ---
 
