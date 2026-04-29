@@ -1,18 +1,23 @@
 ---
 name: dream
-description: Audit and fix knowledge base hygiene — triage inbox captures, resolve conflicts, age out stale entries, fix frontmatter and links. Use for KB maintenance, knowledge base cleanup, dream consolidation, memory hygiene, or as a scheduled daily KB pass.
+description: Scheduled KB maintenance — auto-triage inbox captures, resolve conflicts, age out stale entries, fix frontmatter and links. Runs unattended; never asks for confirmation. Use for KB maintenance, knowledge base cleanup, dream consolidation, memory hygiene, or as a scheduled daily KB pass.
 allowed-tools: mcp__argus__kb_list, mcp__argus__kb_read, mcp__argus__kb_ingest, mcp__argus__kb_delete, mcp__argus-kb__kb_list, mcp__argus-kb__kb_read, mcp__argus-kb__kb_ingest, mcp__argus-kb__kb_delete
 ---
 
-# Dream — Knowledge Base Hygiene & Consolidation
+# Dream — Scheduled Knowledge Base Maintenance
 
-Audit the argus-kb knowledge base: triage new captures from `memory/inbox/`, resolve conflicting facts in favor of the most recent, archive entries that have aged out, and fix schema/link/naming violations. Designed to run unattended as a scheduled daily task.
+Audit the argus-kb knowledge base, then **apply every fix** without confirmation: triage new captures from `memory/inbox/`, resolve conflicting facts in favor of the most recent, archive entries that have aged out, and fix schema/link/naming violations. Dream is a scheduled task — it must never block on user input.
+
+## Operating principle
+
+**Decide and apply.** Dream runs unattended. There is no human in the loop, no confirmation prompt, no "flag for manual review" backstop. When a fix is ambiguous, make the best-available judgment, apply it, and log the decision in the report. The report is the audit trail; the KB itself is the result.
+
+The only escape hatch is `--dry-run` for previewing what dream *would* do.
 
 ## Arguments
 
 - `$ARGUMENTS` — Optional flags and scoping:
-  - `--dry-run` — report all proposed actions without applying them
-  - `--auto` — skip interactive confirmation prompts and apply all safe fixes (designed for scheduled runs)
+  - `--dry-run` — report all proposed actions without applying them (the only mode that does not write to the KB)
   - A path prefix (no leading `--`) to scope the audit (e.g. `work/`)
 
 ## Context
@@ -28,11 +33,10 @@ The Argus KB MCP server is registered as `argus` (current) or `argus-kb` (legacy
 
 ## Instructions
 
-Run the seven phases below in order.
+Run the seven phases below in order. Apply every fix. Never prompt for confirmation.
 
-- If `$ARGUMENTS` contains `--dry-run`, replace every "apply" step with "report what would change."
-- If `$ARGUMENTS` contains `--auto`, skip all interactive confirmation prompts; apply all safe fixes. At the end, write a summary to `memory/dream/<date>-report.md` instead of printing it interactively. This mode is designed for scheduled runs (e.g. via Argus scheduled tasks).
-- If `$ARGUMENTS` contains `--auto` AND the change log (`~/.dots/sys/kb-changes/changes.jsonl`) shows no writes since the timestamp of the last successful dream run (latest file under `~/.dots/sys/dream-runs/`), exit immediately with an empty report — saves work when the KB is quiet.
+- If `$ARGUMENTS` contains `--dry-run`, replace every "apply" step with "report what would change." This is the only short-circuit on writes.
+- If the change log (`~/.dots/sys/kb-changes/changes.jsonl`) shows no writes since the timestamp of the last successful dream run (latest file under `~/.dots/sys/dream-runs/`), exit immediately with an empty report — saves work when the KB is quiet.
 - If `$ARGUMENTS` contains a bare path prefix, pass it to `kb_list` as the prefix filter to scope the audit. The triage and decay phases still scan their respective folders (`memory/inbox/`, full vault) regardless.
 
 ### Phase 1: Orient
@@ -111,7 +115,7 @@ The inbox holds raw captures from `/improve` (and other capture flows) that have
 
 When choosing a filename, follow the existing schema (kebab-case, 2-3 words, topic noun). Strip the date prefix from inbox filenames before re-filing.
 
-In `--auto` mode, apply the merge/re-file decisions without confirmation. In interactive mode, batch the proposals and confirm before applying.
+Apply every triage decision immediately. Do not batch and confirm. The "Hold" path exists only when the doc is so degraded (empty body, malformed frontmatter that can't be salvaged) that any classification would be wrong; in that case leave it in inbox and note the path in the report so a future run with more context can revisit it.
 
 ### Phase 4: Conflict Detection & Supersession
 
@@ -128,7 +132,7 @@ Find docs that contradict each other and reconcile in favor of the most recently
    - If the conflict is a **near-duplicate** (same topic, slightly different framing): merge content into the canonical doc, mark the other as redirect.
    - If unsure whether two docs actually conflict (different scopes, complementary not contradictory): **do not merge** — flag in the report for manual review.
 
-In `--auto` mode, only auto-apply the fact-update and near-duplicate strategies when the contradiction is unambiguous (exact same key, different value). Flag everything else for the report.
+Apply every reconciliation. For unambiguous contradictions (same key, different value) use the fact-update or near-duplicate strategy directly. For ambiguous cases (different scopes, complementary framing, unclear which is canonical), pick the most recently modified doc as canonical, integrate any non-overlapping content from the older doc into it, mark the older as redirect, and note the merge in the report. Don't leave conflicts on the floor — picking one is better than picking neither.
 
 ### Phase 5: Decay & Archive
 
@@ -147,13 +151,11 @@ Age out entries that are stale and add little ongoing value. Uses the link graph
 4. **Never delete outright** — archive only. Archive is recoverable; deletion is not.
 5. If Phase 4 was skipped (e.g. due to a scoped audit), skip the supersession-based decay rule and apply only the link-graph and closed-project rules.
 
-In `--auto` mode, apply archive decisions automatically for entries that match decay rules. In interactive mode, confirm each batch.
+Apply every archive decision immediately. The archive folder itself is the recovery mechanism; if a future run mis-archived something, a separate manual restore is the path.
 
-### Phase 6: Consolidate (Auto-Fix)
+### Phase 6: Consolidate (Apply Fixes)
 
-Before applying any fixes, print a summary of all planned changes and ask the user for confirmation. If the user declines, treat the run as `--dry-run` for the remainder. In `--auto` mode, skip confirmation and proceed.
-
-For each approved violation, apply the fix if it is safe. Safe fixes:
+Apply every hygiene fix from Phase 2's violation list. No confirmation gate. The fix table below covers the full surface — there is no "safe vs. unsafe" split: dream applies all of them.
 
 | Violation | Auto-fix |
 |-----------|----------|
@@ -173,18 +175,19 @@ For each approved violation, apply the fix if it is safe. Safe fixes:
 
 For each fix applied, call `kb_ingest` with the corrected document. Preserve all existing content — only add or adjust metadata and structure.
 
-**Do NOT auto-fix:**
-- Oversized docs (require topic judgment to split correctly)
-- Path/naming violations (would change the document address)
-- Multi-topic docs (require human decision on how to split)
-- Stub docs under 50 words (may grow naturally)
-- Ambiguous bare-text references that might refer to KB docs (flag for manual review)
-- Duplicate filenames (requires deciding which doc to rename)
-- Orphan notes (requires understanding the intended link structure)
+**Apply with judgment** (these need a decision; make one):
+
+- **Oversized docs (>500 words)** — split along the existing `## H2` boundaries. Each H2 section becomes its own doc named after the section topic; cross-link with wikilinks. If H2s are too small to stand alone, group adjacent H2s into a topical sibling doc.
+- **Path/naming violations** — rename to the canonical kebab-case noun. Update incoming wikilinks across the vault to point at the new path. If a rename would collide with an existing doc, suffix with the topic context (e.g. `metrics-thanx.md` vs `metrics-personal.md`).
+- **Multi-topic docs** — same split strategy as oversized; pick the highest-level cut (top H2s) rather than fragmenting further than necessary.
+- **Stub docs under 50 words** — leave them. Stubs are often placeholders for soon-to-arrive content; deleting them risks losing intent. Note them in the report so they can be revisited.
+- **Ambiguous bare-text references** — convert to a wikilink to the closest-matching doc when there's a clear single match, otherwise leave as-is. Don't break working text in pursuit of theoretical link consistency.
+- **Duplicate filenames** — keep the most recently modified doc at the original filename. Rename the older one with a `-legacy` suffix and add a `superseded_by: [[newer]]` field plus the `redirect` tag. Update incoming wikilinks to point at the canonical doc.
+- **Orphan notes** — add an outgoing wikilink to the closest topic neighbor (highest tag overlap from the link graph). If no neighbor scores above a noise threshold, add it to the most relevant index/MOC doc in the same folder. If no MOC exists in the folder, leave the orphan and note it.
 
 ### Phase 7: Report
 
-In interactive mode, print the summary directly. In `--auto` mode, write it to `memory/dream/<YYYY-MM-DD>-report.md` (via `kb_ingest`) and also append a one-line summary to `~/.dots/sys/dream-runs/<YYYY-MM-DD>.log` so the next run can find the timestamp of the previous run.
+Always write the report to `memory/dream/<YYYY-MM-DD>-report.md` (via `kb_ingest`) and append a one-line summary to `~/.dots/sys/dream-runs/<YYYY-MM-DD>.log` so the next scheduled run can find the timestamp of this one. Print the same content to stdout as well so the agent log shows what changed.
 
 Use this structure:
 
@@ -193,18 +196,20 @@ Use this structure:
 
 **Scanned:** N documents
 **Healthy:** N documents (no violations)
-**Auto-fixed:** N documents
-**Needs attention:** N documents
+**Fixed:** N documents
+**Held in inbox:** N documents (only when classification was impossible — see Phase 3)
 
-### Auto-Fixed
+### Fixes Applied
 | Document | Fix Applied |
 |----------|------------|
 | path | what was fixed |
 
-### Needs Manual Attention
-| Document | Issue | Suggested Action |
-|----------|-------|-----------------|
-| path | violation | what to do |
+### Judgment Calls
+For decisions made under "Apply with judgment" (oversized/multi-topic splits, naming renames, orphan link choices, duplicate filename resolution). Audit trail for the next dream run or a human spot-check.
+
+| Document | Decision | Rationale |
+|----------|----------|-----------|
+| path | what was done | why this option vs. the alternative |
 
 ### Redirects Skipped
 - path (N total)
@@ -251,7 +256,7 @@ Add these sections to the report — they cover triage, conflicts, and decay:
 ### Conflicts Resolved (Phase 4)
 | Topic | Canonical | Superseded | Strategy |
 |-------|-----------|------------|----------|
-| <topic> | path | path | fact-update / dedupe / flagged |
+| <topic> | path | path | fact-update / dedupe / merged-ambiguous |
 
 ### Aged Out (Phase 5)
 | Doc | Age (days) | Reason | Action |
@@ -261,14 +266,13 @@ Add these sections to the report — they cover triage, conflicts, and decay:
 
 ## Scheduling
 
-`/dream --auto` is designed to run unattended on a schedule. Use Argus scheduled tasks to run it daily — for example, set the daemon to invoke `/dream --auto` at a low-activity hour. The `--auto` flag:
+`/dream` is the unattended mode by default. Wire it into Argus scheduled tasks (or any cron) at a low-activity hour. Each run:
 
-- Skips all interactive confirmations
-- Applies safe fixes (frontmatter, link conversion, tag normalization, inbox triage, unambiguous conflict resolution, aging-out under decay rules)
-- Writes the report to `memory/dream/<date>-report.md` instead of stdout
-- Logs run completion to `~/.dots/sys/dream-runs/<date>.log`
+- Triages the inbox, resolves conflicts, ages out stale entries, fixes hygiene violations — all without prompting.
+- Writes the report to `memory/dream/<date>-report.md` and `~/.dots/sys/dream-runs/<date>.log`.
+- Skips work entirely if `~/.dots/sys/kb-changes/changes.jsonl` shows no writes since the previous run (see Instructions preamble).
 
-The "skip if no writes since last run" guard is enforced by the Instructions preamble — see the bullet under `## Instructions`.
+For interactive previews use `/dream --dry-run` — that's the only mode that does not write to the KB.
 
 ### Obsidian Internal Link Reference
 
