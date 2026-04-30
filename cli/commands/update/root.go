@@ -22,6 +22,8 @@ func Run() {
 	updateZsh()
 	updateTmux()
 	updateBrew()
+	updateClaude()
+	updateDevbox()
 	updateSolargraph()
 	reshimAsdf()
 	install.Call("vim")
@@ -70,6 +72,24 @@ func updateBrew() {
 	log.Info("Updating Homebrew and outdated packages")
 	run.Verbose("brew update")
 	run.Verbose("brew upgrade")
+}
+
+func updateClaude() {
+	if err := run.Silent("which claude"); err != nil {
+		log.Info("Claude Code not installed, skipping")
+		return
+	}
+	log.Info("Updating Claude Code")
+	run.Verbose("claude update")
+}
+
+func updateDevbox() {
+	if err := run.Silent("which devbox"); err != nil {
+		log.Info("Devbox not installed, skipping")
+		return
+	}
+	log.Info("Updating Devbox")
+	run.Verbose("devbox version update")
 }
 
 func updateSolargraph() {
