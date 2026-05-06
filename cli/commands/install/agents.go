@@ -38,6 +38,9 @@ func Agents() {
 	// Register Argus KB memory injection on SessionStart
 	registerSessionStartMemoryHook()
 
+	// Register session-end raw capture into memory/inbox/
+	registerSessionEndCaptureHook()
+
 	// Register Argus KB write logging on PostToolUse
 	registerKBChangeTrackingHook()
 
@@ -183,6 +186,58 @@ func registerSessionStartMemoryHook() {
 
 	if changed {
 		log.Success("Registered Argus KB memory injection hook (SessionStart)")
+	}
+}
+
+// registerSessionEndCaptureHook adds a SessionEnd hook that writes a raw
+// session summary into memory/inbox/ when the session shipped a commit.
+// /dream synthesizes those captures into topical KB docs on its next pass.
+func registerSessionEndCaptureHook() {
+	changed := mutateSettings(func(settings map[string]any) bool {
+		hookCmd := "bash \"" + path.FromDots("agents/hooks/session-end-capture.sh") + "\""
+		hookEntry := map[string]any{
+			"hooks": []any{
+				map[string]any{
+					"type":    "command",
+					"command": hookCmd,
+				},
+			},
+		}
+
+		hooks, _ := settings["hooks"].(map[string]any)
+		if hooks == nil {
+			hooks = make(map[string]any)
+		}
+
+		sessionEnd, _ := hooks["SessionEnd"].([]any)
+
+		// SessionEnd entries (like SessionStart) don't carry a `matcher`
+		// field, so dedupe by walking the inner command list.
+		for _, existing := range sessionEnd {
+			entry, ok := existing.(map[string]any)
+			if !ok {
+				continue
+			}
+			inner, ok := entry["hooks"].([]any)
+			if !ok {
+				continue
+			}
+			for _, h := range inner {
+				cmd, _ := h.(map[string]any)
+				if cmd != nil && cmd["command"] == hookCmd {
+					return false // already registered
+				}
+			}
+		}
+
+		sessionEnd = append(sessionEnd, hookEntry)
+		hooks["SessionEnd"] = sessionEnd
+		settings["hooks"] = hooks
+		return true
+	})
+
+	if changed {
+		log.Success("Registered session-end inbox capture hook (SessionEnd)")
 	}
 }
 

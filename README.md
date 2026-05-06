@@ -53,7 +53,7 @@ dots docker stop-all     # Stop all Docker containers
 
 | Component | What it installs |
 |-----------|------------------|
-| `agents` | Agent skills, custom agents, hooks, and status line (symlinks `agents/skills/` → `~/.claude/skills/` + `~/.agents/skills/`, `agents/custom/` → `~/.claude/agents/`, registers hooks and status line in `~/.claude/settings.json`) |
+| `agents` | Agent skills, custom agents, hooks, and status line (symlinks `agents/skills/` → `~/.claude/skills/` + `~/.agents/skills/`, `agents/custom/` → `~/.claude/agents/`, registers SessionStart/SessionEnd/PostToolUse hooks and status line in `~/.claude/settings.json`) |
 | `bin` | Custom shell scripts and Go utilities to `~/bin` |
 | `git` | `.gitconfig`, `.gitignore_global`, git extensions |
 | `home` | Dotfiles symlinked to `~/` (`.zshrc`, `.vimrc`, `.tmux.conf`, `.gitconfig`, etc.) |
@@ -99,7 +99,7 @@ Dots includes 54 reusable slash-command skills for AI coding agents, following t
 | `/standup` | Daily standup summary from git activity |
 | `/pdf` | Export conversation content to styled PDF |
 | `/knowledge` | Initialize or update a project knowledge base |
-| `/dream` | Audit and fix knowledge base hygiene — frontmatter, sizing, naming |
+| `/dream` | Ingest meetings + session captures into the inbox, synthesize raw notes into existing topical docs, and audit KB hygiene — frontmatter, sizing, naming |
 | `/retro` | Structured retrospective or post-incident review |
 | `/logo` | Logo generation |
 | `/improve` | Improve skills, capture context and knowledge |
