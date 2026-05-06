@@ -1,12 +1,14 @@
 ---
 name: dream
-description: Scheduled KB maintenance — auto-triage inbox captures, resolve conflicts, age out stale entries, fix frontmatter and links. Runs unattended; never asks for confirmation. Use for KB maintenance, knowledge base cleanup, dream consolidation, memory hygiene, or as a scheduled daily KB pass.
-allowed-tools: mcp__argus__kb_list, mcp__argus__kb_read, mcp__argus__kb_ingest, mcp__argus__kb_delete, mcp__argus-kb__kb_list, mcp__argus-kb__kb_read, mcp__argus-kb__kb_ingest, mcp__argus-kb__kb_delete
+description: Scheduled KB maintenance — ingest yesterday's meetings + session captures, synthesize raw notes into existing topical docs (decisions, people changes, conventions), resolve conflicts, age out stale entries, fix frontmatter and links. Translates raw data into knowledge. Runs unattended; never asks for confirmation. Use for KB maintenance, knowledge base cleanup, dream consolidation, memory hygiene, or as a scheduled daily KB pass.
+allowed-tools: mcp__argus__kb_list, mcp__argus__kb_read, mcp__argus__kb_ingest, mcp__argus__kb_delete, mcp__argus-kb__kb_list, mcp__argus-kb__kb_read, mcp__argus-kb__kb_ingest, mcp__argus-kb__kb_delete, mcp__argus__kb_search, mcp__argus-kb__kb_search, mcp__granola__list_meetings, mcp__granola__get_meetings, mcp__granola__query_granola_meetings, mcp__claude_ai_Notion__notion-query-meeting-notes, mcp__claude_ai_Notion__notion-search, mcp__notion__notion-query-meeting-notes
 ---
 
 # Dream — Scheduled Knowledge Base Maintenance
 
-Audit the argus-kb knowledge base, then **apply every fix** without confirmation: triage new captures from `memory/inbox/`, resolve conflicting facts in favor of the most recent, archive entries that have aged out, and fix schema/link/naming violations. Dream is a scheduled task — it must never block on user input.
+Audit the argus-kb knowledge base, then **apply every fix** without confirmation: ingest yesterday's meetings and session captures into the inbox, distill those raw captures into knowledge inside existing topical docs, resolve conflicting facts in favor of the most recent, archive entries that have aged out, and fix schema/link/naming violations. Dream is a scheduled task — it must never block on user input.
+
+**Translate raw data into knowledge.** A session transcript or meeting summary is signal, not knowledge. Dream's job is to extract the durable facts (decisions, people changes, conventions, gotchas) and merge them into the topical docs that already track each subject. Filing the raw note is a fallback when nothing distillable was captured — not the goal.
 
 ## Operating principle
 
@@ -33,11 +35,25 @@ The Argus KB MCP server is registered as `argus` (current) or `argus-kb` (legacy
 
 ## Instructions
 
-Run the seven phases below in order. Apply every fix. Never prompt for confirmation.
+Run the eight phases below in order. Apply every fix. Never prompt for confirmation.
 
 - If `$ARGUMENTS` contains `--dry-run`, replace every "apply" step with "report what would change." This is the only short-circuit on writes.
 - If the change log (`~/.dots/sys/kb-changes/changes.jsonl`) shows no writes since the timestamp of the last successful dream run (latest file under `~/.dots/sys/dream-runs/`), exit immediately with an empty report — saves work when the KB is quiet.
 - If `$ARGUMENTS` contains a bare path prefix, pass it to `kb_list` as the prefix filter to scope the audit. The triage and decay phases still scan their respective folders (`memory/inbox/`, full vault) regardless.
+
+### Phase 0: Ingest (Meetings + Sessions)
+
+Pull yesterday's signal into `memory/inbox/` so the rest of dream can synthesize it. Skip silently when an upstream is unavailable — meetings are best-effort signal, not a hard dependency.
+
+1. **Granola meetings.** If `mcp__granola__list_meetings` is available, call it with `time_range: "last_day"`. If the result is empty for a day you know had meetings, retry with `this_week` — Granola's `query_granola_meetings` regularly false-negatives on same-day captures, so `list_meetings` is the more reliable discovery primitive. If the tool returns tool-not-found, skip silently. For each meeting:
+   - Skip if `memory/inbox/` already contains a doc with the meeting ID in the slug (idempotent on re-runs).
+   - Fetch summary + AI notes via `get_meetings(meeting_ids=[id])`.
+   - Write a raw inbox doc at `memory/inbox/<YYYY-MM-DD>-meeting-<short-id>-<slug>.md` with:
+     - `tags: [meeting-capture, granola, <project-or-person-tag>]`
+     - Body: meeting title, attendees, AI notes, any decisions/action items the AI surfaced.
+2. **Notion meeting notes.** If `mcp__claude_ai_Notion__notion-query-meeting-notes` (or the cortex Notion equivalent) is available, query for yesterday's meeting notes. Same dedupe + write pattern, tag with `meeting-capture, notion`. If the tool returns tool-not-found, skip silently and proceed to step 3.
+3. **Session captures already in inbox.** The `session-end-capture` hook writes session summaries directly into `memory/inbox/` as Claude Code sessions wrap up. Don't re-fetch — these are already on disk before dream starts and will be processed in Phase 3.
+4. Don't synthesize here. Phase 0's only job is to land raw captures in the inbox so Phase 3 can distill them. If meeting fetch fails entirely (no MCP, network down, daemon offline), proceed without it; subsequent phases still run on whatever is already in the inbox.
 
 ### Phase 1: Orient
 
@@ -92,20 +108,34 @@ Rules from the kb_ingest schema:
 
 Record each violation with: document path, rule violated, current value, and suggested fix.
 
-### Phase 3: Triage Inbox
+### Phase 3: Triage & Synthesize Inbox
 
-The inbox holds raw captures from `/improve` (and other capture flows) that haven't been classified yet. Goal: route every inbox doc to its proper folder OR merge it into an existing entry.
+The inbox holds raw captures from `/improve`, the `session-end-capture` hook (committed work), and Phase 0's meeting ingest. Goal: **extract durable knowledge into existing topical docs**, not just file the raw note.
 
-1. Filter the doc list from Phase 1 down to paths under `memory/inbox/`.
-2. For each inbox doc:
-   - The full content is already in memory from Phase 2 — re-read via `kb_read` only if truncated.
-   - Run a `kb_search` using the doc's title + key entities to find existing related entries.
-   - Decide one of:
-     - **Merge** — content overlaps an existing doc. Append/integrate into that doc's body, preserve frontmatter, write back via `kb_ingest` with the existing path. Then delete the inbox source via `kb_delete`.
-     - **Re-file** — content is genuinely new. Determine the correct destination folder using the routing rules below, write via `kb_ingest` to the new path, then `kb_delete` the inbox copy.
-     - **Hold** — too ambiguous to classify (rare). Leave in inbox and flag in the report.
+**Process order** (highest synthesis value first):
+1. Captures tagged `high-value, commit-merged` — work that shipped to main/master. These had verified outcomes; their facts have the highest credibility.
+2. Captures tagged `meeting-capture` — decisions, people changes, action items.
+3. Captures tagged `session-capture, work-in-progress` — record intent + files touched, but discount unverified claims.
+4. Everything else (legacy `/improve` captures).
 
-**Routing rules** (apply in order, first match wins):
+For each inbox doc:
+
+1. The full content is already in memory from Phase 2 — re-read via `kb_read` only if truncated.
+2. Run `kb_search` on the doc's key entities (project names, people, tools, file paths, decisions) to surface candidate target docs.
+3. **Synthesize first.** Walk the body and extract durable items into one of these shapes:
+   - **Decision** ("we decided to use X for Y") → merge into the relevant project doc as a `## Decision: <topic>` section, with a one-line rationale. If a previous decision on the same topic exists, mark it superseded (Phase 4 mechanics) and link to the new one.
+   - **People fact** (role change, joined team, scope shift, area of ownership) → update the relevant `<org>/people-*` or `memory/people/` doc. Add `Previously: <old> — superseded <date>` if it overrides existing data.
+   - **Convention / pattern** (a way the team does something, a gotcha, a workflow rule) → merge into `patterns/` or the closest existing convention doc. Cross-link with `[[wikilinks]]`.
+   - **Action item** with a clear owner + deadline → if it's a recurring task or a follow-up that maps to an existing project doc, append a `## Open Action Items` section. Otherwise skip — action items rot fast and a stale "follow up next week" entry is noise.
+   - **Tool / vendor evaluation** → merge into the existing `vendor-evaluations` (or equivalent) doc, or the tool's dedicated doc. Use `[[wikilinks]]` for cross-references.
+4. **For each fact merged, run a conflict check** before writing: does this contradict an existing fact in the target doc? If yes, apply the supersession pattern from Phase 4 (canonical = newest, mark prior as historical).
+5. After synthesis is done, decide what to do with the raw inbox capture:
+   - **All durable content distilled** (most session-capture and meeting-capture docs) → `kb_delete` the inbox source. The knowledge survives in topical docs; the raw inbox note was scaffolding. The original Claude Code session transcript at `transcript_path` (typically `~/.claude/projects/<project-slug>/<session-id>.jsonl`) is unaffected and remains the ground-truth recovery path if synthesis later turns out to have missed something.
+   - **Some content distilled, some narrative left** (long meeting with backstory worth preserving) → re-file the raw to `memory/archive/meetings/<date>-<slug>.md` instead of deleting; the topical docs cite back to it via wikilink.
+   - **Nothing distillable** (genuinely raw observation that needs a home but doesn't update an existing topic) → fall through to the routing rules below and re-file as a new topical doc.
+   - **Too degraded to classify** (empty body, malformed frontmatter that can't be salvaged) → **Hold** in inbox, note path in the report.
+
+**Routing rules** (when synthesis didn't apply and the doc needs a new home — apply in order, first match wins):
 1. Frontmatter `tags` contain a clear domain tag matching an existing top-level folder (e.g. `homelab`, `tools`, `patterns`, `health`, `home`, `personal`, or any user-defined domain folder) → match that folder.
 2. Tags include `user` / `preference` → `memory/user/<topic>.md`.
 3. Tags include `feedback` / `correction` → `memory/feedback/<topic>.md`.
@@ -115,7 +145,9 @@ The inbox holds raw captures from `/improve` (and other capture flows) that have
 
 When choosing a filename, follow the existing schema (kebab-case, 2-3 words, topic noun). Strip the date prefix from inbox filenames before re-filing.
 
-Apply every triage decision immediately. Do not batch and confirm. The "Hold" path exists only when the doc is so degraded (empty body, malformed frontmatter that can't be salvaged) that any classification would be wrong; in that case leave it in inbox and note the path in the report so a future run with more context can revisit it.
+Apply every triage and synthesis decision immediately. Do not batch and confirm. The "Hold" path is the rare escape hatch for unsalvageable docs; in normal operation every inbox doc either contributes facts to existing docs (and is deleted) or becomes a new topical doc.
+
+**Be ruthless about discarding low-signal content.** A session capture that just says "edited a few files" with no decision, no convention, no people fact contributes nothing durable — delete the raw without re-filing. The inbox shouldn't become a graveyard of low-value captures.
 
 ### Phase 4: Conflict Detection & Supersession
 
@@ -243,15 +275,26 @@ For decisions made under "Apply with judgment" (oversized/multi-topic splits, na
 
 If `--dry-run` was specified, label the report "KB Hygiene Report (Dry Run)" and note that no changes were made.
 
-#### Extra report sections (Phases 1-3)
+#### Extra report sections (Phases 0, 3-5)
 
-Add these sections to the report — they cover triage, conflicts, and decay:
+Add these sections to the report — they cover ingest, triage/synthesis, conflicts, and decay:
 
 ```
-### Inbox Triage (Phase 3)
-| Inbox Doc | Action | Destination |
-|-----------|--------|------------|
-| memory/inbox/<doc> | merge / re-file / hold | <new path or kept> |
+### Ingested (Phase 0)
+| Source | Count | Notes |
+|--------|-------|-------|
+| granola | N | yesterday's meetings, deduped against existing inbox |
+| notion | N | yesterday's meeting notes |
+| session-end hook | N | session captures already on disk |
+
+### Inbox Triage & Synthesis (Phase 3)
+| Inbox Doc | Tags | Action | Knowledge Distilled Into |
+|-----------|------|--------|-------------------------|
+| memory/inbox/<doc> | high-value, commit-merged | synthesize+delete | patterns/dev-tools.md (new convention), memory/project/foo.md (decision) |
+| memory/inbox/<doc> | meeting-capture | synthesize+archive | memory/people/engineering.md (role change) |
+| memory/inbox/<doc> | session-capture, work-in-progress | discard | nothing distillable |
+| memory/inbox/<doc> | <tags> | re-file | <new path> |
+| memory/inbox/<doc> | <tags> | hold | (kept in inbox — too degraded) |
 
 ### Conflicts Resolved (Phase 4)
 | Topic | Canonical | Superseded | Strategy |

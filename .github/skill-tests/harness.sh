@@ -89,14 +89,29 @@ make_test_repo() {
   echo "$dir"
 }
 
-# Create a bare "remote" repo and add it as origin
+# Create a bare "remote" repo and add it as origin.
+#
+# Safety: if `git remote add` collides (because a previous `make_test_repo`
+# call cd'd to a temp dir that was itself inside a real git repo, or because
+# cd failed and we're still in the parent worktree), the silent failure
+# would historically leave `$name` pointing at the parent repo's real
+# remote. The subsequent `git push origin master` would then push test
+# commits to that real remote (e.g. GitHub). We refuse to proceed in that
+# case — better a loud abort than a quiet master-clobber.
 add_test_remote() {
   local name="${1:-origin}"
   local remote_dir
   remote_dir=$(mktemp -d "${TMPDIR:-/tmp}/skill-remote-XXXXXX")
   _TMPDIRS+=("$remote_dir")
   git init -q --bare "$remote_dir"
-  git remote add "$name" "$remote_dir" 2>/dev/null || true
+  if ! git remote add "$name" "$remote_dir" 2>/dev/null; then
+    local actual
+    actual=$(git remote get-url "$name" 2>/dev/null || echo "")
+    if [ "$actual" != "$remote_dir" ]; then
+      echo "FATAL: harness setup error — remote '$name' points at '$actual' (expected temp bare at '$remote_dir'). Refusing to push (this would clobber a real remote)." >&2
+      exit 1
+    fi
+  fi
   git push -q "$name" HEAD:master 2>/dev/null || true
   echo "$remote_dir"
 }
