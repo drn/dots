@@ -309,6 +309,7 @@ IF all three approve with no BLOCKING issues:
     Final verdict = APPROVE
 
 Regression risk = HIGHEST of the three reviewers' risk ratings
+(HIGHEST = worst-case wins. LOW = no regressions; HIGH = significant risk. Do not "average" — pessimism is correct here.)
 ```
 
 **Anti-sycophancy check:** Before finalizing APPROVE, verify:
@@ -322,11 +323,11 @@ Regression risk = HIGHEST of the three reviewers' risk ratings
 # Fresh-Eyes Re-Review: {branch name}
 
 ## Verdict: {APPROVE / APPROVE WITH WARNINGS / REQUEST CHANGES}
-**Regression risk:** {LOW / MEDIUM / HIGH}  (LOW = no regressions found; HIGH = significant regression risk)
+**Regression risk:** {LOW / MEDIUM / HIGH}  (LOW = no regressions found; HIGH = significant regression risk. Read literally — LOW is good.)
 
 ## Reviewer Agreement
-| Reviewer | Blocking | Warnings | Infos | Verdict | Risk |
-|----------|----------|----------|-------|---------|------|
+| Reviewer | Blocking | Warnings | Infos | Verdict | Regression risk |
+|----------|----------|----------|-------|---------|-----------------|
 | Alpha    | {N}      | {N}      | {N}   | {verdict} | {risk} |
 | Bravo    | {N}      | {N}      | {N}   | {verdict} | {risk} |
 | Charlie  | {N}      | {N}      | {N}   | {verdict} | {risk} |
