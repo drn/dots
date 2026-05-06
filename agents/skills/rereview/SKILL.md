@@ -126,7 +126,7 @@ CALIBRATION -- READ CAREFULLY:
 - Your DEFAULT verdict is REQUEST CHANGES, not APPROVE. You need overwhelming evidence of correctness to approve.
 - First implementations typically have 3-5 real issues. Finding zero issues is a red flag -- look harder.
 - False positives are acceptable. False negatives are not. Flag anything uncertain.
-- Do NOT inflate your confidence. "MEDIUM" regression confidence is normal and honest. Reserve "HIGH" for trivially small changes.
+- Do NOT downplay risk. "MEDIUM" regression risk is normal and honest. Reserve "LOW" for trivially small changes.
 - Run verification commands before making claims. Check what actually exists, not what you assume.
 
 BRANCH: {branch name}
@@ -264,8 +264,9 @@ Structure your report EXACTLY as follows:
 - **BLOCKING count:** {N}
 - **WARNING count:** {N}
 - **INFO count:** {N}
-- **Regression confidence:** HIGH / MEDIUM / LOW
-  (HIGH = confident no regressions; MEDIUM = some uncertainty; LOW = significant regression risk)
+- **Regression risk:** LOW / MEDIUM / HIGH
+  (LOW = no regressions found; MEDIUM = some uncertainty; HIGH = significant regression risk)
+  **Read the labels literally:** LOW means "no regressions found," not "low confidence in the verdict." If you are uncertain, the label is MEDIUM or HIGH, never LOW.
 - **Overall verdict:** APPROVE / REQUEST CHANGES / REJECT
 
 Do NOT rush. Analyze every changed line. If you are uncertain about something, flag it -- false positives are acceptable, false negatives are not.
@@ -292,6 +293,7 @@ Compare the three reports:
 Where reviewers disagree on severity or verdict:
 - Note the disagreement explicitly
 - Apply the most conservative (strictest) assessment
+- **When the risk label splits, quote the reviewer narratives** in the Disagreements section rather than just relaying the worst label. The label is a summary; the narrative ("byte-identical", "no blocking", "stale lockfiles") is the evidence. A reader needs the evidence to judge whether the worst-case label is genuinely warranted or driven by an outlier.
 
 ### Step 3: Final Verdict Logic
 
@@ -306,7 +308,8 @@ IF all three approve with no BLOCKING issues:
   ELSE:
     Final verdict = APPROVE
 
-Regression confidence = LOWEST of the three reviewers' confidence ratings
+Regression risk = HIGHEST of the three reviewers' risk ratings
+(HIGHEST = worst-case wins. LOW = no regressions; HIGH = significant risk. Do not "average" — pessimism is correct here.)
 ```
 
 **Anti-sycophancy check:** Before finalizing APPROVE, verify:
@@ -320,14 +323,14 @@ Regression confidence = LOWEST of the three reviewers' confidence ratings
 # Fresh-Eyes Re-Review: {branch name}
 
 ## Verdict: {APPROVE / APPROVE WITH WARNINGS / REQUEST CHANGES}
-**Regression confidence:** {HIGH / MEDIUM / LOW}
+**Regression risk:** {LOW / MEDIUM / HIGH}  (LOW = no regressions found; HIGH = significant regression risk. Read literally — LOW is good.)
 
 ## Reviewer Agreement
-| Reviewer | Blocking | Warnings | Infos | Verdict | Confidence |
-|----------|----------|----------|-------|---------|------------|
-| Alpha    | {N}      | {N}      | {N}   | {verdict} | {conf}   |
-| Bravo    | {N}      | {N}      | {N}   | {verdict} | {conf}   |
-| Charlie  | {N}      | {N}      | {N}   | {verdict} | {conf}   |
+| Reviewer | Blocking | Warnings | Infos | Verdict | Regression risk |
+|----------|----------|----------|-------|---------|-----------------|
+| Alpha    | {N}      | {N}      | {N}   | {verdict} | {risk} |
+| Bravo    | {N}      | {N}      | {N}   | {verdict} | {risk} |
+| Charlie  | {N}      | {N}      | {N}   | {verdict} | {risk} |
 
 ## Test & Lint Baseline
 - **Tests:** {PASS / FAIL / N/A} {details if failures}
