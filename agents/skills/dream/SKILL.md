@@ -45,13 +45,13 @@ Run the eight phases below in order. Apply every fix. Never prompt for confirmat
 
 Pull yesterday's signal into `memory/inbox/` so the rest of dream can synthesize it. Skip silently when an upstream is unavailable — meetings are best-effort signal, not a hard dependency.
 
-1. **Granola meetings.** If `mcp__granola__list_meetings` is available, call it with `time_range: "last_day"` (fall back to `this_week` if the tool false-negatives — see `[[granola]]` for the same-day quirk). For each meeting:
+1. **Granola meetings.** If `mcp__granola__list_meetings` is available, call it with `time_range: "last_day"`. If the result is empty for a day you know had meetings, retry with `this_week` — Granola's `query_granola_meetings` regularly false-negatives on same-day captures, so `list_meetings` is the more reliable discovery primitive. If the tool returns tool-not-found, skip silently. For each meeting:
    - Skip if `memory/inbox/` already contains a doc with the meeting ID in the slug (idempotent on re-runs).
    - Fetch summary + AI notes via `get_meetings(meeting_ids=[id])`.
    - Write a raw inbox doc at `memory/inbox/<YYYY-MM-DD>-meeting-<short-id>-<slug>.md` with:
      - `tags: [meeting-capture, granola, <project-or-person-tag>]`
      - Body: meeting title, attendees, AI notes, any decisions/action items the AI surfaced.
-2. **Notion meeting notes.** If `mcp__claude_ai_Notion__notion-query-meeting-notes` (or the cortex Notion equivalent) is available, query for yesterday's meeting notes. Same dedupe + write pattern, tag with `meeting-capture, notion`.
+2. **Notion meeting notes.** If `mcp__claude_ai_Notion__notion-query-meeting-notes` (or the cortex Notion equivalent) is available, query for yesterday's meeting notes. Same dedupe + write pattern, tag with `meeting-capture, notion`. If the tool returns tool-not-found, skip silently and proceed to step 3.
 3. **Session captures already in inbox.** The `session-end-capture` hook writes session summaries directly into `memory/inbox/` as Claude Code sessions wrap up. Don't re-fetch — these are already on disk before dream starts and will be processed in Phase 3.
 4. Don't synthesize here. Phase 0's only job is to land raw captures in the inbox so Phase 3 can distill them. If meeting fetch fails entirely (no MCP, network down, daemon offline), proceed without it; subsequent phases still run on whatever is already in the inbox.
 
@@ -124,13 +124,13 @@ For each inbox doc:
 2. Run `kb_search` on the doc's key entities (project names, people, tools, file paths, decisions) to surface candidate target docs.
 3. **Synthesize first.** Walk the body and extract durable items into one of these shapes:
    - **Decision** ("we decided to use X for Y") → merge into the relevant project doc as a `## Decision: <topic>` section, with a one-line rationale. If a previous decision on the same topic exists, mark it superseded (Phase 4 mechanics) and link to the new one.
-   - **People fact** (role change, joined team, scope shift, area of ownership) → update `thanx/people-*` or the relevant people doc. Add `Previously: <old> — superseded <date>` if it overrides existing data.
-   - **Convention / pattern** (a way the team does something, a gotcha, a workflow rule) → merge into `patterns/`, `thanx/dev-tools.md`, or the closest existing convention doc. Cross-link with `[[wikilinks]]`.
+   - **People fact** (role change, joined team, scope shift, area of ownership) → update the relevant `<org>/people-*` or `memory/people/` doc. Add `Previously: <old> — superseded <date>` if it overrides existing data.
+   - **Convention / pattern** (a way the team does something, a gotcha, a workflow rule) → merge into `patterns/` or the closest existing convention doc. Cross-link with `[[wikilinks]]`.
    - **Action item** with a clear owner + deadline → if it's a recurring task or a follow-up that maps to an existing project doc, append a `## Open Action Items` section. Otherwise skip — action items rot fast and a stale "follow up next week" entry is noise.
-   - **Tool / vendor evaluation** → merge into `[[vendor-evaluations]]` or the tool's dedicated doc.
+   - **Tool / vendor evaluation** → merge into the existing `vendor-evaluations` (or equivalent) doc, or the tool's dedicated doc. Use `[[wikilinks]]` for cross-references.
 4. **For each fact merged, run a conflict check** before writing: does this contradict an existing fact in the target doc? If yes, apply the supersession pattern from Phase 4 (canonical = newest, mark prior as historical).
 5. After synthesis is done, decide what to do with the raw inbox capture:
-   - **All durable content distilled** (most session-capture and meeting-capture docs) → `kb_delete` the inbox source. The knowledge survives in topical docs; the raw transcript was scaffolding.
+   - **All durable content distilled** (most session-capture and meeting-capture docs) → `kb_delete` the inbox source. The knowledge survives in topical docs; the raw inbox note was scaffolding. The original Claude Code session transcript at `transcript_path` (typically `~/.claude/projects/<project-slug>/<session-id>.jsonl`) is unaffected and remains the ground-truth recovery path if synthesis later turns out to have missed something.
    - **Some content distilled, some narrative left** (long meeting with backstory worth preserving) → re-file the raw to `memory/archive/meetings/<date>-<slug>.md` instead of deleting; the topical docs cite back to it via wikilink.
    - **Nothing distillable** (genuinely raw observation that needs a home but doesn't update an existing topic) → fall through to the routing rules below and re-file as a new topical doc.
    - **Too degraded to classify** (empty body, malformed frontmatter that can't be salvaged) → **Hold** in inbox, note path in the report.
@@ -290,8 +290,8 @@ Add these sections to the report — they cover ingest, triage/synthesis, confli
 ### Inbox Triage & Synthesis (Phase 3)
 | Inbox Doc | Tags | Action | Knowledge Distilled Into |
 |-----------|------|--------|-------------------------|
-| memory/inbox/<doc> | high-value, commit-merged | synthesize+delete | thanx/dev-tools.md (new convention), memory/project/foo.md (decision) |
-| memory/inbox/<doc> | meeting-capture | synthesize+archive | thanx/people-engineering.md (role change) |
+| memory/inbox/<doc> | high-value, commit-merged | synthesize+delete | patterns/dev-tools.md (new convention), memory/project/foo.md (decision) |
+| memory/inbox/<doc> | meeting-capture | synthesize+archive | memory/people/engineering.md (role change) |
 | memory/inbox/<doc> | session-capture, work-in-progress | discard | nothing distillable |
 | memory/inbox/<doc> | <tags> | re-file | <new path> |
 | memory/inbox/<doc> | <tags> | hold | (kept in inbox — too degraded) |

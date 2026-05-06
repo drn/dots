@@ -171,7 +171,11 @@ test_captures_with_commit_merged_to_master() {
   cwd=$(pwd)
 
   # Sleep 1s so the new commit is strictly after the transcript timestamp.
-  # `git log --since` is exclusive on the boundary in some git versions.
+  # `git log --since` uses second-level granularity and treats same-second
+  # commits as inclusive, so without the sleep, the seed commit could be
+  # picked up alongside this test's commit. Don't remove this sleep without
+  # also reworking the timestamp strategy. (Same applies to the other
+  # `sleep 1` calls in this file.)
   sleep 1
   echo "feature" > feature.txt
   git add feature.txt

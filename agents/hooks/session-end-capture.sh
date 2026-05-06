@@ -10,17 +10,33 @@
 #
 # Fail-soft on every error path so a missing dep, broken transcript, or
 # detached daemon never blocks session shutdown.
+#
+# Shell semantics:
+#   `set -uo pipefail` (no `-e`) + `trap 'exit 0' ERR` is the fail-soft
+#   mechanism. The ERR trap fires on any non-zero exit from a simple
+#   command or pipeline (including SIGPIPE from `... | head -N`), so any
+#   line that we *expect* to fail must end with `|| true` to suppress the
+#   trap. Compare with peer hooks (track-kb-change.sh, session-start-memory.sh)
+#   that use `set -euo pipefail` + named guards — same effect, different
+#   ergonomics. We use the trap form here because the script has many
+#   independent fail-soft branches and `|| true` per-call would be noisier.
 
 set -uo pipefail
-
-# Catch any unexpected error and exit clean — the hook is best-effort.
 trap 'exit 0' ERR
+
+# Tunables — limits keep the capture lean and bound the work the hook does
+# at session shutdown. All centralized so a future tuner doesn't have to
+# hunt through the body.
+MAX_COMMITS=20
+MAX_FILES=30
+MAX_INTENT_CHARS=600
 
 # stdin: { session_id, transcript_path, cwd, hook_event_name, ... }
 INPUT=$(cat)
 [ -n "$INPUT" ] || exit 0
 
 command -v jq >/dev/null 2>&1 || exit 0
+command -v argus >/dev/null 2>&1 || exit 0
 
 SESSION_ID=$(echo "$INPUT" | jq -r '.session_id // empty')
 CWD=$(echo "$INPUT" | jq -r '.cwd // empty')
@@ -35,13 +51,17 @@ TRANSCRIPT=$(echo "$INPUT" | jq -r '.transcript_path // empty')
 git -C "$CWD" rev-parse --git-dir >/dev/null 2>&1 || exit 0
 
 # Session start: timestamp on the first transcript line. Falls back to
-# transcript file mtime if jq parsing fails.
+# transcript file mtime via BSD `stat -f` (macOS) or GNU `stat -c` (Linux).
 SESSION_START=""
 if [ -n "$TRANSCRIPT" ] && [ -r "$TRANSCRIPT" ]; then
   SESSION_START=$(head -1 "$TRANSCRIPT" 2>/dev/null | jq -r '.timestamp // empty' 2>/dev/null)
   if [ -z "$SESSION_START" ]; then
     if SS=$(stat -f %SB -t %Y-%m-%dT%H:%M:%SZ "$TRANSCRIPT" 2>/dev/null); then
       SESSION_START="$SS"
+    elif SS=$(stat -c %y "$TRANSCRIPT" 2>/dev/null); then
+      # GNU stat returns "2026-05-04 09:30:00.000000000 -0700"; reformat
+      # to the same UTC ISO-8601 shape as the BSD branch.
+      SESSION_START=$(date -u -d "$SS" +%Y-%m-%dT%H:%M:%SZ 2>/dev/null || echo "")
     fi
   fi
 fi
@@ -49,21 +69,26 @@ fi
 
 # Commits authored in this cwd since the session started, by the local git
 # user. Restricting to author dodges the case where a rebase sweeps in
-# upstream commits authored by teammates.
+# upstream commits authored by teammates. The `|| true` after `head` is
+# required because head closes early on long output → git gets SIGPIPE 141
+# → pipefail propagates → ERR trap kills the hook.
 USER_EMAIL=$(git -C "$CWD" config user.email 2>/dev/null || echo "")
 [ -n "$USER_EMAIL" ] || exit 0
-COMMITS=$(git -C "$CWD" log --since="$SESSION_START" --format='%H|%s' --author="$USER_EMAIL" 2>/dev/null | head -20)
+COMMITS=$(git -C "$CWD" log --since="$SESSION_START" --format='%H|%s' --author="$USER_EMAIL" 2>/dev/null | head -"$MAX_COMMITS" || true)
 [ -n "$COMMITS" ] || exit 0
 
-# Refresh remote refs so merge-base is accurate. Quiet, no-tags, capped via
-# timeout-equivalent (single fetch). Failure is tolerable — we just won't
-# see fresh merges.
-git -C "$CWD" fetch --quiet --no-tags origin 2>/dev/null
+# Refresh remote refs so merge-base is accurate. Failure is tolerable — we
+# just won't see fresh merges. The `|| true` is required because the ERR
+# trap above otherwise kills the hook on any non-zero exit (no `origin`
+# remote, network down, etc.) and no inbox file gets written. We do not
+# add a hard timeout because GNU `timeout` isn't on macOS by default; in
+# practice git's own connect timeout bounds this within seconds.
+git -C "$CWD" fetch --quiet --no-tags origin 2>/dev/null || true
 
 # Pick the base remote that exists.
 BASE_REMOTE=""
 for branch in origin/main origin/master; do
-  if git -C "$CWD" rev-parse --verify --quiet "$branch" >/dev/null; then
+  if git -C "$CWD" rev-parse --verify --quiet "$branch" >/dev/null 2>&1; then
     BASE_REMOTE="$branch"
     break
   fi
@@ -102,16 +127,16 @@ if [ -n "$TRANSCRIPT" ] && [ -r "$TRANSCRIPT" ]; then
   INTENT=$(jq -rs '
     [.[] | select(.type == "user" and (.message.content | type) == "string")]
     | .[0].message.content // ""
-  ' "$TRANSCRIPT" 2>/dev/null)
-  INTENT="${INTENT:0:600}"
+  ' "$TRANSCRIPT" 2>/dev/null || echo "")
+  INTENT="${INTENT:0:$MAX_INTENT_CHARS}"
 fi
 
-# Files touched: union across all session commits. Capped at 30 so a big
-# refactor doesn't blow up the capture. Using --pretty=format: + --name-only
-# avoids needing each commit to have a parent — diff-style range fails when
-# a session's first commit is the repo's root commit.
+# Files touched: union across all session commits. Capped via $MAX_FILES so
+# a big refactor doesn't blow up the capture. Using --pretty=format: +
+# --name-only avoids needing each commit to have a parent — diff-style range
+# fails when a session's first commit is the repo's root commit.
 FILES_TOUCHED=$(git -C "$CWD" log --since="$SESSION_START" --author="$USER_EMAIL" \
-  --name-only --pretty=format: 2>/dev/null | sort -u | grep -v '^$' | head -30 || true)
+  --name-only --pretty=format: 2>/dev/null | sort -u | grep -v '^$' | head -"$MAX_FILES" || true)
 
 # Vault path. Bail if the daemon doesn't know where the vault lives — the
 # hook has no other place to write.
@@ -119,9 +144,24 @@ VAULT=$(argus kb status 2>/dev/null | awk -F': *' '/^Vault/ {print $2; exit}')
 [ -n "${VAULT:-}" ] || exit 0
 [ -d "$VAULT" ] || exit 0
 
+# Sanitize SESSION_ID before use in the filename. UUIDs from Claude Code are
+# alphanumeric+hyphens by spec, but defense-in-depth blocks a hostile or
+# malformed session_id from emitting `..` path components.
 DATE=$(date -u +%Y-%m-%d)
-SHORT_SESSION=${SESSION_ID:0:8}
-SLUG=$(printf '%s-%s' "$REPO" "$BRANCH" | tr '[:upper:]' '[:lower:]' | tr '/_' '--' | sed 's/[^a-z0-9-]//g' | cut -c1-40)
+SHORT_SESSION=$(printf '%s' "${SESSION_ID:0:8}" | tr -dc 'a-zA-Z0-9')
+[ -n "$SHORT_SESSION" ] || SHORT_SESSION="anon"
+# Build slug from REPO/BRANCH; strip leading/trailing hyphens after the
+# character-class filter so "myrepo-" (empty branch) becomes "myrepo".
+# Note on collisions: two sessions in the same repo+branch on the same date
+# whose UUIDs share their first 8 chars would clobber. UUID collision odds
+# at 8 hex chars are ~1 in 4 billion per day per repo+branch — acceptable
+# for a best-effort capture system; /dream re-reads the file as the source
+# of truth anyway.
+SLUG=$(printf '%s-%s' "$REPO" "$BRANCH" \
+  | tr '[:upper:]' '[:lower:]' \
+  | tr '/_' '--' \
+  | sed -e 's/[^a-z0-9-]//g' -e 's/^-*//' -e 's/-*$//' \
+  | cut -c1-40)
 [ -n "$SLUG" ] || SLUG="session"
 INBOX_DIR="$VAULT/memory/inbox"
 INBOX_FILE="$INBOX_DIR/$DATE-$SHORT_SESSION-$SLUG.md"
