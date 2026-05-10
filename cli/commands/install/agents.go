@@ -190,8 +190,9 @@ func registerSessionStartMemoryHook() {
 }
 
 // registerSessionEndCaptureHook adds a SessionEnd hook that writes a raw
-// session summary into memory/inbox/ when the session shipped a commit.
-// /dream synthesizes those captures into topical KB docs on its next pass.
+// session summary into memory/inbox/ for every Claude Code session, tagged
+// by tier (no-commit / work-in-progress / commit-merged). /dream synthesizes
+// those captures into topical KB docs on its next pass.
 func registerSessionEndCaptureHook() {
 	changed := mutateSettings(func(settings map[string]any) bool {
 		hookCmd := "bash \"" + path.FromDots("agents/hooks/session-end-capture.sh") + "\""

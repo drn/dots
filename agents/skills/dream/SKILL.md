@@ -110,13 +110,14 @@ Record each violation with: document path, rule violated, current value, and sug
 
 ### Phase 3: Triage & Synthesize Inbox
 
-The inbox holds raw captures from `/improve`, the `session-end-capture` hook (committed work), and Phase 0's meeting ingest. Goal: **extract durable knowledge into existing topical docs**, not just file the raw note.
+The inbox holds raw captures from `/improve`, the `session-end-capture` hook (every Claude Code session, tiered by tag), and Phase 0's meeting ingest. Goal: **extract durable knowledge into existing topical docs**, not just file the raw note.
 
 **Process order** (highest synthesis value first):
 1. Captures tagged `high-value, commit-merged` — work that shipped to main/master. These had verified outcomes; their facts have the highest credibility.
 2. Captures tagged `meeting-capture` — decisions, people changes, action items.
 3. Captures tagged `session-capture, work-in-progress` — record intent + files touched, but discount unverified claims.
-4. Everything else (legacy `/improve` captures).
+4. Captures tagged `session-capture, no-commit` — exploration, research, Q&A. Most will discard as low-signal; keep only when the session crystallized a durable decision, convention, or vendor evaluation. The `## Recent prompts` excerpt is the cheapest signal for whether the session went anywhere.
+5. Everything else (legacy `/improve` captures).
 
 For each inbox doc:
 

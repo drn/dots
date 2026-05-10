@@ -116,24 +116,34 @@ _find_inbox_file() {
   find "$vault/memory/inbox" -name '*.md' 2>/dev/null | head -1
 }
 
-test_skips_session_with_no_commits() {
+test_captures_session_with_no_commits() {
   _setup_session_env >/dev/null
   local cwd
   cwd=$(pwd)
 
-  # No new commits past the seed (seed is the session-start ancestor); the
-  # hook should bail before touching the inbox.
+  # No new commits past the seed; the hook should still capture, tagged
+  # `no-commit` so dream can downrank it during synthesis.
   local input
-  input=$(_session_input "test-skip-1" "$cwd")
+  input=$(_session_input "test-no-commit-1" "$cwd")
 
   HOME="$_TEST_HOME" PATH="$_TEST_PATH" bash "$HOOK" <<< "$input" || true
 
   local file
   file=$(_find_inbox_file "$_TEST_VAULT")
-  assert_eq "$file" "" "no inbox file should be created when no commits in session"
+  assert_match "$file" '\.md$' "inbox file should be created even with no commits"
+
+  if [ -n "$file" ]; then
+    local body
+    body=$(cat "$file")
+    assert_contains "$body" "no-commit" "no-commit session should tag no-commit"
+    assert_contains "$body" "fix the bug" "user intent should still be captured"
+    assert_not_contains "$body" "commit-merged" "no-commit session should not tag commit-merged"
+    assert_not_contains "$body" "work-in-progress" "no-commit session should not tag work-in-progress"
+    assert_not_contains "$body" "## Commits" "no-commit session should not render Commits section"
+  fi
 }
 
-test_skips_session_outside_git_repo() {
+test_captures_session_outside_git_repo() {
   local non_repo
   non_repo=$(mktemp -d "${TMPDIR:-/tmp}/skill-test-XXXXXX")
   _TMPDIRS+=("$non_repo")
@@ -152,7 +162,7 @@ EOF
   chmod +x "$stub_dir/argus"
 
   local transcript="$non_repo/transcript.jsonl"
-  printf '%s\n' '{"type":"user","timestamp":"1970-01-01T00:00:00Z","message":{"role":"user","content":"hi"}}' > "$transcript"
+  printf '%s\n' '{"type":"user","timestamp":"1970-01-01T00:00:00Z","message":{"role":"user","content":"research markdown formats"}}' > "$transcript"
 
   local input
   input=$(jq -nc --arg sid "no-repo" --arg cwd "$non_repo" --arg tp "$transcript" \
@@ -162,7 +172,36 @@ EOF
 
   local file
   file=$(find "$vault/memory/inbox" -name '*.md' 2>/dev/null | head -1)
-  assert_eq "$file" "" "no inbox file when cwd is not a git repo"
+  assert_match "$file" '\.md$' "inbox file should be created even outside a git repo"
+
+  if [ -n "$file" ]; then
+    local body
+    body=$(cat "$file")
+    assert_contains "$body" "no-commit" "non-git session should tag no-commit"
+    assert_contains "$body" "research markdown formats" "intent should be captured"
+    assert_contains "$body" "non-git working directory" "doc should mark cwd as non-git"
+  fi
+}
+
+test_skips_session_with_no_transcript() {
+  _setup_session_env >/dev/null
+  local cwd
+  cwd=$(pwd)
+
+  # transcript_path empty — no intent, no excerpt, nothing to distill.
+  local input
+  input=$(jq -nc --arg sid "no-transcript" --arg cwd "$cwd" \
+    '{session_id:$sid,cwd:$cwd,transcript_path:"",hook_event_name:"SessionEnd"}')
+
+  HOME="$_TEST_HOME" PATH="$_TEST_PATH" bash "$HOOK" <<< "$input" || true
+
+  local file
+  file=$(_find_inbox_file "$_TEST_VAULT")
+  assert_eq "$file" "" "no inbox file when transcript_path is empty"
+
+  local log="$_TEST_HOME/.dots/sys/session-end-capture.log"
+  assert_contains "$(cat "$log" 2>/dev/null || echo "")" "skip:no-transcript-path" \
+    "debug log should record the skip reason"
 }
 
 test_captures_with_commit_merged_to_master() {
@@ -201,6 +240,45 @@ test_captures_with_commit_merged_to_master() {
     assert_contains "$body" "fix the bug" "user intent from transcript should be captured"
     assert_contains "$body" "feature.txt" "files touched should appear"
     assert_not_contains "$body" "work-in-progress" "merged commit should not tag work-in-progress"
+    assert_not_contains "$body" "no-commit" "merged commit should not tag no-commit"
+  fi
+}
+
+test_captures_recent_prompts_excerpt() {
+  _setup_session_env >/dev/null
+  local cwd
+  cwd=$(pwd)
+
+  # Append two more user prompts so the hook has a "recent prompts" pool
+  # to render. The first prompt (from _setup_session_env) is the intent;
+  # the next two should appear under "Recent prompts".
+  local extra_ts
+  extra_ts=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+  printf '{"type":"user","timestamp":"%s","message":{"role":"user","content":"actually try a different approach"}}\n' "$extra_ts" \
+    >> "$_TEST_TRANSCRIPT"
+  printf '{"type":"user","timestamp":"%s","message":{"role":"user","content":"ship it"}}\n' "$extra_ts" \
+    >> "$_TEST_TRANSCRIPT"
+
+  sleep 1
+  echo "more" > more.txt
+  git add more.txt
+  git commit -q -m "add more"
+
+  local input
+  input=$(_session_input "excerpt-session" "$cwd")
+
+  HOME="$_TEST_HOME" PATH="$_TEST_PATH" bash "$HOOK" <<< "$input" || true
+
+  local file
+  file=$(_find_inbox_file "$_TEST_VAULT")
+  assert_match "$file" '\.md$' "inbox file should be created"
+
+  if [ -n "$file" ]; then
+    local body
+    body=$(cat "$file")
+    assert_contains "$body" "## Recent prompts" "recent prompts section should render when >1 prompt exists"
+    assert_contains "$body" "actually try a different approach" "later prompts should appear in excerpt"
+    assert_contains "$body" "ship it" "final prompt should appear in excerpt"
   fi
 }
 
@@ -232,6 +310,61 @@ test_captures_wip_commit_not_on_master() {
     assert_not_contains "$body" "high-value" "unmerged commit should not be high-value"
     assert_not_contains "$body" "commit-merged" "unmerged commit should not be commit-merged"
     assert_contains "$body" "[wip]" "commit status should be wip"
+  fi
+}
+
+test_logs_captured_status_on_success() {
+  _setup_session_env >/dev/null
+  local cwd
+  cwd=$(pwd)
+
+  sleep 1
+  echo "logged" > logged.txt
+  git add logged.txt
+  git commit -q -m "commit for log status test"
+  git push -q origin master
+
+  local input
+  input=$(_session_input "log-status-session" "$cwd")
+
+  HOME="$_TEST_HOME" PATH="$_TEST_PATH" bash "$HOOK" <<< "$input" || true
+
+  local log="$_TEST_HOME/.dots/sys/session-end-capture.log"
+  assert_contains "$(cat "$log" 2>/dev/null || echo "")" "captured:commit-merged" \
+    "debug log should record captured:commit-merged on successful merged capture"
+}
+
+test_redacts_credential_patterns_from_intent() {
+  _setup_session_env >/dev/null
+  local cwd
+  cwd=$(pwd)
+
+  # Replace the intent prompt with one containing a fake AWS-format key.
+  # The redactor should mask it before the prompt lands in the inbox doc.
+  local fake_key="AKIAIOSFODNN7EXAMPLE"
+  : > "$_TEST_TRANSCRIPT"
+  printf '{"type":"user","timestamp":"%s","message":{"role":"user","content":"deploy with %s now"}}\n' \
+    "$_TEST_TS" "$fake_key" >> "$_TEST_TRANSCRIPT"
+
+  sleep 1
+  echo "redact" > redact.txt
+  git add redact.txt
+  git commit -q -m "redact test commit"
+
+  local input
+  input=$(_session_input "redact-session" "$cwd")
+
+  HOME="$_TEST_HOME" PATH="$_TEST_PATH" bash "$HOOK" <<< "$input" || true
+
+  local file
+  file=$(_find_inbox_file "$_TEST_VAULT")
+  assert_match "$file" '\.md$' "inbox file should still be created with redacted intent"
+
+  if [ -n "$file" ]; then
+    local body
+    body=$(cat "$file")
+    assert_contains "$body" "[REDACTED-AWS]" "AKIA-format key should be redacted"
+    assert_not_contains "$body" "$fake_key" "raw AKIA-format key must not appear in inbox doc"
   fi
 }
 
