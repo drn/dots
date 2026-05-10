@@ -13,10 +13,14 @@
 # swallows ERR exits silently to keep session shutdown fail-soft.
 #
 # Shell semantics:
-#   `set -uo pipefail` (no `-e`) + `trap '...' ERR` for fail-soft. The ERR
-#   trap fires on any non-zero exit from a simple command or pipeline
-#   (including SIGPIPE from `... | head -N`), so any line we *expect* to
-#   fail must end with `|| true` to suppress it.
+#   Two traps cooperate:
+#     EXIT — fires on every exit path (clean exit, ERR trap, SIGINT/SIGTERM).
+#            Calls `_log` so every invocation appends one line to the debug
+#            log, then exits 0 to keep shutdown silent.
+#     ERR  — fires on any non-zero exit from a simple command or pipeline
+#            (including SIGPIPE from `... | head -N`). Calls `exit 0`,
+#            which then triggers EXIT exactly once. Any line we *expect*
+#            to fail must end with `|| true` to suppress this trap.
 
 set -uo pipefail
 
@@ -34,15 +38,15 @@ MAX_RECENT_PROMPT_CHARS=400
 MAX_TRANSCRIPT_BYTES=$((50 * 1024 * 1024))
 
 LOG_FILE="$HOME/.dots/sys/session-end-capture.log"
-LOG_MAX_LINES=10000
+MAX_LOG_LINES=10000
 mkdir -p "$(dirname "$LOG_FILE")" 2>/dev/null || true
 
-# Best-effort log rotation. When the log exceeds LOG_MAX_LINES, keep the
+# Best-effort log rotation. When the log exceeds MAX_LOG_LINES, keep the
 # most recent half. Failure is silent — log rotation never blocks capture.
 if [ -f "$LOG_FILE" ]; then
   _line_count=$(wc -l < "$LOG_FILE" 2>/dev/null | tr -d ' ' || echo 0)
-  if [ "${_line_count:-0}" -gt "$LOG_MAX_LINES" ] 2>/dev/null; then
-    _keep=$((LOG_MAX_LINES / 2))
+  if [ "${_line_count:-0}" -gt "$MAX_LOG_LINES" ] 2>/dev/null; then
+    _keep=$((MAX_LOG_LINES / 2))
     tail -n "$_keep" "$LOG_FILE" > "$LOG_FILE.tmp" 2>/dev/null && \
       mv -f "$LOG_FILE.tmp" "$LOG_FILE" 2>/dev/null || true
   fi
@@ -52,12 +56,23 @@ fi
 # Thanx security policy's credential format list. The vault syncs to iCloud,
 # so anything written to inbox docs leaves the local machine; redacting
 # raises the bar against accidentally syncing pasted-in tokens to Apple.
+#
+# Pattern ordering matters: more-specific prefixes must precede their
+# general counterparts in this list because sed -E applies expressions
+# left-to-right in a single pass. `sk-ant-` MUST come before `sk-` or the
+# OpenAI pattern would eat the Anthropic prefix first. Same for the AWS
+# group — covers the four documented prefix types (AKIA long-term keys,
+# ASIA STS session tokens, AROA role IDs, AIDA user IDs).
+#
+# Apply this BEFORE truncating prompts: a credential straddling the
+# truncation boundary would otherwise be partially redacted at best.
 # Returns the redacted string on stdout.
 _redact() {
   local s="$1"
   printf '%s' "$s" | sed -E \
-    -e 's/AKIA[0-9A-Z]{16}/[REDACTED-AWS]/g' \
-    -e 's/gh[pso]_[A-Za-z0-9]{20,}/[REDACTED-GH]/g' \
+    -e 's/(AKIA|ASIA|AROA|AIDA)[0-9A-Z]{16}/[REDACTED-AWS]/g' \
+    -e 's/github_pat_[A-Za-z0-9_]{20,}/[REDACTED-GH]/g' \
+    -e 's/gh[psou]_[A-Za-z0-9]{20,}/[REDACTED-GH]/g' \
     -e 's/sk-ant-[A-Za-z0-9_-]{20,}/[REDACTED-ANTHROPIC]/g' \
     -e 's/sk-[A-Za-z0-9_-]{20,}/[REDACTED-OPENAI]/g' \
     -e 's/xox[bpars]-[A-Za-z0-9-]{10,}/[REDACTED-SLACK]/g' \
@@ -133,15 +148,24 @@ fi
 # Intent = first user prompt; LAST_PROMPTS = last few user prompts. Both
 # filter to text-content user messages (skip tool_use_result arrays etc.)
 # Slurp the transcript once and drive both queries off the same array.
+#
+# Redaction order matters: we redact the WHOLE JSON array of prompts via
+# `_redact` BEFORE jq applies per-prompt truncation. If we redacted after
+# truncation, a credential straddling the 400-char boundary would be split
+# (left half short of the regex's required suffix length) and survive
+# unmasked. The credential patterns are alphanumeric+dashes — they don't
+# match JSON syntax characters (quotes, brackets, commas), so redacting
+# the encoded JSON is safe and doesn't corrupt the structure.
 USER_PROMPTS="[]"
 PROMPT_COUNT=0
 if [ "$TRANSCRIPT_TOO_LARGE" -eq 0 ]; then
-  USER_PROMPTS=$(jq -rs '
+  USER_PROMPTS=$(jq -s '
     [.[] | select(.type == "user"
       and (.message.content | type) == "string"
       and (.message.content | length) > 0)
     | .message.content]
   ' "$TRANSCRIPT" 2>/dev/null || echo "[]")
+  USER_PROMPTS=$(_redact "$USER_PROMPTS")
   PROMPT_COUNT=$(echo "$USER_PROMPTS" | jq 'length' 2>/dev/null || echo "0")
 fi
 
@@ -153,7 +177,6 @@ RECENT_PROMPTS=""
 if [ "$PROMPT_COUNT" -gt 0 ] 2>/dev/null; then
   INTENT=$(echo "$USER_PROMPTS" | jq -r '.[0] // ""' 2>/dev/null || echo "")
   INTENT="${INTENT:0:$MAX_INTENT_CHARS}"
-  INTENT=$(_redact "$INTENT")
 
   # Last N prompts excluding the first (the first IS the intent). If there
   # are <= 1 prompts total, the recent list is empty.
@@ -165,7 +188,6 @@ if [ "$PROMPT_COUNT" -gt 0 ] 2>/dev/null; then
       | map("- " + (gsub("\n"; " ⏎ ")))
       | join("\n")
     ' 2>/dev/null || echo "")
-    RECENT_PROMPTS=$(_redact "$RECENT_PROMPTS")
   fi
 fi
 

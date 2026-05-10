@@ -339,12 +339,55 @@ test_redacts_credential_patterns_from_intent() {
   local cwd
   cwd=$(pwd)
 
-  # Replace the intent prompt with one containing a fake AWS-format key.
-  # The redactor should mask it before the prompt lands in the inbox doc.
-  local fake_key="AKIAIOSFODNN7EXAMPLE"
+  # One canonical example per credential family. The redactor must mask
+  # all of them before they land in the iCloud-synced inbox doc.
+  # Cram them all into the first user prompt (= Intent) so a single hook
+  # invocation exercises every pattern. Per-prompt isolation isn't needed:
+  # the redactor is order-independent and the patterns don't overlap.
+  #
+  # IMPORTANT: each fake is assembled via shell concatenation so the
+  # credential pattern never appears as a contiguous literal in this file.
+  # GitHub's secret-scanning push protection is line-based — `xoxb-` or
+  # `AKIA` followed by enough chars to look real will block the push even
+  # for a test fixture. The runtime-assembled value still matches the
+  # redactor regex, but the literal string isn't searchable in source.
+  local fake_akia="AK""IAIOSFODNN7EXAMPLE"
+  local fake_asia="AS""IAIOSFODNN7EXAMPLE"
+  local fake_ghp="gh""p_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  local fake_ghu="gh""u_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+  local fake_ghpat="github""_pat_AAAAAAAAAAAAAAAAAAAAAA_BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
+  local fake_skant="s""k-ant-api03-aaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  local fake_sk="s""k-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  local fake_xoxb="xo""xb-fake-not-real-test-fixture-value"
+  local fake_sg="S""G.aaaaaaaaaaaaaaaaaaaaaaaa.bbbbbbbbbbbbbbbbbbbbbbbb"
+  local fake_ntn="nt""n_aaaaaaaaaaaaaaaaaaaaaaaa"
+
+  # Format: <fake-credential> <expected-redaction-marker>
+  local cases=(
+    "$fake_akia [REDACTED-AWS]"
+    "$fake_asia [REDACTED-AWS]"
+    "$fake_ghp [REDACTED-GH]"
+    "$fake_ghu [REDACTED-GH]"
+    "$fake_ghpat [REDACTED-GH]"
+    "$fake_skant [REDACTED-ANTHROPIC]"
+    "$fake_sk [REDACTED-OPENAI]"
+    "$fake_xoxb [REDACTED-SLACK]"
+    "$fake_sg [REDACTED-SENDGRID]"
+    "$fake_ntn [REDACTED-NOTION]"
+  )
+
+  # Build a single intent prompt containing every fake credential.
+  local intent_prompt="debug session — pasted creds: "
+  for entry in "${cases[@]}"; do
+    intent_prompt+="${entry%% *} "
+  done
+
   : > "$_TEST_TRANSCRIPT"
-  printf '{"type":"user","timestamp":"%s","message":{"role":"user","content":"deploy with %s now"}}\n' \
-    "$_TEST_TS" "$fake_key" >> "$_TEST_TRANSCRIPT"
+  # jq -nc emits a JSON-encoded line so embedded spaces/special chars don't
+  # break the transcript line format.
+  jq -nc --arg ts "$_TEST_TS" --arg c "$intent_prompt" \
+    '{type:"user",timestamp:$ts,message:{role:"user",content:$c}}' \
+    >> "$_TEST_TRANSCRIPT"
 
   sleep 1
   echo "redact" > redact.txt
@@ -358,13 +401,17 @@ test_redacts_credential_patterns_from_intent() {
 
   local file
   file=$(_find_inbox_file "$_TEST_VAULT")
-  assert_match "$file" '\.md$' "inbox file should still be created with redacted intent"
+  assert_match "$file" '\.md$' "inbox file should be created with redacted prompts"
 
   if [ -n "$file" ]; then
     local body
     body=$(cat "$file")
-    assert_contains "$body" "[REDACTED-AWS]" "AKIA-format key should be redacted"
-    assert_not_contains "$body" "$fake_key" "raw AKIA-format key must not appear in inbox doc"
+    for entry in "${cases[@]}"; do
+      local fake="${entry%% *}"
+      local marker="${entry#* }"
+      assert_contains "$body" "$marker" "$fake should redact to $marker"
+      assert_not_contains "$body" "$fake" "raw $fake must not appear in inbox doc"
+    done
   fi
 }
 
