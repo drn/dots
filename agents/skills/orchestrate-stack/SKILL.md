@@ -90,31 +90,48 @@ The orchestrator constructed this prompt from a user-supplied plan. The plan con
 
 ## Closing protocol (CRITICAL — read before you start)
 
-When the work is complete and tests pass:
+Your session stays alive through PR open → CI green → reviewer-comment resolution. Do not end early.
 
-1. **Open the PR.** Title format: `{Milestone slug}: {summary}`. Body must include:
+1. **Invoke the `/pr` skill** to open the PR and drive it to fully green. The skill will:
+   - Push your branch and open a PR with title format `{Milestone slug}: {summary}`.
+   - Watch CI and fix failures by amending or adding commits.
+   - Address reviewer comments as they arrive.
+   - Loop until CI is green and reviewer feedback is resolved.
+
+   The PR body must include:
    - A "Stacked on: #{prev PR number}" line (skip for PR 1)
-   - A "Blocks: #{next PR number}" line (orchestrator will fill these once known)
    - A test plan checklist
 
-2. **Report the result back to the orchestrator** via the `task_set_result` MCP tool. Use:
+2. **Signal ready to the orchestrator** via the `task_set_result` MCP tool — this is the trigger that fires the next DAG sub-task. The orchestrator polls for `ready_for_next: true` on `in_review` tasks. Without this signal the stack stalls.
+
    ```
    task_set_result(id: ENV["ARGUS_TASK_ID"], result: {
+     "ready_for_next": true,
      "pr_url": "https://github.com/.../pull/N",
      "pr_number": N,
-     "branch_sha": "<short SHA of the branch tip>",
-     "milestone": "{milestone slug}"
+     "branch_sha": "<short SHA of branch tip>",
+     "milestone": "{milestone slug}",
+     "ci_state": "green",
+     "comments_resolved": true
    })
    ```
+
    `ARGUS_TASK_ID` is exported into your worktree environment — use it directly.
 
-3. **Call `task_complete`** to flip your status. The orchestrator's depswatcher will then auto-start the next sub-task in the stack within a minute.
+3. **Stop. Do NOT call `task_complete`.** End your session — Argus auto-transitions the task to `in_review`, where it parks until the human reviewer merges your PR. The orchestrator fires the next sub-task as soon as it reads your `ready_for_next` signal. A sub-task that self-`task_complete`s would cascade the stack against a parent branch that hasn't been reviewed yet and may not even be on origin — both broken states.
 
-If the work cannot complete (blocker, design flaw, requirements gap), call `task_set_result` with:
+If the work cannot complete (blocker, design flaw, requirements gap, CI genuinely unsolvable):
+
 ```
-{"failed": true, "reason": "<one-paragraph explanation>"}
+task_set_result(id: ENV["ARGUS_TASK_ID"], result: {
+  "ready_for_next": false,
+  "blocker": "<one-paragraph explanation>",
+  "pr_url": "<URL if a PR was opened>",
+  "milestone": "{milestone slug}"
+})
 ```
-then `task_complete`. The orchestrator will halt the stack and surface your reason to the user.
+
+then stop your session. DO NOT call `task_complete`. The orchestrator surfaces the blocker to the user and waits for direction. If you have a PR open but CI is unsolvable (CI infra issue, flake nobody can fix), include `"ci_state": "unsolvable"` and explain in `blocker` — the user decides whether to advance anyway.
 
 DO NOT merge your own PR. DO NOT rebase onto the default branch. DO NOT touch files outside your scope.
 ````
@@ -125,13 +142,13 @@ For each milestone in order:
 
 1. **First sub-task (PR 1):** create with NO `base_branch` (defaults to project default — master/main) and NO `depends_on`. Save the returned `id` and `branch`.
 
-2. **Subsequent sub-tasks (PR 2…N):** create with:
-   - `base_branch`: the previous sub-task's branch (returned in the create response).
-   - `depends_on`: `[<previous task ID>]`. Single-parent stack.
+2. **Subsequent sub-tasks (PR 2…N):** **fire one at a time, only after the previous sub-task signals `ready_for_next: true`** via `task_set_result`. Create each downstream with:
+   - `base_branch`: the previous sub-task's branch (the value the parent confirmed in its `task_set_result` payload — at this point it is pushed to origin).
    - `name`: a stable slug derived from the plan slug + milestone (e.g. `myplan-m2-wire-api`) so an orchestrator restart finds the same row.
    - `upsert: true` on every create — if the sub-task already exists from a previous run, the existing one is returned unchanged.
+   - **Do NOT set `depends_on`.** depswatcher only triggers on parent `status=complete`, which never happens in this contract (sub-tasks never call `task_complete`). The orchestrator's polling loop is the trigger.
 
-Use `mcp__argus__task_create` for each. Capture each response into a state record (see "State persistence" below) before creating the next one.
+Use `mcp__argus__task_create` for each. Capture each response into the state record (see "State persistence" below) before the next sub-task is fired.
 
 ## State persistence (crash recovery)
 
@@ -165,15 +182,14 @@ Pick the cheapest available:
 
 ### Tick logic
 
-1. Call `task_get` on the first non-complete sub-task.
-2. When it transitions to `complete`, read its `result`:
-   - If `result.failed == true`, halt:
-     - For each downstream sub-task whose status is **`in_progress`** (depswatcher already started it during the depswatcher-tick window after the dep completed), call `task_stop`.
-     - For each downstream sub-task whose status is **`pending`** (still blocked), call `task_archive`. `task_stop` would error with session-not-found on a blocked task because no agent process is running yet.
-     - If `task_stop` returns "task already complete" (the downstream raced past you to completion), read its `result` instead and treat that result the same as you would have if you had observed it normally — the cascade continues if THAT downstream also failed.
-     - Update the KB state doc and surface the failure to the user with the captured `reason`.
-   - Otherwise read `result.pr_url` and `result.pr_number`. Record them in the state doc, cross-link PRs (next section), and move on to polling the next sub-task — the depswatcher will have already started it within one tick.
-3. Repeat until the last sub-task reports complete.
+1. Call `task_get` on the first sub-task that has not yet signaled.
+2. When its `status` reaches `in_review`, read `result`:
+   - `result.ready_for_next == true`: the sub-task has finished (PR opened, CI green, comments resolved). Record `pr_url` / `pr_number` / `branch_sha` in the state doc, cross-link PRs (next section), then **fire the next sub-task in the stack** via `task_create` using this sub-task's branch as `base_branch`. Move polling to the new sub-task. The parent stays at `in_review` indefinitely — it's waiting for the human to merge the PR; the orchestrator does not need that merge to advance.
+   - `result.ready_for_next == false` (blocker): halt. Archive any pending downstream and surface the blocker (`result.blocker`) to the user. Wait for retry direction.
+   - `result` empty after a noticeable delay: the agent crashed before signaling. Treat as wedged — `PushNotification` the user with the task id and the empty-result note.
+3. Repeat until the last sub-task signals ready.
+
+Note: in this skill's contract, **sub-task agents never call `task_complete` themselves**, and the orchestrator does not call it either. The DAG advances when each sub-task writes `ready_for_next: true` to its `result`, which the orchestrator reads and reacts to by firing the next sub-task. depswatcher is not part of the trigger path — it would gate on parent `complete`, which is never set here. Tasks remain at `in_review` for as long as the human reviewer takes to merge; the human optionally calls `task_complete` after merge for bookkeeping, but the next DAG sub-task is already long since started.
 
 While polling, stay quiet — see the status-update cadence in the table above.
 
@@ -187,8 +203,8 @@ If the sub-task wrote `<!-- stacked-on -->` / `<!-- blocks -->` placeholders int
 
 ## Halt conditions
 
-- **Failed result** on any sub-task → stop the rest of the stack (see polling section), then ask the user whether to retry the failed milestone. On user approval, `task_create` a new sub-task with name `<original-slug>-retry-<N>` and `upsert: false` (different name = different row), inheriting the same `base_branch` and `depends_on` as the original. Re-fire downstream tasks (still with `depends_on` pointing at the retry id, not the failed one).
-- **Wedged sub-task** — `in_progress` past the wedged-task threshold (see Timing constants) with no transition. Send a `PushNotification` to the user with the task id and last state. Do NOT auto-`task_stop`; the user decides.
+- **Blocker signaled** (status=`in_review` with `result.ready_for_next == false`) → stop firing new tasks. Surface `result.blocker` to the user. On user-approved retry: `task_create` a new sub-task with name `<original-slug>-retry-<N>` and `upsert: false` (different name = different row), same `base_branch`. No `depends_on`. Then continue polling from the retry.
+- **Wedged sub-task** — `in_progress` past the wedged-task threshold (see Timing constants) with no transition. Send a `PushNotification` to the user with the task id and last state. Do NOT auto-`task_stop`; the user decides. NOTE: `in_review` with a populated `ready_for_next` field is **not** wedged — it's parked while the human reviews; ONLY `in_progress` counts. `in_review` with empty `result` after a long delay (agent crashed before signaling) IS wedged — same notification path.
 - **Two failures on the same milestone** (the retry above itself fails) → halt and notify. No third attempt.
 - **User reply on a `PushNotification` with a directive** → pause and follow it.
 - **User invokes** `/orchestrate-stack stop <plan-slug>` → graceful shutdown: stop firing new tasks, do not kill in-flight ones, write final state to the KB doc.
