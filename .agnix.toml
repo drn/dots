@@ -22,7 +22,11 @@ cross_platform = false
 xml_balance = false
 
 # Suppress known false positives
-disabled_rules = ["AGM-006"]  # Multiple/nested AGENTS.md — intentional with openspec
+disabled_rules = [
+  "AGM-006",   # Multiple/nested AGENTS.md — intentional with openspec
+  "CC-SK-008", # Unknown tool — agnix 0.13.0 doesn't recognize newer Claude Code tools
+               # (Monitor, ScheduleWakeup, PushNotification, etc.) that real skills depend on
+]
 
 # Exclude openspec-managed files from prompt engineering rules
 [files]
