@@ -1,6 +1,6 @@
 ---
 name: address-comments
-allowed-tools: Bash(gh api:*), Bash(gh pr:*), Bash(git add:*), Bash(git commit:*), Bash(git push:*), Bash(git status:*), Bash(git remote:*), Bash(git branch:*), Bash(git rev-parse:*), Bash(git diff:*), Bash(git log:*)
+allowed-tools: Read, Edit, Bash(gh api:*), Bash(gh pr:*), Bash(git add:*), Bash(git commit:*), Bash(git push:*), Bash(git status:*), Bash(git remote:*), Bash(git branch:*), Bash(git rev-parse:*), Bash(git diff:*), Bash(git log:*)
 description: Walk every unresolved review thread on a PR, triage each one, reply with a rationale of whether or not the comment will be acted upon, make the code change if warranted, and mark the thread resolved. Use when the user asks to address only the open PR comments without re-running CI, respond to review feedback, resolve review threads, or clear bot comments on a PR.
 ---
 
@@ -104,7 +104,12 @@ For each unresolved thread, work through it in this order. Do not parallelize �
 - **First, check the thread author.** If the first comment's `author.login == VIEWER`, this is a thread the agent itself authored. Skip the thread entirely — no reply, no resolve. (Caveat: on a fork PR where the maintainer and the contributor are the same GitHub user, this can over-skip; if the agent is reviewing its own PR, that risk is acceptable.)
 - Bot usernames typically end in `[bot]` (e.g. `coderabbitai[bot]`, `qltysh[bot]`, `github-actions[bot]`, `copilot-pull-request-review[bot]`). Bots produce a high false-positive rate — evaluate each suggestion on its merits, do not blindly apply.
 
-**Idempotency guard.** Only run this check **after** the thread-author check above has passed (i.e. the thread was authored by someone else). Scan the remaining `comments.nodes[]` for any comment whose `author.login == VIEWER`. If one exists, the agent already replied on a previous run and the resolve mutation was the step that failed. Skip the reply in (e), go straight to resolving the thread in (f).
+**Idempotency guard.** Only run this check **after** the thread-author check above has passed (i.e. the thread was authored by someone else). Scan the remaining `comments.nodes[]` for any comment whose `author.login == VIEWER`. If one exists, the agent already replied on a previous run and the resolve mutation was the step that failed:
+
+- Still perform classification (c) and apply the code change (d) if the original verdict was (1). The prior run may have replied "Fixed — …" before being interrupted, so the fix may never have been committed; re-running (c)/(d) ensures the working tree matches the previously-posted reply.
+- Skip the reply in (e) — the prior reply is already on the thread.
+- Go straight to resolving the thread in (f).
+- For tally purposes, count this thread in whichever bucket (`fixed` / `left` / `acknowledged`) matches the classification from (c).
 
 **(c) Classify.** Pick exactly one bucket:
 
@@ -157,10 +162,11 @@ Track a running tally as you go: `fixed`, `left`, `acknowledged`.
 If any files changed during Step 3:
 
 1. `git status --short` to confirm only the expected files were touched.
-2. Stage and commit with a message scaled to the change set:
+2. Stage the specific files you edited with `git add <path1> <path2> ...` — list paths explicitly, do not use `git add -A` or `git commit -a`. The agent may have unrelated dirty state in the working tree and the policy is to ship only the comment-driven edits.
+3. Commit with a message scaled to the change set:
    - One thread fixed → `Address review: <short summary>`
    - Multiple threads fixed → `Address review comments` with a bullet list in the body, one bullet per fix.
-3. `git push` (use `git push -u origin HEAD` if no upstream is set).
+4. `git push` (use `git push -u origin HEAD` if no upstream is set).
 
 If no files changed, skip this step entirely. Do not create an empty commit.
 
@@ -179,6 +185,6 @@ If anything blocked progress (a thread you could not classify, a file you could 
 ## Notes and edge cases
 
 - **Top-level PR comments** (the conversation tab, not inline review threads) have no resolved state. Skip them — this skill is scoped to review threads. If a top-level comment clearly demands action, mention it in the Step 5 summary so the user can handle it.
-- **Outdated threads** (`isOutdated == true`): still reply and resolve. An outdated thread is often a sign the code already changed in a later commit; the reply should say `Already addressed in <sha or "a later commit"> — <one-line on what changed>.` then resolve.
+- **Outdated threads** (`isOutdated == true`): still reply and resolve. An outdated thread is often a sign the code already changed in a later commit; the reply should say `Already addressed in <sha or "a later commit"> — <one-line on what changed>.` then resolve. **Fill in both `<…>` placeholders before posting** — same rule as Step 3(e). If you cannot identify the commit or describe the change, escalate to the user instead of posting raw placeholder text.
 - **Permission errors on resolve.** `resolveReviewThread` requires write access to the repo. If it fails with a permissions error on a fork PR, fall back to replying-only and tell the user the threads need to be resolved manually by a maintainer. (`resolveReviewThread` on an already-resolved thread is idempotent — it returns the thread with `isResolved: true` and no error — so a retry after a partial failure in Step 3(f) is safe.)
 - **Loops.** Do not re-enter Step 2 after fixing. One pass is enough — if a reviewer posts new comments after this run, re-invoke the skill.
