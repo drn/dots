@@ -50,7 +50,7 @@ If no open PR is found after both attempts, stop and tell the user: `No open PR 
 
 ### Step 2: Fetch every unresolved review thread
 
-Use the GraphQL API to get all threads in one shot — REST does not expose `isResolved`. Two ID fields matter here and they are easy to confuse:
+Use the GraphQL API to get all threads in one shot — REST does not expose `isResolved`. The `first: 100` page size is GitHub's connection maximum; pagination handles PRs larger than that (see below). The `first: 50` comment window per thread is generous enough for the idempotency-guard scan in Step 3(b) on normal threads. Two ID fields matter here and they are easy to confuse:
 
 - `reviewThreads.nodes[].id` is the **thread node ID** (an opaque string). Used by the `resolveReviewThread` mutation in Step 3(f).
 - `reviewThreads.nodes[].comments.nodes[].databaseId` is the **comment integer ID** (REST-style). Used by the reply endpoint in Step 3(e).
@@ -100,11 +100,14 @@ For each unresolved thread, work through it in this order. Do not parallelize �
 
 **(b) Identify the author and decide whether to skip.**
 
-- Capture the viewer login once at the start of Step 3 with `gh api user -q .login` (call it `VIEWER`).
-- **First, check the thread author.** If the first comment's `author.login == VIEWER`, this is a thread the agent itself authored. Skip the thread entirely — no reply, no resolve. (Caveat: on a fork PR where the maintainer and the contributor are the same GitHub user, this can over-skip; if the agent is reviewing its own PR, that risk is acceptable.)
-- Bot usernames typically end in `[bot]` (e.g. `coderabbitai[bot]`, `qltysh[bot]`, `github-actions[bot]`, `copilot-pull-request-review[bot]`). Bots produce a high false-positive rate — evaluate each suggestion on its merits, do not blindly apply.
+Capture the viewer login once at the start of Step 3 with `gh api user -q .login` (call it `VIEWER`). Then run these two checks **in order** — the first comment's author and the remaining comments are checked separately and produce different outcomes:
 
-**Idempotency guard.** Only run this check **after** the thread-author check above has passed (i.e. the thread was authored by someone else). Scan the remaining `comments.nodes[]` for any comment whose `author.login == VIEWER`. If one exists, the agent already replied on a previous run and the resolve mutation was the step that failed. Handle the thread like this:
+1. **Thread-author check.** Look at the *first* comment in `comments.nodes[]`. If `comments.nodes[0].author.login == VIEWER`, this is a thread the agent itself authored. **Skip the thread entirely — no reply, no resolve, do not run check 2.** (Caveat: on a fork PR where the maintainer and the contributor share a GitHub user, this can over-skip; if the agent is reviewing its own PR, that risk is acceptable.)
+2. **Idempotency check.** Only reach this check if check 1 did not fire. Scan `comments.nodes[1..]` (every comment *after* the first) for any whose `author.login == VIEWER`. If one exists, the agent already replied on a previous run and the resolve mutation was the step that failed — follow the idempotency path below. If no VIEWER comment appears past index 0, this is a fresh thread — fall through to (c)/(d)/(e)/(f) as normal.
+
+Bot context (informational): bot usernames typically end in `[bot]` (e.g. `coderabbitai[bot]`, `qltysh[bot]`, `github-actions[bot]`, `copilot-pull-request-review[bot]`). Bots produce a high false-positive rate — evaluate each suggestion on its merits, do not blindly apply.
+
+**Idempotency path** (only when check 2 fired):
 
 - **Re-classify from the current code, not from the prior reply.** Run (c) fresh against the file's present state. The prior reply's prefix (`Fixed —`, `Leaving as-is —`, `Acknowledged —`) is a useful hint but the working tree may have changed since the prior run, so the fresh classification wins.
 - Apply the code change in (d) only if the fresh classification yields (1).
