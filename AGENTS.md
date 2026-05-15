@@ -170,7 +170,7 @@ When the user's message matches a phrase below, read and follow the correspondin
 | "speak to me", "read to me", "read this aloud", "say this", "speak the summary" | `agents/skills/tts/SKILL.md` |
 | "loop", "poll", "recurring", "every N minutes", "babysit", "monitor periodically", "run on interval" | `agents/skills/loop/SKILL.md` |
 | "compare PRs", "combine PRs", "combine these PRs", "cherry-pick between PRs", "competing implementations", "competing PRs" | `agents/skills/combine-prs/SKILL.md` |
-| "address PR comments", "respond to review comments", "resolve review threads", "reply to PR comments", "clear bot comments" | `agents/skills/address-comments/SKILL.md` |
+| "just address comments", "only address comments", "resolve review threads", "reply to PR comments", "clear bot comments", "address comments without re-running CI" | `agents/skills/address-comments/SKILL.md` |
 | "improve skills", "capture learnings", "upgrade context", "learn from session" | `agents/skills/improve/SKILL.md` |
 | "amend", "amend commit", "rewrite commit message", "improve commit message", "fix commit message" | `agents/skills/amend/SKILL.md` |
 | "squash", "squash commits", "condense commits", "squash branch", "clean up commits" | `agents/skills/squash/SKILL.md` |
