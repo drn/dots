@@ -1,6 +1,6 @@
 ---
 name: address-comments
-allowed-tools: Bash(gh api:*), Bash(gh pr:*), Bash(gh repo:*), Bash(gh auth:*), Bash(git add:*), Bash(git commit:*), Bash(git push:*), Bash(git status:*), Bash(git remote:*), Bash(git branch:*), Bash(git rev-parse:*), Bash(git diff:*), Bash(git log:*)
+allowed-tools: Bash(gh api:*), Bash(gh pr:*), Bash(git add:*), Bash(git commit:*), Bash(git push:*), Bash(git status:*), Bash(git remote:*), Bash(git branch:*), Bash(git rev-parse:*), Bash(git diff:*), Bash(git log:*)
 description: Walk every unresolved review thread on a PR, triage each one, reply with a rationale of whether or not the comment will be acted upon, make the code change if warranted, and mark the thread resolved. Use when the user asks to address only the open PR comments without re-running CI, respond to review feedback, resolve review threads, or clear bot comments on a PR.
 ---
 
@@ -59,11 +59,10 @@ Do not swap them — the URL in Step 3(e) takes the comment's `databaseId`, not 
 
 ```bash
 gh api graphql -F owner=<owner> -F repo=<repo> -F number=<n> -f query='
-  query($owner: String!, $repo: String!, $number: Int!) {
+  query($owner: String!, $repo: String!, $number: Int!, $after: String) {
     repository(owner: $owner, name: $repo) {
       pullRequest(number: $number) {
-        viewer: viewer { login }
-        reviewThreads(first: 100) {
+        reviewThreads(first: 100, after: $after) {
           pageInfo { hasNextPage endCursor }
           nodes {
             id
@@ -71,7 +70,7 @@ gh api graphql -F owner=<owner> -F repo=<repo> -F number=<n> -f query='
             isOutdated
             path
             line
-            comments(first: 20) {
+            comments(first: 50) {
               nodes {
                 databaseId
                 body
@@ -91,7 +90,7 @@ gh api graphql -F owner=<owner> -F repo=<repo> -F number=<n> -f query='
 
 Filter to threads where `isResolved == false`. If there are zero, stop and report: `No unresolved review threads on PR #<n>.`
 
-**Pagination.** If `pageInfo.hasNextPage` is true, the PR has more than 100 review threads. Re-issue the query with `first: 100, after: "<endCursor>"` and concatenate the pages before continuing. PRs with very large bot-comment volumes (e.g. a CodeRabbit pass on a sweeping refactor) hit this case; do not silently process only the first page.
+**Pagination.** If `pageInfo.hasNextPage` is true, the PR has more than 100 review threads. Re-issue the same query with `-F after=<endCursor>` (the `$after` variable is already declared in the signature above) and concatenate the pages before continuing. PRs with very large bot-comment volumes (e.g. a CodeRabbit pass on a sweeping refactor) hit this case; do not silently process only the first page.
 
 ### Step 3: Triage and act on each thread
 
@@ -102,10 +101,10 @@ For each unresolved thread, work through it in this order. Do not parallelize �
 **(b) Identify the author and decide whether to skip.**
 
 - Capture the viewer login once at the start of Step 3 with `gh api user -q .login` (call it `VIEWER`).
-- If the first comment's `author.login == VIEWER`, this is a thread the agent itself authored. Skip the thread — do not reply or resolve. (Caveat: on a fork PR where the maintainer and the contributor are the same GitHub user, this can over-skip; if the agent is reviewing its own PR, that risk is acceptable.)
+- **First, check the thread author.** If the first comment's `author.login == VIEWER`, this is a thread the agent itself authored. Skip the thread entirely — no reply, no resolve. (Caveat: on a fork PR where the maintainer and the contributor are the same GitHub user, this can over-skip; if the agent is reviewing its own PR, that risk is acceptable.)
 - Bot usernames typically end in `[bot]` (e.g. `coderabbitai[bot]`, `qltysh[bot]`, `github-actions[bot]`, `copilot-pull-request-review[bot]`). Bots produce a high false-positive rate — evaluate each suggestion on its merits, do not blindly apply.
 
-**Idempotency guard.** Before continuing, scan `comments.nodes[]` for any comment whose `author.login == VIEWER`. If one exists, the agent already replied on a previous run and the resolve mutation was the step that failed. Skip the reply in (e), go straight to resolving the thread in (f).
+**Idempotency guard.** Only run this check **after** the thread-author check above has passed (i.e. the thread was authored by someone else). Scan the remaining `comments.nodes[]` for any comment whose `author.login == VIEWER`. If one exists, the agent already replied on a previous run and the resolve mutation was the step that failed. Skip the reply in (e), go straight to resolving the thread in (f).
 
 **(c) Classify.** Pick exactly one bucket:
 
@@ -130,7 +129,7 @@ Reply templates (use these structures, then **fill in every `<…>` placeholder 
 - **(2):** `Leaving as-is — <one-sentence reason rooted in the existing pattern or constraint>.`
 - **(3):** `Acknowledged — <one-sentence reason this is informational and not actionable>.`
 
-If you cannot fill in a placeholder (e.g. the fix touched several files and you cannot name one path:line, or the rationale needs context you do not have), stop and surface the thread to the user in the Step 5 summary instead of posting raw `<…>` placeholder text. Posted replies are visible to reviewers — a literal `<one line describing the change>` reply is worse than no reply.
+If you cannot fill in a placeholder (e.g. the fix touched several files and you cannot name one path:line, or the rationale needs context you do not have), stop and surface the thread to the user in the Step 5 summary instead of posting raw `<…>` placeholder text. Posted replies are visible to reviewers — a literal `<one line describing the change>` reply is worse than no reply. **This applies to every reply this skill posts, including the outdated-thread template referenced in the Notes section below.**
 
 Post the reply with the REST endpoint (no native `gh` command exists, but `gh api` works). The path uses `<n>` (pull number) and the **comment's `databaseId`** — not the thread's `id`:
 
