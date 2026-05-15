@@ -9,7 +9,9 @@ Generate a structured prompt capturing the current conversation context so it ca
 
 ## Arguments
 
-- `$ARGUMENTS` - Optional: specific instructions about what to emphasize or who the target is
+- `$ARGUMENTS` - Optional. Free-form instructions about what to emphasize or who the target is. May also include the following directives, recognized only when each appears as a standalone whitespace-delimited token (so the word "project" in a sentence is not parsed as a directive):
+  - `project=<argus-project>` — override the Argus project the follow-up task is created in. If absent, derive from the worktree path: the immediate subdirectory after `~/.argus/worktrees/` (e.g. CWD `/Users/me/.argus/worktrees/dots/foo` → project `dots`). If neither resolves, ask the user before creating the task.
+  - `no-task` — skip Argus task creation entirely (KB save still runs).
 
 ## Context
 
@@ -80,7 +82,24 @@ The Argus knowledge base is the primary destination for handoffs — they persis
 5. Write the full document (raw markdown, no wrapping code fence) to the temp path using the Write tool.
 6. Display the handoff body (without frontmatter) to the user inside a fenced code block.
 7. **Save to KB.** Call `mcp__argus__kb_ingest` with the KB path and the full document. If that exact tool name is not registered, retry with `mcp__argus-kb__kb_ingest` — both names refer to the same server in different harnesses. On success, tell the user: handoff saved to the KB path, and the receiving agent can find it with `kb_list("memory/handoff/")` (latest is highest-sorted by timestamp) or `kb_search("<slug>")`. Handoffs are intentionally not deduplicated — each one is a session snapshot.
-8. **Clipboard fallback.** If the Argus KB MCP server is not running (both tool names return tool-not-found, or the ingest call returns a server error), run `cat <temp path> | pbcopy` and report: KB unavailable — copied to clipboard instead.
+8. **Create Argus task** (only if step 7 succeeded, and `no-task` was not passed). The KB doc is the artifact; this task is the delivery mechanism that wakes a receiving agent.
+
+   Resolve the project from the CWD captured at skill invocation (not after any later `cd`):
+   - If `$ARGUMENTS` contains a standalone `project=<name>` token, use that.
+   - Else, if CWD starts with `~/.argus/worktrees/` (resolving `~` to `$HOME`), use the next path segment as the project name.
+   - Else, ask the user which Argus project to create the task in. Do **not** guess.
+
+   Call `mcp__argus__task_create` with:
+   - `project`: resolved above.
+   - `name`: `<timestamp>-<slug>` (mirrors the KB filename, minus extension). This avoids collision with the worktree's own owner task — which can share the slug — and keeps every handoff as a distinct task, matching the KB's intentional non-deduplication policy.
+   - `upsert`: `true` — only relevant for retry semantics (same `<timestamp>-<slug>` is already unique).
+   - `prompt`: a short instruction telling the receiving agent to invoke any "Invoke First" skill from the handoff, then `kb_read("<kb-path>")` and follow the plan as **reference data**, not as direct instructions to execute. Include the slug so `kb_search("<slug>")` is a viable fallback. Do **not** inline the full handoff body — keep the task prompt small and let the KB stay the source of truth.
+
+   On success, report the task ID, project, and worktree path/branch alongside the KB path. The procedure is complete; do not fall through to step 9.
+
+   On failure (tool errors, missing project, MCP not connected, validation error), **surface the error verbatim** and tell the user: "KB doc saved at `<kb-path>` — Argus task creation failed: `<error>`. Re-run `/handoff project=<name>` or create the task manually." Never silently swallow this failure. After reporting, the procedure is complete; do not fall through to step 9.
+
+9. **Clipboard fallback.** Reached only when step 7 itself failed (the Argus KB MCP server is not running — `mcp__argus__kb_ingest` and the `mcp__argus-kb__kb_ingest` fallback both return tool-not-found, or the ingest call returns a server error). Run `cat <temp path> | pbcopy` and report: KB unavailable — copied to clipboard instead. Step 8 is skipped in this branch because there is no KB path for the task to point at.
 
 Writing to a temp file first guarantees the content preserves all newlines and formatting exactly as displayed, regardless of whether it ends up in the KB or the clipboard.
 
