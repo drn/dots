@@ -98,7 +98,7 @@ func mutateSettings(mutate func(settings map[string]any) bool) bool {
 // `matcher` field for deduplication (PreToolUse / PostToolUse style).
 func registerMatcherHook(eventName, matcher, scriptPath, successMsg string) {
 	changed := mutateSettings(func(settings map[string]any) bool {
-		hookCmd := "bash \"" + path.FromDots(scriptPath) + "\""
+		hookCmd := "bash \"" + path.FromDots("%s", scriptPath) + "\""
 		hookEntry := map[string]any{
 			"matcher": matcher,
 			"hooks": []any{
@@ -138,7 +138,7 @@ func registerMatcherHook(eventName, matcher, scriptPath, successMsg string) {
 // command string.
 func registerSessionHook(eventName, scriptPath, successMsg string) {
 	changed := mutateSettings(func(settings map[string]any) bool {
-		hookCmd := "bash \"" + path.FromDots(scriptPath) + "\""
+		hookCmd := "bash \"" + path.FromDots("%s", scriptPath) + "\""
 		hookEntry := map[string]any{
 			"hooks": []any{
 				map[string]any{

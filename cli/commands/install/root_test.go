@@ -18,6 +18,11 @@ func TestCall_EmptyCommand(_ *testing.T) {
 	Call("")
 }
 
+// path.SetHome is package-global state. Tests in this file MUST NOT
+// call t.Parallel() — concurrent setters would race regardless of the
+// internal RWMutex (the lock prevents tearing, not interleaved writes
+// from independent tests).
+
 func TestLinkDirEntries(t *testing.T) {
 	dots := t.TempDir()
 	home := t.TempDir()
@@ -39,6 +44,8 @@ func TestLinkDirEntries(t *testing.T) {
 
 	linkDirEntries("src", ".%s", capture)
 
+	// os.ReadDir returns entries sorted by name (Go spec), so the
+	// expected order is the alphabetical sort of the inputs.
 	want := [][2]string{
 		{filepath.Join(dots, "src", "alpha"), filepath.Join(home, ".alpha")},
 		{filepath.Join(dots, "src", "bravo"), filepath.Join(home, ".bravo")},
@@ -94,9 +101,11 @@ func TestLinkDirEntries_SubdirEntry(t *testing.T) {
 	path.SetHome(home)
 	t.Cleanup(func() { path.SetHome("") })
 
-	// Mix a file and a subdirectory; os.ReadDir returns both.
-	// Production callers (fonts, home) intentionally link subdirectories
-	// too, so the helper must pass them through unchanged.
+	// linkDirEntries does not filter by entry type; it passes whatever
+	// os.ReadDir returns to linkFn. Callers are responsible for handling
+	// directories appropriately (link.Hard fails on dirs; link.Soft
+	// creates a symlink to the dir). This test only verifies the
+	// pass-through behavior; it does not exercise the real link funcs.
 	if err := os.MkdirAll(filepath.Join(dots, "src", "subdir"), 0755); err != nil {
 		t.Fatalf("mkdir subdir: %s", err)
 	}
@@ -109,6 +118,7 @@ func TestLinkDirEntries_SubdirEntry(t *testing.T) {
 		calls = append(calls, [2]string{from, to})
 	})
 
+	// os.ReadDir returns entries sorted by name: "file" < "subdir".
 	want := [][2]string{
 		{filepath.Join(dots, "src", "file"), filepath.Join(home, ".file")},
 		{filepath.Join(dots, "src", "subdir"), filepath.Join(home, ".subdir")},
