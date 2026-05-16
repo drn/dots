@@ -15,12 +15,12 @@ jobs:
     name: CI
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-go@v5
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+      - uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5
         with:
           go-version: '1.24.10'
       - name: Cache Go Modules
-        uses: actions/cache@v4
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
         with:
           path: ~/go/pkg/mod
           key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
@@ -62,3 +62,21 @@ jobs:
 
       - name: Agent Config Lint (agnix)
         run: npx agnix@0.13.0 .
+
+      # qlty is in soft-rollout mode: both steps surface findings as
+      # GitHub workflow warnings but never fail CI. Drop --no-fail (and
+      # the smells wrapper) to turn them into hard gates once the
+      # baseline is clean.
+      - name: Install Qlty CLI
+        uses: qltysh/qlty-action/install@a19242102d17e497f437d7466aa01b528537e899 # v2.2.0
+
+      - name: Qlty Check
+        run: qlty check --all --no-fix --level=high --no-fail
+
+      # qlty smells has no --no-fail flag, so wrap to emit a GitHub
+      # workflow warning instead of failing the step. --quiet is omitted
+      # so findings remain visible in the step log on either path.
+      - name: Qlty Smells
+        run: |
+          qlty smells --all --no-snippets || \
+            echo "::warning::qlty smells exited non-zero (exit=$?); see step log"
