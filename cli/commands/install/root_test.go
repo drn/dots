@@ -78,10 +78,47 @@ func TestLinkDirEntries_MissingDir(t *testing.T) {
 
 	called := false
 	// Source dir does not exist — must warn and return without panicking
-	// or calling linkFn.
+	// or calling linkFn. The "Failed to read nope directory..." line that
+	// `go test -v` prints is the warning under test, not a regression.
 	linkDirEntries("nope", ".%s", func(_, _ string) { called = true })
 
 	if called {
 		t.Error("linkFn should not be called when source dir is missing")
+	}
+}
+
+func TestLinkDirEntries_SubdirEntry(t *testing.T) {
+	dots := t.TempDir()
+	home := t.TempDir()
+	t.Setenv("DOTS", dots)
+	path.SetHome(home)
+	t.Cleanup(func() { path.SetHome("") })
+
+	// Mix a file and a subdirectory; os.ReadDir returns both.
+	// Production callers (fonts, home) intentionally link subdirectories
+	// too, so the helper must pass them through unchanged.
+	if err := os.MkdirAll(filepath.Join(dots, "src", "subdir"), 0755); err != nil {
+		t.Fatalf("mkdir subdir: %s", err)
+	}
+	if err := os.WriteFile(filepath.Join(dots, "src", "file"), []byte("x"), 0644); err != nil {
+		t.Fatalf("write file: %s", err)
+	}
+
+	var calls [][2]string
+	linkDirEntries("src", ".%s", func(from, to string) {
+		calls = append(calls, [2]string{from, to})
+	})
+
+	want := [][2]string{
+		{filepath.Join(dots, "src", "file"), filepath.Join(home, ".file")},
+		{filepath.Join(dots, "src", "subdir"), filepath.Join(home, ".subdir")},
+	}
+	if len(calls) != len(want) {
+		t.Fatalf("linkFn called %d times, want %d (calls=%v)", len(calls), len(want), calls)
+	}
+	for i, w := range want {
+		if calls[i] != w {
+			t.Errorf("call %d = %v, want %v", i, calls[i], w)
+		}
 	}
 }

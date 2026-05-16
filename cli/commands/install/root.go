@@ -65,7 +65,7 @@ func linkDirEntries(sourceDir, targetFmt string, linkFn func(from, to string)) {
 	}
 	for _, file := range files {
 		linkFn(
-			path.FromDots(sourceDir+"/%s", file.Name()),
+			path.FromDots("%s/%s", sourceDir, file.Name()),
 			path.FromHome(targetFmt, file.Name()),
 		)
 	}

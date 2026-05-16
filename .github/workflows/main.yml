@@ -63,15 +63,18 @@ jobs:
       - name: Agent Config Lint (agnix)
         run: npx agnix@0.13.0 .
 
+      # qlty is in soft-rollout mode: both steps surface findings as
+      # GitHub workflow warnings but never fail CI. Drop --no-fail (and
+      # the smells wrapper) to turn them into hard gates once the
+      # baseline is clean.
       - name: Install Qlty CLI
         uses: qltysh/qlty-action/install@a19242102d17e497f437d7466aa01b528537e899 # v2.2.0
 
       - name: Qlty Check
         run: qlty check --all --no-fix --level=high --no-fail
 
-      # qlty smells has no --no-fail flag, so we wrap to emit a GitHub
-      # workflow warning if the tool itself errors (network, install)
-      # without hard-failing the soft-rollout step.
+      # qlty smells has no --no-fail flag, so wrap to emit a GitHub
+      # workflow warning instead of failing the step.
       - name: Qlty Smells
         run: |
           qlty smells --all --no-snippets --quiet || \
