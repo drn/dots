@@ -9,6 +9,7 @@ import (
 	"net/url"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/drn/dots/cli/config"
 	"github.com/drn/dots/pkg/log"
@@ -18,6 +19,10 @@ import (
 )
 
 const spotifyTokenURL = "https://accounts.spotify.com/api/token"
+
+// httpClient bounds Spotify API calls to a reasonable interactive timeout so
+// the CLI can't hang on a stalled connection.
+var httpClient = &http.Client{Timeout: 10 * time.Second}
 
 // FetchAccessToken - Returns a valid access token for the Spotify API.
 // * If no cached access token or refresh token
@@ -63,7 +68,7 @@ func authorize() {
 }
 
 func refreshNeeded(accessToken string) bool {
-	_, status := SendRequest(http.MethodPut, "https://api.spotify.com/v1/me", Headers(accessToken), nil, nil)
+	_, status := SendRequest(http.MethodGet, "https://api.spotify.com/v1/me", Headers(accessToken), nil, nil)
 	return status == http.StatusUnauthorized
 }
 
@@ -85,22 +90,26 @@ func exchangeAuthorizationCode(code string) (string, string) {
 		jsoniter.Get(data, "refresh_token").ToString()
 }
 
-func exchangeRefreshToken(code string) string {
+func exchangeRefreshToken(refreshToken string) string {
 	data := exchangeToken(url.Values{
-		"refresh_token": {code},
+		"refresh_token": {refreshToken},
 		"grant_type":    {"refresh_token"},
 	})
 	return jsoniter.Get(data, "access_token").ToString()
 }
 
 func exchangeToken(params url.Values) []byte {
-	params.Set("client_id", os.Getenv("SPOTIFY_CLIENT_ID"))
-	params.Set("client_secret", os.Getenv("SPOTIFY_CLIENT_SECRET"))
-	params.Set("redirect_uri", os.Getenv("SPOTIFY_REDIRECT_URI"))
+	form := url.Values{}
+	for k, v := range params {
+		form[k] = v
+	}
+	form.Set("client_id", os.Getenv("SPOTIFY_CLIENT_ID"))
+	form.Set("client_secret", os.Getenv("SPOTIFY_CLIENT_SECRET"))
+	form.Set("redirect_uri", os.Getenv("SPOTIFY_REDIRECT_URI"))
 
 	headers := http.Header{"Content-Type": {"application/x-www-form-urlencoded"}}
 	data, status := SendRequest(
-		http.MethodPost, spotifyTokenURL, headers, nil, strings.NewReader(params.Encode()),
+		http.MethodPost, spotifyTokenURL, headers, nil, strings.NewReader(form.Encode()),
 	)
 	if status != http.StatusOK {
 		fmt.Println(string(data))
@@ -127,7 +136,7 @@ func SendRequest(
 		request.Header = headers
 	}
 
-	response, err := http.DefaultClient.Do(request)
+	response, err := httpClient.Do(request)
 	HandleRequestError(err)
 	defer response.Body.Close()
 

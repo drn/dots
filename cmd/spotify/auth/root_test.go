@@ -97,12 +97,17 @@ func TestSendRequest_HeadersAndBody(t *testing.T) {
 }
 
 func TestSendRequest_StatusCodePassthrough(t *testing.T) {
+	var gotMethod string
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		gotMethod = r.Method
 		w.WriteHeader(http.StatusUnauthorized)
 	}))
 	defer server.Close()
 
 	_, status := SendRequest(http.MethodPut, server.URL, nil, nil, nil)
+	if gotMethod != http.MethodPut {
+		t.Errorf("method = %q, want PUT", gotMethod)
+	}
 	if status != http.StatusUnauthorized {
 		t.Errorf("status = %d, want 401", status)
 	}
