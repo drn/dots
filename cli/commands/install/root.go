@@ -57,6 +57,11 @@ func exec(command string, args ...interface{}) {
 // linkDirEntries reads each entry under dots/<sourceDir> and links it into
 // ~/<targetFmt> (a format string with one %s placeholder receiving the entry
 // name). linkFn picks soft vs. hard.
+//
+// Subdirectory entries are passed through unchanged: link.Soft handles them
+// (symlink-to-dir), but link.Hard will log an error and continue for each
+// directory. Callers are responsible for picking the right linkFn for their
+// expected entry shape.
 func linkDirEntries(sourceDir, targetFmt string, linkFn func(from, to string)) {
 	files, err := os.ReadDir(path.FromDots(sourceDir))
 	if err != nil {

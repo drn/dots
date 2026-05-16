@@ -202,7 +202,7 @@ When making changes that affect user-facing features — adding/removing skills,
 
 ## Quality (qlty)
 
-Configuration lives in `.qlty/qlty.toml`. CI runs `qlty check` on every PR.
+Configuration lives in `.qlty/qlty.toml`. CI runs `qlty check` and `qlty smells` on every PR.
 
 Before finishing any change, run:
 
@@ -226,6 +226,7 @@ go test ./...                                 # Run Go tests
 bash .github/skill-tests/run_all.sh           # Run skill script tests
 bash .github/lint-skills.sh                   # Run skill linter
 qlty check --all --no-fix --level=high        # Quality gate (same as CI)
+qlty smells --all --no-snippets               # Maintainability scan (same as CI)
 ```
 
 Do not skip any of these steps. If any command fails, fix the issue before finishing. This applies to all tasks — feature work, bug fixes, skill changes, and documentation updates.
@@ -235,4 +236,4 @@ Do not skip any of these steps. If any command fails, fix the issue before finis
 - Installation is destructive (no backups)
 - Requires macOS, Homebrew, Go 1.15+
 - Uses map-based dispatch for dynamic component installation
-- CI runs on GitHub Actions (macOS, Go 1.19.5)
+- CI runs on GitHub Actions (macOS, Go 1.24.10)

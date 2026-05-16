@@ -96,6 +96,11 @@ func mutateSettings(mutate func(settings map[string]any) bool) bool {
 
 // registerMatcherHook adds an entry to settings.hooks[eventName] that uses a
 // `matcher` field for deduplication (PreToolUse / PostToolUse style).
+//
+// scriptPath is passed via path.FromDots's "%s" arg slot so a `%` anywhere in
+// the path can't accidentally be interpreted as a format verb. All current
+// callers use static literals, but the arg-style keeps the contract safe for
+// future additions.
 func registerMatcherHook(eventName, matcher, scriptPath, successMsg string) {
 	changed := mutateSettings(func(settings map[string]any) bool {
 		hookCmd := "bash \"" + path.FromDots("%s", scriptPath) + "\""
@@ -135,7 +140,7 @@ func registerMatcherHook(eventName, matcher, scriptPath, successMsg string) {
 
 // registerSessionHook adds an entry to settings.hooks[eventName] for events
 // without a `matcher` field (SessionStart / SessionEnd). Dedup is by inner
-// command string.
+// command string. See registerMatcherHook re: the scriptPath %s pattern.
 func registerSessionHook(eventName, scriptPath, successMsg string) {
 	changed := mutateSettings(func(settings map[string]any) bool {
 		hookCmd := "bash \"" + path.FromDots("%s", scriptPath) + "\""
@@ -181,6 +186,8 @@ func registerSessionHook(eventName, scriptPath, successMsg string) {
 	}
 }
 
+// registerSkillTrackingHook logs every Skill tool invocation via a PreToolUse
+// hook so /skill-usage can rank skills by use.
 func registerSkillTrackingHook() {
 	registerMatcherHook(
 		"PreToolUse",
@@ -190,6 +197,8 @@ func registerSkillTrackingHook() {
 	)
 }
 
+// registerSessionStartMemoryHook injects Argus KB user prefs + feedback into
+// every Claude Code session via hookSpecificOutput.additionalContext.
 func registerSessionStartMemoryHook() {
 	registerSessionHook(
 		"SessionStart",
@@ -198,6 +207,9 @@ func registerSessionStartMemoryHook() {
 	)
 }
 
+// registerSessionEndCaptureHook writes a raw session summary into
+// memory/inbox/ on SessionEnd, tagged by tier; /dream synthesizes captures
+// into topical KB docs.
 func registerSessionEndCaptureHook() {
 	registerSessionHook(
 		"SessionEnd",
@@ -206,8 +218,10 @@ func registerSessionEndCaptureHook() {
 	)
 }
 
+// registerKBChangeTrackingHook appends every kb_ingest call to a JSONL log
+// so /dream can triage incrementally. The matcher pattern covers both legacy
+// and current Argus MCP server names.
 func registerKBChangeTrackingHook() {
-	// Matcher covers both legacy and current Argus MCP server names.
 	registerMatcherHook(
 		"PostToolUse",
 		"mcp__argus.*__kb_ingest",
