@@ -31,12 +31,13 @@ You orchestrate a 6-phase pipeline to take the current branch from "done coding"
 3. **Improve** — analyze session for learnings and fix gaps (inline, not via `/improve`)
 4. **Address improvements** — apply approved improvements
 5. **Merge** — run `/merge` to land the branch
+5b. **Switch worktree to default branch** — hygiene step so follow-up work starts from the new tip
 
 If any phase has nothing to do (no findings, no improvements), skip it and move on.
 
 ## Continue Protocol
 
-**All 6 phases must execute in a single unbroken sequence.** After any sub-skill returns (`/review`, `/merge`) or any inline analysis completes, immediately proceed to the next phase. Never treat a sub-skill return or analysis report as the end of your task. The pipeline is only complete after Phase 5 finishes or an abort condition is hit.
+**All phases must execute in a single unbroken sequence.** After any sub-skill returns (`/review`, `/merge`) or any inline analysis completes, immediately proceed to the next phase. Never treat a sub-skill return or analysis report as the end of your task. The pipeline is only complete after Phase 5b finishes or an abort condition is hit.
 
 ---
 
@@ -158,6 +159,20 @@ Invoke the `/merge` skill to land the branch into master.
 Handle merge script exit codes as documented in the `/merge` skill (conflicts, nothing to merge, review blocked, errors).
 
 **If CI fails on tests unrelated to your PR**, fix them inline as part of `/ship` rather than rebasing or treating the merge as blocked. Pre-existing flakes (timing-sensitive tests, data races on shared mutable state, environment-dependent assertions) are normal during a `/ship` cycle on a project with sparse CI history. Capture each fix as its own commit with a message that names the flake and the cause (e.g., "fix flaky-test sleep timing on slower CI" or "fix data race on shared buffer under -race") so the rationale stays clear in history. Then re-run `/merge`.
+
+## Phase 5b: Switch worktree to default branch
+
+After `/merge` returns success, ensure the worktree is on the default branch so any follow-up work (or any other agent invoked next in this worktree) starts from the new tip rather than the squashed-out feature branch. This is belt-and-suspenders alongside `/merge`'s own auto-switch — if `/merge` already switched (default for squash), this is a no-op; if the user passed `--keep-branch` or used `--method rebase`/`--method merge`, this still rescues the follow-up agent path.
+
+Detect the default branch and switch:
+
+```bash
+DEFAULT_BRANCH=$(git branch -r 2>/dev/null | grep -oE 'origin/(main|master)' | head -1 | sed 's|origin/||')
+[ -z "$DEFAULT_BRANCH" ] && DEFAULT_BRANCH="master"
+git checkout "$DEFAULT_BRANCH" 2>/dev/null && git pull --ff-only
+```
+
+If the checkout fails (uncommitted changes, no local default-branch ref, another worktree owns it, etc.), **warn but do not abort** — the pipeline is complete; this is hygiene. Print the current branch and a one-line note that follow-up work in this worktree should `git checkout "$DEFAULT_BRANCH"` (or `git reset --hard origin/"$DEFAULT_BRANCH"`) before committing.
 
 ---
 
