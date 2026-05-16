@@ -215,6 +215,8 @@ qlty metrics --all --sort complexity --limit 10  # Hotspots
 
 Filter to changed files only by replacing `--all` with `--upstream=origin/master`. When fixing a maintainability finding, prefer extracting a helper over disabling the rule. See https://docs.qlty.sh/cli/coding-with-ai-agents.
 
+If `qlty` panics with `failed to create initial log file ... PermissionDenied` under a sandboxed agent, redirect its log dir by overriding `HOME`: `HOME=/tmp/qlty-home qlty smells --all`. The Claude Code sandbox blocks writes to `~/.qlty/logs` even though the user owns the directory (`com.apple.provenance` xattr from a different process).
+
 ## Pre-Completion Checklist
 
 Before considering any task complete, run the full test suite:
