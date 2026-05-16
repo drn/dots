@@ -69,6 +69,10 @@ jobs:
       - name: Qlty Check
         run: qlty check --all --no-fix --level=high --no-fail
 
+      # qlty smells has no --no-fail flag, so we wrap to emit a GitHub
+      # workflow warning if the tool itself errors (network, install)
+      # without hard-failing the soft-rollout step.
       - name: Qlty Smells
-        run: qlty smells --all --no-snippets --quiet
-        continue-on-error: true
+        run: |
+          qlty smells --all --no-snippets --quiet || \
+            echo "::warning::qlty smells exited non-zero (exit=$?); see step log"
