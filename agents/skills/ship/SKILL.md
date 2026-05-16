@@ -51,6 +51,8 @@ Check `git status --short`. If there are staged or unstaged changes to tracked f
 2. Craft a concise commit message summarizing the changes
 3. Commit
 
+**This applies whether or not the branch already has commits ahead of master.** If there are no existing commits ahead of master but the working tree has uncommitted work, this phase produces the first commit — do not abort. The "no changes on branch" abort only fires when both the commit history AND the working tree are empty (checked *after* this phase runs).
+
 If there are uncommitted changes AND existing commits ahead of master, commit the uncommitted changes as a separate commit to preserve the existing commit history.
 
 If the branch is BEHIND `origin/master` (check `git status` output for "Your branch is behind 'origin/master' by N commits"), fast-forward first or the review will diff against a stale base. With uncommitted changes that overlap incoming files:
@@ -178,7 +180,7 @@ If the checkout fails (uncommitted changes, no local default-branch ref, another
 
 ## Abort Conditions
 
-- **No changes on branch:** If there are no commits ahead of master and no uncommitted changes, stop immediately: "Nothing to ship — no changes on this branch."
+- **No changes on branch:** Only after Phase 0 completes, if there are still no commits ahead of master and no uncommitted changes, stop immediately: "Nothing to ship — no changes on this branch." Uncommitted changes on their own are NOT an abort condition — Phase 0 commits them.
 - **Tests fail after 3 fix attempts:** Stop and report: "Tests are failing after 3 fix attempts. Manual intervention needed."
 - **Merge blocked by required review:** Report the PR URL and stop: "PR requires review approval before merging."
 
