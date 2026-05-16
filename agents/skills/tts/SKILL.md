@@ -26,11 +26,15 @@ Figure out what to speak from the user's message and conversation context:
 
 ### Step 2: Speak
 
-Run the `tts` command via bash:
+Always prefix the spoken text with the current project name followed by ` - `, e.g. `dots - completed task`. Determine the project name from the git remote URL (preferred), falling back to the git toplevel basename:
 
 ```bash
-tts -s 1.4 "Your text here"
+PROJECT=$(basename -s .git "$(git remote get-url origin 2>/dev/null)" 2>/dev/null)
+if [ -z "$PROJECT" ]; then PROJECT=$(basename "$(git rev-parse --show-toplevel 2>/dev/null)"); fi
+tts -s 1.4 "$PROJECT - Your text here"
 ```
+
+If there is no git context, fall back to the basename of the current working directory. If the user supplied literal text to speak verbatim ("say hello world"), do **not** add the prefix.
 
 - **Speed**: Use `-s 1.4` by default
 - **Voice**: heart (default) — user can request others with `-v`: alloy, nova, bella, sky, echo, onyx, or any Kokoro voice ID (af_heart, am_adam, etc.). Voices are auto-cached on first use (brief download delay).
