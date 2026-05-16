@@ -164,12 +164,12 @@ Handle merge script exit codes as documented in the `/merge` skill (conflicts, n
 
 After `/merge` returns success, ensure the worktree is on the default branch so any follow-up work (or any other agent invoked next in this worktree) starts from the new tip rather than the squashed-out feature branch. This is belt-and-suspenders alongside `/merge`'s own auto-switch — if `/merge` already switched (default for squash), this is a no-op; if the user passed `--keep-branch` or used `--method rebase`/`--method merge`, this still rescues the follow-up agent path.
 
-Detect the default branch and switch:
+Detect the default branch and switch. This is a simplified probe that only recognizes `main` / `master` — `/merge` itself uses the GitHub API (`gh api repos/<slug>`) for canonical detection and handles repos with non-standard default names. If your repo's default is something else (e.g., `trunk`), `/merge`'s own auto-switch already handled it and this phase is a no-op; skip Phase 5b for those repos rather than relying on the fallback below.
 
 ```bash
 DEFAULT_BRANCH=$(git branch -r 2>/dev/null | grep -oE 'origin/(main|master)' | head -1 | sed 's|origin/||')
 [ -z "$DEFAULT_BRANCH" ] && DEFAULT_BRANCH="master"
-git checkout "$DEFAULT_BRANCH" 2>/dev/null && git pull --ff-only
+git checkout "$DEFAULT_BRANCH" 2>/dev/null && git pull --ff-only origin "$DEFAULT_BRANCH"
 ```
 
 If the checkout fails (uncommitted changes, no local default-branch ref, another worktree owns it, etc.), **warn but do not abort** — the pipeline is complete; this is hygiene. Print the current branch and a one-line note that follow-up work in this worktree should `git checkout "$DEFAULT_BRANCH"` (or `git reset --hard origin/"$DEFAULT_BRANCH"`) before committing.
@@ -197,4 +197,5 @@ After the pipeline completes (or aborts), print:
 | Improve | {done/skipped} | {N improvements applied} |
 | Address Improvements | {done/skipped} | {N commits} |
 | Merge | {done/blocked/failed} | {PR URL or error} |
+| Switch Worktree | {done/skipped/warned} | {current branch after switch, or warning} |
 ```

@@ -34,7 +34,8 @@ PR_NUMBER=""
 PR_URL=""
 REPO_SLUG=""
 ALLOWED_METHODS=()
-MERGE_METHOD=""
+MERGE_METHOD=""       # full method label including tier suffix, e.g. "squash" or "squash (admin)"
+MERGE_METHOD_BASE=""  # bare method name (squash|rebase|merge), without tier suffix
 MERGE_STATUS="merged"
 MERGE_COMMIT=""
 DOTS_SYNCED=""
@@ -255,6 +256,7 @@ do_merge() {
     for method in "${ALLOWED_METHODS[@]}"; do
       if _gh_merge "$method" "--admin" "$title" "$body"; then
         MERGE_METHOD="${method} (admin)"
+        MERGE_METHOD_BASE="$method"
         return 0
       fi
     done
@@ -264,6 +266,7 @@ do_merge() {
     for method in "${ALLOWED_METHODS[@]}"; do
       if _gh_merge "$method" "--auto" "$title" "$body"; then
         MERGE_METHOD="${method} (auto-merge)"
+        MERGE_METHOD_BASE="$method"
         MERGE_STATUS="auto-merge enabled (${reason})"
         return 0
       fi
@@ -277,6 +280,7 @@ do_merge() {
   for method in "${ALLOWED_METHODS[@]}"; do
     if _gh_merge "$method" "" "$title" "$body"; then
       MERGE_METHOD="$method"
+      MERGE_METHOD_BASE="$method"
       return 0
     fi
   done
@@ -287,6 +291,7 @@ do_merge() {
   for method in "${ALLOWED_METHODS[@]}"; do
     if _gh_merge "$method" "--admin" "$title" "$body"; then
       MERGE_METHOD="${method} (admin)"
+      MERGE_METHOD_BASE="$method"
       return 0
     fi
   done
@@ -297,6 +302,7 @@ do_merge() {
   for method in "${ALLOWED_METHODS[@]}"; do
     if _gh_merge "$method" "--auto" "$title" "$body"; then
       MERGE_METHOD="${method} (auto-merge)"
+      MERGE_METHOD_BASE="$method"
       MERGE_STATUS="auto-merge enabled"
       return 0
     fi
@@ -332,9 +338,11 @@ update_local_master() {
   # this worktree would commit against a stale base. Auto-switch to the default
   # branch unless the user explicitly opted out with --keep-branch, or used a
   # non-squash method (rebase/merge preserve commits, so the branch may still
-  # be useful for stacked-PR or chained-work flows).
+  # be useful for stacked-PR or chained-work flows). MERGE_METHOD_BASE is set
+  # by do_merge() to the bare method name (squash|rebase|merge), independent
+  # of the tier suffix used in MERGE_METHOD.
   local auto_switch=false
-  if [[ "$KEEP_BRANCH" == false && "$MERGE_METHOD" == squash* ]]; then
+  if [[ "$KEEP_BRANCH" == false && "$MERGE_METHOD_BASE" == "squash" ]]; then
     auto_switch=true
   fi
 
@@ -349,6 +357,8 @@ update_local_master() {
       info "      or 'git reset --hard ${TARGET}/${DEFAULT_BRANCH}' to reuse this branch name."
     fi
   else
+    # Checkout failed: typically because no local ref for $DEFAULT_BRANCH exists
+    # yet, or master is checked out in another worktree. Both share this branch.
     local worktree_path
     worktree_path=$(git worktree list | grep "\[${DEFAULT_BRANCH}\]" | awk '{print $1}' || echo "")
     if [[ -n "$worktree_path" ]]; then
@@ -357,7 +367,12 @@ update_local_master() {
     fi
     if [[ "$auto_switch" == true ]]; then
       info "NOTE: could not auto-switch this worktree to ${DEFAULT_BRANCH} — still on '${BRANCH}' (now divergent)."
-      info "      Run 'git checkout ${DEFAULT_BRANCH}' or 'git reset --hard ${TARGET}/${DEFAULT_BRANCH}' before continuing."
+      if [[ -n "$worktree_path" ]]; then
+        info "      ${DEFAULT_BRANCH} is checked out in worktree '${worktree_path}'."
+      else
+        info "      Run 'git fetch ${TARGET} ${DEFAULT_BRANCH}' to create a local ref, then"
+      fi
+      info "      'git checkout ${DEFAULT_BRANCH}' or 'git reset --hard ${TARGET}/${DEFAULT_BRANCH}' before continuing."
     fi
   fi
 }
