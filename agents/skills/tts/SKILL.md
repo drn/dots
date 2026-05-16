@@ -20,16 +20,20 @@ Read content aloud using the `tts` CLI (Kokoro TTS locally, or OpenAI with `--re
 
 Figure out what to speak from the user's message and conversation context:
 
-- If the user said "speak to me" or "read to me" with no specific content, summarize the most recent output or finding in 1-2 sentences and speak that.
-- If the user referenced specific content ("read the summary", "say the plan"), speak a concise version of that content.
-- If the user provided literal text ("say hello world"), speak exactly that.
+- If the user said "speak to me" or "read to me" with no specific content, summarize the most recent output or finding in 1-2 sentences and speak that. **Prefix with project name** (see Step 2).
+- If the user referenced specific content ("read the summary", "say the plan"), speak a concise version of that content. **Prefix with project name**.
+- If the user provided literal text ("say hello world"), speak exactly that. **Do NOT add the project-name prefix** — verbatim means verbatim.
 
 ### Step 2: Speak
 
-Run the `tts` command via bash:
+For summaries/derived content, prefix the spoken text with the current project name followed by ` - `, e.g. `dots - completed task`. Resolve the project name from the git remote URL, falling back to the git toplevel basename, then the cwd basename. Sanitize to `[A-Za-z0-9._-]` before interpolating so an unusual remote name can't reach the shell:
 
 ```bash
-tts -s 1.4 "Your text here"
+PROJECT=$(basename -s .git "$(git remote get-url origin 2>/dev/null)" 2>/dev/null)
+if [ -z "$PROJECT" ]; then PROJECT=$(basename "$(git rev-parse --show-toplevel 2>/dev/null)" 2>/dev/null); fi
+if [ -z "$PROJECT" ]; then PROJECT=$(basename "$PWD"); fi
+PROJECT=$(printf '%s' "$PROJECT" | tr -cd 'A-Za-z0-9._-')
+tts -s 1.4 "$PROJECT - Your text here"
 ```
 
 - **Speed**: Use `-s 1.4` by default
