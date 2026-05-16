@@ -14,10 +14,13 @@ import (
 // Only models.json is tracked. auth.json (provider API keys) and sessions/
 // (per-session state) stay local and out of git.
 func Pi() {
-	log.Action("Install Pi")
+	log.Action("Install pi.dev")
 
 	installPi()
 
+	// Always reconcile the config symlink, even if the binary is already
+	// installed — re-running `dots install pi` should restore the link if
+	// it was removed or replaced.
 	agentDir := path.FromHome(".pi/agent")
 	if err := os.MkdirAll(agentDir, 0755); err != nil {
 		log.Error("Failed to create %s: %s", agentDir, err.Error())
