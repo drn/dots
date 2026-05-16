@@ -34,6 +34,7 @@ func Components() []Component {
 		{"tools", "Installs dev tools (Devbox, Claude Code, Codex)", "", Tools},
 		{"osx", "Installs OSX configuration", "", Osx},
 		{"agents", "Installs agent skills (Claude Code + Codex)", "", Agents},
+		{"pi", "Installs pi.dev coding agent and configuration", "", Pi},
 	}
 }
 

@@ -96,6 +96,7 @@ dots doctor                                   # Run diagnostics
 | tools | Devbox, Claude Code, Codex |
 | osx | macOS defaults |
 | agents | Agent skills, custom agents, hooks, and status line (symlinks agents/skills → ~/.claude/skills + ~/.agents/skills, agents/custom → ~/.claude/agents, registers hooks and status line in ~/.claude/settings.json) |
+| pi | pi.dev coding agent CLI + config (installs pi via curl pi.dev/install.sh, symlinks pi/agent/models.json → ~/.pi/agent/models.json; auth.json and sessions/ stay local) |
 
 ## Writing Skills / Slash Commands
 

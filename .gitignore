@@ -8,3 +8,5 @@ home/bundle/cache
 sys
 .claude/settings.local.json
 .claude/worktrees
+pi/agent/auth.json
+pi/agent/sessions/
