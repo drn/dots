@@ -96,8 +96,10 @@ Claude Code blocks `$()` inside dynamic context expressions for security reasons
 - Base ref: !{git branch -r 2>/dev/null | grep -oE 'origin/(main|master)' | head -1}
 - Commits vs main: !{git log origin/main..HEAD --oneline 2>/dev/null | head -20}
 - Commits vs master: !{git log origin/master..HEAD --oneline 2>/dev/null | head -20}
-- Changes vs main: !{git diff --stat HEAD...origin/main 2>/dev/null | head -50}
-- Changes vs master: !{git diff --stat HEAD...origin/master 2>/dev/null | head -50}
+# Triple-dot direction matters: `base...HEAD` shows changes ON the branch.
+# `HEAD...base` shows changes ON base since branch diverged — the reverse.
+- Changes vs main: !{git diff --stat origin/main...HEAD 2>/dev/null | head -50}
+- Changes vs master: !{git diff --stat origin/master...HEAD 2>/dev/null | head -50}
 ```
 
 **Alternatives to `$()`:**
