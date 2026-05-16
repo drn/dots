@@ -4,6 +4,8 @@ package auth
 import (
 	"errors"
 	"fmt"
+	"io"
+	"net/http"
 	"net/url"
 	"os"
 	"strings"
@@ -11,10 +13,11 @@ import (
 	"github.com/drn/dots/cli/config"
 	"github.com/drn/dots/pkg/log"
 	"github.com/drn/dots/pkg/run"
-	"github.com/imroc/req"
 	jsoniter "github.com/json-iterator/go"
 	"github.com/manifoldco/promptui"
 )
+
+const spotifyTokenURL = "https://accounts.spotify.com/api/token"
 
 // FetchAccessToken - Returns a valid access token for the Spotify API.
 // * If no cached access token or refresh token
@@ -60,53 +63,77 @@ func authorize() {
 }
 
 func refreshNeeded(accessToken string) bool {
-	url := "https://api.spotify.com/v1/me"
-	response, err := req.Put(url, Headers(accessToken))
-	HandleRequestError(err)
-	return response.Response().StatusCode == 401
+	_, status := SendRequest(http.MethodPut, "https://api.spotify.com/v1/me", Headers(accessToken), nil, nil)
+	return status == http.StatusUnauthorized
 }
 
 // Headers returns the standard Spotify API request headers.
-func Headers(accessToken string) req.Header {
-	return req.Header{
-		"Accept":        "application/json",
-		"Content-Type":  "application/json",
-		"Authorization": "Bearer " + accessToken,
+func Headers(accessToken string) http.Header {
+	return http.Header{
+		"Accept":        {"application/json"},
+		"Content-Type":  {"application/json"},
+		"Authorization": {"Bearer " + accessToken},
 	}
 }
 
-const spotifyTokenURL = "https://accounts.spotify.com/api/token"
-
 func exchangeAuthorizationCode(code string) (string, string) {
-	data := exchangeToken(req.Param{
-		"code":       code,
-		"grant_type": "authorization_code",
+	data := exchangeToken(url.Values{
+		"code":       {code},
+		"grant_type": {"authorization_code"},
 	})
 	return jsoniter.Get(data, "access_token").ToString(),
 		jsoniter.Get(data, "refresh_token").ToString()
 }
 
 func exchangeRefreshToken(code string) string {
-	data := exchangeToken(req.Param{
-		"refresh_token": code,
-		"grant_type":    "refresh_token",
+	data := exchangeToken(url.Values{
+		"refresh_token": {code},
+		"grant_type":    {"refresh_token"},
 	})
 	return jsoniter.Get(data, "access_token").ToString()
 }
 
-func exchangeToken(params req.Param) []byte {
-	params["client_id"] = os.Getenv("SPOTIFY_CLIENT_ID")
-	params["client_secret"] = os.Getenv("SPOTIFY_CLIENT_SECRET")
-	params["redirect_uri"] = os.Getenv("SPOTIFY_REDIRECT_URI")
+func exchangeToken(params url.Values) []byte {
+	params.Set("client_id", os.Getenv("SPOTIFY_CLIENT_ID"))
+	params.Set("client_secret", os.Getenv("SPOTIFY_CLIENT_SECRET"))
+	params.Set("redirect_uri", os.Getenv("SPOTIFY_REDIRECT_URI"))
 
-	response, err := req.Post(spotifyTokenURL, params)
-	HandleRequestError(err)
-
-	if response.Response().StatusCode != 200 {
-		fmt.Println(string(response.Bytes()))
+	headers := http.Header{"Content-Type": {"application/x-www-form-urlencoded"}}
+	data, status := SendRequest(
+		http.MethodPost, spotifyTokenURL, headers, nil, strings.NewReader(params.Encode()),
+	)
+	if status != http.StatusOK {
+		fmt.Println(string(data))
 		os.Exit(1)
 	}
-	return response.Bytes()
+	return data
+}
+
+// SendRequest performs an HTTP request with optional query params and body,
+// returning the response body and status code. Exits on transport errors.
+func SendRequest(
+	method, baseURL string,
+	headers http.Header,
+	query url.Values,
+	body io.Reader,
+) ([]byte, int) {
+	fullURL := baseURL
+	if len(query) > 0 {
+		fullURL = baseURL + "?" + query.Encode()
+	}
+	request, err := http.NewRequest(method, fullURL, body)
+	HandleRequestError(err)
+	if headers != nil {
+		request.Header = headers
+	}
+
+	response, err := http.DefaultClient.Do(request)
+	HandleRequestError(err)
+	defer response.Body.Close()
+
+	data, err := io.ReadAll(response.Body)
+	HandleRequestError(err)
+	return data, response.StatusCode
 }
 
 func inputCode() string {
