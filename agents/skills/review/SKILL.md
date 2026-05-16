@@ -15,8 +15,8 @@ Run a comprehensive code review (security, architecture, clarity) against your c
 
 - Current branch: !`git branch --show-current`
 - Base ref: !`git branch -r 2>/dev/null | grep -oE 'origin/(main|master)' | head -1`
-- Changes vs main: !`git diff --stat HEAD...origin/main 2>/dev/null | head -50`
-- Changes vs master: !`git diff --stat HEAD...origin/master 2>/dev/null | head -50`
+- Changes vs main: !`git diff --stat origin/main...HEAD 2>/dev/null | head -50`
+- Changes vs master: !`git diff --stat origin/master...HEAD 2>/dev/null | head -50`
 
 ## Phase Protocol
 
