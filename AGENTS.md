@@ -200,6 +200,23 @@ When receiving a handoff for `~/.dots` skill changes, apply them to this workspa
 
 When making changes that affect user-facing features — adding/removing skills, custom agents, CLI commands, components, or utilities — always update `README.md` to reflect those changes. Keep counts, tables, and the project structure tree accurate.
 
+## Quality (qlty)
+
+Configuration lives in `.qlty/qlty.toml`. CI runs `qlty check` and `qlty smells` on every PR.
+
+Before finishing any change, run:
+
+```bash
+qlty fmt                                      # Auto-format
+qlty check --fix --level=low                  # Fix lint findings
+qlty smells --all --no-snippets               # Inspect maintainability (duplication, complexity, deep nesting)
+qlty metrics --all --sort complexity --limit 10  # Hotspots
+```
+
+Filter to changed files only by replacing `--all` with `--upstream=origin/master`. When fixing a maintainability finding, prefer extracting a helper over disabling the rule. See https://docs.qlty.sh/cli/coding-with-ai-agents.
+
+If `qlty` panics with `failed to create initial log file ... PermissionDenied` under a sandboxed agent, redirect its log dir by overriding `HOME`: `HOME=/tmp/qlty-home qlty smells --all`. The Claude Code sandbox blocks writes to `~/.qlty/logs` even though the user owns the directory (`com.apple.provenance` xattr from a different process).
+
 ## Pre-Completion Checklist
 
 Before considering any task complete, run the full test suite:
@@ -210,6 +227,8 @@ revive -set_exit_status ./...                 # Run linter
 go test ./...                                 # Run Go tests
 bash .github/skill-tests/run_all.sh           # Run skill script tests
 bash .github/lint-skills.sh                   # Run skill linter
+qlty check --all --no-fix --level=high        # Quality gate (same as CI)
+qlty smells --all --no-snippets               # Maintainability scan (same as CI)
 ```
 
 Do not skip any of these steps. If any command fails, fix the issue before finishing. This applies to all tasks — feature work, bug fixes, skill changes, and documentation updates.
@@ -219,4 +238,4 @@ Do not skip any of these steps. If any command fails, fix the issue before finis
 - Installation is destructive (no backups)
 - Requires macOS, Homebrew, Go 1.15+
 - Uses map-based dispatch for dynamic component installation
-- CI runs on GitHub Actions (macOS, Go 1.19.5)
+- CI runs on GitHub Actions (macOS, Go 1.24.10)
