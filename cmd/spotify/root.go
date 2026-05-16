@@ -95,9 +95,13 @@ func alternateDeviceID(currentDeviceID string) string {
 }
 
 func currentDevice(accessToken string) string {
-	data, _ := auth.SendRequest(
+	data, status := auth.SendRequest(
 		http.MethodGet, spotifyDevicesURL, auth.Headers(accessToken), nil, nil,
 	)
+	if status >= http.StatusBadRequest {
+		log.Error("Failed to list devices (status %d)", status)
+		os.Exit(1)
+	}
 
 	const maxDevices = 10
 	for i := 0; i < maxDevices; i++ {
@@ -152,17 +156,28 @@ func removeTrack(accessToken string, trackID string) {
 // https://developer.spotify.com/documentation/web-api/reference/library/check-users-saved-tracks/
 func isTrackSaved(accessToken string, trackID string) bool {
 	params := url.Values{"ids": {trackID}}
-	data, _ := auth.SendRequest(
+	data, status := auth.SendRequest(
 		http.MethodGet, spotifyContainsURL, auth.Headers(accessToken), params, nil,
 	)
+	if status >= http.StatusBadRequest {
+		log.Error("Failed to check saved status (status %d)", status)
+		os.Exit(1)
+	}
 	return jsoniter.Get(data, 0).ToBool()
 }
 
 // https://developer.spotify.com/documentation/web-api/reference/player/get-the-users-currently-playing-track/
 func currentTrackInfo(accessToken string) (string, string, string) {
-	data, _ := auth.SendRequest(
+	data, status := auth.SendRequest(
 		http.MethodGet, spotifyNowPlaying, auth.Headers(accessToken), nil, nil,
 	)
+	// Spotify returns 204 No Content when nothing is playing — treat that
+	// as "no current track" via the empty id below. Surface 4xx/5xx instead
+	// of silently parsing an error body.
+	if status >= http.StatusBadRequest {
+		log.Error("Failed to fetch currently-playing track (status %d)", status)
+		os.Exit(1)
+	}
 	id := jsoniter.Get(data, "item", "id").ToString()
 	name := jsoniter.Get(data, "item", "name").ToString()
 	artist := jsoniter.Get(data, "item", "artists", 0, "name").ToString()
