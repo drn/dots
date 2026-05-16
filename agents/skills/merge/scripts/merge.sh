@@ -3,13 +3,18 @@ set -euo pipefail
 
 # merge.sh — Merge current branch to the default branch via GitHub PR
 #
-# Usage: merge.sh [--skip-rebase] [--method <squash|merge|rebase>] [--squash|--merge|--rebase] "<title>" "<body>"
+# Usage: merge.sh [--skip-rebase] [--method <squash|merge|rebase>] [--squash|--merge|--rebase] [--keep-branch] "<title>" "<body>"
 #
 # Without an explicit method, merge.sh probes the repo's allowed methods and
 # tries them in preference order (squash → rebase → merge). Pass --method (or
 # the matching shorthand) to force a single method — useful when the user
 # deliberately split a branch into multiple commits and wants `gh pr merge
 # --rebase` to preserve them on master, even on a repo that allows squash.
+#
+# After a successful squash merge, the worktree is auto-switched to the
+# default branch so follow-up work doesn't commit against the now-divergent
+# feature branch. Pass --keep-branch to suppress that (or use --method
+# rebase/merge, which preserve commits and skip the auto-switch).
 #
 # Exit codes:
 #   0 — success (merge completed or auto-merge enabled)
@@ -29,7 +34,8 @@ PR_NUMBER=""
 PR_URL=""
 REPO_SLUG=""
 ALLOWED_METHODS=()
-MERGE_METHOD=""
+MERGE_METHOD=""       # full method label including tier suffix, e.g. "squash" or "squash (admin)"
+MERGE_METHOD_BASE=""  # bare method name (squash|rebase|merge), without tier suffix
 MERGE_STATUS="merged"
 MERGE_COMMIT=""
 DOTS_SYNCED=""
@@ -37,6 +43,7 @@ PR_MERGE_STATE=""
 PR_REVIEW_DECISION=""
 LAST_GH_ERR=""
 MERGE_METHOD_FLAG=""  # input flag (squash|merge|rebase|""); narrows ALLOWED_METHODS when set
+KEEP_BRANCH=false     # when true, restore checkout to feature branch after squash merge
 
 # --- Helpers ---
 
@@ -249,6 +256,7 @@ do_merge() {
     for method in "${ALLOWED_METHODS[@]}"; do
       if _gh_merge "$method" "--admin" "$title" "$body"; then
         MERGE_METHOD="${method} (admin)"
+        MERGE_METHOD_BASE="$method"
         return 0
       fi
     done
@@ -258,6 +266,7 @@ do_merge() {
     for method in "${ALLOWED_METHODS[@]}"; do
       if _gh_merge "$method" "--auto" "$title" "$body"; then
         MERGE_METHOD="${method} (auto-merge)"
+        MERGE_METHOD_BASE="$method"
         MERGE_STATUS="auto-merge enabled (${reason})"
         return 0
       fi
@@ -271,6 +280,7 @@ do_merge() {
   for method in "${ALLOWED_METHODS[@]}"; do
     if _gh_merge "$method" "" "$title" "$body"; then
       MERGE_METHOD="$method"
+      MERGE_METHOD_BASE="$method"
       return 0
     fi
   done
@@ -281,6 +291,7 @@ do_merge() {
   for method in "${ALLOWED_METHODS[@]}"; do
     if _gh_merge "$method" "--admin" "$title" "$body"; then
       MERGE_METHOD="${method} (admin)"
+      MERGE_METHOD_BASE="$method"
       return 0
     fi
   done
@@ -291,6 +302,7 @@ do_merge() {
   for method in "${ALLOWED_METHODS[@]}"; do
     if _gh_merge "$method" "--auto" "$title" "$body"; then
       MERGE_METHOD="${method} (auto-merge)"
+      MERGE_METHOD_BASE="$method"
       MERGE_STATUS="auto-merge enabled"
       return 0
     fi
@@ -321,15 +333,46 @@ update_local_master() {
 
   info "Updating local ${DEFAULT_BRANCH}..."
 
+  # Squash collapses the feature branch's commits into one new commit on the
+  # default branch, leaving the feature branch divergent. Any follow-up work in
+  # this worktree would commit against a stale base. Auto-switch to the default
+  # branch unless the user explicitly opted out with --keep-branch, or used a
+  # non-squash method (rebase/merge preserve commits, so the branch may still
+  # be useful for stacked-PR or chained-work flows). MERGE_METHOD_BASE is set
+  # by do_merge() to the bare method name (squash|rebase|merge), independent
+  # of the tier suffix used in MERGE_METHOD.
+  local auto_switch=false
+  if [[ "$KEEP_BRANCH" == false && "$MERGE_METHOD_BASE" == "squash" ]]; then
+    auto_switch=true
+  fi
+
   if git checkout "$DEFAULT_BRANCH" 2>/dev/null; then
     git pull "$TARGET" "$DEFAULT_BRANCH"
-    git checkout "$BRANCH" 2>/dev/null || true
+    if [[ "$auto_switch" == true ]]; then
+      info "Worktree now on ${DEFAULT_BRANCH} ('${BRANCH}' was squashed and is now divergent)."
+    else
+      git checkout "$BRANCH" 2>/dev/null || true
+      info "NOTE: worktree is still on '${BRANCH}' (now divergent from ${DEFAULT_BRANCH})."
+      info "      Run 'git checkout ${DEFAULT_BRANCH}' before continuing work in this worktree,"
+      info "      or 'git reset --hard ${TARGET}/${DEFAULT_BRANCH}' to reuse this branch name."
+    fi
   else
+    # Checkout failed: typically because no local ref for $DEFAULT_BRANCH exists
+    # yet, or master is checked out in another worktree. Both share this branch.
     local worktree_path
     worktree_path=$(git worktree list | grep "\[${DEFAULT_BRANCH}\]" | awk '{print $1}' || echo "")
     if [[ -n "$worktree_path" ]]; then
       info "Pulling ${DEFAULT_BRANCH} in worktree: ${worktree_path}"
       git -C "$worktree_path" pull "$TARGET" "$DEFAULT_BRANCH" 2>/dev/null || true
+    fi
+    if [[ "$auto_switch" == true ]]; then
+      info "NOTE: could not auto-switch this worktree to ${DEFAULT_BRANCH} — still on '${BRANCH}' (now divergent)."
+      if [[ -n "$worktree_path" ]]; then
+        info "      ${DEFAULT_BRANCH} is checked out in worktree '${worktree_path}'."
+      else
+        info "      Run 'git fetch ${TARGET} ${DEFAULT_BRANCH}' to create a local ref, then"
+      fi
+      info "      'git checkout ${DEFAULT_BRANCH}' or 'git reset --hard ${TARGET}/${DEFAULT_BRANCH}' before continuing."
     fi
   fi
 }
@@ -373,7 +416,8 @@ main() {
       --merge)       MERGE_METHOD_FLAG="merge";  shift ;;
       --rebase)      MERGE_METHOD_FLAG="rebase"; shift ;;
       --method)      MERGE_METHOD_FLAG="${2:?--method requires squash|merge|rebase}"; shift 2 ;;
-      *)             die 1 "Unknown flag: $1 — usage: merge.sh [--skip-rebase] [--method <squash|merge|rebase>] [--squash|--merge|--rebase] \"<title>\" \"<body>\"" ;;
+      --keep-branch) KEEP_BRANCH=true; shift ;;
+      *)             die 1 "Unknown flag: $1 — usage: merge.sh [--skip-rebase] [--method <squash|merge|rebase>] [--squash|--merge|--rebase] [--keep-branch] \"<title>\" \"<body>\"" ;;
     esac
   done
 
