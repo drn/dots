@@ -18,8 +18,8 @@ Re-review all branch changes from scratch with independent competing reviewers. 
 - Git status: !`git status --short`
 - Project type: !`ls go.mod Gemfile package.json Cargo.toml pyproject.toml 2>/dev/null | head -5`
 - Test framework: !`git ls-files 2>/dev/null | grep -E '_test\.|\.test\.|_spec\.' | head -10`
-- Changes vs main: !`git diff --stat HEAD...origin/main 2>/dev/null | head -50`
-- Changes vs master: !`git diff --stat HEAD...origin/master 2>/dev/null | head -50`
+- Changes vs main: !`git diff --stat origin/main...HEAD 2>/dev/null | head -50`
+- Changes vs master: !`git diff --stat origin/master...HEAD 2>/dev/null | head -50`
 
 ## Overview
 

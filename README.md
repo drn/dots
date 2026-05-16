@@ -65,6 +65,7 @@ dots docker stop-all     # Stop all Docker containers
 | `vim` | Vim/Neovim configuration with vim-plug and plugins |
 | `hammerspoon` | Lua-based window management and macOS automation |
 | `osx` | macOS system preferences and defaults |
+| `pi` | pi.dev coding agent CLI + config (installs `pi` via `curl pi.dev/install.sh`, symlinks `pi/agent/models.json` → `~/.pi/agent/models.json`; `auth.json` and `sessions/` stay local) |
 
 ## Agent Skills
 
@@ -184,6 +185,7 @@ Run `dots install agents` to symlink them to `~/.claude/agents/`.
 ├── git/                       # Git extensions and hooks
 ├── hammerspoon/               # Lua automation scripts (with tests)
 ├── fonts/                     # Developer fonts
+├── pi/                        # pi.dev coding agent config (models.json only)
 │
 ├── agents/                    # Agent configuration
 │   ├── skills/                # 58 reusable skills (SKILL.md per skill)
