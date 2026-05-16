@@ -73,7 +73,7 @@ Resolve the script path — use the first that exists:
 2. `agents/skills/merge/scripts/merge.sh` (repo-relative, for development/workspaces)
 
 ```
-bash <script-path> [--method <squash|merge|rebase>] "<title>" "<body>"
+bash <script-path> [--method <squash|merge|rebase>] [--keep-branch] "<title>" "<body>"
 ```
 
 #### Choosing a merge method
@@ -85,6 +85,15 @@ The script defaults to **squash** (collapses all commits into one). Pick a diffe
 - `--method rebase` (alias `--rebase`) — preserves all commits linearly via fast-forward / rebase. **Use this when the user has deliberately split work into multiple commits** (e.g., the user ran `/squash` to condense 7 commits into 2 separate logical commits, and wants both on master). A naive squash merge here would silently undo that intent.
 
 Heuristic: if the branch has more than one commit AND the commit messages look distinct rather than incremental ("WIP", "fix typo"), confirm with the user before using the default squash. The deliberate-split case is common after `/squash`.
+
+#### Post-merge worktree state
+
+After a successful **squash** merge, the script auto-switches the current worktree to the default branch (`master`/`main`). This prevents the next agent or follow-up task in this worktree from committing against the now-divergent feature branch — squash collapses all commits into one new commit on master, so the old feature branch HEAD no longer shares history with the merged result.
+
+- `--method merge` / `--method rebase` — auto-switch is **off** by default. Both methods preserve the original commits, so the feature branch may still be useful for stacked PRs or chained follow-on work.
+- `--keep-branch` — opt out of auto-switch on squash. The worktree stays on the feature branch and the script prints a divergence warning instead. Use this for stacked-PR workflows that squash but still need to keep the branch checked out (rare).
+
+If auto-switch fails (e.g., uncommitted changes in the worktree, or `master` is checked out in another worktree), the script falls back to a loud warning rather than aborting — the merge itself already succeeded.
 
 #### Handle the exit code
 
