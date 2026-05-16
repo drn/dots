@@ -202,7 +202,7 @@ When making changes that affect user-facing features — adding/removing skills,
 
 ## Quality (qlty)
 
-This repo is tracked at https://qlty.sh/gh/drn/projects/dots. Configuration lives in `.qlty/qlty.toml`. CI runs `qlty check` on every PR.
+Configuration lives in `.qlty/qlty.toml`. CI runs `qlty check` on every PR.
 
 Before finishing any change, run:
 

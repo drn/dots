@@ -70,12 +70,7 @@ name = "bandit"
 [[plugin]]
 name = "gofmt"
 
-[[plugin]]
-name = "golangci-lint"
-drivers = [
-  "lint",
-]
-mode = "comment"
+# golangci-lint omitted: duplicates revive + staticcheck already in CI
 
 [[plugin]]
 name = "osv-scanner"
