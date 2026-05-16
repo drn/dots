@@ -40,23 +40,34 @@ If there are uncommitted changes (check git status), stage and commit them with 
 
 #### 2a: Pre-push markdown formatting check
 
-If the pending push touches any `.md` files, run `prettier --check` against them first. Markdown table edits (e.g., adding a row to one table) often force prettier to realign column widths in *other* tables in the same file, which trips `qlty fmt` in CI. Catching it before push avoids burning a CI cycle.
+If the pending push touches any `.md` files, run `prettier --check` against them first **only when the repo actually enforces prettier**. Markdown table edits often force prettier to realign column widths in *other* tables in the same file, which trips `qlty fmt` in CI. Catching it before push avoids burning a CI cycle — but reformatting against a repo that doesn't enforce prettier can introduce regressions on files whose existing style differs from prettier's preferred output (e.g., joining `0.`-prefixed list items, swapping italics `*` ↔ `_`, adding blank lines after list intros).
 
-First determine the base ref (use `git branch -r | grep -oE 'origin/(main|master)' | head -1`), then load the changed `.md` files into a bash array so paths with spaces survive correctly:
+Gate on the presence of a prettier or qlty config in the repo. If none is found, skip this step.
 
 ```bash
-mapfile -t md_files < <(git diff --name-only "$base_branch"...HEAD | grep -E '\.md$')
-if [ ${#md_files[@]} -gt 0 ]; then
-  if ! npx --yes prettier@3.3.3 --check "${md_files[@]}"; then
-    echo ":: prettier reformatted markdown — running --write and re-staging"
-    npx --yes prettier@3.3.3 --write "${md_files[@]}"
-    git add "${md_files[@]}"
-    git commit -m "Format markdown via prettier"
+prettier_enforced=false
+for cfg in .prettierrc .prettierrc.json .prettierrc.yml .prettierrc.yaml .prettierrc.js .prettierrc.cjs .prettierrc.toml prettier.config.js prettier.config.cjs .qlty/qlty.toml; do
+  [ -e "$cfg" ] && { prettier_enforced=true; break; }
+done
+# Also detect prettier/qlty referenced from CI workflows
+if [ "$prettier_enforced" = false ] && grep -rlE 'prettier|qlty' .github/workflows 2>/dev/null | grep -q .; then
+  prettier_enforced=true
+fi
+
+if [ "$prettier_enforced" = true ]; then
+  mapfile -t md_files < <(git diff --name-only "$base_branch"...HEAD | grep -E '\.md$')
+  if [ ${#md_files[@]} -gt 0 ]; then
+    if ! npx --yes prettier@3.3.3 --check "${md_files[@]}"; then
+      echo ":: prettier reformatted markdown — running --write and re-staging"
+      npx --yes prettier@3.3.3 --write "${md_files[@]}"
+      git add "${md_files[@]}"
+      git commit -m "Format markdown via prettier"
+    fi
   fi
 fi
 ```
 
-The check is cheap (~2s for a typical PR) and catches the most common qlty fmt failure mode. Skip if no `.md` files are in the diff. If `npx`/`prettier` is not available, skip this step entirely rather than failing the push.
+The check is cheap (~2s for a typical PR) and catches the most common qlty fmt failure mode. Skip if no `.md` files are in the diff, if no prettier/qlty config is present, or if `npx`/`prettier` is not available — rather than failing the push or risking unrelated reformatting.
 
 #### 2b: Push
 
