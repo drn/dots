@@ -94,194 +94,126 @@ func mutateSettings(mutate func(settings map[string]any) bool) bool {
 	return true
 }
 
-// registerSkillTrackingHook adds a PreToolUse hook for the Skill tool to
-// ~/.claude/settings.json so that skill invocations are logged.
+// registerMatcherHook adds an entry to settings.hooks[eventName] that uses a
+// `matcher` field for deduplication (PreToolUse / PostToolUse style).
+func registerMatcherHook(eventName, matcher, scriptPath, successMsg string) {
+	changed := mutateSettings(func(settings map[string]any) bool {
+		hookCmd := "bash \"" + path.FromDots(scriptPath) + "\""
+		hookEntry := map[string]any{
+			"matcher": matcher,
+			"hooks": []any{
+				map[string]any{
+					"type":    "command",
+					"command": hookCmd,
+				},
+			},
+		}
+
+		hooks, _ := settings["hooks"].(map[string]any)
+		if hooks == nil {
+			hooks = make(map[string]any)
+		}
+
+		entries, _ := hooks[eventName].([]any)
+		for _, existing := range entries {
+			if entry, ok := existing.(map[string]any); ok {
+				if entry["matcher"] == matcher {
+					return false // already registered
+				}
+			}
+		}
+
+		hooks[eventName] = append(entries, hookEntry)
+		settings["hooks"] = hooks
+		return true
+	})
+
+	if changed {
+		log.Success("%s", successMsg)
+	}
+}
+
+// registerSessionHook adds an entry to settings.hooks[eventName] for events
+// without a `matcher` field (SessionStart / SessionEnd). Dedup is by inner
+// command string.
+func registerSessionHook(eventName, scriptPath, successMsg string) {
+	changed := mutateSettings(func(settings map[string]any) bool {
+		hookCmd := "bash \"" + path.FromDots(scriptPath) + "\""
+		hookEntry := map[string]any{
+			"hooks": []any{
+				map[string]any{
+					"type":    "command",
+					"command": hookCmd,
+				},
+			},
+		}
+
+		hooks, _ := settings["hooks"].(map[string]any)
+		if hooks == nil {
+			hooks = make(map[string]any)
+		}
+
+		entries, _ := hooks[eventName].([]any)
+		for _, existing := range entries {
+			entry, ok := existing.(map[string]any)
+			if !ok {
+				continue
+			}
+			inner, ok := entry["hooks"].([]any)
+			if !ok {
+				continue
+			}
+			for _, h := range inner {
+				cmd, _ := h.(map[string]any)
+				if cmd != nil && cmd["command"] == hookCmd {
+					return false // already registered
+				}
+			}
+		}
+
+		hooks[eventName] = append(entries, hookEntry)
+		settings["hooks"] = hooks
+		return true
+	})
+
+	if changed {
+		log.Success("%s", successMsg)
+	}
+}
+
 func registerSkillTrackingHook() {
-	changed := mutateSettings(func(settings map[string]any) bool {
-		hookCmd := "bash \"" + path.FromDots("agents/hooks/track-skill-use.sh") + "\""
-		hookEntry := map[string]any{
-			"matcher": "Skill",
-			"hooks": []any{
-				map[string]any{
-					"type":    "command",
-					"command": hookCmd,
-				},
-			},
-		}
-
-		hooks, _ := settings["hooks"].(map[string]any)
-		if hooks == nil {
-			hooks = make(map[string]any)
-		}
-
-		preToolUse, _ := hooks["PreToolUse"].([]any)
-
-		for _, existing := range preToolUse {
-			if entry, ok := existing.(map[string]any); ok {
-				if entry["matcher"] == "Skill" {
-					return false // already registered
-				}
-			}
-		}
-
-		preToolUse = append(preToolUse, hookEntry)
-		hooks["PreToolUse"] = preToolUse
-		settings["hooks"] = hooks
-		return true
-	})
-
-	if changed {
-		log.Success("Registered skill usage tracking hook")
-	}
+	registerMatcherHook(
+		"PreToolUse",
+		"Skill",
+		"agents/hooks/track-skill-use.sh",
+		"Registered skill usage tracking hook",
+	)
 }
 
-// registerSessionStartMemoryHook adds a SessionStart hook that injects Argus
-// KB user prefs and feedback into every Claude Code session via
-// hookSpecificOutput.additionalContext.
 func registerSessionStartMemoryHook() {
-	changed := mutateSettings(func(settings map[string]any) bool {
-		hookCmd := "bash \"" + path.FromDots("agents/hooks/session-start-memory.sh") + "\""
-		hookEntry := map[string]any{
-			"hooks": []any{
-				map[string]any{
-					"type":    "command",
-					"command": hookCmd,
-				},
-			},
-		}
-
-		hooks, _ := settings["hooks"].(map[string]any)
-		if hooks == nil {
-			hooks = make(map[string]any)
-		}
-
-		sessionStart, _ := hooks["SessionStart"].([]any)
-
-		// SessionStart entries have no `matcher` field (per Claude Code spec),
-		// so we can't dedupe by matcher like the PreToolUse/PostToolUse hooks
-		// do. Walk into each entry's inner `hooks` array and compare command
-		// strings instead.
-		for _, existing := range sessionStart {
-			entry, ok := existing.(map[string]any)
-			if !ok {
-				continue
-			}
-			inner, ok := entry["hooks"].([]any)
-			if !ok {
-				continue
-			}
-			for _, h := range inner {
-				cmd, _ := h.(map[string]any)
-				if cmd != nil && cmd["command"] == hookCmd {
-					return false // already registered
-				}
-			}
-		}
-
-		sessionStart = append(sessionStart, hookEntry)
-		hooks["SessionStart"] = sessionStart
-		settings["hooks"] = hooks
-		return true
-	})
-
-	if changed {
-		log.Success("Registered Argus KB memory injection hook (SessionStart)")
-	}
+	registerSessionHook(
+		"SessionStart",
+		"agents/hooks/session-start-memory.sh",
+		"Registered Argus KB memory injection hook (SessionStart)",
+	)
 }
 
-// registerSessionEndCaptureHook adds a SessionEnd hook that writes a raw
-// session summary into memory/inbox/ for every Claude Code session, tagged
-// by tier (no-commit / work-in-progress / commit-merged). /dream synthesizes
-// those captures into topical KB docs on its next pass.
 func registerSessionEndCaptureHook() {
-	changed := mutateSettings(func(settings map[string]any) bool {
-		hookCmd := "bash \"" + path.FromDots("agents/hooks/session-end-capture.sh") + "\""
-		hookEntry := map[string]any{
-			"hooks": []any{
-				map[string]any{
-					"type":    "command",
-					"command": hookCmd,
-				},
-			},
-		}
-
-		hooks, _ := settings["hooks"].(map[string]any)
-		if hooks == nil {
-			hooks = make(map[string]any)
-		}
-
-		sessionEnd, _ := hooks["SessionEnd"].([]any)
-
-		// SessionEnd entries (like SessionStart) don't carry a `matcher`
-		// field, so dedupe by walking the inner command list.
-		for _, existing := range sessionEnd {
-			entry, ok := existing.(map[string]any)
-			if !ok {
-				continue
-			}
-			inner, ok := entry["hooks"].([]any)
-			if !ok {
-				continue
-			}
-			for _, h := range inner {
-				cmd, _ := h.(map[string]any)
-				if cmd != nil && cmd["command"] == hookCmd {
-					return false // already registered
-				}
-			}
-		}
-
-		sessionEnd = append(sessionEnd, hookEntry)
-		hooks["SessionEnd"] = sessionEnd
-		settings["hooks"] = hooks
-		return true
-	})
-
-	if changed {
-		log.Success("Registered session-end inbox capture hook (SessionEnd)")
-	}
+	registerSessionHook(
+		"SessionEnd",
+		"agents/hooks/session-end-capture.sh",
+		"Registered session-end inbox capture hook (SessionEnd)",
+	)
 }
 
-// registerKBChangeTrackingHook adds a PostToolUse hook that appends every
-// kb_ingest call to a JSONL change log so /dream can triage incrementally.
 func registerKBChangeTrackingHook() {
-	changed := mutateSettings(func(settings map[string]any) bool {
-		hookCmd := "bash \"" + path.FromDots("agents/hooks/track-kb-change.sh") + "\""
-		// Match both legacy and current Argus MCP server names.
-		hookEntry := map[string]any{
-			"matcher": "mcp__argus.*__kb_ingest",
-			"hooks": []any{
-				map[string]any{
-					"type":    "command",
-					"command": hookCmd,
-				},
-			},
-		}
-
-		hooks, _ := settings["hooks"].(map[string]any)
-		if hooks == nil {
-			hooks = make(map[string]any)
-		}
-
-		postToolUse, _ := hooks["PostToolUse"].([]any)
-
-		for _, existing := range postToolUse {
-			if entry, ok := existing.(map[string]any); ok {
-				if entry["matcher"] == "mcp__argus.*__kb_ingest" {
-					return false // already registered
-				}
-			}
-		}
-
-		postToolUse = append(postToolUse, hookEntry)
-		hooks["PostToolUse"] = postToolUse
-		settings["hooks"] = hooks
-		return true
-	})
-
-	if changed {
-		log.Success("Registered Argus KB change tracking hook (PostToolUse)")
-	}
+	// Matcher covers both legacy and current Argus MCP server names.
+	registerMatcherHook(
+		"PostToolUse",
+		"mcp__argus.*__kb_ingest",
+		"agents/hooks/track-kb-change.sh",
+		"Registered Argus KB change tracking hook (PostToolUse)",
+	)
 }
 
 // registerStatusLine configures the Claude Code status line to show context

@@ -4,6 +4,8 @@ package install
 import (
 	"os"
 
+	"github.com/drn/dots/pkg/log"
+	"github.com/drn/dots/pkg/path"
 	"github.com/drn/dots/pkg/run"
 )
 
@@ -49,5 +51,22 @@ func Call(command string) {
 func exec(command string, args ...interface{}) {
 	if err := run.Verbose(command, args...); err != nil {
 		os.Exit(1)
+	}
+}
+
+// linkDirEntries reads each entry under dots/<sourceDir> and links it into
+// ~/<targetFmt> (a format string with one %s placeholder receiving the entry
+// name). linkFn picks soft vs. hard.
+func linkDirEntries(sourceDir, targetFmt string, linkFn func(from, to string)) {
+	files, err := os.ReadDir(path.FromDots(sourceDir))
+	if err != nil {
+		log.Warning("Failed to read %s directory: %s", sourceDir, err.Error())
+		return
+	}
+	for _, file := range files {
+		linkFn(
+			path.FromDots(sourceDir+"/%s", file.Name()),
+			path.FromHome(targetFmt, file.Name()),
+		)
 	}
 }

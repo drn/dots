@@ -62,3 +62,12 @@ jobs:
 
       - name: Agent Config Lint (agnix)
         run: npx agnix@0.13.0 .
+
+      - name: Install Qlty CLI
+        uses: qltysh/qlty-action/install@main
+
+      - name: Qlty Check
+        run: qlty check --all --no-fix --level=high --no-fail
+
+      - name: Qlty Smells
+        run: qlty smells --all --no-snippets --quiet
