@@ -20,21 +20,21 @@ Read content aloud using the `tts` CLI (Kokoro TTS locally, or OpenAI with `--re
 
 Figure out what to speak from the user's message and conversation context:
 
-- If the user said "speak to me" or "read to me" with no specific content, summarize the most recent output or finding in 1-2 sentences and speak that.
-- If the user referenced specific content ("read the summary", "say the plan"), speak a concise version of that content.
-- If the user provided literal text ("say hello world"), speak exactly that.
+- If the user said "speak to me" or "read to me" with no specific content, summarize the most recent output or finding in 1-2 sentences and speak that. **Prefix with project name** (see Step 2).
+- If the user referenced specific content ("read the summary", "say the plan"), speak a concise version of that content. **Prefix with project name**.
+- If the user provided literal text ("say hello world"), speak exactly that. **Do NOT add the project-name prefix** — verbatim means verbatim.
 
 ### Step 2: Speak
 
-Always prefix the spoken text with the current project name followed by ` - `, e.g. `dots - completed task`. Determine the project name from the git remote URL (preferred), falling back to the git toplevel basename:
+For summaries/derived content, prefix the spoken text with the current project name followed by ` - `, e.g. `dots - completed task`. Resolve the project name from the git remote URL, falling back to the git toplevel basename, then the cwd basename. Sanitize to `[A-Za-z0-9._-]` before interpolating so an unusual remote name can't reach the shell:
 
 ```bash
 PROJECT=$(basename -s .git "$(git remote get-url origin 2>/dev/null)" 2>/dev/null)
-if [ -z "$PROJECT" ]; then PROJECT=$(basename "$(git rev-parse --show-toplevel 2>/dev/null)"); fi
+if [ -z "$PROJECT" ]; then PROJECT=$(basename "$(git rev-parse --show-toplevel 2>/dev/null)" 2>/dev/null); fi
+if [ -z "$PROJECT" ]; then PROJECT=$(basename "$PWD"); fi
+PROJECT=$(printf '%s' "$PROJECT" | tr -cd 'A-Za-z0-9._-')
 tts -s 1.4 "$PROJECT - Your text here"
 ```
-
-If there is no git context, fall back to the basename of the current working directory. If the user supplied literal text to speak verbatim ("say hello world"), do **not** add the prefix.
 
 - **Speed**: Use `-s 1.4` by default
 - **Voice**: heart (default) — user can request others with `-v`: alloy, nova, bella, sky, echo, onyx, or any Kokoro voice ID (af_heart, am_adam, etc.). Voices are auto-cached on first use (brief download delay).
