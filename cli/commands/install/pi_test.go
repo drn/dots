@@ -82,8 +82,9 @@ func TestSeedPiSettings_OverwritesExistingDefaults(t *testing.T) {
 	dir := t.TempDir()
 	settingsPath := filepath.Join(dir, "settings.json")
 	writeJSON(t, settingsPath, map[string]any{
-		"defaultProvider": "openai",
-		"defaultModel":    "gpt-5",
+		"defaultProvider":      "openai",
+		"defaultModel":         "gpt-5",
+		"lastChangelogVersion": "0.74.0",
 	})
 
 	if err := seedPiSettings(settingsPath); err != nil {
@@ -96,6 +97,68 @@ func TestSeedPiSettings_OverwritesExistingDefaults(t *testing.T) {
 	}
 	if got["defaultModel"] != piDefaultModel {
 		t.Errorf("defaultModel = %v, want %s", got["defaultModel"], piDefaultModel)
+	}
+	if got["lastChangelogVersion"] != "0.74.0" {
+		t.Errorf("lastChangelogVersion = %v, want 0.74.0 (preserved alongside overwrite)", got["lastChangelogVersion"])
+	}
+}
+
+func TestSeedPiSettings_PreservesFileMode(t *testing.T) {
+	dir := t.TempDir()
+	settingsPath := filepath.Join(dir, "settings.json")
+	writeJSON(t, settingsPath, map[string]any{"lastChangelogVersion": "0.74.0"})
+	if err := os.Chmod(settingsPath, 0600); err != nil {
+		t.Fatalf("chmod: %s", err)
+	}
+
+	if err := seedPiSettings(settingsPath); err != nil {
+		t.Fatalf("seedPiSettings: %s", err)
+	}
+
+	info, err := os.Stat(settingsPath)
+	if err != nil {
+		t.Fatalf("stat: %s", err)
+	}
+	if got := info.Mode().Perm(); got != 0600 {
+		t.Errorf("file mode = %o, want 0600", got)
+	}
+}
+
+func TestSeedPiSettings_CreatesWithRestrictiveMode(t *testing.T) {
+	dir := t.TempDir()
+	settingsPath := filepath.Join(dir, "settings.json")
+
+	if err := seedPiSettings(settingsPath); err != nil {
+		t.Fatalf("seedPiSettings: %s", err)
+	}
+
+	info, err := os.Stat(settingsPath)
+	if err != nil {
+		t.Fatalf("stat: %s", err)
+	}
+	if got := info.Mode().Perm(); got != 0600 {
+		t.Errorf("new file mode = %o, want 0600", got)
+	}
+}
+
+func TestSeedPiSettings_NonStringDefaults(t *testing.T) {
+	dir := t.TempDir()
+	settingsPath := filepath.Join(dir, "settings.json")
+	writeJSON(t, settingsPath, map[string]any{
+		"defaultProvider": 42,
+		"defaultModel":    true,
+	})
+
+	if err := seedPiSettings(settingsPath); err != nil {
+		t.Fatalf("seedPiSettings: %s", err)
+	}
+
+	got := readSettings(t, settingsPath)
+	if got["defaultProvider"] != piDefaultProvider {
+		t.Errorf("defaultProvider = %v, want %s (malformed value should be overwritten)", got["defaultProvider"], piDefaultProvider)
+	}
+	if got["defaultModel"] != piDefaultModel {
+		t.Errorf("defaultModel = %v, want %s (malformed value should be overwritten)", got["defaultModel"], piDefaultModel)
 	}
 }
 

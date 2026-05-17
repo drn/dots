@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"os"
+	"path/filepath"
 
 	"github.com/drn/dots/cli/link"
 	"github.com/drn/dots/pkg/log"
@@ -40,7 +41,7 @@ func Pi() {
 	)
 
 	if err := seedPiSettings(path.FromHome(".pi/agent/settings.json")); err != nil {
-		log.Error("Failed to seed pi.dev settings: %s", err.Error())
+		log.Warning("Failed to seed pi.dev settings: %s", err.Error())
 	}
 }
 
@@ -55,21 +56,29 @@ func installPi() {
 // seedPiSettings ensures defaultProvider and defaultModel are set in pi.dev's
 // settings.json, merging into any existing content (e.g. lastChangelogVersion
 // written by pi.dev itself). Idempotent — a no-op when both fields already
-// match the seeded values.
+// match the seeded values. Writes atomically via tempfile + rename so a
+// concurrent pi.dev save can't observe a half-written file.
 func seedPiSettings(settingsPath string) error {
+	fileMode := os.FileMode(0600)
 	settings := map[string]any{}
+
 	data, err := os.ReadFile(settingsPath)
-	switch {
-	case err == nil:
+	if err == nil {
+		if info, statErr := os.Stat(settingsPath); statErr == nil {
+			fileMode = info.Mode().Perm()
+		}
 		if len(data) > 0 {
 			if err := json.Unmarshal(data, &settings); err != nil {
 				return err
 			}
 		}
-	case !errors.Is(err, os.ErrNotExist):
+	} else if !errors.Is(err, os.ErrNotExist) {
 		return err
 	}
 
+	// Idempotency check assumes both fields are strings when present, which is
+	// the schema pi.dev uses. A non-string value falls through and gets
+	// overwritten — desirable for a malformed schema.
 	if settings["defaultProvider"] == piDefaultProvider && settings["defaultModel"] == piDefaultModel {
 		return nil
 	}
@@ -80,5 +89,29 @@ func seedPiSettings(settingsPath string) error {
 	if err != nil {
 		return err
 	}
-	return os.WriteFile(settingsPath, append(out, '\n'), 0644)
+	return writeFileAtomic(settingsPath, append(out, '\n'), fileMode)
+}
+
+// writeFileAtomic writes data to path via a sibling tempfile + rename so a
+// concurrent reader never observes a partial file.
+func writeFileAtomic(path string, data []byte, mode os.FileMode) error {
+	tmp, err := os.CreateTemp(filepath.Dir(path), ".tmp-*")
+	if err != nil {
+		return err
+	}
+	tmpPath := tmp.Name()
+	defer os.Remove(tmpPath)
+
+	if _, err := tmp.Write(data); err != nil {
+		tmp.Close()
+		return err
+	}
+	if err := tmp.Chmod(mode); err != nil {
+		tmp.Close()
+		return err
+	}
+	if err := tmp.Close(); err != nil {
+		return err
+	}
+	return os.Rename(tmpPath, path)
 }
