@@ -65,7 +65,7 @@ dots docker stop-all     # Stop all Docker containers
 | `vim` | Vim/Neovim configuration with vim-plug and plugins |
 | `hammerspoon` | Lua-based window management and macOS automation |
 | `osx` | macOS system preferences and defaults |
-| `pi` | pi.dev coding agent CLI + config (installs `pi` via `curl pi.dev/install.sh`, symlinks `pi/agent/models.json` → `~/.pi/agent/models.json`; `auth.json` and `sessions/` stay local) |
+| `pi` | pi.dev coding agent CLI + config (installs `pi` via `curl pi.dev/install.sh`, symlinks `pi/agent/models.json` → `~/.pi/agent/models.json`, and seeds `defaultProvider`/`defaultModel` for Ollama qwen3:32b in `~/.pi/agent/settings.json`; `auth.json` and `sessions/` stay local) |
 
 ## Agent Skills
 
