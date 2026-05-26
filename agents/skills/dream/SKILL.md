@@ -1,7 +1,7 @@
 ---
 name: dream
 description: Scheduled KB maintenance — ingest yesterday's meetings + session captures, synthesize raw notes into existing topical docs (decisions, people changes, conventions), resolve conflicts, age out stale entries, fix frontmatter and links. Translates raw data into knowledge. Runs unattended; never asks for confirmation. Use for KB maintenance, knowledge base cleanup, dream consolidation, memory hygiene, or as a scheduled daily KB pass.
-allowed-tools: mcp__argus__kb_list, mcp__argus__kb_read, mcp__argus__kb_ingest, mcp__argus__kb_delete, mcp__argus-kb__kb_list, mcp__argus-kb__kb_read, mcp__argus-kb__kb_ingest, mcp__argus-kb__kb_delete, mcp__argus__kb_search, mcp__argus-kb__kb_search, mcp__granola__list_meetings, mcp__granola__get_meetings, mcp__granola__query_granola_meetings, mcp__claude_ai_Notion__notion-query-meeting-notes, mcp__claude_ai_Notion__notion-search, mcp__notion__notion-query-meeting-notes
+allowed-tools: mcp__argus__kb_list, mcp__argus__kb_read, mcp__argus__kb_ingest, mcp__argus__kb_delete, mcp__argus-kb__kb_list, mcp__argus-kb__kb_read, mcp__argus-kb__kb_ingest, mcp__argus-kb__kb_delete, mcp__argus__kb_search, mcp__argus-kb__kb_search, mcp__argus__task_complete, mcp__granola__list_meetings, mcp__granola__get_meetings, mcp__granola__query_granola_meetings, mcp__claude_ai_Notion__notion-query-meeting-notes, mcp__claude_ai_Notion__notion-search, mcp__notion__notion-query-meeting-notes
 ---
 
 # Dream — Scheduled Knowledge Base Maintenance
@@ -35,7 +35,7 @@ The Argus KB MCP server is registered as `argus` (current) or `argus-kb` (legacy
 
 ## Instructions
 
-Run the eight phases below in order. Apply every fix. Never prompt for confirmation.
+Run the nine phases below in order. Apply every fix. Never prompt for confirmation.
 
 - If `$ARGUMENTS` contains `--dry-run`, replace every "apply" step with "report what would change." This is the only short-circuit on writes.
 - If the change log (`~/.dots/sys/kb-changes/changes.jsonl`) shows no writes since the timestamp of the last successful dream run (latest file under `~/.dots/sys/dream-runs/`), exit immediately with an empty report — saves work when the KB is quiet.
@@ -275,6 +275,12 @@ For decisions made under "Apply with judgment" (oversized/multi-topic splits, na
 ```
 
 If `--dry-run` was specified, label the report "KB Hygiene Report (Dry Run)" and note that no changes were made.
+
+### Phase 8: Mark Task Complete
+
+Dream runs as a scheduled Argus task. After the report has been written, mark the task complete so it leaves the active list and stamps `EndedAt`. Call `mcp__argus__task_complete` with the current working directory as `cwd` — Argus resolves the task from its worktree path.
+
+Skip this phase when `--dry-run` is set. If the tool errors (e.g. "no task matches cwd", task already complete), surface the response in one line and stop — don't retry with guessed arguments.
 
 #### Extra report sections (Phases 0, 3-5)
 
