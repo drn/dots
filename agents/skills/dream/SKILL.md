@@ -37,7 +37,7 @@ The Argus KB MCP server is registered as `argus` (current) or `argus-kb` (legacy
 
 Run the nine phases below in order. Apply every fix. Never prompt for confirmation.
 
-- If `$ARGUMENTS` contains `--dry-run`, replace every "apply" step with "report what would change." This is the only short-circuit on writes.
+- If `$ARGUMENTS` contains `--dry-run`, replace every "apply" step with "report what would change," and skip every non-KB side effect (e.g. closing the Argus task). This is the only short-circuit on writes.
 - If the change log (`~/.dots/sys/kb-changes/changes.jsonl`) shows no writes since the timestamp of the last successful dream run (latest file under `~/.dots/sys/dream-runs/`), exit immediately with an empty report — saves work when the KB is quiet.
 - If `$ARGUMENTS` contains a bare path prefix, pass it to `kb_list` as the prefix filter to scope the audit. The triage and decay phases still scan their respective folders (`memory/inbox/`, full vault) regardless.
 
@@ -276,12 +276,6 @@ For decisions made under "Apply with judgment" (oversized/multi-topic splits, na
 
 If `--dry-run` was specified, label the report "KB Hygiene Report (Dry Run)" and note that no changes were made.
 
-### Phase 8: Mark Task Complete
-
-Dream runs as a scheduled Argus task. After the report has been written, mark the task complete so it leaves the active list and stamps `EndedAt`. Call `mcp__argus__task_complete` with the current working directory as `cwd` — Argus resolves the task from its worktree path.
-
-Skip this phase when `--dry-run` is set. If the tool errors (e.g. "no task matches cwd", task already complete), surface the response in one line and stop — don't retry with guessed arguments.
-
 #### Extra report sections (Phases 0, 3-5)
 
 Add these sections to the report — they cover ingest, triage/synthesis, conflicts, and decay:
@@ -313,6 +307,12 @@ Add these sections to the report — they cover ingest, triage/synthesis, confli
 |-----|-----------|--------|--------|
 | path | N | no incoming links / superseded / closed project | archived |
 ```
+
+### Phase 8: Mark Task Complete
+
+Dream runs as a scheduled Argus task. After the report has been written, mark the task owning this worktree as complete so it leaves the active list and stamps `EndedAt`. Call `mcp__argus__task_complete` with the shell's current working directory (the `$PWD` Argus injected when it spawned the task) as the `cwd` argument — Argus resolves the task from its worktree path.
+
+Skip this phase when `--dry-run` is set. If the tool errors (e.g. "no task matches cwd", task already complete), surface the response in one line and conclude the run — do not retry with guessed arguments. `task_complete` has no `mcp__argus-kb__*` legacy alias, so the fallback rule in the "MCP tool naming" section above does not apply here.
 
 ## Scheduling
 
