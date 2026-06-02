@@ -24,6 +24,13 @@ SESSION=$(echo "$INPUT" | jq -r '.session_id // empty')
 CWD=$(echo "$INPUT" | jq -r '.cwd // empty')
 TS=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 
+# Excluded repos must never be logged. Match by path segment — covers the
+# source repo and its worktrees. This also prevents kb_ingests run from an
+# excluded worktree from re-adding its cwd to the changelog.
+case "$CWD" in
+  */trove|*/trove/*) exit 0 ;;
+esac
+
 mkdir -p ~/.dots/sys/kb-changes ~/.dots/sys/dream-runs
 jq -nc --arg ts "$TS" --arg path "$KB_PATH" --arg session_id "$SESSION" --arg cwd "$CWD" \
   '{ts:$ts,path:$path,session_id:$session_id,cwd:$cwd}' \

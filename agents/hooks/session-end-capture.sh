@@ -118,6 +118,14 @@ TRANSCRIPT=$(echo "$INPUT" | jq -r '.transcript_path // empty')
 [ -n "$CWD" ] || { STATUS="skip:no-cwd"; exit 0; }
 [ -d "$CWD" ] || { STATUS="skip:cwd-missing"; exit 0; }
 
+# Excluded repos must never be captured to the KB. Match by path segment, not
+# repo name: Conductor worktrees report their toplevel basename as the branch,
+# so the repo name only ever appears as a path component. This covers both the
+# source repo and its worktrees.
+case "$CWD" in
+  */trove|*/trove/*) STATUS="skip:excluded-repo"; exit 0 ;;
+esac
+
 # A session with no readable transcript is dead weight — there's no intent,
 # no excerpt, nothing to distill. Skip rather than write an empty stub.
 [ -n "$TRANSCRIPT" ] || { STATUS="skip:no-transcript-path"; exit 0; }
