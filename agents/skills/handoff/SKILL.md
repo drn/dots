@@ -10,10 +10,10 @@ Generate a structured prompt capturing the current conversation context so it ca
 ## Arguments
 
 - `$ARGUMENTS` - Optional. Free-form instructions about what to emphasize or who the target is. May also specify the target Argus project the follow-up task is created in, two ways:
-  - `project=<name>` — explicit override, recognized only as a standalone whitespace-delimited token (so the word "project" in a sentence is not parsed as a directive). Used verbatim.
-  - A **cue-anchored** target: a word that immediately follows `to`, `for`, `hand off to`, or `handoff to` (e.g. `/handoff to keystone this task`). It is treated as the target only when it matches one of the **Argus projects** listed in the Context block — in which case that phrase is routing, not emphasis content. An anchored target that matches no known project is never silently used; the skill asks (see step 8). Ordinary prose with no cue word (e.g. "focus on the api changes") is not parsed as a target.
+  - `project=<name>` — explicit override, recognized only as a standalone whitespace-delimited token (so the word "project" in a sentence is not parsed as a directive). Used verbatim and **takes precedence** over any cue-anchored target. It is intentionally not validated against the projects list: the explicit `project=` syntax signals deliberate intent, so the user's literal value is honored.
+  - A **cue-anchored** target: the first whitespace-delimited token after `to`, `for`, `hand off to`, or `handoff to` — for example `/handoff to keystone this task` or `/handoff this work to keystone`. Compare that token (lowercased, with surrounding punctuation stripped) against the **Argus projects** listed in the Context block. A token is treated as the target **only when it matches a known project**; the routing phrase is then ignored when assembling the emphasis content. If several cue phrases appear, the first one whose token matches a known project wins. A cue-anchored token that matches no known project is never silently used — the skill asks (see step 8). Because `to`/`for` are common words, this validation is what prevents ordinary prose (e.g. "focus on the api changes", "remember to test") from being mistaken for routing: prose only routes if a word right after a cue happens to name a real project, and even then the handoff body is shown for review before any task is created.
   - If no project is specified either way, derive from the worktree path: the immediate subdirectory after `~/.argus/worktrees/` (e.g. CWD `/Users/me/.argus/worktrees/dots/foo` → project `dots`). If that does not resolve, ask the user before creating the task.
-  - `no-task` — standalone token that skips Argus task creation entirely (KB save still runs).
+  - `no-task` — standalone token that skips Argus task creation entirely (KB save still runs). When present it short-circuits step 8 before any project resolution, so a cue-anchored or `project=` target is moot and the skill does not ask about an unknown project.
 
 ## Context
 
@@ -87,11 +87,11 @@ The Argus knowledge base is the primary destination for handoffs — they persis
 7. **Save to KB.** Call `mcp__argus__kb_ingest` with the KB path and the full document. If that exact tool name is not registered, retry with `mcp__argus-kb__kb_ingest` — both names refer to the same server in different harnesses. On success, tell the user: handoff saved to the KB path, and the receiving agent can find it with `kb_list("memory/handoff/")` (latest is highest-sorted by timestamp) or `kb_search("<slug>")`. Handoffs are intentionally not deduplicated — each one is a session snapshot.
 8. **Create Argus task** (only if step 7 succeeded, and `no-task` was not passed). The KB doc is the artifact; this task is the delivery mechanism that wakes a receiving agent.
 
-   Resolve the project from the CWD captured at skill invocation (not after any later `cd`), in this order:
-   - If `$ARGUMENTS` contains a standalone `project=<name>` token, use that.
-   - Else, scan `$ARGUMENTS` for a cue-anchored target — a word immediately following `to`, `for`, `hand off to`, or `handoff to`. If one is present:
-     - If it matches a name in the Context **Argus projects** list, use it.
-     - If it does **not** match any known project, **ask** the user which Argus project to use. Do not guess, and do not fall through to the CWD-derived project.
+   (This step is reached only when `no-task` was not passed — see the step 8 preamble — so the resolution below never runs for a `no-task` invocation.) Resolve the project from the CWD captured at skill invocation (not after any later `cd`), in this order:
+   - If `$ARGUMENTS` contains a standalone `project=<name>` token, use that value verbatim. It wins over any cue-anchored target.
+   - Else, scan `$ARGUMENTS` for a cue-anchored target — the first token after `to`, `for`, `hand off to`, or `handoff to` (lowercased, surrounding punctuation stripped). If one is present:
+     - If it matches a name in the Context **Argus projects** list, use it. If several cue phrases appear, use the first whose token matches a known project.
+     - If a cue phrase is present but its token matches **no** known project, **ask** the user which Argus project to use. Do not guess, and do not fall through to the CWD-derived project.
    - Else, if CWD starts with `~/.argus/worktrees/` (resolving `~` to `$HOME`), use the next path segment as the project name.
    - Else, ask the user which Argus project to create the task in. Do **not** guess.
 
