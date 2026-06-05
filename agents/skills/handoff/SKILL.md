@@ -9,12 +9,15 @@ Generate a structured prompt capturing the current conversation context so it ca
 
 ## Arguments
 
-- `$ARGUMENTS` - Optional. Free-form instructions about what to emphasize or who the target is. May also include the following directives, recognized only when each appears as a standalone whitespace-delimited token (so the word "project" in a sentence is not parsed as a directive):
-  - `project=<argus-project>` — override the Argus project the follow-up task is created in. If absent, derive from the worktree path: the immediate subdirectory after `~/.argus/worktrees/` (e.g. CWD `/Users/me/.argus/worktrees/dots/foo` → project `dots`). If neither resolves, ask the user before creating the task.
-  - `no-task` — skip Argus task creation entirely (KB save still runs).
+- `$ARGUMENTS` - Optional. Free-form instructions about what to emphasize or who the target is. May also specify the target Argus project the follow-up task is created in, two ways:
+  - `project=<name>` — explicit override, recognized only as a standalone whitespace-delimited token (so the word "project" in a sentence is not parsed as a directive). Used verbatim.
+  - A **cue-anchored** target: a word that immediately follows `to`, `for`, `hand off to`, or `handoff to` (e.g. `/handoff to keystone this task`). It is treated as the target only when it matches one of the **Argus projects** listed in the Context block — in which case that phrase is routing, not emphasis content. An anchored target that matches no known project is never silently used; the skill asks (see step 8). Ordinary prose with no cue word (e.g. "focus on the api changes") is not parsed as a target.
+  - If no project is specified either way, derive from the worktree path: the immediate subdirectory after `~/.argus/worktrees/` (e.g. CWD `/Users/me/.argus/worktrees/dots/foo` → project `dots`). If that does not resolve, ask the user before creating the task.
+  - `no-task` — standalone token that skips Argus task creation entirely (KB save still runs).
 
 ## Context
 
+- Argus projects: !`ls -1 ~/.argus/worktrees/ 2>/dev/null | head -50`
 - Repo root: !`git rev-parse --show-toplevel 2>/dev/null | head -1`
 - Branch: !`git branch --show-current`
 - Base ref: !`git branch -r 2>/dev/null | grep -oE 'origin/(main|master)' | head -1`
@@ -84,8 +87,11 @@ The Argus knowledge base is the primary destination for handoffs — they persis
 7. **Save to KB.** Call `mcp__argus__kb_ingest` with the KB path and the full document. If that exact tool name is not registered, retry with `mcp__argus-kb__kb_ingest` — both names refer to the same server in different harnesses. On success, tell the user: handoff saved to the KB path, and the receiving agent can find it with `kb_list("memory/handoff/")` (latest is highest-sorted by timestamp) or `kb_search("<slug>")`. Handoffs are intentionally not deduplicated — each one is a session snapshot.
 8. **Create Argus task** (only if step 7 succeeded, and `no-task` was not passed). The KB doc is the artifact; this task is the delivery mechanism that wakes a receiving agent.
 
-   Resolve the project from the CWD captured at skill invocation (not after any later `cd`):
+   Resolve the project from the CWD captured at skill invocation (not after any later `cd`), in this order:
    - If `$ARGUMENTS` contains a standalone `project=<name>` token, use that.
+   - Else, scan `$ARGUMENTS` for a cue-anchored target — a word immediately following `to`, `for`, `hand off to`, or `handoff to`. If one is present:
+     - If it matches a name in the Context **Argus projects** list, use it.
+     - If it does **not** match any known project, **ask** the user which Argus project to use. Do not guess, and do not fall through to the CWD-derived project.
    - Else, if CWD starts with `~/.argus/worktrees/` (resolving `~` to `$HOME`), use the next path segment as the project name.
    - Else, ask the user which Argus project to create the task in. Do **not** guess.
 
