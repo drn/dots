@@ -95,6 +95,16 @@ After a successful **squash** merge, the script auto-switches the current worktr
 
 If auto-switch fails (e.g., uncommitted changes in the worktree, or `master` is checked out in another worktree), the script falls back to a loud warning rather than aborting — the merge itself already succeeded.
 
+#### Review-required repos: automatic `--admin` escalation
+
+The script handles branch protection on its own — you do **not** need to fall back to a manual `gh pr merge --admin`. When `reviewDecision` is `REVIEW_REQUIRED` or `CHANGES_REQUESTED`, `do_merge` escalates through tiers automatically:
+
+1. Retry the merge with `--admin` (branch-protection bypass; succeeds when you hold admin on the repo). A successful admin merge prints `WARNING: merged via --admin (branch protection bypassed)` so the bypass is never silent.
+2. If `--admin` fails (you lack admin), enable `--auto` (auto-merge) so the PR lands once checks pass.
+3. Only if both fail does it `exit 4`.
+
+On a repo where you hold admin, `/merge` lands the PR through the review gate itself — **never substitute a raw `gh pr merge --admin`**, which skips the post-squash worktree auto-switch and strands you on the merged feature branch. A plain non-blocked PR merges directly; the admin tier only kicks in when review is actually blocking.
+
 #### Handle the exit code
 
 - **Exit 0** — Show the output block verbatim as your final response. Do not add commentary.
@@ -117,5 +127,5 @@ If auto-switch fails (e.g., uncommitted changes in the worktree, or `master` is 
   5. Re-run the merge script with `--skip-rebase`.
 
 - **Exit 3** — Tell the user: "Nothing to merge — branch has no commits ahead of the default branch."
-- **Exit 4 (review blocked)** — The PR requires review and auto-merge is not available. Tell the user: "PR requires an approving review before it can merge. Auto-merge is not enabled on this repository — ask a reviewer to approve, then re-run /merge."
+- **Exit 4 (review blocked)** — Review is required (`REVIEW_REQUIRED`/`CHANGES_REQUESTED`) **and** the `--admin` bypass was unavailable (you lack admin on the repo) **and** auto-merge is not enabled. The script already tried admin and auto-merge before giving up, so there is nothing left to escalate. Tell the user: "PR requires an approving review before it can merge, and I don't have admin on this repo to bypass it. Ask a reviewer to approve, then re-run /merge."
 - **Exit 1** — Report the error from stderr.
