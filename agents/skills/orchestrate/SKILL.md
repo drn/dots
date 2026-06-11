@@ -1,9 +1,9 @@
 ---
-name: fable-workflow
-description: Launch a dynamic Workflow where the top-tier session model (Fable) handles planning and orchestration while implementation subagents run on Sonnet for routine tasks and Opus for complex ones. Use when the user wants a dynamic workflow, a model-tiered build, fable planning with sonnet and opus implementation, tiered agents, or to orchestrate implementation across model tiers.
+name: orchestrate
+description: Launch a dynamic Workflow where the top-tier session model (Fable) handles planning and orchestration while implementation subagents run on Sonnet for routine tasks and Opus for complex ones. Use when the user wants to orchestrate a build, a dynamic workflow, a model-tiered build, fable planning with sonnet and opus implementation, or tiered agents.
 ---
 
-# Fable Workflow: Tiered Planning + Implementation
+# Orchestrate: Tiered Planning + Implementation
 
 Run the expensive top-tier session model (Fable) only where it earns its cost — planning, decomposition, orchestration, and final integration — and fan implementation out through the Workflow tool to model-tiered subagents: Sonnet for routine work, Opus for complex work.
 

@@ -81,7 +81,7 @@ Dots includes 66 reusable slash-command skills for AI coding agents, following t
 | `/merge` | Merge current branch to master via GitHub PR |
 | `/debug` | Multi-agent competing hypotheses debugging |
 | `/dev` | Multi-agent iterative development with parallel testing and code review |
-| `/fable-workflow` | Launch a dynamic Workflow: Fable plans and orchestrates, Sonnet and Opus implement |
+| `/orchestrate` | Launch a dynamic Workflow: Fable plans and orchestrates, Sonnet and Opus implement |
 | `/explore` | Multi-agent parallel research with peer-challenged synthesis |
 | `/ci-investigate` | Investigate flaky CI failures across workflow runs |
 | `/changelog` | Generate changelog from recent commits |
