@@ -163,6 +163,7 @@ When the user's message matches a phrase below, read and follow the correspondin
 | "create skill", "new skill", "write skill", "add a slash command", "improve skill" | `agents/skills/write-skill/SKILL.md` |
 | "prioritize", "RICE score", "backlog grooming", "sprint planning", "rank items" | `agents/skills/prioritize/SKILL.md` |
 | "swarm", "parallel agents", "agent team in conductor", "multi-agent", "spawn agents" | `agents/skills/swarm/SKILL.md` |
+| "fable workflow", "dynamic workflow", "tiered workflow", "model-tiered build", "plan on fable implement with sonnet and opus" | `agents/skills/fable-workflow/SKILL.md` |
 | "skill gap analysis", "missing skills", "missing agents", "equip project", "bootstrap skills from spec", "what skills do I need" | `agents/skills/equip/SKILL.md` |
 | "write a plan", "implementation plan", "plan from PRD", "plan from spike", "break down this spec", "planning" | `agents/skills/plan/SKILL.md` |
 | "slack", "channel history", "slack search", "slack messages", "find channel", "find user slack", any `#channel-name` reference (e.g. `#app-reviews`, `#rnd-leadership`, `#general`) | `agents/skills/slack/SKILL.md` |
