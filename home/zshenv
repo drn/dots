@@ -1,36 +1,71 @@
+# shellcheck shell=bash
+# (this file is sourced by zsh as ~/.zshenv; the directive only tells shellcheck
+# which dialect to lint against, since a sourced file has no shebang)
+
+# Base vars that PATH entries depend on. Cheap, idempotent assignments — set on
+# every shell (including nested/non-interactive ones) so the PATH block below
+# can rely on them regardless of the re-entrancy guard.
+export DOTS="$HOME/.dots"
+export GOPATH=$HOME/go
+export GOBIN=$GOPATH/bin
+export BREW_PATH=/usr/local # Intel silicon
+[ -d "/opt/homebrew" ] && export BREW_PATH=/opt/homebrew # Apple silicon
+export OPENSSL_PATH="$BREW_PATH/opt/openssl@3"
+
+# Idempotent PATH prepend: adds $1 to the front of PATH only if it's not already
+# present. Defined and called OUTSIDE the ZSHENV_SOURCED guard below so that
+# nested/non-interactive shells (e.g. Claude Code's Bash tool) — which inherit
+# ZSHENV_SOURCED=true but NOT the PATH that flag was protecting — still get every
+# directory. Calls run in the original source order; the last call wins the
+# frontmost slot, exactly matching the previous unconditional prepends. Within a
+# former multi-entry line, the entries are listed back-to-front for that reason
+# (e.g. sbin before bin yields ".../bin:.../sbin").
+_dots_prepend_path() {
+  case ":$PATH:" in
+    *":$1:"*) ;;
+    *) [ -n "$1" ] && export PATH="$1:$PATH" ;;
+  esac
+}
+
+# Include ~/bin scripts in PATH
+_dots_prepend_path "$HOME/bin"
+# Include ~/.mini/bin on sanguinemini
+[[ "$HOST" == "sanguinemini"* ]] && _dots_prepend_path "$HOME/.mini/bin"
+_dots_prepend_path "$HOME/.local/bin" # xdg-user-dirs spec
+# Intel Homebrew Formula
+_dots_prepend_path /usr/local/sbin
+_dots_prepend_path /usr/local/bin
+# Apple Homebrew Formula
+_dots_prepend_path /opt/homebrew/sbin
+_dots_prepend_path /opt/homebrew/bin
+# Include git extensions in PATH
+_dots_prepend_path "$HOME/.git-extensions"
+# Include MySQL in PATH
+_dots_prepend_path "$BREW_PATH/opt/mysql@8.0/bin"
+# Include Android tools in PATH
+_dots_prepend_path "$HOME/Library/Android/sdk/platform-tools"
+_dots_prepend_path "$HOME/Library/Android/sdk/tools"
+# Include rust dependencies in PATH
+_dots_prepend_path "$HOME/.cargo/bin"
+# Include asdf shims in PATH
+_dots_prepend_path "$HOME/.asdf/shims"
+# GOBIN after asdf shims so go-installed binaries bypass shims
+_dots_prepend_path "$GOBIN"
+# Include binstubs in path
+_dots_prepend_path .bundle/bin
+# Ensure openssl is in path
+_dots_prepend_path "$OPENSSL_PATH/bin"
+# Ensure libxml2 is in path
+_dots_prepend_path "$BREW_PATH/opt/libxml2/bin"
+unset -f _dots_prepend_path
+
+# The guard below protects env vars that are NOT safe to apply on every shell:
+# the *LDFLAGS/CPPFLAGS/PKG_CONFIG_PATH self-appends would duplicate on each
+# re-source, and ulimit need only run once. These are inherited by child
+# processes, so nested shells get them for free without re-running.
 if [ "$ZSHENV_SOURCED" != "true" ]; then
   export ZSHENV_SOURCED=true
 
-  # Set $DOTS
-  export DOTS="$HOME/.dots"
-  # Include ~/bin scripts in PATH
-  export PATH=$HOME/bin:$PATH
-  # Include ~/.mini/bin on sanguinemini
-  [[ "$HOST" == "sanguinemini"* ]] && export PATH=$HOME/.mini/bin:$PATH
-  # Include Homebrew in PATH
-  export BREW_PATH=/usr/local # Intel silicon
-  [ -d "/opt/homebrew" ] && export BREW_PATH=/opt/homebrew # Apple silicon
-  export PATH="$HOME/.local/bin:$PATH" # xdg-user-dirs spec
-  export PATH=/usr/local/bin:/usr/local/sbin:$PATH # Intel Homebrew Formula
-  export PATH=/opt/homebrew/bin:/opt/homebrew/sbin:$PATH # Apple Homebrew Formula
-  # Include git extensions in PATH
-  export PATH=$HOME/.git-extensions:$PATH
-  # Include MySQL in PATH
-  export PATH=$BREW_PATH/opt/mysql@8.0/bin:$PATH
-  # Include Android tools in PATH
-  export PATH=$HOME/Library/Android/sdk/platform-tools:$PATH
-  export PATH=$HOME/Library/Android/sdk/tools:$PATH
-  # Include go dependencies in PATH
-  export GOPATH=$HOME/go
-  export GOBIN=$GOPATH/bin
-  # Include rust dependencies in PATH
-  export PATH=$HOME/.cargo/bin:$PATH
-  # Include asdf shims in PATH
-  export PATH=$HOME/.asdf/shims:$PATH
-  # GOBIN after asdf shims so go-installed binaries bypass shims
-  export PATH=$GOBIN:$PATH
-  # Include binstubs in path
-  export PATH=.bundle/bin:$PATH
   # Set $ANDROID_HOME
   export ANDROID_HOME=$HOME/Library/Android/sdk
   # Set default Postgres host and port
@@ -46,14 +81,11 @@ if [ "$ZSHENV_SOURCED" != "true" ]; then
   export LDFLAGS="${LDFLAGS} -L$BREW_PATH/opt/zlib/lib"
   export CPPFLAGS="${CPPFLAGS} -I$BREW_PATH/opt/zlib/include"
   export PKG_CONFIG_PATH="${PKG_CONFIG_PATH} $BREW_PATH/opt/zlib/lib/pkgconfig"
-  # Ensure openssl is in path
-  export OPENSSL_PATH="$BREW_PATH/opt/openssl@3"
-  export PATH="$OPENSSL_PATH/bin:$PATH"
+  # Openssl compiler flags
   export LDFLAGS="${LDFLAGS} -L$OPENSSL_PATH/lib"
   export CPPFLAGS="${CPPFLAGS} -I$OPENSSL_PATH/include"
   export PKG_CONFIG_PATH="${PKG_CONFIG_PATH} $OPENSSL_PATH/lib/pkgconfig"
   # Ensure libxml2 is in path
-  export PATH="$BREW_PATH/opt/libxml2/bin:$PATH"
   export LDFLAGS="${LDFLAGS} -L$BREW_PATH/opt/libxml2/lib"
   export CPPFLAGS="${CPPFLAGS} -I$BREW_PATH/opt/libxml2/include"
   export PKG_CONFIG_PATH="${PKG_CONFIG_PATH} $BREW_PATH/opt/libxml2/lib/pkgconfig"
