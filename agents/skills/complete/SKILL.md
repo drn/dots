@@ -1,5 +1,5 @@
 ---
-name: argus-complete
+name: complete
 description: Mark the current Argus task as complete. Use when the work for the current worktree is done and the user wants the task to transition to the "complete" status.
 allowed-tools: mcp__argus__task_complete
 ---
@@ -8,7 +8,7 @@ allowed-tools: mcp__argus__task_complete
 
 Mark the Argus task owning the current worktree as `complete`. This sets the task's status to `complete` and stamps `EndedAt`. It does **not** stop a running agent session — if an agent is still attached, the user should stop it separately first.
 
-This skill is **not** the same as `/archive`. `/archive` moves the task into the Archive section (a visibility flag, independent of status). `/argus-complete` transitions the workflow status to `complete`. Use `/argus-complete` when the work is finished; use `/archive` (separately, optionally) if you also want it removed from the active task list.
+This skill is **not** the same as `/archive`. `/archive` moves the task into the Archive section (a visibility flag, independent of status). `/complete` transitions the workflow status to `complete`. Use `/complete` when the work is finished; use `/archive` (separately, optionally) if you also want it removed from the active task list.
 
 ## Context
 
