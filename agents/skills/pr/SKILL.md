@@ -42,15 +42,19 @@ If there are uncommitted changes (check git status), stage and commit them with 
 
 If the pending push touches any `.md` files, run `prettier --check` against them first **only when the repo actually enforces prettier**. Markdown table edits often force prettier to realign column widths in *other* tables in the same file, which trips `qlty fmt` in CI. Catching it before push avoids burning a CI cycle — but reformatting against a repo that doesn't enforce prettier can introduce regressions on files whose existing style differs from prettier's preferred output (e.g., joining `0.`-prefixed list items, swapping italics `*` ↔ `_`, adding blank lines after list intros).
 
-Gate on the presence of a prettier or qlty config in the repo. If none is found, skip this step.
+Gate on a config that actually enforces prettier on markdown. A bare `.qlty/qlty.toml` is NOT enough — qlty only formats markdown when its config enables a prettier or markdown plugin, and reformatting a repo that never enforced prettier introduces noisy unrelated diffs. If no qualifying config is found, skip this step.
 
 ```bash
 prettier_enforced=false
-for cfg in .prettierrc .prettierrc.json .prettierrc.yml .prettierrc.yaml .prettierrc.js .prettierrc.cjs .prettierrc.toml prettier.config.js prettier.config.cjs .qlty/qlty.toml; do
+for cfg in .prettierrc .prettierrc.json .prettierrc.yml .prettierrc.yaml .prettierrc.js .prettierrc.cjs .prettierrc.toml prettier.config.js prettier.config.cjs; do
   [ -e "$cfg" ] && { prettier_enforced=true; break; }
 done
-# Also detect prettier/qlty referenced from CI workflows
-if [ "$prettier_enforced" = false ] && grep -rlE 'prettier|qlty' .github/workflows 2>/dev/null | grep -q .; then
+# qlty counts only when its config actually enables a markdown formatter
+if [ "$prettier_enforced" = false ] && [ -e .qlty/qlty.toml ] && grep -qE 'prettier|markdown' .qlty/qlty.toml; then
+  prettier_enforced=true
+fi
+# Also detect prettier referenced directly from CI workflows
+if [ "$prettier_enforced" = false ] && grep -rlE 'prettier' .github/workflows 2>/dev/null | grep -q .; then
   prettier_enforced=true
 fi
 

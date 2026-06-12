@@ -123,6 +123,16 @@ Always bound output to avoid blowing up the context window:
 - Log: !{git log}
 ```
 
+When chaining `find -name` clauses with `-o`, group them with escaped parens so options like `-maxdepth` apply to the whole expression on every find implementation:
+
+```markdown
+# GOOD — grouped -o chain
+- Project type: !{find . -maxdepth 1 \( -name go.mod -o -name package.json \) 2>/dev/null | head -3}
+
+# BAD — ungrouped, precedence varies and later clauses can escape the depth limit
+- Project type: !{find . -maxdepth 1 -name go.mod -o -name package.json 2>/dev/null | head -3}
+```
+
 #### Error Handling and Exit Codes
 
 **Never use `||` or `&&`** — Claude Code's permission system treats these as multiple operations and blocks them.
