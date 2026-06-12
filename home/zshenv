@@ -49,7 +49,9 @@ _dots_prepend_path "$HOME/Library/Android/sdk/tools"
 _dots_prepend_path "$HOME/.cargo/bin"
 # Include asdf shims in PATH
 _dots_prepend_path "$HOME/.asdf/shims"
-# GOBIN after asdf shims so go-installed binaries bypass shims
+# GOBIN's call comes after the asdf shims call so that — since the helper
+# prepends and the last call wins the frontmost slot — GOBIN lands AHEAD of the
+# shims in PATH, letting go-installed binaries bypass the shims. Do not reorder.
 _dots_prepend_path "$GOBIN"
 # Include binstubs in path
 _dots_prepend_path .bundle/bin
