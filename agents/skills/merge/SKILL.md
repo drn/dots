@@ -14,10 +14,10 @@ description: Merge current branch to the default branch via GitHub PR merge. Use
 - Commits vs master (upstream): !`git log upstream/master..HEAD --oneline 2>/dev/null | head -50`
 - Commits vs main (origin): !`git log origin/main..HEAD --oneline 2>/dev/null | head -50`
 - Commits vs master (origin): !`git log origin/master..HEAD --oneline 2>/dev/null | head -50`
-- Diff stat vs main (upstream): !`git diff upstream/main..HEAD --stat 2>/dev/null | head -50`
-- Diff stat vs master (upstream): !`git diff upstream/master..HEAD --stat 2>/dev/null | head -50`
-- Diff stat vs main (origin): !`git diff origin/main..HEAD --stat 2>/dev/null | head -50`
-- Diff stat vs master (origin): !`git diff origin/master..HEAD --stat 2>/dev/null | head -50`
+- Diff stat vs main (upstream, branch-only): !`git diff upstream/main...HEAD --stat 2>/dev/null | head -50`
+- Diff stat vs master (upstream, branch-only): !`git diff upstream/master...HEAD --stat 2>/dev/null | head -50`
+- Diff stat vs main (origin, branch-only): !`git diff origin/main...HEAD --stat 2>/dev/null | head -50`
+- Diff stat vs master (origin, branch-only): !`git diff origin/master...HEAD --stat 2>/dev/null | head -50`
 
 ## Phase Protocol
 
@@ -52,6 +52,8 @@ Decide based on the output:
 
 - **ahead=0 and dirty=0** — Stop. Reply: "Nothing to merge — branch has no commits ahead of $DEFAULT_BRANCH and working tree is clean."
 - **Otherwise** (ahead > 0, or dirty > 0) — Proceed to Step 1. The merge script handles fetch + rebase automatically, so being behind the default branch is fine.
+
+These `ahead`/`behind` counts and `git log <base>..HEAD --oneline` are the authoritative signal for what the branch actually changes. The injected "Diff stat vs `<base>`" context lines use a three-dot (merge-base) diff, so they already scope to the branch's own changes even when `behind > 0`. If you ever see a two-dot `<base>..HEAD` diff stat list many files unrelated to this branch, that is base-ahead history leaking in while the branch is behind — trust the Step 0 counts, not that raw diff; the rebase reconciles it.
 
 ### Step 1: Commit uncommitted changes
 
