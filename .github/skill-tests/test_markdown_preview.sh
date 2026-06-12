@@ -176,6 +176,28 @@ test_nonexistent_file() {
 test_unknown_flag() {
   capture bash "$RENDER" --bogus
   assert_eq "$_CAPTURED_EXIT" "1" "exits 1 on unknown flag"
+  assert_contains "$_CAPTURED" "Unknown flag" "reports the unknown flag"
+}
+
+test_wrap_html_escapes_double_quote() {
+  _source_render
+  local doc
+  doc="$(wrap_html 'a"b' "<p>x</p>")"
+  assert_contains "$doc" "<title>a&quot;b</title>" "double quote in title is escaped"
+}
+
+# Exercises the real jq encoding (the integration tests stub jq out, so this
+# is the only check that the API request payload has the right shape).
+test_build_payload_shape() {
+  command -v jq >/dev/null 2>&1 || return 0
+  _source_render
+  local dir payload
+  dir=$(mktemp -d "${TMPDIR:-/tmp}/mdp-XXXXXX")
+  _TMPDIRS+=("$dir")
+  printf '# Heading\n' > "$dir/d.md"
+  payload=$(build_payload "$dir/d.md")
+  assert_contains "$payload" '"mode": "gfm"' "payload requests gfm mode"
+  assert_contains "$payload" "Heading" "payload carries the markdown text"
 }
 
 run_tests

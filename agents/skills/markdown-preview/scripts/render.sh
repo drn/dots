@@ -72,6 +72,7 @@ wrap_html() {
   title="${title//&/&amp;}"
   title="${title//</&lt;}"
   title="${title//>/&gt;}"
+  title="${title//\"/&quot;}"
   cat <<HTML
 <!doctype html>
 <html lang="en">
@@ -171,10 +172,17 @@ ${body}
 HTML
 }
 
+# Build the JSON request body for the GitHub markdown API: the file slurped
+# raw into `text`, rendered in GitHub-flavored mode. Kept separate from the
+# network call so the payload shape is unit-testable.
+build_payload() {
+  jq -Rs '{text: ., mode: "gfm"}' "$1"
+}
+
 # Render the body HTML from a markdown file via the GitHub API.
 render_body() {
   local md="$1"
-  jq -Rs '{text: ., mode: "gfm"}' "$md" | gh api --method POST /markdown --input -
+  build_payload "$md" | gh api --method POST /markdown --input -
 }
 
 # Open a file in the default browser, branching on platform. Opening is
