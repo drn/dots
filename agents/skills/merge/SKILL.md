@@ -14,10 +14,10 @@ description: Merge current branch to the default branch via GitHub PR merge. Use
 - Commits vs master (upstream): !`git log upstream/master..HEAD --oneline 2>/dev/null | head -50`
 - Commits vs main (origin): !`git log origin/main..HEAD --oneline 2>/dev/null | head -50`
 - Commits vs master (origin): !`git log origin/master..HEAD --oneline 2>/dev/null | head -50`
-- Diff stat vs main (upstream): !`git diff upstream/main..HEAD --stat 2>/dev/null | head -50`
-- Diff stat vs master (upstream): !`git diff upstream/master..HEAD --stat 2>/dev/null | head -50`
-- Diff stat vs main (origin): !`git diff origin/main..HEAD --stat 2>/dev/null | head -50`
-- Diff stat vs master (origin): !`git diff origin/master..HEAD --stat 2>/dev/null | head -50`
+- Diff stat vs main (upstream, branch-only): !`git diff upstream/main...HEAD --stat 2>/dev/null | head -50`
+- Diff stat vs master (upstream, branch-only): !`git diff upstream/master...HEAD --stat 2>/dev/null | head -50`
+- Diff stat vs main (origin, branch-only): !`git diff origin/main...HEAD --stat 2>/dev/null | head -50`
+- Diff stat vs master (origin, branch-only): !`git diff origin/master...HEAD --stat 2>/dev/null | head -50`
 
 ## Phase Protocol
 
@@ -52,6 +52,10 @@ Decide based on the output:
 
 - **ahead=0 and dirty=0** — Stop. Reply: "Nothing to merge — branch has no commits ahead of $DEFAULT_BRANCH and working tree is clean."
 - **Otherwise** (ahead > 0, or dirty > 0) — Proceed to Step 1. The merge script handles fetch + rebase automatically, so being behind the default branch is fine.
+
+These `ahead`/`behind` counts are the authoritative signal for what the branch will land. The injected context block reflects them: the "Commits vs `<base>`" lines use a two-dot range (`<base>..HEAD`), which lists exactly the commits this branch adds, and the "Diff stat vs `<base>` (branch-only)" lines use a three-dot diff (`<base>...HEAD`, from the merge-base), which shows only this branch's own file changes even when `behind > 0`. Both are already scoped to the branch — neither inflates when behind.
+
+Caveat for manual checks: if you run a plain two-dot diff yourself (`git diff <base>..HEAD --stat`) while the branch is behind, it folds base-ahead history in as inverted changes and lists many files unrelated to this branch. That is expected, not a problem with the branch — Step 3 rebases the branch onto the current `<base>` tip, after which the two-dot and three-dot diffs converge. Trust the Step 0 counts and the three-dot diff stat above, not a raw two-dot diff.
 
 ### Step 1: Commit uncommitted changes
 
