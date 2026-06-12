@@ -27,6 +27,9 @@
   --green: #5dd39e;       /* positive / ok (.ok) */
   --mono: "JetBrains Mono", ui-monospace, monospace;  /* body font */
   --serif: "Instrument Serif", Georgia, serif;        /* display font (headings) */
+  /* NOTE: the accent also appears as hard-coded rgba(25,194,189,...) glows below
+     (progress bar, divider rule, screenshot shadow). If you change --teal to a
+     very different hue, update those rgba values to match. */
 }
 * { margin: 0; padding: 0; box-sizing: border-box; }
 html, body { height: 100%; overflow: hidden; background: var(--bg); }
@@ -271,8 +274,9 @@ body::after {             /* vignette + accent glow */
      ════════════════════════════════════════════════════════════════ -->
 <main class="deck" id="deck">
 
-  <!-- 1 · title -->
-  <section class="slide title">
+  <!-- 1 · title.  data-section opens a section: its label shows in the status
+       bar from here until the next data-section. Sections are derived at runtime. -->
+  <section class="slide title" data-section="opening">
     <div class="boot">
       <span class="ok">●</span> line one — a scene-setting status line<br>
       <span class="ok">●</span> line two<br>
@@ -288,8 +292,8 @@ body::after {             /* vignette + accent glow */
     <h1>A single bold statement with one <em>emphasized</em> phrase.<span class="cursor"></span></h1>
   </section>
 
-  <!-- 3 · divider — section opener. KEEP num in sync with SECTIONS below. -->
-  <section class="slide divider">
+  <!-- 3 · divider — section opener. The .num is hand-written: keep 01/02/… sequential. -->
+  <section class="slide divider" data-section="01 · first section">
     <div class="num">01</div>
     <h1>First section</h1>
     <div class="rule"></div>
@@ -315,7 +319,7 @@ body::after {             /* vignette + accent glow */
   </section>
 
   <!-- 6 · question — centered italic close -->
-  <section class="slide question">
+  <section class="slide question" data-section="close">
     <h1>A closing rhetorical question with a <span class="hl">highlight</span>?</h1>
   </section>
 
@@ -330,7 +334,7 @@ body::after {             /* vignette + accent glow */
   <span class="sep"></span>
   <!-- id="total" is overwritten at runtime from slides.length — static value is a placeholder -->
   <span class="cell count">slide <b id="cur">1</b><span class="dim">/</span><b id="total">6</b></span>
-  <span class="cell keys keys-right">​<b>←→</b> navigate&nbsp;&nbsp;<b>o</b> overview&nbsp;&nbsp;<b>?</b> help</span>
+  <span class="cell keys keys-right"><b>←→</b> navigate&nbsp;&nbsp;<b>o</b> overview&nbsp;&nbsp;<b>?</b> help</span>
 </div>
 
 <div class="help" id="help">
@@ -356,16 +360,15 @@ const secEl  = document.getElementById("section");
 const help   = document.getElementById("help");
 
 /* ════════════════════════════════════════════════════════════════
-   SECTIONS — maps each section's FIRST slide number (1-indexed) to the
-   status-bar label shown for that range.  CRITICAL: when you add or
-   remove a slide, every later index shifts by ±1 — re-derive these
-   numbers or the labels (and divider 01/02/… numbers) silently desync.
+   SECTIONS — derived from data-section="..." attributes on the slides
+   that OPEN each section. Building it from the DOM at load means adding
+   or removing slides never desyncs the status-bar labels. (Divider .num
+   values 01/02/… are still hand-written — keep them sequential.)
    ════════════════════════════════════════════════════════════════ */
-const SECTIONS = [
-  [1,"opening"],
-  [3,"01 · first section"],
-  [6,"close"]
-];
+const SECTIONS = slides.reduce((acc, s, k) => {
+  if (s.dataset.section) acc.push([k + 1, s.dataset.section]);
+  return acc;
+}, []);
 
 let i = Math.min(Math.max((parseInt(location.hash.slice(1),10)||1)-1,0), slides.length-1);
 let overview = false;
@@ -376,7 +379,9 @@ function show(n, push=true) {
   slides.forEach((s,k) => s.classList.toggle("active", k===i));
   bar.style.width = ((i+1)/slides.length*100) + "%";
   cur.textContent = i+1;
-  secEl.textContent = SECTIONS.filter(([at]) => at <= i+1).pop()[1];
+  // textContent (not innerHTML) — section labels are plain text, never markup.
+  const sec = SECTIONS.filter(([at]) => at <= i+1).pop();
+  secEl.textContent = sec ? sec[1] : "";
   if (push) history.replaceState(null,"","#"+(i+1));
 }
 

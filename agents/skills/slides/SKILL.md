@@ -27,9 +27,10 @@ Do not invent a whole talk from nothing.
 ### Step 1 — Gather source and set up the deck
 
 1. Collect the source content: a doc, talking points, or an outline the user provides.
-2. Choose a destination directory for the deck (default: a `presentation/` folder
-   the user names, or alongside the source material). Decks are talk material,
-   not product code — do not commit a deck into an unrelated repo.
+2. Choose a destination directory for the deck. Decks are talk material, not
+   product code — do not commit one into an unrelated code repo. Good defaults:
+   a `presentation/` folder the user names, alongside the source material, or
+   `~/presentations/<talk-slug>/`.
 3. Copy the template into place:
    ```
    cp <skill-dir>/template.html <dest>/index.html
@@ -42,8 +43,8 @@ Edit the top of `index.html`:
 - `<title>` — browser tab text.
 - The `:root` block — colors and fonts. The defaults are a terminal look; change
   `--teal` (accent), `--bg`, and `--mono`/`--serif` to re-skin. See `references/theme.md`.
-- `.frame .tab` — the window-tab label (short).
-- `.statusbar .branch` — the context/branch label.
+- The window-tab label and the status-bar context label — both marked with
+  `<!-- EDIT: ... -->` comments in the HTML body. Keep them short.
 
 To swap fonts, also update the Google Fonts `<link>` in `<head>`. If the deck must
 work fully offline, see the self-host note in `references/theme.md`.
@@ -60,21 +61,19 @@ big statements, no name-dropping as proof, factual precision on technical claims
 Verify any specific technical claim (security boundaries, numbers, what a system
 does) against the source before it goes on a slide.
 
-### Step 4 — Update the SECTIONS array (critical)
+### Step 4 — Set section labels and divider numbers
 
-The status bar shows a section label derived from a hand-maintained array in the
-`<script>`:
-```
-const SECTIONS = [ [firstSlideNumber, "label"], ... ];
-```
-Each entry maps a section's FIRST slide number (1-indexed) to its label.
-
-**This is the number-one footgun.** Adding or removing any slide shifts every
-later slide number by ±1, so the labels — and the divider `01`/`02`/… numbers —
-desync silently. After ANY structural change to the slide list:
-1. Recount the slides in document order.
-2. Re-derive each section's first-slide number and update `SECTIONS`.
-3. Confirm each `divider` `.num` matches its section position.
+The status bar shows a section label that holds from the slide opening a section
+until the next one. Sections are declared inline with a `data-section="..."`
+attribute on the slide that OPENS each section, and the `<script>` derives the
+label list from the DOM at load — so adding or removing slides never desyncs the
+labels. To structure the deck:
+1. Put `data-section="label"` on the FIRST slide of each section (the opening
+   `title`, each `divider`, and any mid-deck transition you want labelled). The
+   very first slide must carry one, or early slides show a blank label.
+2. The divider `.num` values (`01`, `02`, …) are still hand-written — keep them
+   sequential and matching the section order. This is the one remaining manual
+   sync, so check it after reordering sections.
 
 The `slide N/M` total auto-updates from `slides.length` at runtime, so ignore the
 static `id="total"` value in the HTML — the JS overwrites it.
@@ -99,29 +98,34 @@ static `id="total"` value in the HTML — the JS overwrites it.
 
 Fix any desync found here by returning to Step 4.
 
-### Step 6 — Register as an Argus artifact (optional, for mobile viewing)
+### Step 6 — Publish as a shareable artifact (optional, for mobile viewing)
 
-The on-disk deck references screenshots by relative path, but the artifact viewer
+The primary deliverable is the self-contained `index.html` — it opens in any
+browser as-is. This step is only for viewers that render a registered artifact
+(such as Argus, for viewing on a phone).
+
+The on-disk deck references screenshots by relative path, but an artifact viewer
 sandbox has no relative-asset guarantee. Inline the images into a self-contained
 copy first, then register that copy:
-1. Produce an inlined copy:
+1. Produce an inlined copy (writes to the system temp dir by default):
    ```
-   python3 <skill-dir>/scripts/inline-images.py <dest>/index.html /tmp/deck.inlined.html
+   python3 <skill-dir>/scripts/inline-images.py <dest>/index.html
    ```
-   This base64-encodes every local `<img>` into a data URI.
-2. Register `/tmp/deck.inlined.html` via the Argus `artifact_register` tool.
-3. Re-run both steps after every edit — registration is last-write-wins on the
-   same title.
+   This base64-encodes every local `<img>` into a data URI and prints the output path.
+2. Register the inlined copy via your artifact tool (e.g. the Argus
+   `artifact_register` tool, if available).
+3. Re-run both steps after every edit — registration is typically last-write-wins
+   on the same title.
 
-If the artifact sandbox blocks network, the Google-fonts dependency falls back to
-system serif/mono (layout unaffected, look degraded). For a fully offline deck,
-self-host or inline the fonts — see `references/theme.md`.
+If the sandbox blocks network, the Google-fonts dependency falls back to system
+serif/mono (layout unaffected, look degraded). For a fully offline deck, self-host
+or inline the fonts — see `references/theme.md`.
 
 ## Done criteria
 
 - `index.html` opens in a browser and navigates with arrows, `o`, `?`, tap, and swipe.
 - Every slide is one of the six archetypes; no slide is a wall of text.
-- `SECTIONS` and divider numbers match the actual slide order.
+- Section labels (`data-section`) and divider numbers match the actual slide order.
 - The `slide N/M` total matches the real count.
 - Every technical claim on a slide is verified against the source.
 

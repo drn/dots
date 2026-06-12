@@ -9,7 +9,7 @@ classes unless you also add matching CSS to the theme block.
 The opening slide. One per deck, first.
 
 ```html
-<section class="slide title">
+<section class="slide title" data-section="opening">
   <div class="boot">
     <span class="ok">●</span> a scene-setting status line<br>
     <span class="ok">●</span> another line
@@ -19,6 +19,7 @@ The opening slide. One per deck, first.
 </section>
 ```
 
+- `data-section` is required on this first slide, or early slides show a blank status-bar label (see SKILL.md Step 4).
 - `.boot` is an optional flavor block (terminal-style status lines). Drop it for a cleaner title.
 - `<em>` inside `h1` renders in the accent color + italic serif.
 - `.sub` is an uppercase, letter-spaced footer line; `<b>` inside it is amber.
@@ -43,7 +44,7 @@ A single bold statement. The workhorse for impact slides. One idea, no bullets.
 A section opener with a huge outlined number.
 
 ```html
-<section class="slide divider">
+<section class="slide divider" data-section="01 · section name">
   <div class="num">01</div>
   <h1>Section name</h1>
   <div class="rule"></div>
@@ -52,7 +53,8 @@ A section opener with a huge outlined number.
 </section>
 ```
 
-- `.num` is the section number. **It is hand-written** — keep 01/02/03… in order and in sync with the `SECTIONS` array (see SKILL.md "SECTIONS maintenance").
+- `data-section="..."` sets the status-bar label that holds from this slide until the next `data-section` (see SKILL.md Step 4). Put it on the slide that opens a section.
+- `.num` is the section number. **It is hand-written** — keep 01/02/03… in order, matching the section sequence.
 - `.rule` is the glowing accent underline.
 
 ## list
