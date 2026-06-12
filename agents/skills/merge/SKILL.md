@@ -53,7 +53,9 @@ Decide based on the output:
 - **ahead=0 and dirty=0** — Stop. Reply: "Nothing to merge — branch has no commits ahead of $DEFAULT_BRANCH and working tree is clean."
 - **Otherwise** (ahead > 0, or dirty > 0) — Proceed to Step 1. The merge script handles fetch + rebase automatically, so being behind the default branch is fine.
 
-These `ahead`/`behind` counts and `git log <base>..HEAD --oneline` are the authoritative signal for what the branch actually changes. The injected "Diff stat vs `<base>`" context lines use a three-dot (merge-base) diff, so they already scope to the branch's own changes even when `behind > 0`. If you ever see a two-dot `<base>..HEAD` diff stat list many files unrelated to this branch, that is base-ahead history leaking in while the branch is behind — trust the Step 0 counts, not that raw diff; the rebase reconciles it.
+These `ahead`/`behind` counts are the authoritative signal for what the branch will land. The injected context block reflects them: the "Commits vs `<base>`" lines use a two-dot range (`<base>..HEAD`), which lists exactly the commits this branch adds, and the "Diff stat vs `<base>` (branch-only)" lines use a three-dot diff (`<base>...HEAD`, from the merge-base), which shows only this branch's own file changes even when `behind > 0`. Both are already scoped to the branch — neither inflates when behind.
+
+Caveat for manual checks: if you run a plain two-dot diff yourself (`git diff <base>..HEAD --stat`) while the branch is behind, it folds base-ahead history in as inverted changes and lists many files unrelated to this branch. That is expected, not a problem with the branch — Step 3 rebases the branch onto the current `<base>` tip, after which the two-dot and three-dot diffs converge. Trust the Step 0 counts and the three-dot diff stat above, not a raw two-dot diff.
 
 ### Step 1: Commit uncommitted changes
 
