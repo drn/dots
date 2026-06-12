@@ -181,6 +181,7 @@ When the user's message matches a phrase below, read and follow the correspondin
 | "explain like I'm 5", "eli5", "explain simply", "dumb it down", "explain in simple terms" | `agents/skills/eli5/SKILL.md` |
 | "skill usage", "which skills do I use", "unused skills", "skill stats", "skill suggestions" | `agents/skills/skill-usage/SKILL.md` |
 | "dream", "KB hygiene", "knowledge base cleanup", "memory hygiene", "audit KB", "dream consolidation" | `agents/skills/dream/SKILL.md` |
+| "create slides", "build a presentation", "make a deck", "turn talking points into a talk", "HTML slideshow", "presentation deck" | `agents/skills/slides/SKILL.md` |
 
 ## Public Repo Policy
 

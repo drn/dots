@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- EDIT: deck title (browser tab) -->
+<title>Talk Title — Subtitle</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- THEME: fonts. Swap families here, then update --mono / --serif below. -->
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,600;0,800;1,400&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+/* ════════════════════════════════════════════════════════════════
+   THEME — the swappable aesthetic. Change these to re-skin the deck.
+   Defaults are a terminal/TUI look (dark, teal accent, mono + serif).
+   ════════════════════════════════════════════════════════════════ */
+:root {
+  --bg: #07090f;          /* page background */
+  --bg-raise: #0c1018;    /* raised surfaces (status bar, window frames) */
+  --ink: #e8edf2;         /* primary text */
+  --dim: #5c6878;         /* secondary text */
+  --faint: #2a3240;       /* borders, rules */
+  --teal: #19c2bd;        /* ACCENT — emphasis, keys, progress */
+  --teal-dark: #0c615e;   /* accent, muted (divider numbers) */
+  --amber: #e8b04b;       /* warm highlight (branch label) */
+  --red: #e0556a;         /* warning / negative (.x) */
+  --green: #5dd39e;       /* positive / ok (.ok) */
+  --mono: "JetBrains Mono", ui-monospace, monospace;  /* body font */
+  --serif: "Instrument Serif", Georgia, serif;        /* display font (headings) */
+  /* NOTE: the accent also appears as hard-coded rgba(25,194,189,...) glows below
+     (progress bar, divider rule, screenshot shadow). If you change --teal to a
+     very different hue, update those rgba values to match. */
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { height: 100%; overflow: hidden; background: var(--bg); }
+body {
+  font-family: var(--mono);
+  color: var(--ink);
+  cursor: default;
+}
+
+/* ── atmosphere ─────────────────────────────────────────── */
+body::before {            /* scanlines */
+  content: ""; position: fixed; inset: 0; z-index: 40; pointer-events: none;
+  background: repeating-linear-gradient(0deg, rgba(255,255,255,.018) 0 1px, transparent 1px 3px);
+}
+body::after {             /* vignette + accent glow */
+  content: ""; position: fixed; inset: 0; z-index: 39; pointer-events: none;
+  background:
+    radial-gradient(ellipse 120% 90% at 50% 110%, rgba(25,194,189,.07), transparent 55%),
+    radial-gradient(ellipse 140% 120% at 50% 50%, transparent 60%, rgba(0,0,0,.5));
+}
+.grain {
+  position: fixed; inset: -50%; z-index: 41; pointer-events: none; opacity: .05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: grain 7s steps(8) infinite;
+}
+@keyframes grain {
+  0%,100% { transform: translate(0,0) } 25% { transform: translate(-2%,3%) }
+  50% { transform: translate(3%,-2%) } 75% { transform: translate(-3%,-3%) }
+}
+
+/* ── frame chrome ───────────────────────────────────────── */
+.frame {
+  position: fixed; inset: 14px; z-index: 30; pointer-events: none;
+  border: 1px solid var(--faint); border-radius: 6px;
+}
+.frame .tab {
+  position: absolute; top: -1px; left: 24px; transform: translateY(-50%);
+  background: var(--bg); padding: 0 12px;
+  font-size: 11px; letter-spacing: .12em; color: var(--dim);
+}
+.frame .tab b { color: var(--teal); font-weight: 600; }
+
+.statusbar {
+  position: fixed; left: 14px; right: 14px; bottom: 14px; z-index: 31;
+  display: flex; align-items: center; gap: 0;
+  height: 30px; border: 1px solid var(--faint); border-radius: 0 0 6px 6px;
+  border-top: 1px solid var(--faint);
+  background: var(--bg-raise);
+  font-size: 11.5px; user-select: none;
+}
+.statusbar .cell { padding: 0 14px; display: flex; align-items: center; gap: 7px; height: 100%; }
+.statusbar .sep { width: 1px; height: 100%; background: var(--faint); }
+.statusbar .mode { background: var(--teal); color: #03211f; font-weight: 800; letter-spacing: .1em; border-radius: 0 0 0 5px; }
+.statusbar .branch { color: var(--amber); }
+.statusbar .dim { color: var(--dim); }
+.statusbar .keys { margin-left: auto; color: var(--dim); border-radius: 0 0 5px 0; }
+.statusbar .keys b { color: var(--ink); font-weight: 600; }
+.statusbar .count b { color: var(--teal); font-weight: 800; }
+
+.progress {
+  position: fixed; left: 14px; right: 14px; top: 14px; height: 2px; z-index: 32;
+  background: transparent;
+}
+.progress i {
+  display: block; height: 100%; background: var(--teal);
+  width: 0; transition: width .35s cubic-bezier(.6,0,.2,1);
+  box-shadow: 0 0 12px rgba(25,194,189,.8);
+}
+
+/* ── slides ─────────────────────────────────────────────── */
+.deck { position: fixed; inset: 0; }
+.slide {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 7vh 9vw;
+  opacity: 0; visibility: hidden;
+  transform: translateY(14px);
+  transition: opacity .38s ease, transform .38s cubic-bezier(.5,0,.15,1), visibility 0s .38s;
+}
+.slide.active {
+  opacity: 1; visibility: visible; transform: none;
+  transition: opacity .42s ease .05s, transform .42s cubic-bezier(.2,.7,.2,1) .05s;
+}
+.slide > * { opacity: 0; transform: translateY(12px); }
+.slide.active > * { animation: rise .55s cubic-bezier(.2,.7,.2,1) forwards; }
+.slide.active > *:nth-child(1) { animation-delay: .08s }
+.slide.active > *:nth-child(2) { animation-delay: .18s }
+.slide.active > *:nth-child(3) { animation-delay: .28s }
+.slide.active > *:nth-child(4) { animation-delay: .38s }
+@keyframes rise { to { opacity: 1; transform: none } }
+
+.crumb {
+  font-size: 12px; letter-spacing: .18em; text-transform: uppercase;
+  color: var(--dim); margin-bottom: 4.5vh;
+}
+.crumb::before { content: "❯ "; color: var(--teal); }
+
+/* big statement (one bold line) */
+.slide.big h1 {
+  font-family: var(--serif); font-weight: 400;
+  font-size: clamp(2.6rem, 6.2vw, 5.4rem);
+  line-height: 1.08; letter-spacing: -.01em;
+  max-width: 22ch;
+}
+.slide.big h1 em { font-style: italic; color: var(--teal); }
+.slide.big h1 .cursor {
+  display: inline-block; width: .5em; height: .9em;
+  background: var(--teal); margin-left: .12em; vertical-align: baseline;
+  animation: blink 1.05s steps(1) infinite;
+}
+@keyframes blink { 50% { opacity: 0 } }
+
+/* section divider */
+.slide.divider { align-items: flex-start; }
+.slide.divider .num {
+  font-size: clamp(5rem, 14vw, 11rem); font-weight: 800; line-height: 1;
+  color: transparent; -webkit-text-stroke: 1.5px var(--teal-dark);
+  letter-spacing: -.04em;
+}
+.slide.divider h1 {
+  font-family: var(--serif); font-weight: 400;
+  font-size: clamp(2.8rem, 6.5vw, 5.6rem); line-height: 1.05; margin-top: 1.5vh;
+}
+.slide.divider .rule { width: 16vw; height: 1px; background: var(--teal); margin-top: 4vh; box-shadow: 0 0 14px rgba(25,194,189,.7); }
+
+/* list slides */
+.slide.list h1 {
+  font-family: var(--serif); font-weight: 400;
+  font-size: clamp(2.2rem, 4.6vw, 3.9rem); line-height: 1.1; margin-bottom: 5.5vh;
+  max-width: 26ch;
+}
+.slide.list ul { list-style: none; max-width: 62ch; }
+.slide.list li {
+  font-size: clamp(1rem, 1.7vw, 1.35rem); font-weight: 300;
+  line-height: 1.5; padding: 1.3vh 0 1.3vh 2.2em; position: relative;
+  border-top: 1px dashed var(--faint);
+}
+.slide.list li:first-child { border-top: none; }
+.slide.list li::before {
+  content: "▸"; position: absolute; left: .3em; color: var(--teal);
+}
+.slide.list li b { font-weight: 600; color: var(--teal); }
+.slide.list li .x { color: var(--red); }
+.slide.list li .ok { color: var(--green); }
+
+/* title slide */
+.slide.title { align-items: flex-start; }
+.slide.title .boot {
+  font-size: 12.5px; color: var(--dim); line-height: 1.9; margin-bottom: 5vh;
+}
+.slide.title .boot .ok { color: var(--green); }
+.slide.title h1 {
+  font-family: var(--serif); font-weight: 400;
+  font-size: clamp(3.4rem, 8.6vw, 7.6rem); line-height: .98; letter-spacing: -.015em;
+}
+.slide.title h1 em { font-style: italic; color: var(--teal); }
+.slide.title .sub {
+  margin-top: 4.5vh; font-size: clamp(.8rem, 1.25vw, 1rem);
+  letter-spacing: .22em; text-transform: uppercase; color: var(--dim);
+}
+.slide.title .sub b { color: var(--amber); font-weight: 400; }
+
+/* image slides */
+.slide.shot h1 {
+  font-family: var(--serif); font-weight: 400;
+  font-size: clamp(1.9rem, 3.6vw, 3rem); margin-bottom: 3.5vh;
+}
+.slide.shot .win {
+  border: 1px solid var(--faint); border-radius: 8px; overflow: hidden;
+  background: var(--bg-raise);
+  box-shadow: 0 30px 80px rgba(0,0,0,.6), 0 0 0 1px rgba(25,194,189,.08), 0 0 60px rgba(25,194,189,.06);
+  max-width: min(82vw, 150vh);
+}
+.slide.shot .win .bar {
+  display: flex; gap: 6px; padding: 9px 12px; border-bottom: 1px solid var(--faint);
+}
+.slide.shot .win .bar i { width: 10px; height: 10px; border-radius: 50%; background: var(--faint); }
+.slide.shot .win .bar i:nth-child(1) { background: var(--red); }
+.slide.shot .win .bar i:nth-child(2) { background: var(--amber); }
+.slide.shot .win .bar i:nth-child(3) { background: var(--green); }
+.slide.shot .win img { display: block; width: 100%; height: auto; }
+
+/* closing question */
+.slide.question { align-items: center; text-align: center; }
+.slide.question h1 {
+  font-family: var(--serif); font-style: italic; font-weight: 400;
+  font-size: clamp(2.2rem, 4.8vw, 4.2rem); line-height: 1.25; max-width: 24ch;
+}
+.slide.question h1 .hl { color: var(--teal); }
+
+/* ── overview mode ──────────────────────────────────────── */
+.deck.overview .slide {
+  opacity: 1; visibility: visible; transform: none; transition: none;
+  position: static; padding: 12px; height: auto; justify-content: flex-start;
+  border: 1px solid var(--faint); border-radius: 4px; overflow: hidden;
+  font-size: 4px; min-height: 72px; cursor: pointer;
+}
+.deck.overview .slide > * { animation: none !important; opacity: 1; transform: none; }
+.deck.overview {
+  display: grid; grid-template-columns: repeat(8, 1fr); gap: 10px;
+  padding: 48px 24px; overflow-y: auto; align-content: start;
+}
+.deck.overview .slide h1 { font-size: 9px !important; line-height: 1.2; margin: 0 0 4px; max-width: none; }
+.deck.overview .slide li { font-size: 6px; padding: 2px 0 2px 10px; }
+.deck.overview .slide .crumb { font-size: 5px; margin-bottom: 4px; }
+.deck.overview .slide .num { font-size: 18px; -webkit-text-stroke: .5px var(--teal-dark); }
+.deck.overview .slide .rule, .deck.overview .slide .boot { display: none; }
+.deck.overview .slide .sub { font-size: 5px; margin-top: 4px; letter-spacing: .1em; }
+.deck.overview .slide.cursor-on { outline: 2px solid var(--teal); outline-offset: 1px; }
+.deck.overview .slide .win { max-width: 100%; }
+
+/* help overlay */
+.help {
+  position: fixed; inset: 0; z-index: 50; display: none;
+  align-items: center; justify-content: center;
+  background: rgba(4,6,10,.82); backdrop-filter: blur(6px);
+}
+.help.show { display: flex; }
+.help .panel {
+  border: 1px solid var(--faint); border-radius: 8px; background: var(--bg-raise);
+  padding: 28px 36px; font-size: 13px; line-height: 2.2; min-width: 320px;
+}
+.help .panel h2 { font-size: 12px; letter-spacing: .2em; color: var(--teal); margin-bottom: 12px; font-weight: 600; }
+.help kbd {
+  display: inline-block; min-width: 26px; text-align: center;
+  border: 1px solid var(--faint); border-bottom-width: 2px; border-radius: 4px;
+  padding: 1px 7px; margin-right: 12px; font-family: var(--mono); font-size: 11.5px;
+  color: var(--teal); background: var(--bg);
+}
+</style>
+</head>
+<body>
+<div class="grain"></div>
+<div class="progress"><i id="bar"></i></div>
+<!-- EDIT: window-tab label (left of frame, top). Keep it short. -->
+<div class="frame"><span class="tab">project — <b>talk-slug</b> — 80×24</span></div>
+
+<!-- ════════════════════════════════════════════════════════════════
+     SLIDES — one <section class="slide ..."> per slide.
+     Six archetypes (see references/archetypes.md): title, big, divider,
+     list, shot, question. Replace the examples below with your content.
+     ════════════════════════════════════════════════════════════════ -->
+<main class="deck" id="deck">
+
+  <!-- 1 · title.  data-section opens a section: its label shows in the status
+       bar from here until the next data-section. Sections are derived at runtime. -->
+  <section class="slide title" data-section="opening">
+    <div class="boot">
+      <span class="ok">●</span> line one — a scene-setting status line<br>
+      <span class="ok">●</span> line two<br>
+      <span class="ok">●</span> line three
+    </div>
+    <h1>Talk Title<br>With an <em>emphasis</em></h1>
+    <div class="sub">Subtitle · <b>Event</b> · Month Year</div>
+  </section>
+
+  <!-- 2 · big — one bold statement, optional blinking cursor -->
+  <section class="slide big">
+    <div class="crumb">opening</div>
+    <h1>A single bold statement with one <em>emphasized</em> phrase.<span class="cursor"></span></h1>
+  </section>
+
+  <!-- 3 · divider — section opener. The .num is hand-written: keep 01/02/… sequential. -->
+  <section class="slide divider" data-section="01 · first section">
+    <div class="num">01</div>
+    <h1>First section</h1>
+    <div class="rule"></div>
+  </section>
+
+  <!-- 4 · list — up to 5 bullets. <b>=accent key, .x=warning, .ok=positive -->
+  <section class="slide list">
+    <h1>A list slide title</h1>
+    <ul>
+      <li><b>Accent key</b> — supporting detail</li>
+      <li>A point with a <span class="x">negative</span> callout</li>
+      <li>A point with a <span class="ok">positive</span> callout</li>
+    </ul>
+  </section>
+
+  <!-- 5 · shot — screenshot in a macOS-style window frame -->
+  <section class="slide shot">
+    <h1>A screenshot slide</h1>
+    <div class="win">
+      <div class="bar"><i></i><i></i><i></i></div>
+      <img src="screenshot.png" alt="Describe the screenshot for accessibility">
+    </div>
+  </section>
+
+  <!-- 6 · question — centered italic close -->
+  <section class="slide question" data-section="close">
+    <h1>A closing rhetorical question with a <span class="hl">highlight</span>?</h1>
+  </section>
+
+</main>
+
+<div class="statusbar">
+  <span class="cell mode" id="mode">PRESENT</span>
+  <!-- EDIT: branch/context label -->
+  <span class="cell branch">⎇ talk/slug</span>
+  <span class="sep"></span>
+  <span class="cell dim" id="section">opening</span>
+  <span class="sep"></span>
+  <!-- id="total" is overwritten at runtime from slides.length — static value is a placeholder -->
+  <span class="cell count">slide <b id="cur">1</b><span class="dim">/</span><b id="total">6</b></span>
+  <span class="cell keys keys-right"><b>←→</b> navigate&nbsp;&nbsp;<b>o</b> overview&nbsp;&nbsp;<b>?</b> help</span>
+</div>
+
+<div class="help" id="help">
+  <div class="panel">
+    <h2>KEYBINDINGS</h2>
+    <div><kbd>→</kbd><kbd>space</kbd><kbd>j</kbd> next slide</div>
+    <div><kbd>←</kbd><kbd>k</kbd> previous slide</div>
+    <div><kbd>g</kbd><kbd>0</kbd> first slide</div>
+    <div><kbd>G</kbd> last slide</div>
+    <div><kbd>o</kbd> overview grid</div>
+    <div><kbd>?</kbd> toggle this help</div>
+  </div>
+</div>
+
+<script>
+const deck   = document.getElementById("deck");
+const slides = [...document.querySelectorAll(".slide")];
+const bar    = document.getElementById("bar");
+const cur    = document.getElementById("cur");
+const total  = document.getElementById("total");
+const mode   = document.getElementById("mode");
+const secEl  = document.getElementById("section");
+const help   = document.getElementById("help");
+
+/* ════════════════════════════════════════════════════════════════
+   SECTIONS — derived from data-section="..." attributes on the slides
+   that OPEN each section. Building it from the DOM at load means adding
+   or removing slides never desyncs the status-bar labels. (Divider .num
+   values 01/02/… are still hand-written — keep them sequential.)
+   ════════════════════════════════════════════════════════════════ */
+const SECTIONS = slides.reduce((acc, s, k) => {
+  if (s.dataset.section) acc.push([k + 1, s.dataset.section]);
+  return acc;
+}, []);
+
+let i = Math.min(Math.max((parseInt(location.hash.slice(1),10)||1)-1,0), slides.length-1);
+let overview = false;
+total.textContent = slides.length;
+
+function show(n, push=true) {
+  i = Math.min(Math.max(n,0), slides.length-1);
+  slides.forEach((s,k) => s.classList.toggle("active", k===i));
+  bar.style.width = ((i+1)/slides.length*100) + "%";
+  cur.textContent = i+1;
+  // textContent (not innerHTML) — section labels are plain text, never markup.
+  const sec = SECTIONS.filter(([at]) => at <= i+1).pop();
+  secEl.textContent = sec ? sec[1] : "";
+  if (push) history.replaceState(null,"","#"+(i+1));
+}
+
+function setOverview(on) {
+  overview = on;
+  deck.classList.toggle("overview", on);
+  mode.textContent = on ? "OVERVIEW" : "PRESENT";
+  if (on) {
+    slides.forEach((s,k) => s.classList.toggle("cursor-on", k===i));
+    slides[i].scrollIntoView({block:"center"});
+  } else {
+    slides.forEach(s => s.classList.remove("cursor-on"));
+    show(i,false);
+  }
+}
+
+slides.forEach((s,k) => s.addEventListener("click", () => { if (overview) { setOverview(false); show(k); } }));
+
+addEventListener("keydown", e => {
+  if (e.key === "?") { help.classList.toggle("show"); return; }
+  if (help.classList.contains("show")) { help.classList.remove("show"); return; }
+  if (e.key === "o") { setOverview(!overview); return; }
+  if (overview) {
+    let d = {ArrowRight:1, ArrowLeft:-1, j:1, k:-1, ArrowDown:8, ArrowUp:-8}[e.key];
+    if (d !== undefined) {
+      i = Math.min(Math.max(i+d,0), slides.length-1);
+      slides.forEach((s,k) => s.classList.toggle("cursor-on", k===i));
+      slides[i].scrollIntoView({block:"nearest"});
+      e.preventDefault();
+    }
+    if (e.key === "Enter") setOverview(false), show(i);
+    return;
+  }
+  switch (e.key) {
+    case "ArrowRight": case " ": case "j": case "PageDown": show(i+1); e.preventDefault(); break;
+    case "ArrowLeft":  case "k": case "PageUp":             show(i-1); e.preventDefault(); break;
+    case "Home": case "g": case "0": show(0); break;
+    case "End":  case "G":           show(slides.length-1); break;
+  }
+});
+
+/* tap / click to advance (mobile-friendly): left quarter = back, rest = forward */
+deck.addEventListener("click", e => {
+  if (overview) return;                       // overview clicks select a slide
+  if (help.classList.contains("show")) { help.classList.remove("show"); return; }
+  if (e.clientX < innerWidth * 0.25) show(i-1); else show(i+1);
+});
+
+/* swipe navigation */
+let tx = null, ty = null;
+addEventListener("touchstart", e => { tx = e.touches[0].clientX; ty = e.touches[0].clientY; }, {passive: true});
+addEventListener("touchend", e => {
+  if (tx === null || overview) return;
+  const dx = e.changedTouches[0].clientX - tx, dy = e.changedTouches[0].clientY - ty;
+  if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) show(dx < 0 ? i+1 : i-1);
+  tx = ty = null;
+}, {passive: true});
+
+addEventListener("hashchange", () => show((parseInt(location.hash.slice(1),10)||1)-1, false));
+show(i, false);
+</script>
+</body>
+</html>
