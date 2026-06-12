@@ -122,6 +122,28 @@ test_render_out_writes_custom_path() {
   assert_contains "$(cat "$dir/custom.html")" "STUB BODY" "--out writes to the custom path"
 }
 
+test_render_open_failure_does_not_abort() {
+  local dir code=0
+  dir=$(_mdp_stub_dir)
+  printf '#!/usr/bin/env bash\nexit 1\n' > "$dir/bin/open"
+  chmod +x "$dir/bin/open"
+  PATH="$dir/bin:$PATH" bash "$RENDER" "$dir/doc.md" >/dev/null 2>&1 || code=$?
+  assert_eq "$code" "0" "a failed browser opener does not abort the script"
+  assert_contains "$(cat "$dir/doc-preview.html")" "STUB BODY" "preview is written even when open fails"
+}
+
+test_out_rejects_empty_value() {
+  capture bash "$RENDER" somefile.md --out ""
+  assert_eq "$_CAPTURED_EXIT" "1" "--out with an empty value exits 1"
+  assert_contains "$_CAPTURED" "requires a path" "reports empty --out value"
+}
+
+test_wrap_stdin_rejects_empty_title() {
+  capture bash "$RENDER" --wrap-stdin ""
+  assert_eq "$_CAPTURED_EXIT" "1" "--wrap-stdin with an empty title exits 1"
+  assert_contains "$_CAPTURED" "requires a title" "reports empty --wrap-stdin title"
+}
+
 test_wrap_html_light_dark() {
   _source_render
   local doc

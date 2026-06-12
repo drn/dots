@@ -177,18 +177,21 @@ render_body() {
   jq -Rs '{text: ., mode: "gfm"}' "$md" | gh api --method POST /markdown --input -
 }
 
-# Open a file in the default browser, branching on platform.
+# Open a file in the default browser, branching on platform. Opening is
+# best-effort: the preview has already been written, so a failed or missing
+# opener (e.g. headless/CI) must not abort the script. Always returns 0.
 open_file() {
   local f="$1"
   if command -v open >/dev/null 2>&1; then
-    open "$f"
+    open "$f" || echo "Could not open $f automatically. Preview is at: $f" >&2
   elif command -v xdg-open >/dev/null 2>&1; then
-    xdg-open "$f"
+    xdg-open "$f" || echo "Could not open $f automatically. Preview is at: $f" >&2
   elif command -v start >/dev/null 2>&1; then
-    start "" "$f"
+    start "" "$f" || echo "Could not open $f automatically. Preview is at: $f" >&2
   else
     echo "No browser opener found (open/xdg-open/start). Preview at: $f" >&2
   fi
+  return 0
 }
 
 main() {
@@ -198,7 +201,7 @@ main() {
     case "$1" in
       --wrap-stdin)
         shift
-        if [[ $# -eq 0 || "${1:-}" == -* ]]; then
+        if [[ $# -eq 0 || -z "${1:-}" || "${1:-}" == -* ]]; then
           echo "Error: --wrap-stdin requires a title argument." >&2
           return 1
         fi
@@ -207,7 +210,7 @@ main() {
         ;;
       --out)
         shift
-        if [[ $# -eq 0 || "${1:-}" == -* ]]; then
+        if [[ $# -eq 0 || -z "${1:-}" || "${1:-}" == -* ]]; then
           echo "Error: --out requires a path argument." >&2
           return 1
         fi
