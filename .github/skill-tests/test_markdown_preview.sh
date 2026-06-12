@@ -36,6 +36,38 @@ test_wrap_html_structure() {
   assert_contains "$doc" "markdown-body" "uses markdown-body article class"
 }
 
+test_preview_path_dotfile() {
+  _source_render
+  assert_eq "$(preview_path ".hidden")" "./.hidden-preview.html" \
+    "dotfile keeps its name instead of stripping to empty"
+}
+
+test_preview_path_multidot() {
+  _source_render
+  assert_eq "$(preview_path "a.b.md")" "./a.b-preview.html" \
+    "only the last extension is stripped"
+}
+
+test_wrap_html_escapes_title() {
+  _source_render
+  local doc
+  doc="$(wrap_html "<script>x</script>" "<p>body</p>")"
+  assert_contains "$doc" "&lt;script&gt;x&lt;/script&gt;" "title markup is escaped"
+  assert_not_contains "$doc" "<title><script>" "raw script tag not in title"
+}
+
+test_out_requires_value() {
+  capture bash "$RENDER" somefile.md --out
+  assert_eq "$_CAPTURED_EXIT" "1" "--out with no value exits 1"
+  assert_contains "$_CAPTURED" "requires a path" "reports --out needs a path"
+}
+
+test_out_rejects_flag_as_value() {
+  capture bash "$RENDER" somefile.md --out --no-open
+  assert_eq "$_CAPTURED_EXIT" "1" "--out followed by a flag exits 1"
+  assert_contains "$_CAPTURED" "requires a path" "does not consume --no-open as the path"
+}
+
 test_wrap_html_light_dark() {
   _source_render
   local doc

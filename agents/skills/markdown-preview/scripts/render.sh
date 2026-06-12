@@ -29,7 +29,7 @@
 set -euo pipefail
 
 usage() {
-  sed -n '3,30p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'
+  sed -n '3,27p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'
 }
 
 # Compute the default preview path: <dir>/<name>-preview.html next to source.
@@ -38,6 +38,9 @@ preview_path() {
   dir="$(dirname "$md")"
   base="$(basename "$md")"
   name="${base%.*}"
+  # A dotfile with no other extension (e.g. ".hidden") strips to empty; keep
+  # the original name so the preview path is never "./-preview.html".
+  [[ -z "$name" ]] && name="$base"
   echo "${dir}/${name}-preview.html"
 }
 
@@ -45,6 +48,12 @@ preview_path() {
 # wrap_html <title> <body-html>
 wrap_html() {
   local title="$1" body="$2"
+  # Escape the title (derived from the filename) so an exotic name cannot
+  # inject markup into the <title> element. The body is GitHub-rendered HTML
+  # and is intentionally emitted as-is.
+  title="${title//&/&amp;}"
+  title="${title//</&lt;}"
+  title="${title//>/&gt;}"
   cat <<HTML
 <!doctype html>
 <html lang="en">
@@ -170,7 +179,14 @@ main() {
   while [[ $# -gt 0 ]]; do
     case "$1" in
       --wrap-stdin) shift; wrap_html "${1:-Preview}" "$(cat)"; return 0 ;;
-      --out) shift; out="${1:-}" ;;
+      --out)
+        shift
+        if [[ $# -eq 0 || "${1:-}" == -* ]]; then
+          echo "Error: --out requires a path argument." >&2
+          return 1
+        fi
+        out="$1"
+        ;;
       --no-open) do_open=0 ;;
       --print-path) print_path=1 ;;
       -h|--help) usage; return 0 ;;

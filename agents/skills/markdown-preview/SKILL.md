@@ -1,7 +1,7 @@
 ---
 name: markdown-preview
 description: Render a Markdown file to GitHub-flavored HTML and open a styled local preview (light + dark) in the browser. Use when the user wants to preview markdown, see how a README renders on GitHub, check that relative screenshots or images display correctly, or get a GitHub-like local preview without installing grip or glow.
-allowed-tools: Bash(bash *), Bash(gh api *), Bash(rm *), Read, Edit
+allowed-tools: Bash(bash *), Bash(gh api *), Bash(rm *-preview.html), Read, Edit
 ---
 
 # Markdown Preview
@@ -49,18 +49,27 @@ Windows `start`).
 
 Useful flags:
 - `--no-open` — write the preview but do not launch a browser.
-- `--out <path>` — choose the output path. Use ONLY when the markdown has no
-  relative images; a path outside the source directory breaks relative `src`.
+- `--out <path>` — choose the output path (requires a value). Use ONLY when the
+  markdown has no relative images; a path outside the source directory breaks
+  relative `src`.
+- `--print-path` — print only the written preview path to stdout (instead of the
+  friendly "Wrote preview:" line). Use when chaining or capturing the path.
 
-If the script reports `gh` is not installed or `gh api /markdown` failed,
-relay the error: the user likely needs to install `gh` or run `gh auth status`.
-Do not retry more than once.
+The script prints the preview path it wrote. Note that path for the cleanup
+step — it is `<file>-preview.html` next to the source unless `--out` overrode it.
+
+If the script reports a missing dependency or a failed render, relay the error
+and do not retry more than once:
+- `gh` not installed → install the GitHub CLI, or fall back to `grip`/`glow`.
+- `gh api /markdown` failed → likely an auth issue; suggest `gh auth status`.
+- `jq` not installed → install `jq` (required to encode the request body).
 
 ### Step 3 — Cleanup
 
 The preview is a temporary artifact and should not be committed. After the user
 is done viewing:
-- Offer to remove it: `rm <file>-preview.html`.
+- Offer to remove it, using the exact preview path the script reported (the
+  default is `<file>-preview.html`; it differs when `--out` was used).
 - If the file sits inside a git repository, optionally suggest adding
   `*-preview.html` to `.gitignore` so regenerating it does not leave untracked
   files (this was the original pain point this skill was built to avoid).
