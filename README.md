@@ -69,7 +69,7 @@ dots docker stop-all     # Stop all Docker containers
 
 ## Agent Skills
 
-Dots includes 67 reusable slash-command skills for AI coding agents, following the [Agent Skills](https://agentskills.io) open standard. Each skill lives in `agents/skills/<name>/SKILL.md` and is available as `/<name>` in Claude Code after running `dots install agents`.
+Dots includes 68 reusable slash-command skills for AI coding agents, following the [Agent Skills](https://agentskills.io) open standard. Each skill lives in `agents/skills/<name>/SKILL.md` and is available as `/<name>` in Claude Code after running `dots install agents`.
 
 | Skill | Description |
 |-------|-------------|
@@ -120,6 +120,7 @@ Dots includes 67 reusable slash-command skills for AI coding agents, following t
 | `/loop` | Run a prompt on a recurring interval for polling, monitoring, and babysitting |
 | `/skill-usage` | Show skill usage statistics, charts, and suggestions for pruning unused skills |
 | `/wrapup` | End-of-session checklist that detects loose ends and routes to follow-up skills |
+| `/complete` | Mark the current Argus task's workflow status as complete via the `argus` MCP tool |
 | `/archive` | Archive the current Argus task at session end via the `argus` MCP tool |
 
 Skills use YAML frontmatter for metadata and dynamic context injection via shell commands. Some skills delegate to standalone bash scripts in `agents/skills/<name>/scripts/`. See `/write-skill` for the full authoring guide.
@@ -190,7 +191,7 @@ Run `dots install agents` to symlink them to `~/.claude/agents/`.
 ├── pi/                        # pi.dev coding agent config (models.json only)
 │
 ├── agents/                    # Agent configuration
-│   ├── skills/                # 67 reusable skills (SKILL.md per skill)
+│   ├── skills/                # 68 reusable skills (SKILL.md per skill)
 │   └── custom/                # 3 custom agent types (.md per agent)
 │       └── tests/             # Skill test suite
 │
