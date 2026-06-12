@@ -106,6 +106,7 @@ Dots includes 68 reusable slash-command skills for AI coding agents, following t
 | `/retro` | Structured retrospective or post-incident review |
 | `/logo` | Logo generation |
 | `/slides` | Build a self-contained HTML presentation deck from talking points or a doc, with keyboard, tap, and swipe navigation |
+| `/markdown-preview` | Render a Markdown file to GitHub-flavored HTML via `gh api /markdown` and open a styled local preview (light + dark) |
 | `/improve` | Improve skills, capture context and knowledge |
 | `/rereview` | Re-review with fresh eyes, zero regressions |
 | `/rereview-loop` | Run `/rereview`, fix the findings, and loop until reviewers approve clean |
