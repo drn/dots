@@ -69,7 +69,9 @@ and do not retry more than once:
 The preview is a temporary artifact and should not be committed. After the user
 is done viewing:
 - Offer to remove it, using the exact preview path the script reported (the
-  default is `<file>-preview.html`; it differs when `--out` was used).
+  default is `<file>-preview.html`; it differs when `--out` was used). Auto-run
+  of `rm` is pre-approved only for the default `*-preview.html` name; removing a
+  custom `--out` path will prompt for confirmation, which is fine.
 - If the file sits inside a git repository, optionally suggest adding
   `*-preview.html` to `.gitignore` so regenerating it does not leave untracked
   files (this was the original pain point this skill was built to avoid).

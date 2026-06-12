@@ -8,6 +8,22 @@ _source_render() {
   eval "$(sed 's/^main "\$@"//' "$RENDER")"
 }
 
+# Build a temp dir with stub `gh`/`jq` on PATH so the full pipeline runs
+# offline. Stub gh ignores its input and emits a fixed body; stub jq is a
+# no-op that satisfies the dependency check. Echoes the dir; PATH must be
+# prefixed with "$dir/bin" by the caller. Harness cleans the dir up on exit.
+_mdp_stub_dir() {
+  local dir
+  dir=$(mktemp -d "${TMPDIR:-/tmp}/mdp-XXXXXX")
+  _TMPDIRS+=("$dir")
+  mkdir -p "$dir/bin"
+  printf '#!/usr/bin/env bash\ncat >/dev/null\nprintf "%%s" "<p>STUB BODY</p>"\n' > "$dir/bin/gh"
+  printf '#!/usr/bin/env bash\nprintf "%%s" "{}"\n' > "$dir/bin/jq"
+  chmod +x "$dir/bin/gh" "$dir/bin/jq"
+  printf '# Hi\n' > "$dir/doc.md"
+  echo "$dir"
+}
+
 test_preview_path_basic() {
   _source_render
   assert_eq "$(preview_path "docs/README.md")" "docs/README-preview.html" \
@@ -66,6 +82,44 @@ test_out_rejects_flag_as_value() {
   capture bash "$RENDER" somefile.md --out --no-open
   assert_eq "$_CAPTURED_EXIT" "1" "--out followed by a flag exits 1"
   assert_contains "$_CAPTURED" "requires a path" "does not consume --no-open as the path"
+}
+
+test_wrap_html_escapes_ampersand_first() {
+  _source_render
+  local doc
+  doc="$(wrap_html "A & B" "<p>x</p>")"
+  assert_contains "$doc" "<title>A &amp; B</title>" "bare ampersand becomes &amp;"
+  assert_not_contains "$doc" "&amp;amp;" "no double-escaping of the ampersand"
+}
+
+test_wrap_stdin_requires_title() {
+  capture bash "$RENDER" --wrap-stdin
+  assert_eq "$_CAPTURED_EXIT" "1" "--wrap-stdin with no title exits 1"
+  assert_contains "$_CAPTURED" "requires a title" "reports missing title"
+}
+
+test_render_print_path_only_emits_path() {
+  local dir out
+  dir=$(_mdp_stub_dir)
+  out=$(PATH="$dir/bin:$PATH" bash "$RENDER" "$dir/doc.md" --no-open --print-path)
+  assert_eq "$out" "$dir/doc-preview.html" "--print-path emits only the path"
+  assert_not_contains "$out" "Wrote preview" "no friendly prefix under --print-path"
+  assert_contains "$(cat "$dir/doc-preview.html")" "STUB BODY" "preview embeds rendered body"
+}
+
+test_render_default_prints_friendly_message() {
+  local dir out
+  dir=$(_mdp_stub_dir)
+  out=$(PATH="$dir/bin:$PATH" bash "$RENDER" "$dir/doc.md" --no-open)
+  assert_contains "$out" "Wrote preview:" "default run prints friendly message"
+  assert_contains "$out" "doc-preview.html" "message includes the preview path"
+}
+
+test_render_out_writes_custom_path() {
+  local dir
+  dir=$(_mdp_stub_dir)
+  PATH="$dir/bin:$PATH" bash "$RENDER" "$dir/doc.md" --out "$dir/custom.html" --no-open >/dev/null
+  assert_contains "$(cat "$dir/custom.html")" "STUB BODY" "--out writes to the custom path"
 }
 
 test_wrap_html_light_dark() {

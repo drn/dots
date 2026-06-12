@@ -28,8 +28,26 @@
 
 set -euo pipefail
 
+# Print user-facing help. Kept as a static block (not scraped from the header
+# comment) so the developer-only --wrap-stdin hook is never shown to users.
 usage() {
-  sed -n '3,27p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'
+  cat <<'USAGE'
+render.sh — render a Markdown file to GitHub-flavored HTML and open a preview.
+
+Usage:
+  render.sh <file.md> [--out <path>] [--no-open] [--print-path]
+
+Flags:
+  --out <path>    Write the preview to <path> instead of <file>-preview.html.
+                  Use only when the markdown has no relative assets — a path
+                  outside the source directory will break relative image src.
+  --no-open       Render and write the file but do not launch a browser.
+  --print-path    Print only the written preview path to stdout.
+  -h, --help      Show usage.
+
+Requires: gh (authenticated), jq. macOS `open`, Linux `xdg-open`, or
+Windows `start` for the open step.
+USAGE
 }
 
 # Compute the default preview path: <dir>/<name>-preview.html next to source.
@@ -178,7 +196,15 @@ main() {
 
   while [[ $# -gt 0 ]]; do
     case "$1" in
-      --wrap-stdin) shift; wrap_html "${1:-Preview}" "$(cat)"; return 0 ;;
+      --wrap-stdin)
+        shift
+        if [[ $# -eq 0 || "${1:-}" == -* ]]; then
+          echo "Error: --wrap-stdin requires a title argument." >&2
+          return 1
+        fi
+        wrap_html "$1" "$(cat)"
+        return 0
+        ;;
       --out)
         shift
         if [[ $# -eq 0 || "${1:-}" == -* ]]; then
