@@ -2,12 +2,115 @@ package auth
 
 import (
 	"io"
+	"net"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
 	"strings"
 	"testing"
 )
+
+// callback fires an HTTP GET against the loopback server to simulate Spotify
+// redirecting back with the given query string.
+func callback(t *testing.T, addr, query string) func() {
+	t.Helper()
+	return func() {
+		go func() {
+			resp, err := http.Get("http://" + addr + "/callback?" + query)
+			if err == nil {
+				resp.Body.Close()
+			}
+		}()
+	}
+}
+
+func loopbackListener(t *testing.T) (net.Listener, string) {
+	t.Helper()
+	listener, err := net.Listen("tcp", "127.0.0.1:0")
+	if err != nil {
+		t.Fatalf("listen: %v", err)
+	}
+	return listener, listener.Addr().String()
+}
+
+func TestCaptureAuthCode_Success(t *testing.T) {
+	listener, addr := loopbackListener(t)
+
+	code, err := captureAuthCode(listener, "/callback", "state-123",
+		callback(t, addr, "code=auth-code&state=state-123"))
+
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if code != "auth-code" {
+		t.Errorf("code = %q, want auth-code", code)
+	}
+}
+
+func TestCaptureAuthCode_StateMismatch(t *testing.T) {
+	listener, addr := loopbackListener(t)
+
+	_, err := captureAuthCode(listener, "/callback", "want",
+		callback(t, addr, "code=auth-code&state=evil"))
+
+	if err == nil {
+		t.Fatal("expected error on state mismatch, got nil")
+	}
+}
+
+func TestCaptureAuthCode_AuthDenied(t *testing.T) {
+	listener, addr := loopbackListener(t)
+
+	_, err := captureAuthCode(listener, "/callback", "want",
+		callback(t, addr, "error=access_denied&state=want"))
+
+	if err == nil {
+		t.Fatal("expected error when callback reports failure, got nil")
+	}
+	if !strings.Contains(err.Error(), "access_denied") {
+		t.Errorf("error = %q, want it to mention access_denied", err)
+	}
+}
+
+func TestCaptureAuthCode_MissingCode(t *testing.T) {
+	listener, addr := loopbackListener(t)
+
+	_, err := captureAuthCode(listener, "/callback", "want",
+		callback(t, addr, "state=want"))
+
+	if err == nil {
+		t.Fatal("expected error when code is missing, got nil")
+	}
+}
+
+func TestCallbackPath_DefaultsToRoot(t *testing.T) {
+	noPath, _ := url.Parse("http://127.0.0.1:8888")
+	if got := callbackPath(noPath); got != "/" {
+		t.Errorf("callbackPath(no path) = %q, want /", got)
+	}
+
+	withPath, _ := url.Parse("http://127.0.0.1:8888/callback")
+	if got := callbackPath(withPath); got != "/callback" {
+		t.Errorf("callbackPath(/callback) = %q, want /callback", got)
+	}
+}
+
+func TestRandomState_UniqueAndHex(t *testing.T) {
+	a, err := randomState()
+	if err != nil {
+		t.Fatalf("randomState: %v", err)
+	}
+	b, err := randomState()
+	if err != nil {
+		t.Fatalf("randomState: %v", err)
+	}
+	if a == b {
+		t.Errorf("randomState produced identical values: %q", a)
+	}
+	if len(a) != 32 {
+		t.Errorf("len = %d, want 32 hex chars", len(a))
+	}
+}
 
 func TestSendRequest_GET_NoQueryNoBody(t *testing.T) {
 	var (
