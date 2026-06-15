@@ -3,7 +3,10 @@
 // The following ENV variables must exist:
 //   SPOTIFY_CLIENT_ID
 //   SPOTIFY_CLIENT_SECRET
-//   SPOTIFY_REDIRECT_URI
+//   SPOTIFY_REDIRECT_URI - a loopback URL with an explicit port, e.g.
+//     http://127.0.0.1:8888/callback. The CLI starts a local server on that
+//     port to capture the OAuth callback, so the same URL must be registered
+//     as a redirect URI on the Spotify app.
 
 // This package provides a Spotify CLI to toggle, save, and remove the current
 // song
