@@ -2,6 +2,7 @@
 package auth
 
 import (
+	"context"
 	"crypto/rand"
 	"encoding/hex"
 	"errors"
@@ -11,12 +12,13 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"os/exec"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/drn/dots/cli/config"
 	"github.com/drn/dots/pkg/log"
-	"github.com/drn/dots/pkg/run"
 	jsoniter "github.com/json-iterator/go"
 )
 
@@ -64,7 +66,7 @@ func FetchAccessToken() string {
 func authorize() string {
 	redirectURI := os.Getenv("SPOTIFY_REDIRECT_URI")
 	redirect, err := url.Parse(redirectURI)
-	if err != nil || redirect.Port() == "" {
+	if err != nil || redirect.Port() == "" || !isLoopback(redirect.Hostname()) {
 		log.Error(
 			"SPOTIFY_REDIRECT_URI must be a loopback URL with a port, "+
 				"e.g. http://127.0.0.1:8888/callback (got %q)", redirectURI,
@@ -73,10 +75,19 @@ func authorize() string {
 	}
 
 	state, err := randomState()
-	HandleRequestError(err)
+	if err != nil {
+		log.Error("could not generate OAuth state: %s", err)
+		os.Exit(1)
+	}
 
-	listener, err := net.Listen("tcp", "127.0.0.1:"+redirect.Port())
-	HandleRequestError(err)
+	// Bind to the redirect's own host:port so the listener matches the address
+	// the browser will be redirected to.
+	addr := net.JoinHostPort(redirect.Hostname(), redirect.Port())
+	listener, err := net.Listen("tcp", addr)
+	if err != nil {
+		log.Error("could not start local server on %s: %s", addr, err)
+		os.Exit(1)
+	}
 
 	params := url.Values{
 		"response_type": {"code"},
@@ -95,13 +106,27 @@ func authorize() string {
 
 	code, err := captureAuthCode(listener, callbackPath(redirect), state, func() {
 		fmt.Println("Opening browser to authorize Spotify…")
-		run.Execute(`open "` + authURL + `"`)
+		// Launch the browser without a shell so the auth URL is never
+		// interpreted by zsh.
+		if execErr := exec.Command("open", authURL).Start(); execErr != nil {
+			log.Warning("could not open browser automatically; visit:\n%s", authURL)
+		}
 	})
 	if err != nil {
 		log.Error("%s", err)
 		os.Exit(1)
 	}
 	return code
+}
+
+// isLoopback reports whether host is a loopback address Spotify will redirect
+// back to and that we can safely bind a local server on.
+func isLoopback(host string) bool {
+	if host == "localhost" {
+		return true
+	}
+	ip := net.ParseIP(host)
+	return ip != nil && ip.IsLoopback()
 }
 
 // callbackPath returns the path the loopback server should listen on, defaulting
@@ -125,31 +150,47 @@ func captureAuthCode(listener net.Listener, path, wantState string, open func())
 	}
 	results := make(chan result, 1)
 
+	// once ensures only the first callback delivers a result; a browser retry
+	// or refresh that hits the handler again is answered without blocking on a
+	// channel send that no one is waiting to receive.
+	var once sync.Once
+	deliver := func(res result) {
+		once.Do(func() { results <- res })
+	}
+
 	mux := http.NewServeMux()
 	mux.HandleFunc(path, func(w http.ResponseWriter, r *http.Request) {
 		query := r.URL.Query()
 		switch {
 		case query.Get("error") != "":
 			http.Error(w, "Spotify authorization failed.", http.StatusBadRequest)
-			results <- result{err: fmt.Errorf("authorization denied: %s", query.Get("error"))}
+			deliver(result{err: fmt.Errorf("authorization denied: %s", query.Get("error"))})
 		case query.Get("state") != wantState:
 			http.Error(w, "State mismatch.", http.StatusBadRequest)
-			results <- result{err: errors.New("state mismatch in OAuth callback")}
+			deliver(result{err: errors.New("state mismatch in OAuth callback")})
 		case query.Get("code") == "":
 			http.Error(w, "Missing authorization code.", http.StatusBadRequest)
-			results <- result{err: errors.New("missing authorization code in OAuth callback")}
+			deliver(result{err: errors.New("missing authorization code in OAuth callback")})
 		default:
 			io.WriteString(w, "Spotify authorization complete — you can close this tab.")
 			if flusher, ok := w.(http.Flusher); ok {
 				flusher.Flush()
 			}
-			results <- result{code: query.Get("code")}
+			deliver(result{code: query.Get("code")})
 		}
 	})
 
 	server := &http.Server{Handler: mux}
 	go server.Serve(listener)
-	defer server.Close()
+	// Shut down gracefully so the handler's "you can close this tab" response
+	// finishes flushing to the browser before the connection is torn down.
+	defer func() {
+		ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+		defer cancel()
+		if err := server.Shutdown(ctx); err != nil {
+			server.Close()
+		}
+	}()
 
 	open()
 

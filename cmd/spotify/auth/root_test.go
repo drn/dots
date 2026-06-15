@@ -95,6 +95,23 @@ func TestCallbackPath_DefaultsToRoot(t *testing.T) {
 	}
 }
 
+func TestIsLoopback(t *testing.T) {
+	cases := map[string]bool{
+		"127.0.0.1": true,
+		"localhost": true,
+		"::1":       true,
+		"0.0.0.0":   false,
+		"evil.com":  false,
+		"10.0.0.5":  false,
+		"":          false,
+	}
+	for host, want := range cases {
+		if got := isLoopback(host); got != want {
+			t.Errorf("isLoopback(%q) = %v, want %v", host, got, want)
+		}
+	}
+}
+
 func TestRandomState_UniqueAndHex(t *testing.T) {
 	a, err := randomState()
 	if err != nil {
