@@ -43,8 +43,9 @@ Create 6 **meaningfully different** SVG logo files. Each should explore a distin
 **CRITICAL: No text in logos.** Never use `<text>` elements, letters, words, or typographic marks in the SVG logos. Every logo must be purely symbolic — shapes, icons, and abstract marks only. Text/wordmarks are added separately by the user if needed.
 
 **SVG quality standards:**
-- Always include explicit `width="200" height="200"` on the `<svg>` element (required for `<img>` tag rendering)
-- **Namespace all `id` attributes per logo** (gradients, filters, clip paths): use `halo-1`, `core-grad-1` in `logo-alt-1.svg`, `halo-2` in `logo-alt-2.svg`, and so on. When the comparison page inlines every SVG into one document (Step 3), duplicate ids across files collide and marks render with the wrong fills.
+- Always include explicit `width="200" height="200"` on the `<svg>` element (so the standalone file opens at full size in a browser — without it, a bare SVG defaults to 300×150)
+- **Namespace all `id` attributes per logo** (gradients, filters, clip paths): use `halo-1`, `core-grad-1` in `logo-alt-1.svg`, `halo-2` in `logo-alt-2.svg`, and so on. Rename both the `id` AND every `url(#id)` reference that points to it — renaming one but not the other breaks the fill. When the comparison page inlines every SVG into one document (Step 3), duplicate ids across files collide and marks render with the wrong fills.
+- **Style marks with presentation attributes or inline styles, not document CSS classes.** When inlined via `<use>` (Step 3), the symbol is cloned into a shadow tree that host-document CSS rules do not reach, so a mark relying on a `<style>` block with class selectors renders differently inline than standalone. Inline `fill`/`stroke` (or the `currentColor` trick) always render correctly in both contexts.
 - **Transparent background** — do not include a background `<rect>`. The comparison page provides the dark background via the `.well` container. Logos must work on any background.
 - Use `<defs>` for gradients, filters, and reusable elements
 - **For circular glow halos**, use `radialGradient` fills (not blur filters). Blur filters (`feGaussianBlur`) clip to a rectangular region and render as squares at small sizes. Use a `radialGradient` with opacity tapering to 0 at the edge, applied to a circle larger than the core element. Example:
@@ -162,8 +163,8 @@ To turn a `logo-alt-N.svg` file into a symbol: copy everything **inside** its `<
 
 When the user wants to vary a single element (e.g., center color, accent style):
 1. Create 4-5 variants that ONLY change the requested element
-2. Name each variant file descriptively (e.g., `center-1-white.svg`, `center-2-gold.svg`)
-3. Generate a comparison page (`assets/<element>-compare.html`) using the same flexbox grid template
+2. Name each variant file descriptively (e.g., `center-1-white.svg`, `center-2-gold.svg`), namespacing ids per variant (see Step 2)
+3. Generate a comparison page (`assets/<element>-compare.html`) using the same inlined `<symbol>`/`<use>` template as Step 3 — do NOT use `<img src>`, so the page renders if registered as an Argus artifact
 4. Open it for the user to pick
 5. Apply the chosen variant to the main logo and clean up variant files
 
@@ -181,7 +182,7 @@ When the user picks a logo:
    ```bash
    rsvg-convert -w 512 -h 512 favicon.svg -o favicon-512.png   # librsvg, preferred
    resvg favicon.svg favicon-512.png --width 512 --height 512   # resvg
-   convert -density 384 -background none favicon.svg -resize 512x512 favicon-512.png   # ImageMagick
+   convert -density 384 -background none favicon.svg -resize 512x512 favicon-512.png   # ImageMagick (high -density rasterizes with headroom before -resize downscales)
    ```
    Use a transparent background (`-background none` / default for the others) so the mark drops onto any avatar background. Repeat per size, or export 512 once and downscale.
 4. Clean up the `logo-alt-*.svg` files and `logo-compare.html` (and any `*-compare.html` from Step 4b)
