@@ -104,8 +104,8 @@ If auto-switch fails (e.g., uncommitted changes in the worktree, or `master` is 
 The script handles branch protection on its own — you do **not** need to fall back to a manual `gh pr merge --admin`. When `reviewDecision` is `REVIEW_REQUIRED` or `CHANGES_REQUESTED`, `do_merge` escalates through tiers automatically:
 
 1. Retry the merge with `--admin` (branch-protection bypass; succeeds when you hold admin on the repo). A successful admin merge prints `WARNING: merged via --admin (branch protection bypassed)` so the bypass is never silent.
-2. If `--admin` fails (you lack admin), enable `--auto` (auto-merge) so the PR lands once checks pass.
-3. Only if both fail does it `exit 4`.
+2. If `--admin` fails (lacking admin is one cause, but a pending required status check is the more common one — gh refuses an admin merge until required checks resolve), enable `--auto` (auto-merge) so the PR lands once checks pass. The real admin error is printed (`Admin merge failed: …`), not swallowed.
+3. Only if both fail does it `exit 4` — and the exit-4 message includes the actual admin-merge error so the cause is visible.
 
 On a repo where you hold admin, `/merge` lands the PR through the review gate itself — **never substitute a raw `gh pr merge --admin`**, which skips the post-squash worktree auto-switch and strands you on the merged feature branch. A plain non-blocked PR merges directly; the admin tier only kicks in when review is actually blocking.
 
@@ -131,5 +131,8 @@ On a repo where you hold admin, `/merge` lands the PR through the review gate it
   5. Re-run the merge script with `--skip-rebase`.
 
 - **Exit 3** — Tell the user: "Nothing to merge — branch has no commits ahead of the default branch."
-- **Exit 4 (review blocked)** — Review is required (`REVIEW_REQUIRED`/`CHANGES_REQUESTED`) **and** the `--admin` bypass was unavailable (you lack admin on the repo) **and** auto-merge is not enabled. The script already tried admin and auto-merge before giving up, so there is nothing left to escalate. Tell the user: "PR requires an approving review before it can merge, and I don't have admin on this repo to bypass it. Ask a reviewer to approve, then re-run /merge."
+- **Exit 4 (review blocked)** — Review is required (`REVIEW_REQUIRED`/`CHANGES_REQUESTED`) and both the `--admin` bypass and auto-merge failed. The script prints the **actual** `gh pr merge --admin` error (`admin merge error: …`) alongside the auto-merge error — read it before concluding anything. Do **not** assume "no admin"; an admin merge fails for several reasons, and a **pending required status check** is the most common (gh refuses an admin merge until required checks resolve, even for an admin).
+  - If the admin error mentions pending/required checks (or the PR still has checks running), tell the user: "PR is blocked by a still-pending required status check, which prevented even the admin merge. Wait for checks to finish, then re-run /merge." Re-running once checks are green typically lands it.
+  - If the admin error actually indicates missing permissions (e.g. "must have admin rights", "not authorized"), tell the user: "PR requires an approving review and I lack admin on this repo to bypass it. Ask a reviewer to approve, then re-run /merge."
+  - Otherwise, surface the literal admin error to the user verbatim and suggest the matching next step.
 - **Exit 1** — Report the error from stderr.

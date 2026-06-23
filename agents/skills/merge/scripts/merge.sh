@@ -261,7 +261,17 @@ do_merge() {
       fi
     done
 
-    info "Admin merge failed, enabling auto-merge..."
+    # Capture the admin tier's real error NOW, before the auto-merge tier
+    # overwrites LAST_GH_ERR. The admin failure is the actionable one: an
+    # operator who holds repo admin most often hits a *pending required status
+    # check* here, not a permissions problem — `gh pr merge --admin` refuses to
+    # merge until required checks resolve, even for an admin. Surfacing it stops
+    # the die-4 path from misreporting "no admin" when the cause is elsewhere.
+    local admin_err="$LAST_GH_ERR"
+    if [[ -n "$admin_err" ]]; then
+      info "Admin merge failed: ${admin_err}"
+    fi
+    info "Enabling auto-merge..."
 
     for method in "${ALLOWED_METHODS[@]}"; do
       if _gh_merge "$method" "--auto" "$title" "$body"; then
@@ -272,8 +282,10 @@ do_merge() {
       fi
     done
 
-    die 4 "PR #${PR_NUMBER} is blocked (${reason}) and auto-merge is not available on this repository${LAST_GH_ERR:+
-  Last gh error: ${LAST_GH_ERR}}"
+    die 4 "PR #${PR_NUMBER} is blocked (${reason}); admin merge and auto-merge both failed.
+  admin merge error: ${admin_err:-<none captured>}
+  auto-merge error:  ${LAST_GH_ERR:-<none captured>}
+  If a required status check is still pending, that is the likely cause — an admin merge is refused until required checks resolve, so wait for them and re-run /merge. If you genuinely lack admin on this repo, ask a reviewer to approve."
   fi
 
   # Tier 1: plain merge with each allowed method (preferred order).
