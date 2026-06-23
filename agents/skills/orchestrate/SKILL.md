@@ -47,7 +47,10 @@ You (the session model) are the planner and orchestrator. Do NOT delegate planni
 
 ## Step 2: Launch the Workflow
 
-Author a Workflow script and pass the plan via `args` (so a resume with `resumeFromRunId` reuses cached results). Rules:
+Author a Workflow script and pass the plan via `args`. Rules:
+
+- **Pass `args` on every Workflow invocation, including resumes.** `args` is not persisted across runs — relaunching with `{ scriptPath, resumeFromRunId }` does **not** re-supply it, so the script's `args` global is `undefined` and it throws. Re-pass the same `args` payload each time.
+- **Normalize `args` at the top of the script.** The Workflow runtime may hand `args` to the script as a JSON string rather than an object, so `args.groups` is `undefined` and the script crashes on launch. Normalize first: `const A = typeof args === 'string' ? JSON.parse(args) : args`, then read everything off `A`.
 
 - **Every implementation agent sets `model` explicitly.** An omitted model inherits the session model and burns top-tier tokens on routine work — the failure mode this skill exists to prevent.
 - **Sequential within a group, parallel across groups** via `pipeline()` over groups.
@@ -83,12 +86,15 @@ const VERDICT = {
 }
 
 // args = { groups: [[{ id, prompt, tier }]], verify: 'go test ./...' }
-if (!Array.isArray(args.groups) || !args.groups.every(Array.isArray)) {
+// The Workflow runtime may hand `args` to the script as a JSON string, not an
+// object — normalize before use, then read everything off A (never raw args).
+const A = typeof args === 'string' ? JSON.parse(args) : args
+if (!A || !Array.isArray(A.groups) || !A.groups.every(Array.isArray)) {
   throw new Error('args.groups must be an array of arrays of work items')
 }
 
 const outcome = await pipeline(
-  args.groups,
+  A.groups,
   async (group, _g, i) => {
     if (budget.total && budget.remaining() < 50_000) {
       log('Token budget low — skipping group ' + i)
@@ -113,7 +119,7 @@ const outcome = await pipeline(
   async (done, group, i) => {
     if (!done || done.skipped) return done
     const ids = group.map(t => t.id).join(', ')
-    const verifyPrompt = 'Run "' + args.verify + '" and inspect the changes for work items ' +
+    const verifyPrompt = 'Run "' + A.verify + '" and inspect the changes for work items ' +
       ids + '. Report pass=true only if build and tests succeed.'
     let verdict = await agent(verifyPrompt,
       { label: 'verify:g' + i, phase: 'Verify', model: 'sonnet', schema: VERDICT })
@@ -146,4 +152,4 @@ If the user set a token budget (a "+500k" style directive), the implement stage 
 - Fewer than 2 work items → implement inline, no workflow.
 - A group fails verification after one fix round → mark failed, continue other groups, report at the end.
 - An agent returns null twice for the same work item → drop that item, report it.
-- Never relaunch the whole workflow from scratch; resume with `resumeFromRunId` so completed agents return cached results.
+- Never relaunch the whole workflow from scratch; resume with `resumeFromRunId` so completed agents return cached results — and re-pass `args` on the resume (it is not persisted across runs).
