@@ -50,15 +50,15 @@ Pick the verb from `$ARGUMENTS`. If unclear, ask which one.
 
 ### list
 
-The daemon returns an object with the rows under a top-level `schedules` key — `{"schedules": [ ... ]}` — not a bare array. Always iterate `.schedules[]`; a bare `.[]` indexes the wrapper object and fails with "Cannot index array with string".
+The daemon returns an object with the rows under a top-level `schedules` key — `{"schedules": [ ... ]}` — not a bare array. Always iterate `.schedules[]`; a bare `.[]` indexes the wrapper object and fails with "Cannot index array with string". Several fields are omitted when empty (`next_run_at`, `last_run_at`, `last_error`), so coalesce them with `//` — otherwise jq interpolates the absent value as a literal "null".
 
 ```
 curl -sS -H "Authorization: Bearer $(cat ~/.argus/api-token)" \
   http://localhost:7743/api/schedules \
-  | jq -r '.schedules[] | "\(.id)\t\(.name)\t\(.schedule)\t\(.enabled)\t\(.next_run_at)\t\(.last_run_at // "never")\t\(.last_error // "")"'
+  | jq -r '.schedules[] | "\(.id)\t\(.name)\t\(.schedule)\t\(.enabled)\t\(.next_run_at // "pending")\t\(.last_run_at // "never")\t\(.last_error // "")"'
 ```
 
-Render those rows as a compact table for the user: `name`, `schedule`, `enabled`, `next_run_at`, `last_run_at`, and `last_error` (show `last_error` only when non-empty). Keep `id` handy for the update and run verbs, which need it. Hide `prompt` unless the user asks — prompts can be long.
+The jq emits seven tab-separated columns in this order: `id`, `name`, `schedule`, `enabled`, `next_run_at`, `last_run_at`, `last_error`. Render them as a compact table; `id` is column 1 and is needed for the update and run verbs. Show `last_error` only when non-empty, and hide `prompt` unless the user asks — prompts can be long. Empty output means there are no schedules (jq still exits 0); a jq error such as "Cannot iterate over null" means the response was not the expected envelope — surface the raw body and stop rather than retrying.
 
 ### create
 
