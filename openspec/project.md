@@ -47,3 +47,11 @@ This is a personal developer tooling repository. "Installation" means symlinking
 - asdf (language runtime management)
 - GitHub Actions (CI/CD)
 - Spotify API (cmd/spotify utility)
+
+## OpenSpec note
+
+OpenSpec changes under `openspec/` are **local design docs only** — the spec the implementer
+builds against. They are **never wired into CI** and have no runtime effect. They exist to pin
+the exact interfaces and scenarios before code is written. The quality gate is and stays the
+Pre-Completion Checklist in `AGENTS.md` (`go install ./...`, `revive`, `go test ./...`, the skill
+tests in `.github/skill-tests/`, the skill linter in `.github/lint-skills.sh`, and `qlty`).
