@@ -50,12 +50,15 @@ Pick the verb from `$ARGUMENTS`. If unclear, ask which one.
 
 ### list
 
+The daemon returns an object with the rows under a top-level `schedules` key — `{"schedules": [ ... ]}` — not a bare array. Always iterate `.schedules[]`; a bare `.[]` indexes the wrapper object and fails with "Cannot index array with string".
+
 ```
 curl -sS -H "Authorization: Bearer $(cat ~/.argus/api-token)" \
-  http://localhost:7743/api/schedules | jq
+  http://localhost:7743/api/schedules \
+  | jq -r '.schedules[] | "\(.id)\t\(.name)\t\(.schedule)\t\(.enabled)\t\(.next_run_at)\t\(.last_run_at // "never")\t\(.last_error // "")"'
 ```
 
-Show the user a compact table: `name`, `schedule`, `enabled`, `next_run_at`, `last_run_at`, `last_error` (only if non-empty). Hide `prompt` unless the user asks — prompts can be long.
+Render those rows as a compact table for the user: `name`, `schedule`, `enabled`, `next_run_at`, `last_run_at`, and `last_error` (show `last_error` only when non-empty). Keep `id` handy for the update and run verbs, which need it. Hide `prompt` unless the user asks — prompts can be long.
 
 ### create
 
@@ -84,7 +87,7 @@ curl -sS -X POST \
   http://localhost:7743/api/schedules | jq
 ```
 
-After the call, echo the returned `id`, `next_run_at`, and a one-line confirmation. Do not add `--data-raw` shortcuts that bypass jq — embedding raw user input into a shell-quoted JSON string is a quoting hazard.
+Create and update both return the schedule object directly (the flat shape, not wrapped under a key), so `.id` and `.next_run_at` index the response without a path prefix. After the call, echo the returned `id`, `next_run_at`, and a one-line confirmation. Do not add `--data-raw` shortcuts that bypass jq — embedding raw user input into a shell-quoted JSON string is a quoting hazard.
 
 ### update
 
@@ -110,6 +113,8 @@ curl -sS -X POST \
   -H "Authorization: Bearer $(cat ~/.argus/api-token)" \
   http://localhost:7743/api/schedules/"$ID"/run | jq
 ```
+
+The response is an object carrying only the new task ID — `{"task_id": "..."}` — not a schedule object; surface that task ID so the user can find the run in argus.
 
 Note for the user: the run-now path does NOT send a push notification (the cron tick path does). If they expected the notification, that is the reason it did not arrive.
 
