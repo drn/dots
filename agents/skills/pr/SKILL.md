@@ -171,6 +171,17 @@ gh pr view <number> --repo <owner/repo> --json mergeStateStatus,mergeable
 Then use `gh pr checks <number> --repo <owner/repo>` to see the current state of all checks.
 
 - If checks are still running, poll `gh pr checks` with exponential backoff: wait 60s, then 120s, then 240s, capping at 300s between polls. Stop after 30 minutes total and report to the user.
+- **Distinguish a genuinely-running slow check from a stuck/queued one** before either continuing to wait or declaring it stuck. A required check on a slow repo (a 10-minute build-test, for example) is easy to mistake for a wedged workflow. Probe the underlying check-run status for the head commit:
+
+  ```
+  gh api repos/<owner>/<repo>/commits/<headSha>/check-runs \
+    --jq '.check_runs[] | select(.name|test("<check>";"i")) | {name, status, started_at}'
+  ```
+
+  - `status: "in_progress"` with a real `started_at` = genuinely running. Keep waiting (continue the backoff) — this is normal for slow checks, not a stall.
+  - `status: "queued"` for more than ~3 minutes, or no matching run at all = the check is stuck or was never scheduled. Surface this to the user rather than polling silently.
+
+  This prevents both premature give-up on a slow-but-healthy check and a silent infinite wait on one that will never start.
 - If `gh pr checks` reports "no checks reported" for 3+ minutes **and** `mergeStateStatus` is not DIRTY, the workflow may be misconfigured, paused, or require approval — surface this to the user rather than continuing to poll silently.
 - If all checks pass, proceed to 4c to check for unresolved review threads. Only go to Step 5 when CI is green **and** 4c confirms zero unresolved threads.
 - If any checks have failed, proceed to 4b immediately — do not wait.
@@ -247,6 +258,8 @@ gh api graphql -f query='
 ```
 
 **After addressing all threads:** if any code changes were made, stage, commit, and push them before looping back.
+
+**Expect AI re-reviewers to re-review on every push.** Tools like CodeRabbit and CI-based reviewers (a `claude-review`/`robothanx`-style job) re-run on each new commit, and each pushed fix frequently surfaces NEW incremental findings — often 2nd-order effects of the fix you just made (e.g., adding a call inside a signal handler prompts the next review to flag that call's missing timeout). This is normal: expect 2-4 cycles to converge, and do not treat a fresh finding after an otherwise-clean round as the loop being stuck. The "stuck (same failure 3+ times)" guard in Step 4d applies to the SAME finding recurring after you tried to fix it — genuinely-new findings each round are progress, not churn.
 
 #### 4d: Loop back to 4a
 
