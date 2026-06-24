@@ -175,11 +175,13 @@ Then use `gh pr checks <number> --repo <owner/repo>` to see the current state of
 
   ```
   gh api repos/<owner>/<repo>/commits/<headSha>/check-runs \
-    --jq '.check_runs[] | select(.name|test("<check>";"i")) | {name, status, started_at}'
+    --jq '.check_runs[] | select(.name|test("<check>";"i")) | {name, status, started_at, created_at}'
   ```
 
+  Replace `<check>` with the exact check name from the `gh pr checks` output above — a typo in the filter returns "no run" even when the check is healthy, so confirm the name first.
+
   - `status: "in_progress"` with a real `started_at` = genuinely running. Keep waiting (continue the backoff) — this is normal for slow checks, not a stall.
-  - `status: "queued"` for more than ~3 minutes, or no matching run at all = the check is stuck or was never scheduled. Surface this to the user rather than polling silently.
+  - `status: "queued"` with `created_at` more than ~3 minutes in the past, or no matching run at all (after confirming the name is right) = the check is stuck or was never scheduled. Surface this to the user rather than polling silently.
 
   This prevents both premature give-up on a slow-but-healthy check and a silent infinite wait on one that will never start.
 - If `gh pr checks` reports "no checks reported" for 3+ minutes **and** `mergeStateStatus` is not DIRTY, the workflow may be misconfigured, paused, or require approval — surface this to the user rather than continuing to poll silently.
