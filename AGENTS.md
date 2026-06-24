@@ -45,6 +45,35 @@ dots update                                   # Update configuration
 dots doctor                                   # Run diagnostics
 ```
 
+## Spec-Driven Development (OpenSpec)
+
+**Route every spec-worthy change through `openspec/` before writing code.** Any behavioral change
+— new CLI command or component, changed install/update behavior, new skill/custom agent/hook, an
+altered convention or invariant — gets a change folder first:
+
+1. Create `openspec/changes/<name>/` with `proposal.md`, delta specs under
+   `specs/<capability>/spec.md`, and `tasks.md`. Use a kebab-case, verb-led `change-id`
+   (`add-`, `update-`, `remove-`, `refactor-`).
+2. Run `openspec validate <name> --strict` and **get approval before implementing.**
+3. Implement against the tasks, keeping deltas in sync as requirements shift.
+4. **Archive within the same PR, before merge** — run `openspec archive <name> --yes` (or apply it
+   by hand: merge the delta requirements into the base specs under `openspec/specs/<capability>/`
+   and move the change folder to `openspec/changes/archive/<YYYY-MM-DD>-<name>/`) and commit the
+   result on the change branch. Squash-merge applies the work immediately, so the base-spec update
+   must land atomically with the PR — do NOT leave archiving as a separate post-merge step (that
+   strands the base specs behind shipped code).
+
+Skip the change folder only for genuinely non-behavioral work: docs, comments, formatting,
+test-only edits, mechanical refactors, non-breaking dependency bumps, config changes. When unsure,
+write the change.
+
+See `@/openspec/AGENTS.md` for the full spec format, delta conventions, and CLI reference.
+
+**Specs are LOCAL DOCS only** (see `openspec/project.md` → *OpenSpec note*): nothing in CI, the
+build, or the runtime reads them, and that stays true. Never wire `openspec validate` (or any spec
+tooling) into CI. The quality gate is and stays the **Pre-Completion Checklist** below
+(`go install ./...`, `revive`, `go test ./...`, the skill tests, the skill linter, and `qlty`).
+
 ## Repository Structure
 
 ```

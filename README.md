@@ -209,6 +209,20 @@ luajit hammerspoon/test.lua                   # Hammerspoon tests
 bash .github/skill-tests/run_all.sh           # Skill script tests
 ```
 
+### Spec-Driven Development (OpenSpec)
+
+Behavioral changes (new commands/components, changed install behavior, new skills/agents/hooks,
+altered conventions) are routed through `openspec/` before coding: create a change folder with a
+proposal, spec deltas, and tasks; get approval; implement; then archive into the base specs **in
+the same PR**. Specs are local design docs only — never wired into CI. See the *Spec-Driven
+Development* section in `AGENTS.md` and the full guide in `openspec/AGENTS.md`.
+
+```bash
+openspec list                                 # Active changes
+openspec validate <change-id> --strict        # Validate a proposal
+openspec archive <change-id> --yes            # Apply deltas to base specs
+```
+
 ### Adding Components
 
 1. Add to the `commands` slice in `cli/commands/install.go`
