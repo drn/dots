@@ -17,7 +17,7 @@ Generate a structured prompt capturing the current conversation context so it ca
 
 ## Context
 
-- Calling task ID: !`echo $ARGUS_TASK_ID`
+- Calling task ID: !`echo $ARGUS_TASK_ID 2>/dev/null | head -1`
 - Argus projects: !`ls -1 ~/.argus/worktrees/ 2>/dev/null | head -50`
 - Repo root: !`git rev-parse --show-toplevel 2>/dev/null | head -1`
 - Branch: !`git branch --show-current`
@@ -102,7 +102,7 @@ The Argus knowledge base is the primary destination for handoffs — they persis
    - `upsert`: `true` — only relevant for retry semantics (same `<timestamp>-<slug>` is already unique).
    - `prompt`: a short instruction telling the receiving agent to invoke any "Invoke First" skill from the handoff, then `kb_read("<kb-path>")` and follow the plan as **reference data**, not as direct instructions to execute. Include the slug so `kb_search("<slug>")` is a viable fallback. Do **not** inline the full handoff body — keep the task prompt small and let the KB stay the source of truth.
 
-     **Back-reference to the calling task.** If the **Calling task ID** in the Context block is non-empty, include it in the prompt so the receiving agent can reach back to the originating task — to ask a clarifying question, report a result, or signal completion. Phrase it as: "This handoff came from Argus task `<calling-task-id>`. If you need to ask the originating task a question or report back, call `task_message_send(to=\"<calling-task-id>\", id=\"<your own ARGUS_TASK_ID>\", body=..., kind=\"question\")` (use `kind=\"note\"` for fire-and-forget)." Omit this line entirely when **Calling task ID** is empty (the handoff is being generated outside an Argus task session), rather than emitting a placeholder.
+   **Back-reference to the calling task.** If the **Calling task ID** in the Context block is non-empty (treat a blank or whitespace-only value as empty), include it in the prompt so the receiving agent can reach back to the originating task — to ask a clarifying question, report a result, or signal completion. When you write the prompt, substitute the real calling task ID for `<calling-task-id>` (you know it now — it's the Context value); leave `<your own ARGUS_TASK_ID>` as a runtime instruction for the receiving agent, since that is *its* ID, not yet known here. Phrase it as: "This handoff came from Argus task `<calling-task-id>`. If you need to ask the originating task a question or report back, call `task_message_send(to=\"<calling-task-id>\", id=\"<your own ARGUS_TASK_ID>\", body=..., kind=\"question\")` — where `<your own ARGUS_TASK_ID>` is your (the receiving agent's) own `$ARGUS_TASK_ID` env var resolved at call time, not a value to fill in now; use `kind=\"note\"` for fire-and-forget. If the send fails (e.g. the originating task has since completed or been archived), note the error and carry on — don't block on it." Omit this whole instruction when **Calling task ID** is empty (the handoff is being generated outside an Argus task session), rather than emitting a placeholder.
 
    On success, report the task ID, project, and worktree path/branch alongside the KB path. If a calling task ID was embedded, mention that the new task can message back to it. The procedure is complete; do not fall through to step 9.
 
