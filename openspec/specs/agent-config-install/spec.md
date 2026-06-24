@@ -1,0 +1,92 @@
+# agent-config-install Specification
+
+## Purpose
+
+The `agent-config-install` capability defines `dots install agents` — how the
+repository's reusable skills, custom agent types, and hooks are wired into Claude
+Code and Codex by symlinking directories and mutating `~/.claude/settings.json`.
+
+This spec documents the behavior that ships today.
+
+## Requirements
+
+### Requirement: Skill and Agent Symlinking
+
+The `agents` installer SHALL ensure `~/.claude` and `~/.agents` exist, then
+soft-link `agents/skills` into both `~/.claude/skills` and `~/.agents/skills`,
+soft-link `agents/custom` into `~/.claude/agents`, and soft-link
+`agents/AGENTS.md` into `~/.claude/CLAUDE.md`. If a required parent directory
+cannot be created, the installer SHALL abort the remaining work.
+
+#### Scenario: Skills linked for both agents
+
+- **WHEN** the `agents` installer runs
+- **THEN** `agents/skills` is soft-linked to both `~/.claude/skills` and `~/.agents/skills`
+
+#### Scenario: Custom agents and global instructions linked
+
+- **WHEN** the `agents` installer runs
+- **THEN** `agents/custom` is linked to `~/.claude/agents` and `agents/AGENTS.md` is linked to `~/.claude/CLAUDE.md`
+
+### Requirement: Hook Registration
+
+The `agents` installer SHALL register hooks in `~/.claude/settings.json`: a
+`PreToolUse` hook matching `Skill` (skill-usage tracking), a `SessionStart` hook
+(Argus KB memory injection), a `SessionEnd` hook (raw inbox capture), and a
+`PostToolUse` hook matching `mcp__argus.*__kb_ingest` (KB change tracking). Each
+hook SHALL invoke its script under `agents/hooks/` via `bash`.
+
+#### Scenario: Skill tracking hook registered
+
+- **WHEN** the `agents` installer runs against settings without the skill-tracking hook
+- **THEN** a `PreToolUse` hook with matcher `Skill` running `agents/hooks/track-skill-use.sh` is added
+
+#### Scenario: KB ingest matcher covers Argus server names
+
+- **WHEN** the KB change tracking hook is registered
+- **THEN** its `PostToolUse` matcher is `mcp__argus.*__kb_ingest`, covering both legacy and current Argus MCP server names
+
+### Requirement: Idempotent Hook Registration
+
+Hook registration SHALL be idempotent. Matcher-style hooks (`PreToolUse`,
+`PostToolUse`) SHALL be deduplicated by their `matcher` value; session-style
+hooks (`SessionStart`, `SessionEnd`) SHALL be deduplicated by their inner command
+string. A hook already present SHALL NOT be added a second time.
+
+#### Scenario: Re-running does not duplicate hooks
+
+- **WHEN** the `agents` installer runs a second time
+- **THEN** no duplicate hook entries are added to `settings.json`
+
+### Requirement: Status Line Registration
+
+The `agents` installer SHALL set `statusLine` in `~/.claude/settings.json` to run
+`agents/hooks/statusline.sh` via `bash`, replacing it only when the configured
+command differs from the existing one.
+
+#### Scenario: Status line set when absent or different
+
+- **WHEN** the `agents` installer runs and the configured status line command is not already present
+- **THEN** `settings.statusLine` is set to the statusline script command
+
+#### Scenario: Status line unchanged when identical
+
+- **WHEN** the `agents` installer runs and `settings.statusLine` already matches the configured command
+- **THEN** `settings.json` is left unchanged for the status line
+
+### Requirement: Settings File Handling
+
+Settings mutation SHALL read `~/.claude/settings.json`, treat a missing file as
+an empty object, preserve existing keys, and write the result back as indented
+JSON. When the file does not yet exist, it SHALL be created with mode `0600`;
+when it exists, its current mode SHALL be preserved.
+
+#### Scenario: Missing settings file treated as empty
+
+- **WHEN** settings mutation runs and `~/.claude/settings.json` does not exist
+- **THEN** mutation proceeds against an empty object and writes a new file with mode 0600
+
+#### Scenario: Existing keys preserved
+
+- **WHEN** settings mutation adds a hook to a file with unrelated keys
+- **THEN** the unrelated keys are retained in the written file
