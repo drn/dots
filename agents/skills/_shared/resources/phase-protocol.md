@@ -25,7 +25,11 @@ think → critique → plan → build → review → test → ship → land
 .context/phases/
 ```
 
-Create with `mkdir -p .context/phases` before writing. This directory is per-worktree and gitignored.
+Create with `mkdir -p .context/phases` before writing. This directory is per-worktree, agent-local scratch — it is **not** reviewable content.
+
+**Never `git add` or commit phase artifacts into a PR.** They are for cross-phase continuity, not for reviewers. A `ship-*.md` (or any `{phase}-*.md`) showing up in a PR diff is a defect — reviewers flag it, and it costs an extra review + force-push cycle. When committing, stage only the real change; leave `.context/` untouched.
+
+Most repos do not gitignore `.context/`, so `git add -A` or `git add .` will sweep these files in. Either stage files explicitly (avoid `git add -A`/`git add .`), or, if a repo genuinely needs `.context/` tracked, add `.context/` to that repo's `.gitignore` rather than committing the artifacts. Do not assume the directory is already gitignored.
 
 ## Naming Convention
 

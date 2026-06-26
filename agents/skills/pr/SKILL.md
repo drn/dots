@@ -20,6 +20,8 @@ This skill participates in a phase chain. Read `~/.claude/skills/_shared/resourc
 
 **After the PR is created and green:** Write a `ship-{ts}.md` artifact to `.context/phases/` (create with `mkdir -p .context/phases`). The **Detail** section should include the PR URL, CI status, and any fixes applied. The **Handoff** section should note the PR number for `/merge`.
 
+**Do NOT `git add` or commit the `ship-{ts}.md` artifact (or any `.context/` file) into the PR.** It is agent-local scratch for cross-phase handoff, not reviewable content — a `ship-*.md` in the PR diff is a defect reviewers will flag. In every commit step above (Step 1 and Step 4b), stage only the real change; never use `git add -A` or `git add .` (they sweep in `.context/`). If a repo genuinely needs `.context/` tracked, add `.context/` to its `.gitignore` instead of committing the artifact.
+
 ## Your task
 
 Open a PR for the current branch, then loop until CI is fully green and all review comments are addressed. Do not return until the PR is in a mergeable, green state.
