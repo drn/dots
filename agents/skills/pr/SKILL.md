@@ -20,7 +20,7 @@ This skill participates in a phase chain. Read `~/.claude/skills/_shared/resourc
 
 **After the PR is created and green:** Write a `ship-{ts}.md` artifact to `.context/phases/` (create with `mkdir -p .context/phases`). The **Detail** section should include the PR URL, CI status, and any fixes applied. The **Handoff** section should note the PR number for `/merge`.
 
-**Do NOT `git add` or commit the `ship-{ts}.md` artifact (or any `.context/` file) into the PR.** It is agent-local scratch for cross-phase handoff, not reviewable content — a `ship-*.md` in the PR diff is a defect reviewers will flag. In every commit step above (Step 1 and Step 4b), stage only the real change; never use `git add -A` or `git add .` (they sweep in `.context/`). If a repo genuinely needs `.context/` tracked, add `.context/` to its `.gitignore` instead of committing the artifact.
+**Do NOT `git add` or commit the `ship-{ts}.md` artifact (or any `.context/` file) into the PR.** It is agent-local scratch for cross-phase handoff, not reviewable content — a `ship-*.md` in the PR diff is a defect reviewers will flag. In every commit step below (Step 1 and Step 4b), stage only the real change; never use `git add -A` or `git add .` (they sweep in `.context/`). As a belt-and-suspenders safeguard, add `.context/` to the repo's `.gitignore` so the artifact can never be swept in.
 
 ## Your task
 
@@ -34,7 +34,7 @@ Determine the upstream repo slug (owner/name) — use `upstream` remote if it ex
 
 ### Step 1: Commit any uncommitted changes
 
-If there are uncommitted changes (check git status), stage and commit them with an appropriate message before proceeding. **Do this before anything else** — uncommitted changes are work the user wants shipped.
+If there are uncommitted changes (check git status), stage and commit them with an appropriate message before proceeding. **Do this before anything else** — uncommitted changes are work the user wants shipped. Stage specific files (`git add <path>`), not `git add -A`/`git add .`, so `.context/` scratch never gets swept in.
 
 **Abort condition (only when NO PR exists):** After committing any uncommitted changes, if there are STILL no commits ahead of the default branch, stop and tell the user: "Nothing to ship — no PR exists and there are no commits on this branch."
 
@@ -197,7 +197,7 @@ Then use `gh pr checks <number> --repo <owner/repo>` to see the current state of
   - Use `mcp__github__get_job_logs` with `failed_only: true` and the workflow `run_id` to read the failure logs.
   - Analyze the failure. Read the relevant source files to understand the issue.
   - Fix the code. Make the minimal change needed to resolve the failure.
-  - Stage and commit the fix with a clear message describing what was fixed and why.
+  - Stage and commit the fix with a clear message describing what was fixed and why. Stage specific files (`git add <path>`), not `git add -A`/`git add .`, so `.context/` scratch never gets swept in.
 - Push all fixes with `git push`.
 
 #### 4c: Check for and resolve ALL review threads

@@ -29,7 +29,7 @@ Create with `mkdir -p .context/phases` before writing. This directory is per-wor
 
 **Never `git add` or commit phase artifacts into a PR.** They are for cross-phase continuity, not for reviewers. A `ship-*.md` (or any `{phase}-*.md`) showing up in a PR diff is a defect — reviewers flag it, and it costs an extra review + force-push cycle. When committing, stage only the real change; leave `.context/` untouched.
 
-Most repos do not gitignore `.context/`, so `git add -A` or `git add .` will sweep these files in. Either stage files explicitly (avoid `git add -A`/`git add .`), or, if a repo genuinely needs `.context/` tracked, add `.context/` to that repo's `.gitignore` rather than committing the artifacts. Do not assume the directory is already gitignored.
+Most repos do not gitignore `.context/`, so `git add -A` or `git add .` will sweep these files in. Do not assume the directory is already gitignored. Use either safeguard: stage files explicitly (avoid `git add -A`/`git add .`), or add `.context/` to the repo's `.gitignore` so the artifacts can never be swept in.
 
 ## Naming Convention
 
@@ -88,3 +88,5 @@ After `/merge` completes, optionally move artifacts to preserve history:
 mkdir -p .context/phases/archive/{branch}-{ts}
 mv .context/phases/*.md .context/phases/archive/{branch}-{ts}/
 ```
+
+The archive stays under `.context/` — it is still agent-local scratch. The same rule applies: never `git add`/commit it into a PR (see [Artifact Directory](#artifact-directory) above).
