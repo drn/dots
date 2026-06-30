@@ -38,6 +38,9 @@ func Agents() {
 	// Register Argus KB memory injection on SessionStart
 	registerSessionStartMemoryHook()
 
+	// Register dev-tool PATH injection on SessionStart
+	registerSessionStartPathHook()
+
 	// Register session-end raw capture into memory/inbox/
 	registerSessionEndCaptureHook()
 
@@ -204,6 +207,19 @@ func registerSessionStartMemoryHook() {
 		"SessionStart",
 		"agents/hooks/session-start-memory.sh",
 		"Registered Argus KB memory injection hook (SessionStart)",
+	)
+}
+
+// registerSessionStartPathHook prepends dev-tool bin dirs (go/bin, cargo,
+// asdf shims) onto the Bash tool's PATH via $CLAUDE_ENV_FILE so go-installed
+// binaries like `tts` resolve by bare name. Claude Code builds the Bash tool
+// PATH from its launch environment (often a daemon) and ignores ~/.zshenv, so
+// this hook is the supported way to restore those dirs.
+func registerSessionStartPathHook() {
+	registerSessionHook(
+		"SessionStart",
+		"agents/hooks/session-start-path.sh",
+		"Registered dev-tool PATH hook (SessionStart)",
 	)
 }
 
