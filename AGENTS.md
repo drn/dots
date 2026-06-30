@@ -190,6 +190,7 @@ When the user's message matches a phrase below, read and follow the correspondin
 | "last screenshot", "see screenshot", "recent screenshot", "show screenshot", "last N screenshots" | `agents/skills/screenshot/SKILL.md` |
 | "investigate CI failures", "find flaky tests", "why is CI failing", "diagnose test flakiness", "flaky CI" | `agents/skills/ci-investigate/SKILL.md` |
 | "create skill", "new skill", "write skill", "add a slash command", "improve skill" | `agents/skills/write-skill/SKILL.md` |
+| "add to PATH", "Bash tool PATH", "command not found in Claude Code", "works in terminal but not Claude Code", "CLAUDE_ENV_FILE", "env.PATH not working" | `agents/skills/bash-tool-path/SKILL.md` |
 | "prioritize", "RICE score", "backlog grooming", "sprint planning", "rank items" | `agents/skills/prioritize/SKILL.md` |
 | "swarm", "parallel agents", "agent team in conductor", "multi-agent", "spawn agents" | `agents/skills/swarm/SKILL.md` |
 | "orchestrate", "fable workflow", "dynamic workflow", "tiered workflow", "model-tiered build", "plan on fable implement with sonnet and opus" | `agents/skills/orchestrate/SKILL.md` |

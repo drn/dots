@@ -204,6 +204,7 @@ After writing, run two validation passes. Fix issues silently — only flag if t
 
 #### Syntax and Safety
 
+- [ ] Dynamic context uses the LIVE exclamation-mark-plus-backtick syntax, NOT the `!{...}` curly-brace form. The curly form is a documentation-only placeholder used in this file's examples to prevent self-execution (see the note under Dynamic Context) — a real skill that uses it renders the line as inert text instead of running the command.
 - [ ] No `$()` in any dynamic context line
 - [ ] No `||` or `&&` operators in any dynamic context line
 - [ ] Error-prone commands use `2>/dev/null | head -N` (suppresses stderr AND neutralizes exit code)
