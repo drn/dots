@@ -1,13 +1,13 @@
 ---
 name: orchestrate
-description: Launch a dynamic Workflow where the top-tier session model (Fable, or Opus when Fable is unavailable) handles planning and orchestration while implementation subagents run on Sonnet for routine tasks and Opus for complex ones. Use when the user wants to orchestrate a build, a dynamic workflow, a model-tiered build, fable planning with sonnet and opus implementation, or tiered agents.
+description: Launch a dynamic Workflow where the top-tier session model (Fable, or Opus when Fable is unavailable) handles planning and orchestration while implementation subagents run on Sonnet for routine tasks and Opus for complex ones. Use when the user wants to orchestrate a build, a dynamic workflow, a model-tiered build, fable or opus planning with sonnet and opus implementation, or tiered agents.
 ---
 
 # Orchestrate: Tiered Planning + Implementation
 
 Run the expensive top-tier session model only where it earns its cost — planning, decomposition, orchestration, and final integration — and fan implementation out through the Workflow tool to model-tiered subagents: Sonnet for routine work, Opus for complex work.
 
-The top-tier planner/orchestrator is the **session model** — Fable when it is available, **Opus when Fable is not**. Planning runs in the main loop, so it automatically uses whichever model the session is on; no detection step is needed. The only place Fable is named explicitly below is the tier rubric's "inherits the session model" row, which resolves to Opus on a Fable-less session.
+The top-tier planner/orchestrator is the **session model** — Fable when it is available, **Opus when Fable is not**. Planning runs in the main loop, so it automatically uses whichever model the session is on; no detection step is needed.
 
 Invoking this skill is the explicit opt-in the Workflow tool requires.
 
