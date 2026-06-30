@@ -6,8 +6,8 @@ description: Safely add a directory to Claude Code's Bash tool PATH. Use when a 
 ## Context
 
 - Worked example hook: ~/.dots/agents/hooks/session-start-path.sh
-- Existing SessionStart hooks (user): !{grep -n SessionStart ~/.claude/settings.json 2>/dev/null | head -10}
-- env.PATH in user settings (a footgun if present): !{grep -n '"PATH"' ~/.claude/settings.json 2>/dev/null | head -5}
+- Existing SessionStart hooks (user): !`grep -n SessionStart ~/.claude/settings.json 2>/dev/null | head -10`
+- env.PATH in user settings (a footgun if present): !`grep -n '"PATH"' ~/.claude/settings.json 2>/dev/null | head -5`
 
 ## When to use this skill
 
