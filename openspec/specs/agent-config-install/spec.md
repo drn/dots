@@ -7,7 +7,9 @@ repository's reusable skills, custom agent types, and hooks are wired into Claud
 Code and Codex by symlinking directories and mutating `~/.claude/settings.json`.
 
 This spec documents the behavior that ships today.
+
 ## Requirements
+
 ### Requirement: Skill and Agent Symlinking
 
 The `agents` installer SHALL ensure `~/.claude` and `~/.agents` exist, then

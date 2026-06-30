@@ -63,9 +63,27 @@ test_idempotent_across_repeated_fires() {
   _run_hook "$home" "$envfile"
   _run_hook "$home" "$envfile"
 
+  # grep -cF counts matching LINES; each export is one line, so this is the
+  # occurrence count. Exactly 1 = the second fire saw the line and skipped it.
   local gobin_lines
   gobin_lines=$(grep -cF "$home/go/bin:\$PATH" "$envfile")
   assert_eq "$gobin_lines" "1" "go/bin export should appear exactly once after two fires"
+}
+
+test_uses_gopath_fallback_when_gobin_unset() {
+  local home envfile
+  home=$(_setup_path_home)
+  envfile="$home/envfile"
+  mkdir -p "$home/custom-gopath/bin"
+
+  # GOBIN unset but GOPATH set: the hook should derive $GOPATH/bin, not ~/go/bin.
+  HOME="$home" GOBIN="" GOPATH="$home/custom-gopath" CLAUDE_ENV_FILE="$envfile" \
+    bash "$HOOK" </dev/null
+
+  local body
+  body=$(cat "$envfile")
+  assert_contains "$body" "export PATH=\"$home/custom-gopath/bin:\$PATH\"" "GOPATH/bin should be used when GOBIN is unset"
+  assert_not_contains "$body" "$home/go/bin:\$PATH" "default ~/go/bin should not be used when GOPATH is set"
 }
 
 test_respects_custom_gobin() {

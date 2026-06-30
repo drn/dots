@@ -15,6 +15,10 @@
 #
 #   https://code.claude.com/docs/en/tools  (Bash tool behavior)
 #   https://code.claude.com/docs/en/hooks  (persist environment variables)
+#
+# Unlike the memory hook, this one prints nothing: per the docs, the
+# persist-env-vars pattern is a SessionStart hook that writes to
+# $CLAUDE_ENV_FILE and exits 0 with no stdout — no JSON envelope is required.
 set -euo pipefail
 
 # Drain stdin (Claude Code sends a JSON envelope we don't need here).
@@ -26,8 +30,9 @@ cat >/dev/null
 
 # Dev-tool bin dirs to prepend, in SOURCE order. The file is sourced top to
 # bottom and every line does `export PATH="$dir:$PATH"`, so the LAST line wins
-# the frontmost slot. Ordering mirrors ~/.zshenv, where $GOBIN sits ahead of
-# the asdf shims so go-installed binaries bypass the shims.
+# the frontmost slot (written A, B, C → after sourcing: C:B:A:$original).
+# Ordering mirrors ~/.zshenv, where $GOBIN sits ahead of the asdf shims so
+# go-installed binaries bypass the shims.
 gobin="${GOBIN:-${GOPATH:-$HOME/go}/bin}"
 dirs=(
   "$HOME/.cargo/bin"   # rust (cargo install)
@@ -39,6 +44,10 @@ for dir in "${dirs[@]}"; do
   # Skip dirs that don't exist so we never add dead PATH entries on machines
   # without that toolchain installed.
   [ -d "$dir" ] || continue
+  # Defensive: a literal double-quote in the path would break the generated
+  # `export PATH="…"` line when sourced. Real paths never contain one, but
+  # skip rather than emit invalid shell (this is a public repo).
+  case "$dir" in *'"'*) continue ;; esac
   # `$PATH` stays literal so it expands when the env file is sourced, not now.
   line="export PATH=\"$dir:\$PATH\""
   # Idempotent across repeated SessionStart fires within one session: the env

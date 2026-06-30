@@ -18,4 +18,4 @@
 - [x] 4.2 `openspec validate add-dev-tool-path-hook --strict` passes
 
 ## 5. Archive within this PR
-- [ ] 5.1 Merge the delta into `openspec/specs/agent-config-install/spec.md` and move the change to `openspec/changes/archive/<date>-add-dev-tool-path-hook/`
+- [x] 5.1 Merge the delta into `openspec/specs/agent-config-install/spec.md` and move the change to `openspec/changes/archive/<date>-add-dev-tool-path-hook/`
