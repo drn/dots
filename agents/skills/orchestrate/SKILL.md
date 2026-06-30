@@ -1,11 +1,13 @@
 ---
 name: orchestrate
-description: Launch a dynamic Workflow where the top-tier session model (Fable) handles planning and orchestration while implementation subagents run on Sonnet for routine tasks and Opus for complex ones. Use when the user wants to orchestrate a build, a dynamic workflow, a model-tiered build, fable planning with sonnet and opus implementation, or tiered agents.
+description: Launch a dynamic Workflow where the top-tier session model (Fable, or Opus when Fable is unavailable) handles planning and orchestration while implementation subagents run on Sonnet for routine tasks and Opus for complex ones. Use when the user wants to orchestrate a build, a dynamic workflow, a model-tiered build, fable or opus planning with sonnet and opus implementation, or tiered agents.
 ---
 
 # Orchestrate: Tiered Planning + Implementation
 
-Run the expensive top-tier session model (Fable) only where it earns its cost — planning, decomposition, orchestration, and final integration — and fan implementation out through the Workflow tool to model-tiered subagents: Sonnet for routine work, Opus for complex work.
+Run the expensive top-tier session model only where it earns its cost — planning, decomposition, orchestration, and final integration — and fan implementation out through the Workflow tool to model-tiered subagents: Sonnet for routine work, Opus for complex work.
+
+The top-tier planner/orchestrator is the **session model** — Fable when it is available, **Opus when Fable is not**. Planning runs in the main loop, so it automatically uses whichever model the session is on; no detection step is needed.
 
 Invoking this skill is the explicit opt-in the Workflow tool requires.
 
@@ -38,7 +40,7 @@ You (the session model) are the planner and orchestrator. Do NOT delegate planni
    |------|---------|
    | `sonnet` | Mechanical, well-specified, bounded work: tests, docs, boilerplate, renames, config, simple endpoints, straightforward CRUD |
    | `opus` | Cross-cutting changes, design judgment, tricky algorithms, concurrency, error-handling strategy, public API shape |
-   | omit (inherits Fable) | Forbidden for implementation. Permitted ONLY for in-workflow judging or synthesis agents |
+   | omit (inherits the session model — Fable, or Opus when Fable is unavailable) | Forbidden for implementation. Permitted ONLY for in-workflow judging or synthesis agents |
 
 4. **Group by file ownership.** Work items that touch the same files share a group and run sequentially inside it; distinct groups run in parallel. This avoids worktree isolation and merge headaches entirely.
 5. **Present the plan** as a short table (id, tier, files, group) before launching. If requirements are genuinely ambiguous, ask the user first; otherwise proceed.
