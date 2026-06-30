@@ -34,6 +34,8 @@ You (the session model) are the planner and orchestrator. Do NOT delegate planni
    - **prompt** — fully self-contained: file paths, existing conventions to follow, exact success criteria, and the instruction to run a sanity check (compile/lint) before finishing. Subagents have no conversation history; the prompt is everything they know.
    - **tier** — `sonnet` or `opus` (rubric below)
    - **files** — the files this item owns
+
+   **Size each item so its result fits one structured response.** A single very large or high-uncertainty item that returns a `schema` can exhaust the Workflow tool's StructuredOutput retry cap (5 attempts) and **throw** — which aborts its entire sequential group, so every later item in that group never runs and the stage drops to `null`. This is a different, harsher failure than the null-twice-drop case (which loses only one item). For the biggest or most intricate trust-core item, do one of: (a) split it into smaller items; (b) run it as a plain free-text agent with NO `schema` (it returns prose; integrate that in the main loop); or (c) isolate it in its OWN single-item group so a cap-abort cannot take down siblings.
 3. **Assign tiers** with this rubric:
 
    | Tier | Use for |
@@ -43,6 +45,8 @@ You (the session model) are the planner and orchestrator. Do NOT delegate planni
    | omit (inherits the session model — Fable, or Opus when Fable is unavailable) | Forbidden for implementation. Permitted ONLY for in-workflow judging or synthesis agents |
 
 4. **Group by file ownership.** Work items that touch the same files share a group and run sequentially inside it; distinct groups run in parallel. This avoids worktree isolation and merge headaches entirely.
+
+   Ownership must cover the **producer↔consumer pair** of every new cross-cutting symbol — not just the files an item edits. If one item's code CONSUMES a new env var, column, config key, or exported function, the code that PRODUCES or wires it must be owned by SOME work item too; otherwise the integration silently no-ops while every test still passes, and the feature ships dead. During decomposition, for each new cross-cutting symbol ask: is its producer assigned to a work item? If not, add one (or fold it into an existing item's files).
 5. **Present the plan** as a short table (id, tier, files, group) before launching. If requirements are genuinely ambiguous, ask the user first; otherwise proceed.
 
 **Skip the workflow entirely** if the plan yields fewer than 2 work items — orchestration overhead is not worth it. Implement inline and stop.
@@ -147,6 +151,7 @@ If the user set a token budget (a "+500k" style directive), the implement stage 
 2. **Run the full verification suite** for the project (build, lint, tests) in the main loop. Subagent verification is per-group; this is the whole-tree check.
 3. **Summarize** with a table: work item, tier, status, files changed; then test results and any concerns the agents raised.
 4. **Do not commit or push** unless the user asked for it.
+5. **For trust-core changes, run a fresh-eyes review pass** (e.g. `/rereview-loop`) before considering the build done. A passing build and a green test suite do not catch an ownership-gap no-op or a wrongly-integrated dropped item — an independent reviewer that did not author the plan does.
 
 ## Stop Conditions
 
@@ -154,4 +159,5 @@ If the user set a token budget (a "+500k" style directive), the implement stage 
 - Fewer than 2 work items → implement inline, no workflow.
 - A group fails verification after one fix round → mark failed, continue other groups, report at the end.
 - An agent returns null twice for the same work item → drop that item, report it.
+- An oversized `schema` item hits the StructuredOutput retry cap and throws → its whole sequential group aborts (later items never run). Prevent at decomposition time per Step 1 item 2 (split, drop the schema, or isolate it in its own group); if it still happens, finish the dropped items in the main loop and report them.
 - Never relaunch the whole workflow from scratch; resume with `resumeFromRunId` so completed agents return cached results — and re-pass `args` on the resume (it is not persisted across runs).
