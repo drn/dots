@@ -1,4 +1,4 @@
-# frozen_string_literal: true
+frozen_string_literal: true
 
 # taps
 tap 'drn/homebrew-tap'
@@ -25,6 +25,7 @@ cask 'google-chrome'
 cask 'google-cloud-sdk'
 cask 'google-drive'
 cask 'hammerspoon'
+cask 'home-assistant'
 cask 'keepingyouawake'
 cask 'licecap'
 cask 'loom'
