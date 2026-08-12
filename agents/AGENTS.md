@@ -5,6 +5,7 @@
 - **Slack**: Use the `/slack` skill. The `slack` CLI is a standalone system binary, NOT part of any project CLI.
 - **Email**: Use the `/email` skill for reading Gmail. MCP tools (`mcp__gmail__*`) also work.
 - **Notion**: MCP tools (`mcp__notion__*`) work for reading. Use the `/notion` skill for writing/updating pages.
+- **Vetting third-party code before running it** (supply-chain review of an npm package, repo, etc.): try invoking `Skill("security-review")` before doing an ad-hoc manual grep-based review — it's a built-in skill with no local SKILL.md file, easy to forget since it won't show up in a worktree file search.
 - **General rule**: If a task matches an available skill, invoke `Skill("<name>")` before attempting any other approach.
 
 ## TTS Notifications
@@ -16,6 +17,13 @@ After finishing work, generate a task-specific summary (6 words max) and speak i
 tts -s 1.1 "<SUMMARY>"           # default
 tts -s 1.3 -v alloy "<SUMMARY>"  # for thanx repos (git remote contains "thanx")
 ```
+
+## Code Comments
+
+- Default to no comments. Only add one when the WHY is genuinely non-obvious (a hidden constraint, a subtle invariant, a workaround for a specific bug) — not to restate what well-named code already shows.
+- Never reference ticket IDs (Linear, Jira, etc.), PR numbers, or issue links in comments — they go stale and rot as the codebase evolves. Put that context in the commit message or PR description instead.
+- Keep any comment that is warranted to one line. No multi-paragraph explanations or comment blocks.
+- If removing the comment wouldn't confuse a future reader, don't write it.
 
 ## Memory
 
