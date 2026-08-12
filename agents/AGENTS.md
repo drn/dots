@@ -5,7 +5,7 @@
 - **Slack**: Use the `/slack` skill. The `slack` CLI is a standalone system binary, NOT part of any project CLI.
 - **Email**: Use the `/email` skill for reading Gmail. MCP tools (`mcp__gmail__*`) also work.
 - **Notion**: MCP tools (`mcp__notion__*`) work for reading. Use the `/notion` skill for writing/updating pages.
-- **Vetting third-party code before running it** (supply-chain review of an npm package, repo, etc.): try invoking `Skill("security-review")` before doing an ad-hoc manual grep-based review — it's a built-in skill with no local SKILL.md file, easy to forget since it won't show up in a worktree file search.
+- **Third-party code review**: Invoke `Skill("security-review")` before an ad-hoc grep-based review — it has no local SKILL.md file, so it's easy to forget.
 - **General rule**: If a task matches an available skill, invoke `Skill("<name>")` before attempting any other approach.
 
 ## TTS Notifications
