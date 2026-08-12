@@ -16,6 +16,8 @@ Audit the argus-kb knowledge base, then **apply every fix** without confirmation
 
 The only escape hatch is `--dry-run` for previewing what dream *would* do.
 
+**No TTS.** Dream runs as an unattended scheduled task with no one present to hear a spoken summary. This overrides any global "speak aloud on task completion" habit — skip TTS entirely for this skill, including at Phase 8.
+
 ## Arguments
 
 - `$ARGUMENTS` — Optional flags and scoping:
