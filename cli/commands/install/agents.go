@@ -2,6 +2,7 @@ package install
 
 import (
 	"encoding/json"
+	"fmt"
 	"os"
 
 	"github.com/drn/dots/cli/link"
@@ -300,8 +301,16 @@ func ensureScalarSetting(key string, value any, successMsg string) {
 
 // registerCleanupPeriod sets cleanupPeriodDays to 3 years so local Claude
 // Code session transcripts aren't cleaned up on the default 30-day window.
+// This trades a wider on-disk retention window (transcripts can contain
+// pasted secrets/tokens) for longer local history; it's a deliberate choice
+// for a personal machine, not an exfiltration risk since nothing leaves it.
 func registerCleanupPeriod() {
-	ensureScalarSetting("cleanupPeriodDays", 1095, "Set cleanupPeriodDays to 1095 (3 years)")
+	const cleanupPeriodDays = 1095
+	ensureScalarSetting(
+		"cleanupPeriodDays",
+		cleanupPeriodDays,
+		fmt.Sprintf("Set cleanupPeriodDays to %d (3 years)", cleanupPeriodDays),
+	)
 }
 
 func ensureDir(dir string) bool {
