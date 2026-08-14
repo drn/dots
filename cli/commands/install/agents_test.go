@@ -119,3 +119,61 @@ func TestRegisterSessionStartPathHook_CommandShape(t *testing.T) {
 		t.Errorf("no SessionStart command equal to %q (cmds=%v)", want, cmds)
 	}
 }
+
+func TestEnsureScalarSetting_SetsWhenAbsent(t *testing.T) {
+	settingsPath := setupClaudeHome(t)
+
+	ensureScalarSetting("cleanupPeriodDays", 1095, "set")
+
+	settings := readSettings(t, settingsPath)
+	if got := settings["cleanupPeriodDays"]; got != float64(1095) {
+		t.Fatalf("cleanupPeriodDays = %v, want 1095", got)
+	}
+}
+
+func TestEnsureScalarSetting_OverwritesWhenDifferent(t *testing.T) {
+	settingsPath := setupClaudeHome(t)
+	writeJSON(t, settingsPath, map[string]any{"cleanupPeriodDays": 30})
+
+	ensureScalarSetting("cleanupPeriodDays", 1095, "set")
+
+	settings := readSettings(t, settingsPath)
+	if got := settings["cleanupPeriodDays"]; got != float64(1095) {
+		t.Fatalf("cleanupPeriodDays = %v, want 1095", got)
+	}
+}
+
+func TestEnsureScalarSetting_NoopWhenMatching(t *testing.T) {
+	settingsPath := setupClaudeHome(t)
+	writeJSON(t, settingsPath, map[string]any{"cleanupPeriodDays": 1095})
+
+	before, err := os.Stat(settingsPath)
+	if err != nil {
+		t.Fatalf("stat before: %s", err)
+	}
+
+	ensureScalarSetting("cleanupPeriodDays", 1095, "set")
+
+	after, err := os.Stat(settingsPath)
+	if err != nil {
+		t.Fatalf("stat after: %s", err)
+	}
+	if !before.ModTime().Equal(after.ModTime()) {
+		t.Fatalf("settings.json was rewritten when value already matched")
+	}
+}
+
+func TestEnsureScalarSetting_PreservesOtherKeys(t *testing.T) {
+	settingsPath := setupClaudeHome(t)
+	writeJSON(t, settingsPath, map[string]any{"model": "opus"})
+
+	ensureScalarSetting("cleanupPeriodDays", 1095, "set")
+
+	settings := readSettings(t, settingsPath)
+	if got := settings["model"]; got != "opus" {
+		t.Fatalf("model = %v, want opus", got)
+	}
+	if got := settings["cleanupPeriodDays"]; got != float64(1095) {
+		t.Fatalf("cleanupPeriodDays = %v, want 1095", got)
+	}
+}
