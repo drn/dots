@@ -49,6 +49,9 @@ func Agents() {
 
 	// Register status line
 	registerStatusLine()
+
+	// Manage local session transcript retention
+	registerCleanupPeriod()
 }
 
 // mutateSettings reads ~/.claude/settings.json, applies a mutation function,
@@ -269,6 +272,36 @@ func registerStatusLine() {
 	if changed {
 		log.Success("Registered status line (context usage)")
 	}
+}
+
+// ensureScalarSetting sets settings[key] = value in ~/.claude/settings.json
+// unless the existing value already matches. Equality is judged by JSON
+// marshaling both sides, so equivalent numeric encodings (e.g. int 1095 vs.
+// a float64 1095 decoded from disk) count as matching and don't trigger a
+// rewrite.
+func ensureScalarSetting(key string, value any, successMsg string) {
+	changed := mutateSettings(func(settings map[string]any) bool {
+		if existing, ok := settings[key]; ok {
+			existingJSON, err1 := json.Marshal(existing)
+			valueJSON, err2 := json.Marshal(value)
+			if err1 == nil && err2 == nil && string(existingJSON) == string(valueJSON) {
+				return false // already set
+			}
+		}
+
+		settings[key] = value
+		return true
+	})
+
+	if changed {
+		log.Success("%s", successMsg)
+	}
+}
+
+// registerCleanupPeriod sets cleanupPeriodDays to 3 years so local Claude
+// Code session transcripts aren't cleaned up on the default 30-day window.
+func registerCleanupPeriod() {
+	ensureScalarSetting("cleanupPeriodDays", 1095, "Set cleanupPeriodDays to 1095 (3 years)")
 }
 
 func ensureDir(dir string) bool {
