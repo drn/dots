@@ -28,10 +28,19 @@ poll or wait for a deploy in progress).
 
 ## Instructions
 
+Work through the following steps in order — the timestamp correlation in
+Step 4 is what makes this validation trustworthy rather than a generic
+health-check dashboard.
+
 ### Step 1: Confirm the deploy landed
 
 Determine the deployed ref (from `$ARGUMENTS` or by asking, mirroring
-`deploy-audit`'s ref detection). Fetch it and confirm it now points at the
+`deploy-audit`'s ref detection). Refs are treated as untrusted input for
+shell purposes: if a ref contains characters outside `[A-Za-z0-9._/-]`, do
+not interpolate it directly into a shell command — quote it and confirm with
+the user first.
+
+Fetch it and confirm it now points at the
 commit/tag that was intended to ship — e.g. the deployed branch's SHA matches
 the base branch's SHA at the time of the deploy, or a release tag was created
 at the expected commit.

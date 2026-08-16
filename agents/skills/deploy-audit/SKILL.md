@@ -25,6 +25,9 @@ on its own.
 
 ## Instructions
 
+Work through the following steps in order, gathering enough evidence at each
+one to give the final risk report real teeth rather than a generic checklist.
+
 ### Step 1: Determine the two refs
 
 Parse `$ARGUMENTS` for `<base>..<deployed>`. If only one ref is given, treat it
@@ -32,6 +35,11 @@ as the deployed ref and use the detected default branch as base. If nothing is
 given, look at the remote branches/tags in Context above for likely
 candidates (a `production`/`release`/`deploy` branch, or the most recent tag)
 and ask the user to confirm the base and deployed refs before proceeding.
+
+Refs and the org/repo derived from the remote URL are treated as untrusted
+input for shell purposes: if either contains characters outside
+`[A-Za-z0-9._/-]`, do not interpolate it directly into a shell command —
+quote it and confirm with the user first.
 
 Run `git fetch origin` for both refs to ensure they are current.
 
