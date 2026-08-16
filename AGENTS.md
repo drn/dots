@@ -253,6 +253,8 @@ Filter to changed files only by replacing `--all` with `--upstream=origin/master
 
 If `qlty` panics with `failed to create initial log file ... PermissionDenied` under a sandboxed agent, redirect its log dir by overriding `HOME`: `HOME=/tmp/qlty-home qlty smells --all`. The Claude Code sandbox blocks writes to `~/.qlty/logs` even though the user owns the directory (`com.apple.provenance` xattr from a different process).
 
+If instead you get `command not found: qlty` in the Bash tool despite `qlty` working in a normal terminal, its install dir (`~/.qlty/bin`) isn't on the Bash tool's PATH — invoke it by full path (`~/.qlty/bin/qlty`) or see `/bash-tool-path` to fix PATH for the session.
+
 ## Pre-Completion Checklist
 
 Before considering any task complete, run the full test suite:
