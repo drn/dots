@@ -203,6 +203,8 @@ When the user's message matches a phrase below, read and follow the correspondin
 | "loop", "poll", "recurring", "every N minutes", "babysit", "monitor periodically", "run on interval" | `agents/skills/loop/SKILL.md` |
 | "compare PRs", "combine PRs", "combine these PRs", "cherry-pick between PRs", "competing implementations", "competing PRs" | `agents/skills/combine-prs/SKILL.md` |
 | "open a PR", "address review comments", "address review feedback", "fix CI failures on the PR", "wait for CI", "address PR comments" | `agents/skills/pr/SKILL.md` |
+| "audit pending commits", "check deploy risk", "review what's shipping", "audit deploy risk", "deploy audit" | `agents/skills/deploy-audit/SKILL.md` |
+| "validate a deploy", "check post-deploy health", "confirm production rollout is healthy", "deploy validate", "post-deploy check" | `agents/skills/deploy-validate/SKILL.md` |
 | "just address comments", "only address comments", "resolve review threads", "reply to PR comments", "clear bot comments", "address comments without re-running CI" | `agents/skills/address-comments/SKILL.md` |
 | "improve skills", "capture learnings", "upgrade context", "learn from session" | `agents/skills/improve/SKILL.md` |
 | "amend", "amend commit", "rewrite commit message", "improve commit message", "fix commit message" | `agents/skills/amend/SKILL.md` |
@@ -250,6 +252,8 @@ qlty metrics --all --sort complexity --limit 10  # Hotspots
 Filter to changed files only by replacing `--all` with `--upstream=origin/master`. When fixing a maintainability finding, prefer extracting a helper over disabling the rule. See https://docs.qlty.sh/cli/coding-with-ai-agents.
 
 If `qlty` panics with `failed to create initial log file ... PermissionDenied` under a sandboxed agent, redirect its log dir by overriding `HOME`: `HOME=/tmp/qlty-home qlty smells --all`. The Claude Code sandbox blocks writes to `~/.qlty/logs` even though the user owns the directory (`com.apple.provenance` xattr from a different process).
+
+If instead you get `command not found: qlty` in the Bash tool despite `qlty` working in a normal terminal, its install dir (`~/.qlty/bin`) isn't on the Bash tool's PATH — invoke it by full path (`~/.qlty/bin/qlty`) or see `/bash-tool-path` to fix PATH for the session.
 
 ## Pre-Completion Checklist
 

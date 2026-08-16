@@ -78,6 +78,8 @@ Dots includes 71 reusable slash-command skills for AI coding agents, following t
 | `/address-comments` | Walk every unresolved review thread on a PR — triage, reply with rationale, fix if warranted, and resolve |
 | `/review` | Code review panel for current branch changes |
 | `/deploy` | Deploy master to production with version tags |
+| `/deploy-audit` | Audit commits pending between a base branch and a deployed branch/tag for migration, config-wiring, flag, and schema risk, then open the GitHub compare diff |
+| `/deploy-validate` | Post-deploy health check across CI, rollout, error tracking, and monitoring, correlated against deploy timing to filter pre-existing noise |
 | `/merge` | Merge current branch to master via GitHub PR |
 | `/debug` | Multi-agent competing hypotheses debugging |
 | `/dev` | Multi-agent iterative development with parallel testing and code review |
