@@ -69,7 +69,7 @@ dots docker stop-all     # Stop all Docker containers
 
 ## Agent Skills
 
-Dots includes 71 reusable slash-command skills for AI coding agents, following the [Agent Skills](https://agentskills.io) open standard. Each skill lives in `agents/skills/<name>/SKILL.md` and is available as `/<name>` in Claude Code after running `dots install agents`.
+Dots includes 73 reusable slash-command skills for AI coding agents, following the [Agent Skills](https://agentskills.io) open standard. Each skill lives in `agents/skills/<name>/SKILL.md` and is available as `/<name>` in Claude Code after running `dots install agents`.
 
 | Skill | Description |
 |-------|-------------|
@@ -78,6 +78,8 @@ Dots includes 71 reusable slash-command skills for AI coding agents, following t
 | `/address-comments` | Walk every unresolved review thread on a PR — triage, reply with rationale, fix if warranted, and resolve |
 | `/review` | Code review panel for current branch changes |
 | `/deploy` | Deploy master to production with version tags |
+| `/deploy-audit` | Audit commits pending between a base branch and a deployed branch/tag for migration, config-wiring, flag, and schema risk, then open the GitHub compare diff |
+| `/deploy-validate` | Post-deploy health check across CI, rollout, error tracking, and monitoring, correlated against deploy timing to filter pre-existing noise |
 | `/merge` | Merge current branch to master via GitHub PR |
 | `/debug` | Multi-agent competing hypotheses debugging |
 | `/dev` | Multi-agent iterative development with parallel testing and code review |
@@ -193,7 +195,7 @@ Run `dots install agents` to symlink them to `~/.claude/agents/`.
 ├── pi/                        # pi.dev coding agent config (models.json only)
 │
 ├── agents/                    # Agent configuration
-│   ├── skills/                # 71 reusable skills (SKILL.md per skill)
+│   ├── skills/                # 73 reusable skills (SKILL.md per skill)
 │   └── custom/                # 3 custom agent types (.md per agent)
 │       └── tests/             # Skill test suite
 │
