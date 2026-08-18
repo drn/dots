@@ -124,7 +124,7 @@ tooling) into CI. The quality gate is and stays the **Pre-Completion Checklist**
 | hammerspoon | Window management |
 | tools | Devbox, Claude Code, Codex |
 | osx | macOS defaults |
-| agents | Agent skills, custom agents, hooks, and status line (symlinks agents/skills → ~/.claude/skills + ~/.agents/skills, agents/custom → ~/.claude/agents, registers hooks and status line in ~/.claude/settings.json) |
+| agents | Agent skills, custom agents, hooks, and status line (symlinks agents/skills → ~/.claude/skills + ~/.agents/skills, agents/custom → ~/.claude/agents, agents/AGENTS.md → ~/.claude/CLAUDE.md, registers hooks and status line in ~/.claude/settings.json) |
 | pi | pi.dev coding agent CLI + config (installs pi via curl pi.dev/install.sh, symlinks pi/agent/models.json → ~/.pi/agent/models.json, and seeds defaultProvider/defaultModel for Ollama qwen3:32b in ~/.pi/agent/settings.json; auth.json and sessions/ stay local) |
 
 ## Writing Skills / Slash Commands
@@ -231,6 +231,18 @@ Put personal or org-specific knowledge in private project-local CLAUDE.md files,
 ## Skill Handoffs from ~/.dots
 
 When receiving a handoff for `~/.dots` skill changes, apply them to this workspace under `agents/skills/`. This repo is the source of truth for skills — `~/.claude/skills/` is a symlink to `agents/skills/` via `dots install agents`.
+
+## Global CLAUDE.md Sync
+
+This repo controls the user's global Claude Code instructions: `agents/AGENTS.md` is the source of
+truth, symlinked to `~/.claude/CLAUDE.md` via `dots install agents` (see
+`cli/commands/install/agents.go`). Whenever the user asks to update their global CLAUDE.md, make the
+same edit to `agents/AGENTS.md` here so the repo copy stays in sync — don't only edit the live
+`~/.claude/CLAUDE.md`.
+
+Apply the Public Repo Policy above when syncing: only mirror generic, reusable instructions into
+`agents/AGENTS.md`. If an instruction is personal or org-specific, leave it in the user's local
+`~/.claude/CLAUDE.md` only.
 
 ## README Maintenance
 
