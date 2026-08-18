@@ -240,7 +240,7 @@ truth, symlinked to `~/.claude/CLAUDE.md` via `dots install agents` (see
 same edit to `agents/AGENTS.md` here so the repo copy stays in sync — don't only edit the live
 `~/.claude/CLAUDE.md`.
 
-Apply the Public Repo Policy below when syncing: only mirror generic, reusable instructions into
+Apply the Public Repo Policy above when syncing: only mirror generic, reusable instructions into
 `agents/AGENTS.md`. If an instruction is personal or org-specific, leave it in the user's local
 `~/.claude/CLAUDE.md` only.
 
