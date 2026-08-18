@@ -17,6 +17,20 @@ local function duration()
   return currentPosition ~= nil and currentPosition or 0
 end
 
+local function isFavorited()
+  return tell('favorited of the current track') == true
+end
+
+local function setFavorited(favorited)
+  tell('set favorited of the current track to '..tostring(favorited))
+end
+
+local function currentTrackInfo()
+  local name   = tell('name of the current track as string') or ''
+  local artist = tell('artist of the current track as string') or ''
+  return name..'\n'..artist
+end
+
 function itunes.next()
   if not hs.itunes.isRunning() then return end
   hs.itunes.next()
@@ -98,7 +112,7 @@ function itunes.display()
     formatSeconds(total)
   )
   local info   = track..'\n'..album..'\n'..artist..'\n'..time
-  alert.showOnly(info, 1.75)
+  alert.showOnly(info, 1.75, 20)
 end
 
 function itunes.open()
@@ -133,11 +147,19 @@ function itunes.toggle()
 end
 
 function itunes.save()
-  alert.show("Unsupported")
+  if not hs.itunes.isRunning() then return end
+  local favorited = isFavorited()
+  local icon = favorited and '(+)' or '[+]'
+  if not favorited then setFavorited(true) end
+  alert.showOnly(icon..'\n'..currentTrackInfo(), 1, 20)
 end
 
 function itunes.remove()
-  alert.show("Unsupported")
+  if not hs.itunes.isRunning() then return end
+  local favorited = isFavorited()
+  local icon = favorited and '[−]' or '(-)'
+  if favorited then setFavorited(false) end
+  alert.showOnly(icon..'\n'..currentTrackInfo(), 1, 20)
 end
 
 function itunes.transfer()
