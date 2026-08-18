@@ -8,6 +8,10 @@
 - **Third-party code review**: Invoke `Skill("security-review")` before an ad-hoc grep-based review — it has no local SKILL.md file, so it's easy to forget.
 - **General rule**: If a task matches an available skill, invoke `Skill("<name>")` before attempting any other approach.
 
+## Linear
+
+- Never create a Linear ticket with Urgent priority — it triggers a PagerDuty alert. Use a lower priority unless the user explicitly confirms they want the page.
+
 ## TTS Notifications
 
 **ALWAYS speak aloud when completing ANY task or waiting for user input.**
