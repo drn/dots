@@ -43,6 +43,8 @@ If any phase has nothing to do (no findings, no improvements), skip it and move 
 
 ## Phase 0: Commit Uncommitted Changes
 
+**First, `git fetch origin <default-branch>`** (the branch found in "Base ref" above). The BEHIND/diverged detection below reads local knowledge of `origin/master` (`git status`, `git log HEAD..origin/master`) — if that ref hasn't been fetched recently, a remote that has moved on looks identical to "up to date," and the gap surfaces later as confusing failures (e.g. `lint-pr`/`pre-pr` failing on files this branch never touched, because `--new-from-rev=origin/master` diffed against a stale local ref) instead of being caught here where it's cheap to fix. This is a plain fetch, not a merge/rebase — it only updates remote-tracking refs, so it's always safe to run even mid-pipeline.
+
 Before running review, ensure all changes are committed. The review phase uses `git diff origin/master...HEAD` which only sees committed changes — uncommitted work would be invisible to the reviewer.
 
 Check `git status --short`. If there are staged or unstaged changes to tracked files (or untracked files that are clearly part of the work):
@@ -112,10 +114,11 @@ For each suggestion or INFO-level finding in the review report:
 
 ### 2d: Verify fixes
 
-After addressing all findings (blocking, warnings, and suggestions), run the test suite to confirm nothing broke:
-- Detect test runner from project type (go.mod, package.json, Gemfile, Cargo.toml, pyproject.toml)
-- Run the tests
-- If tests fail, diagnose and fix before proceeding
+After addressing all findings (blocking, warnings, and suggestions), run the full project quality gate (not just unit tests) to confirm nothing broke — for a Go project with a `pre-pr`-style make target, run the full gate (build/vet/fmt/lint/coverage), not just `go test`, since lint and coverage gates catch issues tests don't:
+- Detect test runner/gate from project type (go.mod, package.json, Gemfile, Cargo.toml, pyproject.toml)
+- Run it
+- If it fails on a file this session never touched, don't assume a regression from your own fix — re-fetch `origin/<default-branch>` and check whether the branch has fallen behind (see Phase 0's fetch step); a stale local `origin/master` ref makes a lint/coverage gate diff against the wrong base and surfaces pre-existing issues as if they were new. Rebase onto the fresh base and re-run before diagnosing further.
+- If it fails for a real reason, diagnose and fix before proceeding
 
 Print a summary of what was addressed:
 
