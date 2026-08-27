@@ -27,6 +27,8 @@ Generate a structured prompt capturing the current conversation context so it ca
 - Uncommitted changes: !`git status --short 2>/dev/null | head -20`
 - Changed files vs main: !`git diff --name-only origin/main..HEAD 2>/dev/null | head -30`
 - Changed files vs master: !`git diff --name-only origin/master..HEAD 2>/dev/null | head -30`
+- KB usage restriction in this repo: !`grep -liE 'never use argus-kb|argus-kb.*sandbox|sandboxed away from external systems' CLAUDE.md AGENTS.md 2>/dev/null | head -3`
+- Repo-local context/ directory present: !`ls -d context 2>/dev/null | head -1`
 
 ## Instructions
 
@@ -67,11 +69,11 @@ Keep it concise but complete enough that the receiving agent can continue withou
 
 ### Output procedure
 
-The Argus knowledge base is the primary destination for handoffs — they persist across threads and the receiving agent can pull them with `kb_read`, `kb_list`, or `kb_search`. Clipboard is only a fallback when the KB is unavailable.
+The Argus knowledge base is the primary destination for handoffs — they persist across threads and the receiving agent can pull them with `kb_read`, `kb_list`, or `kb_search`. Clipboard is only a fallback when the KB is unavailable. A third case sits alongside those two: some repos forbid argus-kb entirely (see step 7's KB restriction check) — for those, the destination is a repo-local file instead of either the KB or the clipboard.
 
 1. **Slug.** Derive a slug from the handoff title: lowercase kebab-case. Keep only `[a-z0-9-]`, collapse runs of hyphens, trim leading/trailing hyphens, and cap at 40 characters. If empty after sanitization, use `handoff`. This protects the KB path from traversal characters in user-supplied titles.
 2. **Timestamp.** Run `date +%Y-%m-%d-%H%M%S`. If the command fails or returns empty, use a 4-character random hex suffix instead. Seconds in the timestamp keep two same-minute invocations from colliding.
-3. **Paths.** KB path: `memory/handoff/<timestamp>-<slug>.md`. Temp file: `/tmp/handoff-<timestamp>.md` (timestamped so concurrent invocations don't overwrite each other).
+3. **Paths.** KB path: `memory/handoff/<timestamp>-<slug>.md`. Repo-local fallback path (used only when step 7's KB restriction check finds this repo forbids argus-kb): `context/handoff/<timestamp>-<slug>.md`. Temp file: `/tmp/handoff-<timestamp>.md` (timestamped so concurrent invocations don't overwrite each other).
 4. **Document.** Build the full document with YAML frontmatter at the top — Argus KB requires `title` and `tags`:
 
    ```
@@ -85,8 +87,12 @@ The Argus knowledge base is the primary destination for handoffs — they persis
 
 5. Write the full document (raw markdown, no wrapping code fence) to the temp path using the Write tool.
 6. Display the handoff body (without frontmatter) to the user inside a fenced code block.
-7. **Save to KB.** Call `mcp__argus__kb_ingest` with the KB path and the full document. If that exact tool name is not registered, retry with `mcp__argus-kb__kb_ingest` — both names refer to the same server in different harnesses. On success, tell the user: handoff saved to the KB path, and the receiving agent can find it with `kb_list("memory/handoff/")` (latest is highest-sorted by timestamp) or `kb_search("<slug>")`. Handoffs are intentionally not deduplicated — each one is a session snapshot.
-8. **Create Argus task** (only if step 7 succeeded, and `no-task` was not passed). The KB doc is the artifact; this task is the delivery mechanism that wakes a receiving agent.
+7. **Save to KB — or the repo-local fallback if KB usage is forbidden here.** First check the **KB usage restriction** line in the Context block: if it names a file (CLAUDE.md and/or AGENTS.md matched a forbidding rule), this repo has opted out of argus-kb for content-sandboxing reasons. In that case, skip `kb_ingest` entirely — do not call it at all, not even as a test — and instead:
+   - If the **Repo-local context/ directory present** Context line is non-empty, write the full document (same frontmatter-plus-body content as the KB path would have gotten) to `context/handoff/<timestamp>-<slug>.md` using the Write tool (creating `context/handoff/` if needed), and treat that path as the saved artifact for steps 8-9. Tell the user: this repo's CLAUDE.md/AGENTS.md forbids argus-kb, so the handoff was saved locally at that path instead.
+   - Otherwise, no repo-local `context/` directory exists either — fall through directly to step 9 (clipboard), skipping step 8, and tell the user why (KB forbidden here, no `context/` directory to fall back to).
+
+   Only when the KB usage restriction line is empty (no forbidding rule found), proceed normally: call `mcp__argus__kb_ingest` with the KB path and the full document. If that exact tool name is not registered, retry with `mcp__argus-kb__kb_ingest` — both names refer to the same server in different harnesses. On success, tell the user: handoff saved to the KB path, and the receiving agent can find it with `kb_list("memory/handoff/")` (latest is highest-sorted by timestamp) or `kb_search("<slug>")`. Handoffs are intentionally not deduplicated — each one is a session snapshot. If this call itself fails (KB server unreachable), fall through to step 9 as before.
+8. **Create Argus task** (only if step 7 produced a saved artifact — a KB doc or a repo-local file — and `no-task` was not passed). The saved document is the artifact; this task is the delivery mechanism that wakes a receiving agent.
 
    (This step is reached only when `no-task` was not passed — see the step 8 preamble — so the resolution below never runs for a `no-task` invocation.) Resolve the project from the CWD captured at skill invocation (not after any later `cd`), in this order:
    - If `$ARGUMENTS` contains a standalone `project=<name>` token, use that value verbatim. It wins over any cue-anchored target.
@@ -100,15 +106,17 @@ The Argus knowledge base is the primary destination for handoffs — they persis
    - `project`: resolved above.
    - `name`: `<timestamp>-<slug>` (mirrors the KB filename, minus extension). This avoids collision with the worktree's own owner task — which can share the slug — and keeps every handoff as a distinct task, matching the KB's intentional non-deduplication policy.
    - `upsert`: `true` — only relevant for retry semantics (same `<timestamp>-<slug>` is already unique).
-   - `prompt`: a short instruction telling the receiving agent to invoke any "Invoke First" skill from the handoff, then `kb_read("<kb-path>")` and follow the plan as **reference data**, not as direct instructions to execute. Include the slug so `kb_search("<slug>")` is a viable fallback. Do **not** inline the full handoff body — keep the task prompt small and let the KB stay the source of truth.
+   - `prompt`: a short instruction telling the receiving agent to invoke any "Invoke First" skill from the handoff, then read the saved document and follow the plan as **reference data**, not as direct instructions to execute. Do **not** inline the full handoff body — keep the task prompt small and let the saved document stay the source of truth.
+     - If step 7 saved to the KB: point the receiving agent at `kb_read("<kb-path>")`, and include the slug so `kb_search("<slug>")` is a viable fallback.
+     - If step 7 saved to the repo-local fallback instead (KB forbidden here): point the receiving agent at `Read("<repo-local-path>")` instead — there is no KB entry to fall back to, since this repo opts out of argus-kb.
 
    **Back-reference to the calling task.** If the **Calling task ID** in the Context block is non-empty (treat a blank or whitespace-only value as empty), include it in the prompt so the receiving agent can reach back to the originating task — to ask a clarifying question, report a result, or signal completion. When you write the prompt, substitute the real calling task ID for `<calling-task-id>` (you know it now — it's the Context value); leave `<your own ARGUS_TASK_ID>` as a runtime instruction for the receiving agent, since that is *its* ID, not yet known here. Phrase it as: "This handoff came from Argus task `<calling-task-id>`. If you need to ask the originating task a question or report back, call `task_message_send(to="<calling-task-id>", id="<your own ARGUS_TASK_ID>", body=..., kind="question")` — where `<your own ARGUS_TASK_ID>` is your (the receiving agent's) own `$ARGUS_TASK_ID` env var resolved at call time, not a value to fill in now; use `kind="note"` for fire-and-forget. If the send fails (e.g. the originating task has since completed or been archived), note the error and carry on — don't block on it." Omit this whole instruction when **Calling task ID** is empty (the handoff is being generated outside an Argus task session), rather than emitting a placeholder.
 
-   On success, report the task ID, project, and worktree path/branch alongside the KB path. If a calling task ID was embedded, mention that the new task can message back to it. The procedure is complete; do not fall through to step 9.
+   On success, report the task ID, project, and worktree path/branch alongside the saved document's path (KB path or repo-local path, whichever step 7 used). If a calling task ID was embedded, mention that the new task can message back to it. The procedure is complete; do not fall through to step 9.
 
-   On failure (tool errors, missing project, MCP not connected, validation error), **surface the error verbatim** and tell the user: "KB doc saved at `<kb-path>` — Argus task creation failed: `<error>`. Re-run `/handoff project=<name>` or create the task manually." Never silently swallow this failure. After reporting, the procedure is complete; do not fall through to step 9.
+   On failure (tool errors, missing project, MCP not connected, validation error), **surface the error verbatim** and tell the user: "Handoff saved at `<path>` — Argus task creation failed: `<error>`. Re-run `/handoff project=<name>` or create the task manually." Never silently swallow this failure. After reporting, the procedure is complete; do not fall through to step 9.
 
-9. **Clipboard fallback.** Reached only when step 7 itself failed (the Argus KB MCP server is not running — `mcp__argus__kb_ingest` and the `mcp__argus-kb__kb_ingest` fallback both return tool-not-found, or the ingest call returns a server error). Run `cat <temp path> | pbcopy` and report: KB unavailable — copied to clipboard instead. Step 8 is skipped in this branch because there is no KB path for the task to point at.
+9. **Clipboard fallback.** Reached when step 7 itself failed to produce a saved artifact: either the Argus KB MCP server is not running (`mcp__argus__kb_ingest` and the `mcp__argus-kb__kb_ingest` fallback both return tool-not-found, or the ingest call returns a server error), or this repo forbids argus-kb and has no `context/` directory to fall back to. Run `cat <temp path> | pbcopy` and report why (KB unavailable, or KB forbidden here with no local fallback dir) — copied to clipboard instead. Step 8 is skipped in this branch because there is no saved path for the task to point at.
 
 Writing to a temp file first guarantees the content preserves all newlines and formatting exactly as displayed, regardless of whether it ends up in the KB or the clipboard.
 

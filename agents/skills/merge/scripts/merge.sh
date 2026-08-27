@@ -126,7 +126,12 @@ check_commits() {
 
 do_fetch() {
   info "Fetching ${TARGET}..."
-  git fetch "$TARGET"
+  # --prune: a prior squash-merge on this branch may have triggered GitHub's
+  # auto-delete-head-branch setting, leaving a stale local
+  # refs/remotes/<target>/<branch>. Without pruning it, do_push's
+  # --force-with-lease later rejects with "(stale info)" even though a fresh
+  # push would succeed.
+  git fetch "$TARGET" --prune
 }
 
 do_rebase() {
