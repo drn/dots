@@ -13,7 +13,10 @@ function lib.percentComplete(current, total)
   current = current or 0
   total = total or 0
   if total == 0 then return 0 end
-  return math.floor(current / total * 100 + 0.5)
+  local percent = math.floor(current / total * 100 + 0.5)
+  if percent < 0 then return 0 end
+  if percent > 100 then return 100 end
+  return percent
 end
 
 function lib.frameForUnit(baseframe, unit)

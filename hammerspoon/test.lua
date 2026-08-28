@@ -54,6 +54,9 @@ eq('nil current',     lib.percentComplete(nil, 100),  0)
 eq('nil total',       lib.percentComplete(50, nil),   0)
 eq('nil current+total', lib.percentComplete(nil, nil), 0)
 eq('zero total',      lib.percentComplete(50, 0),     0)
+eq('half rounds up',  lib.percentComplete(1, 8),      13)
+eq('over total clamps', lib.percentComplete(105, 100), 100)
+eq('negative clamps', lib.percentComplete(-10, 100),  0)
 
 -- frameForUnit
 
