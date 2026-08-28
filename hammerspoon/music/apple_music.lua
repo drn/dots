@@ -4,7 +4,8 @@ local as    = require 'hs.applescript'
 local alert = require 'alert'
 local lib   = require 'lib'
 
-local formatSeconds = lib.formatSeconds
+local formatSeconds   = lib.formatSeconds
+local percentComplete = lib.percentComplete
 
 local function tell(cmd)
   local _cmd = 'tell application "Music" to ' .. cmd
@@ -102,9 +103,9 @@ function itunes.display()
   local artist = hs.itunes.getCurrentArtist() or ''
   local album  = hs.itunes.getCurrentAlbum() or ''
   local track  = hs.itunes.getCurrentTrack() or ''
-  local current = hs.itunes.getPosition()
+  local current = hs.itunes.getPosition() or 0
   local total   = duration()
-  local percent = math.floor(current / total * 100 + 0.5)
+  local percent = percentComplete(current, total)
   local time   = (
     formatSeconds(current)..
     '  ('..percent..'%)'..

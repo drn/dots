@@ -3,7 +3,8 @@ local alert = require 'alert'
 local as    = require 'hs.applescript'
 local lib   = require 'lib'
 
-local formatSeconds = lib.formatSeconds
+local formatSeconds   = lib.formatSeconds
+local percentComplete = lib.percentComplete
 
 local function tell(cmd)
   local _cmd = 'tell application "Spotify" to ' .. cmd
@@ -100,9 +101,9 @@ function spotify.display()
   local artist = hs.spotify.getCurrentArtist() or ''
   local album  = hs.spotify.getCurrentAlbum() or ''
   local track  = hs.spotify.getCurrentTrack() or ''
-  local current = hs.spotify.getPosition()
+  local current = hs.spotify.getPosition() or 0
   local total   = duration()
-  local percent = math.floor(current / total * 100 + 0.5)
+  local percent = percentComplete(current, total)
   local time   = (
     formatSeconds(current)..
     '  ('..percent..'%)'..
