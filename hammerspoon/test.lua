@@ -45,6 +45,19 @@ eq('1h 1m 1s',          lib.formatSeconds(3661),  '1h 1m 1s')
 eq('2h 30m 45s',        lib.formatSeconds(9045),  '2h 30m 45s')
 eq('fractional floors', lib.formatSeconds(90.7),  '1m 30s')
 
+-- percentComplete
+
+eq('50 of 100',       lib.percentComplete(50, 100),   50)
+eq('0 of 100',        lib.percentComplete(0, 100),    0)
+eq('rounds up',       lib.percentComplete(67, 100),   67)
+eq('nil current',     lib.percentComplete(nil, 100),  0)
+eq('nil total',       lib.percentComplete(50, nil),   0)
+eq('nil current+total', lib.percentComplete(nil, nil), 0)
+eq('zero total',      lib.percentComplete(50, 0),     0)
+eq('half rounds up',  lib.percentComplete(1, 8),      13)
+eq('over total clamps', lib.percentComplete(105, 100), 100)
+eq('negative clamps', lib.percentComplete(-10, 100),  0)
+
 -- frameForUnit
 
 local screen = { x=0, y=0, w=1920, h=1080 }

@@ -283,6 +283,8 @@ qlty smells --all --no-snippets               # Maintainability scan (same as CI
 
 Do not skip any of these steps. If any command fails, fix the issue before finishing. This applies to all tasks — feature work, bug fixes, skill changes, and documentation updates.
 
+If `go install`/`go test`/`go vet` fails with `failed to initialize build cache ... mkdir ... operation not permitted` under a sandboxed agent, redirect the build cache: `export GOCACHE=/tmp/gocache-<worktree>` before running the Go commands. The Claude Code sandbox can block writes to the default `~/.argus/cache/go-build`, the same class of issue as the `qlty` `HOME` workaround above.
+
 ## Critical Notes
 
 - Installation is destructive (no backups)

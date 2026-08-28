@@ -9,6 +9,16 @@ function lib.formatSeconds(seconds)
   return formatted
 end
 
+function lib.percentComplete(current, total)
+  current = current or 0
+  total = total or 0
+  if total == 0 then return 0 end
+  local percent = math.floor(current / total * 100 + 0.5)
+  if percent < 0 then return 0 end
+  if percent > 100 then return 100 end
+  return percent
+end
+
 function lib.frameForUnit(baseframe, unit)
   return {
     x = baseframe.x + (unit.x * baseframe.w),
