@@ -52,7 +52,8 @@ prior_blocking_count = -1      (B count from previous iteration; -1 = no prior)
 prior_warning_count = -1       (W count from previous iteration; -1 = no prior)
 prior_info_count = -1          (I count from previous iteration; -1 = no prior)
 last_iteration_committed = false   (did the previous iteration produce a commit?)
-total_pushbacks = 0            (cumulative pushbacks across all iterations)
+total_pushbacks = 0            (cumulative judgment-call pushbacks across all iterations)
+total_verified_false_positives = 0   (cumulative findings disproven by an actually-executed command, not judgment)
 total_findings_addressed = 0   (cumulative findings touched, for the pushback rate)
 stashed = false                (set true if Phase 0 stashes unrelated work)
 ```
@@ -133,6 +134,13 @@ IF iteration > 0 AND last_iteration_committed == true AND
       - If this is the second consecutive iteration with no progress,
         EXIT with status = STUCK after applying best-effort fixes once more.
 
+    A finding resolved as a **verified false positive** (Phase 3(b)) counts as
+    genuine progress even though no code changed. Note it explicitly as
+    "resolved via verification" in the heartbeat so it does not read as an
+    unaddressed repeat finding if a later reviewer re-flags the same code
+    with different wording -- that re-flag should be checked against the
+    same verification evidence, not treated as a fresh unconfirmed claim.
+
 IF iteration > 0 AND last_iteration_committed == false:
   → The previous iteration applied no fixes (everything was pushed back
     or deferred). Counts may legitimately be unchanged. Do NOT treat as
@@ -168,11 +176,15 @@ For each finding:
      - What evidence convinced you (link to existing test, prior decision, code that shows the invariant)
      - Note this in the iteration summary so the user can sanity-check
 
-     Track pushbacks at two levels:
+     **Distinguish two kinds of pushback:**
+     - **Verified false positive.** The finding made a mechanically-checkable claim (compiles, a test passes or fails, a command produces some output) and you actually ran that command in this worktree and it contradicts the claim. Record the exact command and its real output in the iteration summary. Increment `total_verified_false_positives`, not `total_pushbacks` -- this is empirical, not a judgment call, and is exempt from the pushback ceiling below.
+     - **Judgment-call pushback.** You disagree with the reviewer's assessment without a mechanical way to prove it wrong (design intent, an accepted tradeoff, and similar). This counts toward the ceiling below.
+
+     Track judgment-call pushbacks at two levels:
      - **Per-iteration:** if you push back on more than 25% of findings in this iteration, STOP and ask the user before continuing.
      - **Cumulative:** increment `total_pushbacks` and `total_findings_addressed` after each finding is processed. If `total_pushbacks / total_findings_addressed > 0.25` once at least 4 findings have been processed total, STOP and ask the user. Per-iteration framing alone allows systematic 1-of-4 pushbacks to compound to 100% across iterations without ever tripping a single-iteration ceiling.
 
-     Pushing back on a quarter of an independent panel's findings -- in any single iteration or cumulatively -- usually means you're rationalizing rather than reviewing.
+     Pushing back on a quarter of an independent panel's findings -- in any single iteration or cumulatively -- usually means you're rationalizing rather than reviewing. Verified false positives do not count toward this ceiling because they are proven with a command's real output, not argued.
 
    - **(c) Defer to user.** The finding requires a product decision, scope expansion, or knowledge you don't have (e.g., "the new SLA isn't documented"). Do NOT silently skip. Surface it in the iteration summary and continue. The loop will likely re-flag it next iteration; that is correct behavior.
 
@@ -205,6 +217,7 @@ For each finding:
 **Verdict from /rereview:** {verdict}
 **Findings this iteration:** {B} blocking, {W} warning, {I} info
 **Applied fixes:** {count}
+**Verified false positives:** {count} (disproven by an actually-executed command, see summary for evidence)
 **Pushed back:** {count} this iteration, {total_pushbacks} cumulative ({rate}% of {total_findings_addressed})
 **Deferred:** {count}
 **Tests after fixes:** {PASS / FAIL}
@@ -238,7 +251,8 @@ When the loop exits, output:
 **Status:** {CLEAN / APPROVED_WITH_WARNINGS_IGNORED / MAX_ITERATIONS / STUCK}
 **Iterations run:** {N} of {max_iterations}
 **Total findings addressed:** {count} (B: {x}, W: {y}, I: {z})
-**Total findings pushed back:** {count}
+**Total verified false positives:** {count} (disproven by real command output, not judgment)
+**Total findings pushed back:** {count} (judgment calls; excludes verified false positives)
 **Total findings deferred:** {count}
 **Final verdict from /rereview:** {verdict}
 **Final regression risk:** {LOW / MEDIUM / HIGH}

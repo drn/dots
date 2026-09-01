@@ -128,6 +128,8 @@ CALIBRATION -- READ CAREFULLY:
 - False positives are acceptable. False negatives are not. Flag anything uncertain.
 - Do NOT downplay risk. "MEDIUM" regression risk is normal and honest. Reserve "LOW" for trivially small changes.
 - Run verification commands before making claims. Check what actually exists, not what you assume.
+- Any claim that code does or does not compile, that a test does or does not pass, or any other mechanically-checkable claim MUST be backed by a command you actually executed in this worktree, with the real output shown in your report. Never infer or reason about this abstractly. Never trust an isolated or minimal repro as a substitute for running the real code -- generic-inference and other language subtleties can make a minimal repro fail where the actual codebase compiles cleanly, or the reverse. If you cannot run the command (no working environment, missing dependencies), say so explicitly and mark the claim UNVERIFIED -- do not state it as fact.
+- When verifying that a type-level change is safe (a prop made optional, a generic signature changed, and similar), also make one deliberately-wrong, unrelated edit nearby and confirm the type-checker still flags it in the same run. This rules out type inference silently collapsing to `any` as an explanation for a clean compile. Revert the deliberate break afterward and note in your report that you did this check.
 
 BRANCH: {branch name}
 COMMITS:
@@ -259,6 +261,9 @@ Structure your report EXACTLY as follows:
 
 ### Missing Test Coverage
 {Numbered list of test gaps. Or "Coverage appears adequate."}
+
+### Verification Performed
+{For every mechanically-checkable claim made anywhere above (compiles/does not compile, test passes/fails, command output, etc.), list the exact command you ran in this worktree and the real output, trimmed to the relevant lines. If a claim could not be verified -- no working environment, missing dependencies -- say so explicitly here and make sure the claim is marked UNVERIFIED in the section above, not stated as fact. Or "No mechanically-checkable claims were made."}
 
 ### Summary
 - **BLOCKING count:** {N}
