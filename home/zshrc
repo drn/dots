@@ -21,6 +21,7 @@ source $DOTS/zsh/bindings.zsh
 # load custom configuration
 source $HOME/.dots/sys/env 2>/dev/null
 source $HOME/.dots/sys/env.local 2>/dev/null
+source "$HOME"/.thanx/env 2>/dev/null
 
 # autoload tmux if on main dev machine
 # skip if already in tmux, on mini, or inside conductor/superset
