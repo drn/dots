@@ -17,6 +17,7 @@ prompt_host() {
 #   thanks to https://github.com/sindresorhus/pure
 prompt_human_time() {
   local tmp=$1
+  local timestamp=$2
   local human_time=''
   local days=$(( tmp / 60 / 60 / 24 ))
   local hours=$(( tmp / 60 / 60 % 24 ))
@@ -25,8 +26,11 @@ prompt_human_time() {
   (( $days > 0 )) && human_time="$human_time${days}d "
   (( $hours > 0 )) && human_time="$human_time${hours}h "
   (( $minutes > 0 )) && human_time="$human_time${minutes}m "
+  local human_date=$(date -r $timestamp +'%Y-%m-%d %H:%M:%S')
   echo "$fg_bold[black]("\
        "$fg_no_bold[magenta]$human_time${seconds}s"\
+       "$fg_bold[white] @ "\
+       "$fg_no_bold[cyan]$human_date"\
        "$fg_bold[black])$reset_color"
 }
 
@@ -107,7 +111,7 @@ terminal_prompt_precmd() {
   local stop=$(date +%s)
   local start=${cmd_timestamp:-$stop}
   integer elapsed=$stop-$start
-  (($elapsed > ${CMD_MAX_EXEC_TIME:=5})) && prompt_human_time $elapsed
+  (($elapsed > ${CMD_MAX_EXEC_TIME:=5})) && prompt_human_time $elapsed $stop
   unset cmd_timestamp
   # rename tmux window depending on current directory
   if [[ "$TERM" = "screen"* ]] && [ -n "$TMUX" ]; then
