@@ -22,7 +22,9 @@ import (
 	jsoniter "github.com/json-iterator/go"
 )
 
-const spotifyTokenURL = "https://accounts.spotify.com/api/token"
+// spotifyTokenURL is a var (not const) so tests can point it at a local
+// httptest server.
+var spotifyTokenURL = "https://accounts.spotify.com/api/token"
 
 // authTimeout bounds how long the CLI waits for the user to complete the
 // browser consent flow before giving up.
@@ -34,12 +36,16 @@ var httpClient = &http.Client{Timeout: 10 * time.Second}
 
 // FetchAccessToken - Returns a valid access token for the Spotify API.
 // * If no cached access token or refresh token
-//   * Starts a local loopback server on the redirect URI's port
-//   * Opens browser to authorization URL
-//   * Captures the authorization code from the OAuth callback automatically
-//   * Exchanges authorization code for access token and refresh token
+//   - Starts a local loopback server on the redirect URI's port
+//   - Opens browser to authorization URL
+//   - Captures the authorization code from the OAuth callback automatically
+//   - Exchanges authorization code for access token and refresh token
+//
 // * If access token is expired
-//   * Exchange refresh token for a new access token
+//   - Exchange refresh token for a new access token
+//   - If the refresh token itself was revoked or expired, clear the stale
+//     cache and fall back to a full interactive re-authorization rather than
+//     exiting on a bare API error
 func FetchAccessToken() string {
 	accessToken := config.Read("spotify.access_token")
 	refreshToken := config.Read("spotify.refresh_token")
@@ -48,9 +54,18 @@ func FetchAccessToken() string {
 		accessToken, refreshToken = exchangeAuthorizationCode(authorize())
 		config.Write("spotify.access_token", accessToken)
 		config.Write("spotify.refresh_token", refreshToken)
-	} else if refreshNeeded(accessToken) {
-		// refresh access token using refresh token
-		accessToken = exchangeRefreshToken(refreshToken)
+		return accessToken
+	}
+
+	if refreshNeeded(accessToken) {
+		newAccessToken, ok := exchangeRefreshToken(refreshToken)
+		if !ok {
+			log.Warning("Spotify refresh token revoked or expired; re-authorizing")
+			config.Delete("spotify.access_token")
+			config.Delete("spotify.refresh_token")
+			return FetchAccessToken()
+		}
+		accessToken = newAccessToken
 		config.Write("spotify.access_token", accessToken)
 	}
 
@@ -227,23 +242,34 @@ func Headers(accessToken string) http.Header {
 }
 
 func exchangeAuthorizationCode(code string) (string, string) {
-	data := exchangeToken(url.Values{
+	data, status := exchangeToken(url.Values{
 		"code":       {code},
 		"grant_type": {"authorization_code"},
 	})
+	if status != http.StatusOK {
+		fmt.Println(string(data))
+		os.Exit(1)
+	}
 	return jsoniter.Get(data, "access_token").ToString(),
 		jsoniter.Get(data, "refresh_token").ToString()
 }
 
-func exchangeRefreshToken(refreshToken string) string {
-	data := exchangeToken(url.Values{
+// exchangeRefreshToken exchanges refreshToken for a new access token. It
+// returns ok=false (instead of exiting) when Spotify rejects the exchange, so
+// callers can distinguish "refresh token revoked/expired" from a fatal error
+// and fall back to re-authorization.
+func exchangeRefreshToken(refreshToken string) (string, bool) {
+	data, status := exchangeToken(url.Values{
 		"refresh_token": {refreshToken},
 		"grant_type":    {"refresh_token"},
 	})
-	return jsoniter.Get(data, "access_token").ToString()
+	if status != http.StatusOK {
+		return "", false
+	}
+	return jsoniter.Get(data, "access_token").ToString(), true
 }
 
-func exchangeToken(params url.Values) []byte {
+func exchangeToken(params url.Values) ([]byte, int) {
 	form := url.Values{}
 	for k, v := range params {
 		form[k] = v
@@ -253,14 +279,9 @@ func exchangeToken(params url.Values) []byte {
 	form.Set("redirect_uri", os.Getenv("SPOTIFY_REDIRECT_URI"))
 
 	headers := http.Header{"Content-Type": {"application/x-www-form-urlencoded"}}
-	data, status := SendRequest(
+	return SendRequest(
 		http.MethodPost, spotifyTokenURL, headers, nil, strings.NewReader(form.Encode()),
 	)
-	if status != http.StatusOK {
-		fmt.Println(string(data))
-		os.Exit(1)
-	}
-	return data
 }
 
 // SendRequest performs an HTTP request with optional query params and body,

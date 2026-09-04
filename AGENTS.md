@@ -90,6 +90,18 @@ tooling) into CI. The quality gate is and stays the **Pre-Completion Checklist**
 └── pkg/                      # Shared utilities (log, run, cache, path)
 ```
 
+## Context Directory
+
+`context/` is a durable, cross-session store for project knowledge, checked into git so it
+persists across clones:
+
+- `context/knowledge/index.md` — knowledge graph index; one topic file per domain, indexed here
+- `context/research/` — investigation notes and spike results
+- `context/plans/` — strategic plans and proposals
+
+Read `context/knowledge/index.md` when you need project history or domain context beyond what's
+in this file. Populated and maintained via the `/improve` skill.
+
 ## Key Development Patterns
 
 1. **Command Execution**: Use `pkg/run` package
