@@ -1,6 +1,7 @@
 ---
 name: deploy-validate
 description: Validate a deploy after it lands — CI status, rollout health, error tracking, and monitoring/alerting — correlating every finding against the deploy's start time to separate genuine regressions from pre-existing noise. Use when asked to validate a deploy, check post-deploy health, confirm a production rollout is healthy, or after a deploy finishes.
+disable-model-invocation: true
 ---
 
 # Post-Deploy Health Validation
