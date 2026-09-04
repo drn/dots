@@ -22,7 +22,9 @@ import (
 	jsoniter "github.com/json-iterator/go"
 )
 
-const spotifyTokenURL = "https://accounts.spotify.com/api/token"
+// spotifyTokenURL is a var (not const) so tests can point it at a local
+// httptest server.
+var spotifyTokenURL = "https://accounts.spotify.com/api/token"
 
 // authTimeout bounds how long the CLI waits for the user to complete the
 // browser consent flow before giving up.
@@ -34,13 +36,27 @@ var httpClient = &http.Client{Timeout: 10 * time.Second}
 
 // FetchAccessToken - Returns a valid access token for the Spotify API.
 // * If no cached access token or refresh token
-//   * Starts a local loopback server on the redirect URI's port
-//   * Opens browser to authorization URL
-//   * Captures the authorization code from the OAuth callback automatically
-//   * Exchanges authorization code for access token and refresh token
+//   - Starts a local loopback server on the redirect URI's port
+//   - Opens browser to authorization URL
+//   - Captures the authorization code from the OAuth callback automatically
+//   - Exchanges authorization code for access token and refresh token
+//
 // * If access token is expired
-//   * Exchange refresh token for a new access token
+//   - Exchange refresh token for a new access token
+//   - If the refresh token itself was revoked (Spotify's invalid_grant),
+//     clear the stale cache and fall back to a full interactive
+//     re-authorization rather than exiting on a bare API error
 func FetchAccessToken() string {
+	return fetchAccessToken(false)
+}
+
+// fetchAccessToken implements FetchAccessToken. isRetry caps the
+// revoked-token recovery to a single attempt: if config.Delete's on-disk
+// write silently failed (it only logs and returns on error — see
+// cli/config's save) and the recursive call re-reads the same stale tokens,
+// this bails out with a hard error instead of looping forever against
+// Spotify's token endpoint.
+func fetchAccessToken(isRetry bool) string {
 	accessToken := config.Read("spotify.access_token")
 	refreshToken := config.Read("spotify.refresh_token")
 
@@ -48,9 +64,22 @@ func FetchAccessToken() string {
 		accessToken, refreshToken = exchangeAuthorizationCode(authorize())
 		config.Write("spotify.access_token", accessToken)
 		config.Write("spotify.refresh_token", refreshToken)
-	} else if refreshNeeded(accessToken) {
-		// refresh access token using refresh token
-		accessToken = exchangeRefreshToken(refreshToken)
+		return accessToken
+	}
+
+	if refreshNeeded(accessToken) {
+		newAccessToken, revoked := exchangeRefreshToken(refreshToken)
+		if revoked {
+			if isRetry {
+				log.Error("Spotify refresh token still invalid after clearing cache; aborting")
+				os.Exit(1)
+			}
+			log.Warning("Spotify refresh token revoked; re-authorizing")
+			config.Delete("spotify.access_token")
+			config.Delete("spotify.refresh_token")
+			return fetchAccessToken(true)
+		}
+		accessToken = newAccessToken
 		config.Write("spotify.access_token", accessToken)
 	}
 
@@ -227,23 +256,46 @@ func Headers(accessToken string) http.Header {
 }
 
 func exchangeAuthorizationCode(code string) (string, string) {
-	data := exchangeToken(url.Values{
+	data, status := exchangeToken(url.Values{
 		"code":       {code},
 		"grant_type": {"authorization_code"},
 	})
+	if status != http.StatusOK {
+		exitOnTokenError(data)
+	}
 	return jsoniter.Get(data, "access_token").ToString(),
 		jsoniter.Get(data, "refresh_token").ToString()
 }
 
-func exchangeRefreshToken(refreshToken string) string {
-	data := exchangeToken(url.Values{
+// exchangeRefreshToken exchanges refreshToken for a new access token. It
+// returns revoked=true (instead of exiting) specifically when Spotify
+// rejects the exchange with invalid_grant, so callers can distinguish "the
+// refresh token itself was revoked" from a transient failure (rate limit,
+// 5xx, network blip) and fall back to re-authorization only in the former
+// case — a transient failure exits instead of destroying an otherwise-good
+// cached refresh token.
+func exchangeRefreshToken(refreshToken string) (accessToken string, revoked bool) {
+	data, status := exchangeToken(url.Values{
 		"refresh_token": {refreshToken},
 		"grant_type":    {"refresh_token"},
 	})
-	return jsoniter.Get(data, "access_token").ToString()
+	if status != http.StatusOK {
+		if status == http.StatusBadRequest && jsoniter.Get(data, "error").ToString() == "invalid_grant" {
+			return "", true
+		}
+		exitOnTokenError(data)
+	}
+	return jsoniter.Get(data, "access_token").ToString(), false
 }
 
-func exchangeToken(params url.Values) []byte {
+// exitOnTokenError logs the raw Spotify token-endpoint error body and exits;
+// used for token-exchange failures that aren't a recoverable invalid_grant.
+func exitOnTokenError(data []byte) {
+	log.Error("%s", string(data))
+	os.Exit(1)
+}
+
+func exchangeToken(params url.Values) ([]byte, int) {
 	form := url.Values{}
 	for k, v := range params {
 		form[k] = v
@@ -253,14 +305,9 @@ func exchangeToken(params url.Values) []byte {
 	form.Set("redirect_uri", os.Getenv("SPOTIFY_REDIRECT_URI"))
 
 	headers := http.Header{"Content-Type": {"application/x-www-form-urlencoded"}}
-	data, status := SendRequest(
+	return SendRequest(
 		http.MethodPost, spotifyTokenURL, headers, nil, strings.NewReader(form.Encode()),
 	)
-	if status != http.StatusOK {
-		fmt.Println(string(data))
-		os.Exit(1)
-	}
-	return data
 }
 
 // SendRequest performs an HTTP request with optional query params and body,

@@ -245,3 +245,51 @@ func TestHeaders_AllFieldsSet(t *testing.T) {
 		t.Errorf("Authorization = %q, want %q", got, "Bearer xyz")
 	}
 }
+
+// withTokenServer points spotifyTokenURL at a local server for the duration
+// of the test and restores it afterward.
+func withTokenServer(t *testing.T, handler http.HandlerFunc) {
+	t.Helper()
+	server := httptest.NewServer(handler)
+	t.Cleanup(server.Close)
+
+	original := spotifyTokenURL
+	spotifyTokenURL = server.URL
+	t.Cleanup(func() { spotifyTokenURL = original })
+}
+
+func TestExchangeRefreshToken_Success(t *testing.T) {
+	withTokenServer(t, func(w http.ResponseWriter, _ *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		_, _ = w.Write([]byte(`{"access_token":"new-access-token"}`))
+	})
+
+	token, revoked := exchangeRefreshToken("some-refresh-token")
+
+	if revoked {
+		t.Fatal("exchangeRefreshToken revoked = true, want false")
+	}
+	if token != "new-access-token" {
+		t.Errorf("token = %q, want new-access-token", token)
+	}
+}
+
+// TestExchangeRefreshToken_Revoked covers the scenario this session hit
+// manually: Spotify rejects a refresh token with invalid_grant once it has
+// been revoked. exchangeRefreshToken must report revoked=true (instead of
+// exiting) so FetchAccessToken can fall back to re-authorization.
+func TestExchangeRefreshToken_Revoked(t *testing.T) {
+	withTokenServer(t, func(w http.ResponseWriter, _ *http.Request) {
+		w.WriteHeader(http.StatusBadRequest)
+		_, _ = w.Write([]byte(`{"error":"invalid_grant","error_description":"Refresh token revoked"}`))
+	})
+
+	token, revoked := exchangeRefreshToken("revoked-refresh-token")
+
+	if !revoked {
+		t.Fatal("exchangeRefreshToken revoked = false, want true for a revoked token")
+	}
+	if token != "" {
+		t.Errorf("token = %q, want empty when revoked", token)
+	}
+}
