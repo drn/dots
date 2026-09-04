@@ -43,10 +43,20 @@ var httpClient = &http.Client{Timeout: 10 * time.Second}
 //
 // * If access token is expired
 //   - Exchange refresh token for a new access token
-//   - If the refresh token itself was revoked or expired, clear the stale
-//     cache and fall back to a full interactive re-authorization rather than
-//     exiting on a bare API error
+//   - If the refresh token itself was revoked (Spotify's invalid_grant),
+//     clear the stale cache and fall back to a full interactive
+//     re-authorization rather than exiting on a bare API error
 func FetchAccessToken() string {
+	return fetchAccessToken(false)
+}
+
+// fetchAccessToken implements FetchAccessToken. isRetry caps the
+// revoked-token recovery to a single attempt: if config.Delete's on-disk
+// write silently failed (it only logs and returns on error — see
+// cli/config's save) and the recursive call re-reads the same stale tokens,
+// this bails out with a hard error instead of looping forever against
+// Spotify's token endpoint.
+func fetchAccessToken(isRetry bool) string {
 	accessToken := config.Read("spotify.access_token")
 	refreshToken := config.Read("spotify.refresh_token")
 
@@ -58,12 +68,16 @@ func FetchAccessToken() string {
 	}
 
 	if refreshNeeded(accessToken) {
-		newAccessToken, ok := exchangeRefreshToken(refreshToken)
-		if !ok {
-			log.Warning("Spotify refresh token revoked or expired; re-authorizing")
+		newAccessToken, revoked := exchangeRefreshToken(refreshToken)
+		if revoked {
+			if isRetry {
+				log.Error("Spotify refresh token still invalid after clearing cache; aborting")
+				os.Exit(1)
+			}
+			log.Warning("Spotify refresh token revoked; re-authorizing")
 			config.Delete("spotify.access_token")
 			config.Delete("spotify.refresh_token")
-			return FetchAccessToken()
+			return fetchAccessToken(true)
 		}
 		accessToken = newAccessToken
 		config.Write("spotify.access_token", accessToken)
@@ -247,26 +261,38 @@ func exchangeAuthorizationCode(code string) (string, string) {
 		"grant_type": {"authorization_code"},
 	})
 	if status != http.StatusOK {
-		fmt.Println(string(data))
-		os.Exit(1)
+		exitOnTokenError(data)
 	}
 	return jsoniter.Get(data, "access_token").ToString(),
 		jsoniter.Get(data, "refresh_token").ToString()
 }
 
 // exchangeRefreshToken exchanges refreshToken for a new access token. It
-// returns ok=false (instead of exiting) when Spotify rejects the exchange, so
-// callers can distinguish "refresh token revoked/expired" from a fatal error
-// and fall back to re-authorization.
-func exchangeRefreshToken(refreshToken string) (string, bool) {
+// returns revoked=true (instead of exiting) specifically when Spotify
+// rejects the exchange with invalid_grant, so callers can distinguish "the
+// refresh token itself was revoked" from a transient failure (rate limit,
+// 5xx, network blip) and fall back to re-authorization only in the former
+// case — a transient failure exits instead of destroying an otherwise-good
+// cached refresh token.
+func exchangeRefreshToken(refreshToken string) (accessToken string, revoked bool) {
 	data, status := exchangeToken(url.Values{
 		"refresh_token": {refreshToken},
 		"grant_type":    {"refresh_token"},
 	})
 	if status != http.StatusOK {
-		return "", false
+		if status == http.StatusBadRequest && jsoniter.Get(data, "error").ToString() == "invalid_grant" {
+			return "", true
+		}
+		exitOnTokenError(data)
 	}
-	return jsoniter.Get(data, "access_token").ToString(), true
+	return jsoniter.Get(data, "access_token").ToString(), false
+}
+
+// exitOnTokenError logs the raw Spotify token-endpoint error body and exits;
+// used for token-exchange failures that aren't a recoverable invalid_grant.
+func exitOnTokenError(data []byte) {
+	log.Error("%s", string(data))
+	os.Exit(1)
 }
 
 func exchangeToken(params url.Values) ([]byte, int) {

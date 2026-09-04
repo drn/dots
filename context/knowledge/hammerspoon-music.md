@@ -39,8 +39,12 @@ table) is dead code — nothing in `init.lua` calls `music.toggle()`.
 - Cached tokens live in `~/.dots/sys/config` under `[spotify]`
   (`access_token`, `refresh_token`), managed via `cli/config`.
 - As of 2026-09-03, `FetchAccessToken` (`cmd/spotify/auth/root.go`)
-  self-heals: if the refresh-token exchange fails (revoked/expired), it
-  clears the stale cached tokens and falls back to a full interactive
-  re-authorization automatically, instead of exiting on a raw API error.
-  Previously this required manually clearing `~/.dots/sys/config`'s
+  self-heals specifically from `invalid_grant` (a revoked/expired refresh
+  token): it clears the stale cached tokens and falls back to a full
+  interactive re-authorization automatically, capped at one retry so a
+  persistently-failing cache write can't loop forever. Any other
+  token-endpoint failure (rate limit, 5xx, etc.) still exits without
+  touching the cache, since destroying an otherwise-good refresh token over
+  a transient error would be worse than the old behavior. Previously any
+  non-200 forced a manual clear of `~/.dots/sys/config`'s
   `[spotify]` section by hand to force re-auth.

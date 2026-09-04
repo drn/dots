@@ -264,10 +264,10 @@ func TestExchangeRefreshToken_Success(t *testing.T) {
 		_, _ = w.Write([]byte(`{"access_token":"new-access-token"}`))
 	})
 
-	token, ok := exchangeRefreshToken("some-refresh-token")
+	token, revoked := exchangeRefreshToken("some-refresh-token")
 
-	if !ok {
-		t.Fatal("exchangeRefreshToken ok = false, want true")
+	if revoked {
+		t.Fatal("exchangeRefreshToken revoked = true, want false")
 	}
 	if token != "new-access-token" {
 		t.Errorf("token = %q, want new-access-token", token)
@@ -276,20 +276,20 @@ func TestExchangeRefreshToken_Success(t *testing.T) {
 
 // TestExchangeRefreshToken_Revoked covers the scenario this session hit
 // manually: Spotify rejects a refresh token with invalid_grant once it has
-// been revoked. exchangeRefreshToken must report failure (ok=false) instead
-// of exiting, so FetchAccessToken can fall back to re-authorization.
+// been revoked. exchangeRefreshToken must report revoked=true (instead of
+// exiting) so FetchAccessToken can fall back to re-authorization.
 func TestExchangeRefreshToken_Revoked(t *testing.T) {
 	withTokenServer(t, func(w http.ResponseWriter, _ *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		_, _ = w.Write([]byte(`{"error":"invalid_grant","error_description":"Refresh token revoked"}`))
 	})
 
-	token, ok := exchangeRefreshToken("revoked-refresh-token")
+	token, revoked := exchangeRefreshToken("revoked-refresh-token")
 
-	if ok {
-		t.Fatal("exchangeRefreshToken ok = true, want false for a revoked token")
+	if !revoked {
+		t.Fatal("exchangeRefreshToken revoked = false, want true for a revoked token")
 	}
 	if token != "" {
-		t.Errorf("token = %q, want empty on failure", token)
+		t.Errorf("token = %q, want empty when revoked", token)
 	}
 }
