@@ -1,6 +1,7 @@
 ---
 name: deploy-audit
 description: Audit every commit pending between a base branch and a deployed branch/tag for deploy risk (migrations, config/secret wiring completeness, feature-flag defaults, schema parity), then open the GitHub compare diff. Use when asked to audit pending commits, check deploy risk, review what is about to ship, or before opening a deploy PR or shipping to production.
+disable-model-invocation: true
 ---
 
 # Pre-Deploy Risk Audit

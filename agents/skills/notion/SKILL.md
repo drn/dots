@@ -77,5 +77,6 @@ Notion pages can return very large responses (100K+ characters) that exceed toke
 
 ## Limitations
 
-- **Read-only** — Cannot create, update, or delete pages
+- **Read-only** — Cannot create, update, or delete pages. For editing a page and
+  replying to inline comment threads, use the `notion-address-comments` skill instead.
 - Page content is returned as Notion-flavored markdown, not raw JSON (except Keystone fallback which returns raw blocks)
