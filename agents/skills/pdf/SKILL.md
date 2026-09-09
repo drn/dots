@@ -1,15 +1,15 @@
 ---
 name: pdf
-description: Use when the user wants to export conversation content to a professionally styled PDF for sharing
+description: Use when the user wants to export conversation content, or an existing HTML file such as a saved Claude Artifact, to a professionally styled PDF for sharing
 ---
 
 # Export to PDF
 
-Export summaries, research, or any content from the conversation to a professionally styled PDF for sharing.
+Export summaries, research, or any content from the conversation to a professionally styled PDF for sharing. Also handles exporting an existing HTML file (for example, a saved Claude Artifact with inline SVG or custom CSS) directly to PDF.
 
 ## Arguments
 
-- `$ARGUMENTS` - Optional: filename (without .pdf extension) or "last" to export the last assistant message
+- `$ARGUMENTS` - Optional: filename (without .pdf extension), "last" to export the last assistant message, or a path to an existing HTML file to export
 
 ## Instructions
 
@@ -17,13 +17,18 @@ You are exporting content from the current conversation to a shareable PDF docum
 
 ### Step 1: Identify Content to Export
 
-Determine what content the user wants to export:
+First determine the content type, then what to export:
 
-1. **If user says "last" or no arguments**: Export the most recent substantive assistant response (summary, research, analysis, etc.)
-2. **If user provides a topic**: Find the relevant content from the conversation about that topic
-3. **If user provides specific text**: Use that text directly
+1. **Markdown/conversation content** (default): a summary, research, analysis, or other text from the conversation.
+   - If user says "last" or no arguments: export the most recent substantive assistant response
+   - If user provides a topic: find the relevant content from the conversation about that topic
+   - If user provides specific text: use that text directly
+   - Continue with Steps 2-4 below.
+2. **Existing HTML file** (for example, a saved Claude Artifact with inline SVG or custom CSS): the user names or points to an `.html` file already on disk instead of asking to export conversation text. `md_to_pdf.py` only parses Markdown and cannot render arbitrary HTML, CSS, or inline SVG. Skip Steps 2-4 and follow "HTML File Export" instead.
 
 ### Step 2: Prepare the Content
+
+(Markdown path only — for an existing HTML file, see "HTML File Export" below.)
 
 Clean up the content for PDF export:
 
@@ -55,9 +60,11 @@ CONTENT_EOF
 # Convert to PDF using the colocated script
 python ~/.claude/skills/pdf/scripts/md_to_pdf.py \
   --input /tmp/export_content.md \
-  --output ~/Downloads/{filename}.pdf \
+  --output {output_path}/{filename}.pdf \
   --title "{title}"
 ```
+
+Determine `{output_path}` using the "Output Location" section below.
 
 **Important:** Always use the Bash tool with `cat << 'CONTENT_EOF' > /tmp/...` for the temp file. The Write tool is sandboxed in some environments (e.g., Conductor workspaces) and will refuse paths outside the workspace.
 
@@ -66,13 +73,37 @@ python ~/.claude/skills/pdf/scripts/md_to_pdf.py \
 After creating the PDF:
 
 1. Confirm the file was created with path and size
-2. Offer to:
-   - Open the file: `open ~/Downloads/{filename}.pdf`
-   - Copy to clipboard (the path): `echo ~/Downloads/{filename}.pdf | pbcopy`
+2. Offer to reveal or share it, using the commands under "Output Location" below for the current environment
+
+## HTML File Export (Claude Artifacts, saved pages)
+
+When exporting an existing HTML file instead of conversation markdown, skip `md_to_pdf.py` and render directly with `weasyprint`, a pure-Python HTML+CSS to PDF renderer that needs no browser. This is the only reliable path for HTML, CSS, or inline-SVG content — `md_to_pdf.py` (mistune + fpdf2) only understands Markdown.
+
+```bash
+# weasyprint is pure-Python and needs no browser, but depends on the
+# cairo, pango, gdk-pixbuf, and glib system libraries (already present via
+# Homebrew on most Mac development machines; install them first if missing)
+pip3 install --quiet weasyprint
+
+python3 -c "
+import weasyprint
+weasyprint.HTML(filename='{input_html_path}').write_pdf('{output_path}/{filename}.pdf')
+"
+```
+
+Determine `{output_path}` using the "Output Location" section below, then confirm and offer options exactly as in Step 5.
+
+## Argus Worktree Sandbox Notes
+
+Check whether the session is running inside an Argus worktree sandbox: `$PWD` under `~/.argus/worktrees/`, or the `ARGUS_TASK_ID` environment variable set. Two things change in that environment:
+
+- **Renderer choice for HTML content**: do not attempt raw headless Chrome (`--headless --print-to-pdf`) or a Playwright-managed browser to render HTML to PDF. Both fail or hang indefinitely inside this sandbox — sandbox initialization errors, GPU process crashes, or 120+ second hangs launching the browser — regardless of `--no-sandbox` or a Bash tool sandbox override. Do not retry these approaches with more flags; go straight to `weasyprint` instead.
+- **Output location**: `~/Downloads` is not writable from inside an Argus worktree sandbox. This is a macOS TCC restriction on the sandboxed session, not something a sandbox override flag fixes. Write the output PDF to the session scratchpad directory instead, then reveal it with `open -R {path}` (reveals the file in Finder) rather than `open {path}` or a Downloads-based clipboard flow.
 
 ## Output Location
 
-PDFs are saved to `~/Downloads/` by default for easy access and sharing.
+- **Normal session**: save PDFs to `~/Downloads/` by default for easy access and sharing. Offer to open the file (`open ~/Downloads/{filename}.pdf`) or copy its path to the clipboard (`echo ~/Downloads/{filename}.pdf | pbcopy`).
+- **Argus worktree sandbox** (see notes above): save PDFs to the session scratchpad directory instead, since `~/Downloads` is not writable there. Reveal the result with `open -R {scratchpad_path}/{filename}.pdf` instead of opening or copying a Downloads path.
 
 ## Usage Examples
 
@@ -80,10 +111,11 @@ PDFs are saved to `~/Downloads/` by default for easy access and sharing.
 - `/pdf last` - Same as above
 - `/pdf ai-tools-research` - Export with custom filename
 - "Export that to PDF" - Natural language trigger
+- "Export this HTML artifact to PDF" - Renders an existing HTML file with weasyprint instead of the markdown path
 
 ## Technical Notes
 
-- Uses `mistune` + `fpdf2` (`pip install mistune fpdf2`)
-- Supports tables, code blocks, and full GitHub-flavored markdown
+- Markdown path: uses `mistune` + `fpdf2` (`pip install mistune fpdf2`); supports tables, code blocks, and full GitHub-flavored markdown
+- HTML file path: uses `weasyprint` (`pip3 install weasyprint`); renders arbitrary HTML, CSS, and inline SVG directly with no browser dependency, at the cost of needing cairo/pango/gdk-pixbuf/glib system libraries
 - Professional styling optimized for sharing with colleagues
-- Script location: `scripts/md_to_pdf.py` (colocated in this skill directory)
+- Script location: `scripts/md_to_pdf.py` (colocated in this skill directory, markdown path only)
