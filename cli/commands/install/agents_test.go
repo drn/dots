@@ -120,6 +120,27 @@ func TestRegisterSessionStartPathHook_CommandShape(t *testing.T) {
 	}
 }
 
+func TestRemoveSessionEndCaptureHook(t *testing.T) {
+	settingsPath := setupClaudeHome(t)
+	registerSessionHook("SessionEnd", "agents/hooks/session-end-capture.sh", "legacy")
+	registerSessionHook("SessionEnd", "agents/hooks/other.sh", "other")
+
+	removeSessionEndCaptureHook()
+	removeSessionEndCaptureHook()
+
+	settings := readSettings(t, settingsPath)
+	hooks := settings["hooks"].(map[string]any)
+	entries := hooks["SessionEnd"].([]any)
+	if len(entries) != 1 {
+		t.Fatalf("SessionEnd entries = %d, want 1", len(entries))
+	}
+	inner := entries[0].(map[string]any)["hooks"].([]any)
+	command := inner[0].(map[string]any)["command"].(string)
+	if !strings.Contains(command, "agents/hooks/other.sh") {
+		t.Fatalf("unexpected remaining SessionEnd hook: %s", command)
+	}
+}
+
 func TestEnsureScalarSetting_SetsWhenAbsent(t *testing.T) {
 	settingsPath := setupClaudeHome(t)
 

@@ -42,8 +42,8 @@ func Agents() {
 	// Register dev-tool PATH injection on SessionStart
 	registerSessionStartPathHook()
 
-	// Register session-end raw capture into memory/inbox/
-	registerSessionEndCaptureHook()
+	// Dream reads Claude Code and Codex transcripts directly.
+	removeSessionEndCaptureHook()
 
 	// Register Argus KB write logging on PostToolUse
 	registerKBChangeTrackingHook()
@@ -227,15 +227,60 @@ func registerSessionStartPathHook() {
 	)
 }
 
-// registerSessionEndCaptureHook writes a raw session summary into
-// memory/inbox/ on SessionEnd, tagged by tier; /dream synthesizes captures
-// into topical KB docs.
-func registerSessionEndCaptureHook() {
-	registerSessionHook(
-		"SessionEnd",
-		"agents/hooks/session-end-capture.sh",
-		"Registered session-end inbox capture hook (SessionEnd)",
-	)
+// removeSessionEndCaptureHook removes the legacy inbox capture hook while
+// leaving unrelated SessionEnd hooks intact.
+func removeSessionEndCaptureHook() {
+	mutateSettings(func(settings map[string]any) bool {
+		hooks, ok := settings["hooks"].(map[string]any)
+		if !ok {
+			return false
+		}
+		entries, ok := hooks["SessionEnd"].([]any)
+		if !ok {
+			return false
+		}
+		command := "bash \"" + path.FromDots("agents/hooks/session-end-capture.sh") + "\""
+		kept, changed := withoutCommand(entries, command)
+		if changed {
+			if len(kept) == 0 {
+				delete(hooks, "SessionEnd")
+			} else {
+				hooks["SessionEnd"] = kept
+			}
+		}
+		return changed
+	})
+}
+
+func withoutCommand(entries []any, command string) ([]any, bool) {
+	kept := make([]any, 0, len(entries))
+	changed := false
+	for _, raw := range entries {
+		entry, valid := raw.(map[string]any)
+		if !valid {
+			kept = append(kept, raw)
+			continue
+		}
+		inner, valid := entry["hooks"].([]any)
+		if !valid {
+			kept = append(kept, raw)
+			continue
+		}
+		remaining := make([]any, 0, len(inner))
+		for _, hook := range inner {
+			item, _ := hook.(map[string]any)
+			if item != nil && item["command"] == command {
+				changed = true
+				continue
+			}
+			remaining = append(remaining, hook)
+		}
+		if len(remaining) > 0 {
+			entry["hooks"] = remaining
+			kept = append(kept, entry)
+		}
+	}
+	return kept, changed
 }
 
 // registerKBChangeTrackingHook appends every kb_ingest call to a JSONL log
