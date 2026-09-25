@@ -6,6 +6,7 @@ tap 'ethereum/ethereum'
 tap 'goreleaser/tap'
 tap 'puma/puma'
 tap 'qmk/qmk'
+tap 'anomalyco/tap'
 
 # casks
 cask '1password'
@@ -112,3 +113,4 @@ brew 'yarn'
 brew 'zlib'
 brew 'zoxide'
 brew 'zsh'
+brew 'opencode-v2'
