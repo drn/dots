@@ -11,6 +11,14 @@ Dream SHALL discover completed turns in local Claude Code and Codex JSONL transc
 - **WHEN** an earlier turn has already been synthesized and a later turn completes in the same session
 - **THEN** Dream ingests only the later turn
 
+#### Scenario: Earlier turn fails
+- **WHEN** an earlier turn fails KB handling but a later turn succeeds
+- **THEN** the earlier turn remains pending for a later run
+
+#### Scenario: Uncaptured Codex history
+- **WHEN** an older Codex transcript contains a turn that was never processed
+- **THEN** Dream keeps that turn eligible for discovery
+
 #### Scenario: Unavailable or incomplete transcript
 - **WHEN** an agent's session storage is absent or a transcript has an incomplete or malformed tail
 - **THEN** Dream continues with other available sources and does not synthesize the incomplete turn
@@ -29,3 +37,14 @@ Dream SHALL extract bounded user requests and final responses from completed Cla
 #### Scenario: Dry run
 - **WHEN** Dream runs with `--dry-run` and discovers completed turns
 - **THEN** it reports proposed ingest and synthesis without writing to the KB or changing processed-turn state
+
+### Requirement: Session Capture Privacy
+Dream SHALL redact known credential formats before putting transcript text in the KB and SHALL exclude session working directories configured in the private Dream exclusion file. It SHALL skip transcripts without a working directory.
+
+#### Scenario: Excluded working directory
+- **WHEN** a transcript's working directory matches a configured path prefix or directory name
+- **THEN** Dream does not ingest that transcript
+
+#### Scenario: Credential in session text
+- **WHEN** a user request or final response includes a recognized credential format
+- **THEN** Dream replaces the credential before creating the inbox capture

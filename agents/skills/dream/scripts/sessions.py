@@ -8,7 +8,6 @@ import re
 import time
 from pathlib import Path
 
-MAX_TRANSCRIPT_BYTES = 50 * 1024 * 1024
 MAX_MESSAGES = 12
 MAX_MESSAGE_CHARS = 1200
 MAX_PENDING = 20
@@ -18,6 +17,11 @@ TOKEN_PATTERNS = [
     (re.compile(r"github_pat_[A-Za-z0-9_]{20,}|gh[psou]_[A-Za-z0-9]{20,}"), "[REDACTED-GH]"),
     (re.compile(r"sk-ant-[A-Za-z0-9_-]{20,}|sk-[A-Za-z0-9_-]{20,}"), "[REDACTED-API-KEY]"),
     (re.compile(r"xox[bpars]-[A-Za-z0-9-]{10,}"), "[REDACTED-SLACK]"),
+    (re.compile(r"SG\.[A-Za-z0-9_-]{16,}\.[A-Za-z0-9_-]{16,}"), "[REDACTED-SENDGRID]"),
+    (re.compile(r"ntn_[A-Za-z0-9]{20,}"), "[REDACTED-NOTION]"),
+    (re.compile(r"sntrys_[A-Za-z0-9_]{20,}"), "[REDACTED-SENTRY]"),
+    (re.compile(r"dd[a-z][a-z0-9]{20,}"), "[REDACTED-DATADOG]"),
+    (re.compile(r"pdkey_[A-Za-z0-9]{16,}"), "[REDACTED-PAGERDUTY]"),
     (re.compile(r"-----BEGIN [A-Z ]*PRIVATE KEY-----"), "[REDACTED-PRIVKEY]"),
 ]
 
@@ -86,6 +90,35 @@ def read_records(path):
                 return
 
 
+def session_cwd(path, source):
+    for record in read_records(path):
+        if source == "codex" and record.get("type") == "session_meta":
+            return (record.get("payload") or {}).get("cwd")
+        if source == "claude" and record.get("cwd"):
+            return record["cwd"]
+    return None
+
+
+def load_excludes(path):
+    try:
+        return [line.strip() for line in path.read_text(encoding="utf-8").splitlines()
+                if line.strip() and not line.lstrip().startswith("#")]
+    except OSError:
+        return []
+
+
+def excluded(cwd, entries):
+    if not cwd:
+        return True
+    current = Path(cwd)
+    for entry in entries:
+        if entry.startswith("/") and (current == Path(entry) or Path(entry) in current.parents):
+            return True
+        if not entry.startswith("/") and entry in current.parts:
+            return True
+    return False
+
+
 def read_codex_turns(records):
     session_id = None
     messages = []
@@ -148,19 +181,29 @@ def since_time(state_file):
     return latest - 24 * 3600
 
 
-def pending(sources, state_file):
+def file_mtime(path):
+    try:
+        return path.stat().st_mtime
+    except OSError:
+        return 0
+
+
+def pending(sources, state_file, exclude_file=None):
     state = load_state(state_file)
-    since = state.get("_since", since_time(state_file))
+    excludes = load_excludes(exclude_file) if exclude_file else []
     for source, directory in sources:
         if not directory.is_dir():
             continue
+        since = state.get("_claude_since", since_time(state_file)) if source == "claude" else 0
         count = 0
-        for path in sorted(directory.rglob("*.jsonl")):
+        for path in sorted(directory.rglob("*.jsonl"), key=file_mtime, reverse=True):
             try:
                 stat = path.stat()
-                if stat.st_mtime < since or stat.st_size > MAX_TRANSCRIPT_BYTES:
+                if stat.st_mtime < since or state.get("_files", {}).get(str(path)) == stat.st_mtime_ns:
                     continue
-                for item in pending_path(path, source, stat.st_mtime, state):
+                if excluded(session_cwd(path, source), excludes):
+                    continue
+                for item in pending_path(path, source, stat, state):
                     yield item
                     count += 1
                     if count >= MAX_PENDING_PER_SOURCE:
@@ -171,21 +214,30 @@ def pending(sources, state_file):
                 break
 
 
-def pending_path(path, source, modified, state):
-    date = time.strftime("%Y-%m-%d", time.gmtime(modified))
-    for session_id, turn, messages in read_turns(path, source):
-        if turn <= state.get(f"{source}:{session_id}", 0):
+def pending_path(path, source, stat, state):
+    date = time.strftime("%Y-%m-%d", time.gmtime(stat.st_mtime))
+    turns = list(read_turns(path, source))
+    last_turn = max((turn for _, turn, _ in turns), default=0)
+    for session_id, turn, messages in turns:
+        if turn in state.get(f"{source}:{session_id}", []):
             continue
         yield {"source": source, "session_id": session_id, "turn": turn,
                "inbox_path": f"memory/inbox/{date}-{source}-{session_id}-{turn}.md",
-               "capture": capture(source, session_id, turn, messages, path)}
+               "capture": capture(source, session_id, turn, messages, path),
+               "transcript_path": str(path), "last_turn": last_turn,
+               "mtime_ns": stat.st_mtime_ns}
 
 
-def mark(state_file, source, session_id, turn):
+def mark(state_file, source, session_id, turn, transcript_path, last_turn, mtime_ns):
     state = load_state(state_file)
-    state.setdefault("_since", since_time(state_file))
+    if source == "claude":
+        state.setdefault("_claude_since", since_time(state_file))
     key = f"{source}:{session_id}"
-    state[key] = max(int(state.get(key, 0)), turn)
+    processed = set(state.get(key, []))
+    processed.add(turn)
+    state[key] = sorted(processed)
+    if all(number in processed for number in range(1, last_turn + 1)):
+        state.setdefault("_files", {})[str(transcript_path)] = mtime_ns
     state_file.parent.mkdir(parents=True, exist_ok=True)
     temporary = state_file.with_suffix(".tmp")
     temporary.write_text(json.dumps(state, sort_keys=True) + "\n", encoding="utf-8")
@@ -200,19 +252,30 @@ def main():
     parser.add_argument("--claude-dir", type=Path, default=Path.home() / ".claude/projects")
     parser.add_argument("--state-file", type=Path,
                         default=Path.home() / ".dots/sys/dream-runs/sessions-processed.json")
+    parser.add_argument("--exclude-file", type=Path,
+                        default=Path.home() / ".dots/sys/dream-session-excludes")
     parser.add_argument("--source", choices=("claude", "codex"))
     parser.add_argument("--session-id")
     parser.add_argument("--turn", type=int)
+    parser.add_argument("--transcript-path", type=Path)
+    parser.add_argument("--last-turn", type=int)
+    parser.add_argument("--mtime-ns", type=int)
     args = parser.parse_args()
     if args.action == "pending":
-        for item in pending((("claude", args.claude_dir), ("codex", args.codex_dir)), args.state_file):
+        for item in pending((("claude", args.claude_dir), ("codex", args.codex_dir)),
+                            args.state_file, args.exclude_file):
             print(json.dumps(item, ensure_ascii=False))
     else:
         if not args.source or not args.session_id or not re.fullmatch(r"[A-Za-z0-9-]{8,80}", args.session_id):
             parser.error("mark requires --source and a valid --session-id")
         if not args.turn or args.turn < 1:
             parser.error("mark requires a positive --turn")
-        mark(args.state_file, args.source, args.session_id, args.turn)
+        if not args.transcript_path or not args.last_turn or args.last_turn < args.turn:
+            parser.error("mark requires --transcript-path and --last-turn")
+        if args.mtime_ns is None or args.mtime_ns < 0:
+            parser.error("mark requires --mtime-ns")
+        mark(args.state_file, args.source, args.session_id, args.turn,
+             args.transcript_path, args.last_turn, args.mtime_ns)
 
 
 if __name__ == "__main__":

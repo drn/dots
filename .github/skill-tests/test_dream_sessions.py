@@ -40,16 +40,19 @@ def run():
         codex_file = codex / "2026/09/24" / f"rollout-{codex_id}.jsonl"
         claude_file = claude / "project" / f"{claude_id}.jsonl"
         secret = "sk-" + "A" * 25
+        extra_secrets = ["SG." + "A" * 16 + "." + "B" * 16,
+                         "ntn_" + "A" * 20, "sntrys_" + "A" * 20,
+                         "dda" + "a" * 20, "pdkey_" + "A" * 16]
         write_jsonl(codex_file, [
-            {"type": "session_meta", "payload": {"id": codex_id}},
-            codex_message("user", f"Choose SQLite. {secret}"),
+            {"type": "session_meta", "payload": {"id": codex_id, "cwd": str(root / "work")}},
+            codex_message("user", f"Choose SQLite. {secret} {' '.join(extra_secrets)}"),
             {"type": "response_item", "payload": {"type": "reasoning", "content": "private reasoning"}},
             codex_message("assistant", "Use SQLite for the cache.", "final_answer"),
             {"type": "event_msg", "payload": {"type": "task_complete"}},
             codex_message("user", "unfinished Codex turn"),
         ])
         write_jsonl(claude_file, [
-            claude_message("user", "Choose Postgres."),
+            {**claude_message("user", "Choose Postgres."), "cwd": str(root / "work")},
             claude_message("assistant", [{"type": "tool_use", "name": "Bash"}], "tool_use"),
             claude_message("user", [{"type": "tool_result", "content": "private tool output"}]),
             claude_message("assistant", [{"type": "text", "text": "Use Postgres for storage."}], "end_turn"),
@@ -68,10 +71,12 @@ def run():
         assert "Use SQLite for the cache." in captures
         assert "Use Postgres for storage." in captures
         assert "[REDACTED-API-KEY]" in captures and secret not in captures
+        assert all(secret_value not in captures for secret_value in extra_secrets)
         assert "private reasoning" not in captures and "private tool output" not in captures
         assert "unfinished" not in captures
         for item in found:
-            module.mark(state, item["source"], item["session_id"], item["turn"])
+            module.mark(state, item["source"], item["session_id"], item["turn"],
+                        item["transcript_path"], item["last_turn"], item["mtime_ns"])
         assert list(module.pending(sources, state)) == []
         with codex_file.open("a", encoding="utf-8") as transcript:
             transcript.write(json.dumps(codex_message("assistant", "New answer.", "final_answer")) + "\n")
@@ -80,6 +85,9 @@ def run():
         found = list(module.pending(sources, state))
         assert len(found) == 1 and found[0]["turn"] == 2, found
         assert "New answer." in found[0]["capture"]
+        gap_state = root / "runs/gap.json"
+        module.mark(gap_state, "codex", codex_id, 2, codex_file, 2, found[0]["mtime_ns"])
+        assert [item["turn"] for item in module.pending((("codex", codex),), gap_state)] == [1]
         with claude_file.open("a", encoding="utf-8") as transcript:
             for turn in range(11):
                 transcript.write(json.dumps(claude_message("user", f"Request {turn}")) + "\n")
@@ -92,7 +100,10 @@ def run():
         old = time.time() - 7 * 86400
         import os
         os.utime(codex_file, (old, old))
-        assert list(module.pending((("codex", codex),), state)) == [], "old transcripts should be skipped"
+        assert len(list(module.pending((("codex", codex),), state))) == 1, "old Codex turns remain eligible"
+        exclude_file = root / "excluded.txt"
+        exclude_file.write_text("work\n", encoding="utf-8")
+        assert list(module.pending(sources, state, exclude_file)) == []
         empty_final = claude / "project" / "empty-final-1234.jsonl"
         write_jsonl(empty_final, [
             claude_message("user", "First request"),
