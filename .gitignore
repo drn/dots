@@ -10,3 +10,4 @@ sys
 .claude/worktrees
 pi/agent/auth.json
 pi/agent/sessions/
+.context/
