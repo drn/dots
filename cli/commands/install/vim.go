@@ -69,7 +69,7 @@ func vimUpdatePlugins() {
 	tempPath := "/tmp/vim-update-result"
 	_ = os.Remove(tempPath)
 	run.Silent(
-		"nvim -c \"%s\"",
+		"cd ~ && nvim -c \"%s\"",
 		strings.Join(
 			[]string{
 				"PlugUpgrade",
