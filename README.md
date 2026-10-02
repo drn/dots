@@ -53,7 +53,7 @@ dots docker stop-all     # Stop all Docker containers
 
 | Component | What it installs |
 |-----------|------------------|
-| `agents` | Agent skills, custom agents, hooks, and status line (symlinks `agents/skills/` → `~/.claude/skills/` + `~/.agents/skills/`, `agents/custom/` → `~/.claude/agents/`, registers SessionStart/PostToolUse hooks and status line in `~/.claude/settings.json`; one SessionStart hook prepends dev-tool bin dirs — `go/bin`, cargo, asdf shims — onto the Bash tool's `PATH` so binaries like `tts` resolve by bare name) |
+| `agents` | Agent skills, custom agents, hooks, and status lines (symlinks `agents/skills/` → `~/.claude/skills/` + `~/.agents/skills/`, `agents/custom/` → `~/.claude/agents/`, registers Claude hooks and status line in `~/.claude/settings.json`, and configures Codex's native status line with model, context remaining, 5-hour usage, and weekly usage in `$CODEX_HOME/config.toml` or `~/.codex/config.toml`; one SessionStart hook prepends dev-tool bin dirs — `go/bin`, cargo, asdf shims — onto the Bash tool's `PATH` so binaries like `tts` resolve by bare name) |
 | `bin` | Custom shell scripts and Go utilities to `~/bin` |
 | `git` | `.gitconfig`, `.gitignore_global`, git extensions |
 | `home` | Dotfiles symlinked to `~/` (`.zshrc`, `.vimrc`, `.tmux.conf`, `.gitconfig`, etc.) |
