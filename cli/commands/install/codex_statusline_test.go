@@ -186,4 +186,7 @@ func TestRegisterCodexStatusLine_UsesCodexHome(t *testing.T) {
 	if !strings.Contains(string(data), `"five-hour-limit"`) {
 		t.Errorf("Codex config did not receive status-line items:\n%s", data)
 	}
+	if !strings.Contains(string(data), `model = "gpt-5"`) {
+		t.Errorf("Codex config lost its existing model setting:\n%s", data)
+	}
 }
