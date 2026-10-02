@@ -28,6 +28,25 @@ func TestEnsureCodexStatusLine_CreatesStatusLine(t *testing.T) {
 	}
 }
 
+func TestEnsureCodexStatusLine_AddsRootSettingBeforeOtherTables(t *testing.T) {
+	config := "model = \"gpt-5\"\n\n[projects.\"/repo\"]\ntrust_level = \"trusted\"\n"
+	got, changed, err := ensureCodexStatusLine(config)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !changed {
+		t.Fatal("expected status line to be added")
+	}
+	statusLineIndex := strings.Index(got, "tui.status_line =")
+	projectIndex := strings.Index(got, "[projects.\"/repo\"]")
+	if statusLineIndex < 0 || projectIndex < 0 || statusLineIndex > projectIndex {
+		t.Fatalf("root status line setting must precede the project table:\n%s", got)
+	}
+	if !strings.Contains(got, "trust_level = \"trusted\"") {
+		t.Fatalf("existing project settings were not preserved:\n%s", got)
+	}
+}
+
 func TestEnsureCodexStatusLine_PreservesExistingSettingsAndItems(t *testing.T) {
 	config := "model = \"gpt-5\"\n\n[tui]\nshow_tooltips = false\nstatus_line = [\"git-branch\", \"weekly-limit\"]\n\n[projects.\"/repo\"]\ntrust_level = \"trusted\"\n"
 	got, changed, err := ensureCodexStatusLine(config)
