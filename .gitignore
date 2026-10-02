@@ -11,3 +11,5 @@ sys
 pi/agent/auth.json
 pi/agent/sessions/
 .context/
+__pycache__/
+*.pyc
