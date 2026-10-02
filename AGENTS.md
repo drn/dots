@@ -136,7 +136,7 @@ in this file. Populated and maintained via the `/improve` skill.
 | hammerspoon | Window management |
 | tools | Devbox, Claude Code, Codex |
 | osx | macOS defaults |
-| agents | Agent skills, custom agents, hooks, and status line (symlinks agents/skills → ~/.claude/skills + ~/.agents/skills, agents/custom → ~/.claude/agents, agents/AGENTS.md → ~/.claude/CLAUDE.md, registers hooks and status line in ~/.claude/settings.json) |
+| agents | Agent skills, custom agents, hooks, and status lines (symlinks agents/skills → ~/.claude/skills + ~/.agents/skills, agents/custom → ~/.claude/agents, agents/AGENTS.md → ~/.claude/CLAUDE.md, registers Claude hooks and status line in ~/.claude/settings.json, and configures Codex's native status line with model, context remaining, 5-hour usage, and weekly usage in $CODEX_HOME/config.toml or ~/.codex/config.toml) |
 | pi | pi.dev coding agent CLI + config (installs pi via curl pi.dev/install.sh, symlinks pi/agent/models.json → ~/.pi/agent/models.json, and seeds defaultProvider/defaultModel for Ollama qwen3:32b in ~/.pi/agent/settings.json; auth.json and sessions/ stay local) |
 
 ## Writing Skills / Slash Commands

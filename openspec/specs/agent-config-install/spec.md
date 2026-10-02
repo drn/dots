@@ -4,7 +4,7 @@
 
 The `agent-config-install` capability defines `dots install agents` — how the
 repository's reusable skills, custom agent types, and hooks are wired into Claude
-Code and Codex by symlinking directories and mutating `~/.claude/settings.json`.
+Code and Codex by symlinking directories and managing their settings.
 
 This spec documents the behavior that ships today.
 ## Requirements
@@ -78,6 +78,30 @@ command differs from the existing one.
 
 - **WHEN** the `agents` installer runs and `settings.statusLine` already matches the configured command
 - **THEN** `settings.json` is left unchanged for the status line
+
+### Requirement: Codex Status Line Limit Configuration
+The `agents` installer SHALL configure Codex's native TUI status line in
+`$CODEX_HOME/config.toml` (default `~/.codex/config.toml`) to include model,
+context remaining, 5-hour usage, and weekly usage items, matching the information
+shown by the Claude status line. It SHALL preserve unrelated Codex configuration
+and existing status-line items. Codex SHALL render the items using its native
+status-line appearance.
+
+#### Scenario: Usage limits and context are configured
+- **WHEN** the `agents` installer runs and Codex's status line does not include all configured items
+- **THEN** `tui.status_line` includes `model-with-reasoning`, `context-remaining`, `five-hour-limit`, and `weekly-limit`
+
+#### Scenario: Existing Codex configuration is preserved
+- **WHEN** the `agents` installer updates the Codex status line
+- **THEN** unrelated Codex configuration and existing status-line items remain present
+
+#### Scenario: Re-running does not duplicate items
+- **WHEN** the `agents` installer runs when all configured items are already present
+- **THEN** the Codex configuration is left unchanged
+
+#### Scenario: Custom Codex home is respected
+- **WHEN** `CODEX_HOME` points to a custom Codex home directory
+- **THEN** status-line items are written to that directory's `config.toml`
 
 ### Requirement: Settings File Handling
 
@@ -171,4 +195,3 @@ every machine where `dots install agents` runs.
 
 - **WHEN** the `agents` installer runs again with `cleanupPeriodDays` already `1095`
 - **THEN** `settings.json` is left unchanged for that key
-

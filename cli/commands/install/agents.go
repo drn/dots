@@ -51,6 +51,9 @@ func Agents() {
 	// Register status line
 	registerStatusLine()
 
+	// Configure Codex's native status line to show model, context, and limits
+	registerCodexStatusLine()
+
 	// Manage local session transcript retention
 	registerCleanupPeriod()
 }
