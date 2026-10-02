@@ -200,7 +200,8 @@ every machine where `dots install agents` runs.
 
 The repository's `agents/skills/` SHALL NOT ship a skill whose behavior is already
 provided identically by a skill built into argus. In particular, the Argus task
-lifecycle skills are provided by the built-in `argus-archive` and `argus-complete`.
+lifecycle skills are provided by the built-in `argus-archive` and `argus-complete`, and scheduling by the
+built-in `argus-schedule`.
 
 #### Scenario: Task lifecycle skills come from argus
 - **WHEN** `dots install agents` links `agents/skills`

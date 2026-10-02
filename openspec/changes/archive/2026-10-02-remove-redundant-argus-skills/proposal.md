@@ -11,12 +11,12 @@ cross-reference text), so each session lists two skills for one action.
 
 - Remove `agents/skills/archive/` and `agents/skills/complete/`; use the built-in
   `argus-archive` and `argus-complete` instead.
-- Keep `agents/skills/argus-schedule/`: the dots copy carries fixes the built-in lacks
-  (`.schedules[]` response shape, relative-time one-shots), so removing it would regress
-  guidance. Revisit once those fixes land upstream.
+- Remove `agents/skills/argus-schedule/` in favor of the built-in `argus-schedule`. The dots copy
+  carried two fixes the built-in lacks (`.schedules[]` response shape, relative-time
+  one-shots); port them upstream into argus.
 - Update `README.md` skill count and skill table.
 
 ## Impact
 
 - Affected specs: `agent-config-install`
-- Affected code: `agents/skills/archive/`, `agents/skills/complete/`, `README.md`
+- Affected code: `agents/skills/archive/`, `agents/skills/complete/`, `agents/skills/argus-schedule/`, `README.md`
