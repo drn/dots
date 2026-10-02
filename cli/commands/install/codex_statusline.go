@@ -134,7 +134,15 @@ func updateCodexStatusLine(config string, start int) (string, bool, error) {
 	if !appendMissingStatusLineItems(&items) {
 		return config, false, nil
 	}
-	return config[:start] + formatTomlStringArray(items) + config[end:], true, nil
+	updatedArray := formatTomlStringArray(items)
+	for i, comment := range tomlArrayComments(config[start:end]) {
+		if i == 0 {
+			updatedArray += " " + comment
+		} else {
+			updatedArray += "\n" + comment
+		}
+	}
+	return config[:start] + updatedArray + config[end:], true, nil
 }
 
 func readCodexStatusLineArray(config string, start int) ([]string, int, error) {
@@ -185,6 +193,17 @@ func stripTomlComment(line string) string {
 		}
 	}
 	return line
+}
+
+func tomlArrayComments(value string) []string {
+	var comments []string
+	for _, line := range strings.Split(value, "\n") {
+		withoutComment := stripTomlComment(line)
+		if len(withoutComment) < len(line) {
+			comments = append(comments, strings.TrimSpace(line[len(withoutComment):]))
+		}
+	}
+	return comments
 }
 
 func appendMissingStatusLineItems(items *[]string) bool {

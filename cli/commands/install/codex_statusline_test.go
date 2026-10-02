@@ -70,6 +70,9 @@ func TestEnsureCodexStatusLine_HandlesMultilineAndDottedKey(t *testing.T) {
 	if !strings.Contains(got, `"git-branch"`) || !strings.Contains(got, `"five-hour-limit"`) {
 		t.Errorf("updated dotted status line is missing expected items:\n%s", got)
 	}
+	if !strings.Contains(got, "# keep this item") {
+		t.Errorf("updated status line dropped an existing comment:\n%s", got)
+	}
 }
 
 func TestEnsureCodexStatusLine_HandlesTableHeaderComment(t *testing.T) {
