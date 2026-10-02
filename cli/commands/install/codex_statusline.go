@@ -94,7 +94,7 @@ func findCodexStatusLine(config string) codexStatusLineLocation {
 	location := codexStatusLineLocation{tuiStart: -1, tuiEnd: -1, targetStart: -1, firstTable: -1}
 	offset := 0
 	for _, line := range lines {
-		trimmed := strings.TrimSpace(line)
+		trimmed := strings.TrimSpace(stripTomlComment(line))
 		if strings.HasPrefix(trimmed, "[") && strings.HasSuffix(trimmed, "]") {
 			if location.firstTable < 0 {
 				location.firstTable = offset
@@ -108,8 +108,9 @@ func findCodexStatusLine(config string) codexStatusLineLocation {
 			location.tuiEnd = offset + len(line)
 		}
 
-		key, value, hasValue := strings.Cut(strings.SplitN(trimmed, "#", 2)[0], "=")
+		key, value, hasValue := strings.Cut(trimmed, "=")
 		if hasValue && (section == "tui" && strings.TrimSpace(key) == "status_line" || section == "" && strings.TrimSpace(key) == "tui.status_line") {
+			value = strings.TrimSpace(value)
 			location.targetStart = offset + strings.Index(line, value)
 		}
 		offset += len(line)
@@ -121,14 +122,12 @@ func updateCodexStatusLine(config string, start int) (string, bool, error) {
 	for start < len(config) && isSpace(config[start]) {
 		start++
 	}
-	if start >= len(config) || config[start] != '[' {
-		return config, false, fmt.Errorf("tui.status_line must be an array of strings")
+	if isTomlNull(config, start) {
+		var items []string
+		appendMissingStatusLineItems(&items)
+		return config[:start] + formatTomlStringArray(items) + config[start+4:], true, nil
 	}
-	end, err := tomlArrayEnd(config, start, len(config))
-	if err != nil {
-		return config, false, err
-	}
-	items, err := parseTomlStringArray(config[start:end])
+	items, end, err := readCodexStatusLineArray(config, start)
 	if err != nil {
 		return config, false, err
 	}
@@ -136,6 +135,56 @@ func updateCodexStatusLine(config string, start int) (string, bool, error) {
 		return config, false, nil
 	}
 	return config[:start] + formatTomlStringArray(items) + config[end:], true, nil
+}
+
+func readCodexStatusLineArray(config string, start int) ([]string, int, error) {
+	if start >= len(config) || config[start] != '[' {
+		return nil, start, fmt.Errorf("tui.status_line must be an array of strings")
+	}
+	end, err := tomlArrayEnd(config, start, len(config))
+	if err != nil {
+		return nil, start, err
+	}
+	items, err := parseTomlStringArray(config[start:end])
+	if err != nil {
+		return nil, start, err
+	}
+	return items, end, nil
+}
+
+func isTomlNull(config string, start int) bool {
+	if start+4 > len(config) || config[start:start+4] != "null" {
+		return false
+	}
+	if start+4 == len(config) {
+		return true
+	}
+	next := config[start+4]
+	return isSpace(next) || next == '#' || next == '\n' || next == '\r'
+}
+
+func stripTomlComment(line string) string {
+	var quote byte
+	escaped := false
+	for i := 0; i < len(line); i++ {
+		char := line[i]
+		if quote != 0 {
+			if quote == '"' && escaped {
+				escaped = false
+			} else if quote == '"' && char == '\\' {
+				escaped = true
+			} else if char == quote {
+				quote = 0
+			}
+			continue
+		}
+		if char == '"' || char == '\'' {
+			quote = char
+		} else if char == '#' {
+			return line[:i]
+		}
+	}
+	return line
 }
 
 func appendMissingStatusLineItems(items *[]string) bool {
@@ -171,7 +220,7 @@ func parseTomlStringArray(value string) ([]string, error) {
 	body := value[1 : len(value)-1]
 	var items []string
 	for i := 0; i < len(body); {
-		i = skipTomlArrayTrivia(body, i)
+		i = skipTomlArrayWhitespace(body, i)
 		if i == len(body) {
 			break
 		}
@@ -181,13 +230,20 @@ func parseTomlStringArray(value string) ([]string, error) {
 		}
 		items = append(items, item)
 		i = next
+		i = skipTomlArrayWhitespace(body, i)
+		if i < len(body) {
+			if body[i] != ',' {
+				return nil, fmt.Errorf("expected comma in tui.status_line")
+			}
+			i++
+		}
 	}
 	return items, nil
 }
 
-func skipTomlArrayTrivia(body string, i int) int {
+func skipTomlArrayWhitespace(body string, i int) int {
 	for i < len(body) {
-		if isSpace(body[i]) || body[i] == ',' {
+		if isSpace(body[i]) {
 			i++
 			continue
 		}

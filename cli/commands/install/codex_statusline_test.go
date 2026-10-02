@@ -17,6 +17,10 @@ func TestEnsureCodexStatusLine_CreatesStatusLine(t *testing.T) {
 	if !changed {
 		t.Fatal("expected new status line to be added")
 	}
+	want := `["model-with-reasoning", "context-remaining", "five-hour-limit", "weekly-limit"]`
+	if !strings.Contains(got, want) {
+		t.Fatalf("status line array = %q, want it to contain %q", got, want)
+	}
 	for _, item := range codexStatusLineItems {
 		if !strings.Contains(got, `"`+item+`"`) {
 			t.Errorf("status line does not include %q: %s", item, got)
@@ -48,6 +52,10 @@ func TestEnsureCodexStatusLine_PreservesExistingSettingsAndItems(t *testing.T) {
 	if strings.Count(got, `"weekly-limit"`) != 1 {
 		t.Errorf("weekly-limit duplicated in status line:\n%s", got)
 	}
+	wantArray := `status_line = ["git-branch", "weekly-limit", "model-with-reasoning", "context-remaining", "five-hour-limit"]`
+	if !strings.Contains(got, wantArray) {
+		t.Errorf("serialized status line = %q, want %q", got, wantArray)
+	}
 }
 
 func TestEnsureCodexStatusLine_HandlesMultilineAndDottedKey(t *testing.T) {
@@ -61,6 +69,37 @@ func TestEnsureCodexStatusLine_HandlesMultilineAndDottedKey(t *testing.T) {
 	}
 	if !strings.Contains(got, `"git-branch"`) || !strings.Contains(got, `"five-hour-limit"`) {
 		t.Errorf("updated dotted status line is missing expected items:\n%s", got)
+	}
+}
+
+func TestEnsureCodexStatusLine_HandlesTableHeaderComment(t *testing.T) {
+	config := "[tui] # existing Codex settings\nshow_tooltips = false\n"
+	got, changed, err := ensureCodexStatusLine(config)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !changed {
+		t.Fatal("expected status line to be added")
+	}
+	if strings.Count(got, "[tui]") != 1 || !strings.Contains(got, "# existing Codex settings") {
+		t.Fatalf("table header comment or table was not preserved:\n%s", got)
+	}
+	if !strings.Contains(got, `"weekly-limit"`) {
+		t.Fatalf("status line limits missing:\n%s", got)
+	}
+}
+
+func TestEnsureCodexStatusLine_ReplacesNullStatusLine(t *testing.T) {
+	config := "[tui]\nstatus_line = null # Codex default\n"
+	got, changed, err := ensureCodexStatusLine(config)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !changed {
+		t.Fatal("expected null status line to be configured")
+	}
+	if !strings.Contains(got, `status_line = ["model-with-reasoning", "context-remaining", "five-hour-limit", "weekly-limit"] # Codex default`) {
+		t.Fatalf("null status line was not replaced while preserving its comment:\n%s", got)
 	}
 }
 
@@ -92,6 +131,17 @@ func TestEnsureCodexStatusLine_RejectsUnexpectedValue(t *testing.T) {
 	}
 	if changed || got != config {
 		t.Fatal("invalid config should remain unchanged")
+	}
+}
+
+func TestEnsureCodexStatusLine_RejectsMissingArrayComma(t *testing.T) {
+	config := "[tui]\nstatus_line = [\"git-branch\" \"weekly-limit\"]\n"
+	got, changed, err := ensureCodexStatusLine(config)
+	if err == nil {
+		t.Fatal("expected invalid array syntax to fail")
+	}
+	if changed || got != config {
+		t.Fatal("invalid array syntax should remain unchanged")
 	}
 }
 
