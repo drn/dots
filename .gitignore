@@ -13,3 +13,4 @@ pi/agent/sessions/
 .context/
 __pycache__/
 *.pyc
+agents/skills/synced/
