@@ -14,3 +14,4 @@ pi/agent/sessions/
 __pycache__/
 *.pyc
 agents/skills/synced/
+agents/skills/.trash/
