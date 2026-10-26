@@ -274,4 +274,52 @@ test_detect_allowed_methods_requires_repo_slug() {
   assert_contains "$_CAPTURED" "REPO_SLUG not set" "should report missing REPO_SLUG"
 }
 
+test_format_merge_commit_with_headline() {
+  _source_merge
+  assert_eq "$(format_merge_commit abcdef1234567 "Add thing")" "abcdef1 Add thing" "should shorten oid and append headline"
+}
+
+test_format_merge_commit_null_headline() {
+  _source_merge
+  assert_eq "$(format_merge_commit abcdef1234567 null)" "abcdef1" "should drop a null headline"
+  assert_eq "$(format_merge_commit abcdef1234567 "")" "abcdef1" "should drop an empty headline"
+}
+
+test_wait_for_checks_skipped_with_flag() {
+  _source_merge
+  WAIT_CHECKS=false
+  capture wait_for_checks
+  assert_eq "$_CAPTURED_EXIT" "0" "should skip the gate when WAIT_CHECKS=false"
+}
+
+test_wait_for_checks_refuses_failing() {
+  _source_merge
+  WAIT_CHECKS=true
+  PR_NUMBER=1
+  count_required_checks() { [[ "$1" == "fail" ]] && echo 2 || echo 0; }
+  capture wait_for_checks
+  assert_eq "$_CAPTURED_EXIT" "5" "should exit 5 on failing required checks"
+  assert_contains "$_CAPTURED" "failing required check" "should report failing checks"
+}
+
+test_wait_for_checks_times_out_on_pending() {
+  _source_merge
+  WAIT_CHECKS=true
+  PR_NUMBER=1
+  CHECK_TIMEOUT=0
+  count_required_checks() { [[ "$1" == "pending" ]] && echo 1 || echo 0; }
+  capture wait_for_checks
+  assert_eq "$_CAPTURED_EXIT" "5" "should exit 5 when checks stay pending"
+  assert_contains "$_CAPTURED" "pending required check" "should report pending checks"
+}
+
+test_wait_for_checks_passes_when_clear() {
+  _source_merge
+  WAIT_CHECKS=true
+  PR_NUMBER=1
+  count_required_checks() { echo 0; }
+  capture wait_for_checks
+  assert_eq "$_CAPTURED_EXIT" "0" "should pass when no checks fail or pend"
+}
+
 run_tests

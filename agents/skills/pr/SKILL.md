@@ -77,7 +77,7 @@ The check is cheap (~2s for a typical PR) and catches the most common qlty fmt f
 
 #### 2b: Push
 
-Push the current branch to origin. Use `git push -u origin HEAD` if no upstream is set. If there is nothing new to push, that is fine — continue to Step 3.
+Push the current branch with `git push -u origin HEAD`. Always use this exact form, never a bare `git push`: with `push.default=matching` a bare push also pushes unrelated stale local branches (for example a behind local `master`), and the resulting non-fast-forward rejection looks like the PR push failed. If there is nothing new to push, that is fine — continue to Step 3.
 
 ### Step 3: Open a PR (or use existing one)
 
@@ -172,7 +172,13 @@ gh pr view <number> --repo <owner/repo> --json mergeStateStatus,mergeable
 
 Then use `gh pr checks <number> --repo <owner/repo>` to see the current state of all checks.
 
-- If checks are still running, poll `gh pr checks` with exponential backoff: wait 60s, then 120s, then 240s, capping at 300s between polls. Stop after 30 minutes total and report to the user.
+- If checks are still running, wait with a background until-loop and continue when its completion notification arrives. Do NOT chain foreground `sleep N; cmd` polls — the harness refuses them. Run this with `run_in_background`:
+
+  ```
+  timeout 1800 bash -c 'until ! gh pr checks <number> --repo <owner/repo> | grep -q pending; do sleep 30; done'
+  ```
+
+  Then re-run `gh pr checks` once to read the final state. If the timeout (30 minutes) expires, report to the user.
 - **Distinguish a genuinely-running slow check from a stuck/queued one** before either continuing to wait or declaring it stuck. A required check on a slow repo (a 10-minute build-test, for example) is easy to mistake for a wedged workflow. Probe the underlying check-run status for the head commit:
 
   ```
@@ -198,7 +204,7 @@ Then use `gh pr checks <number> --repo <owner/repo>` to see the current state of
   - Analyze the failure. Read the relevant source files to understand the issue.
   - Fix the code. Make the minimal change needed to resolve the failure.
   - Stage and commit the fix with a clear message describing what was fixed and why. Stage specific files (`git add <path>`), not `git add -A`/`git add .`, so `.context/` scratch never gets swept in.
-- Push all fixes with `git push`.
+- Push all fixes with `git push -u origin HEAD`.
 
 #### 4c: Check for and resolve ALL review threads
 
@@ -243,7 +249,7 @@ Filter to threads where `isResolved` is false. If there are zero unresolved thre
 
    For bot comments specifically: bot suggestions are frequently false positives or conflict with project conventions. Do not blindly apply every suggestion. Evaluate each on its merits. Complexity warnings from linter bots (qlty, CodeClimate) are almost always informational — the complexity is inherent to the function. Similar-code detection is usually informational when the code implements a shared interface pattern.
 
-3. **Reply to the thread.** Always reply before resolving, so there is an audit trail:
+3. **Reply to the thread — after confirmation.** Posting a reply sends a message on the user's behalf. Unless the user has already authorized replies for this PR, do not post any reply yet: first draft all replies (one per thread, keyed by thread and author), show them to the user in a single batch, and ask for one explicit yes. If the user declines or does not answer, resolve the threads without replying and tell the user which threads were resolved silently and why. Once confirmed, reply before resolving so there is an audit trail:
    - **(a)** Reply confirming what you changed (e.g., "Fixed — added nil check at line 42").
    - **(b)** Reply explaining why no change was made (e.g., "This complexity is inherent to the dispatch logic — extracting sub-functions would hurt readability without reducing actual complexity").
    - **(c)** Reply with a brief acknowledgment (e.g., "Acknowledged — these implement the same abstract interface, so the similarity is expected").
@@ -260,6 +266,8 @@ gh api graphql -f query='
     }
   }'
 ```
+
+**Rate-limited review bots.** A review check reading "Review rate limited" (CodeRabbit and similar) is non-blocking: do not wait on it or treat it as a failure. Still run the thread fetch above and address any threads the bot posted before it was limited — a valid finding can land before the limit hits.
 
 **After addressing all threads:** if any code changes were made, stage, commit, and push them before looping back.
 

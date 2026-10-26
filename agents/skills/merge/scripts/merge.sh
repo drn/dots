@@ -3,7 +3,7 @@ set -euo pipefail
 
 # merge.sh — Merge current branch to the default branch via GitHub PR
 #
-# Usage: merge.sh [--skip-rebase] [--method <squash|merge|rebase>] [--squash|--merge|--rebase] [--keep-branch] "<title>" "<body>"
+# Usage: merge.sh [--skip-rebase] [--no-wait-checks] [--method <squash|merge|rebase>] [--squash|--merge|--rebase] [--keep-branch] "<title>" "<body>"
 #
 # Without an explicit method, merge.sh probes the repo's allowed methods and
 # tries them in preference order (squash → rebase → merge). Pass --method (or
@@ -22,6 +22,10 @@ set -euo pipefail
 #   2 — rebase conflict (needs manual resolution)
 #   3 — no commits to merge
 #   4 — PR blocked (review required / changes requested) and auto-merge unavailable
+#   5 — required checks failing, or still pending after the wait timeout
+#
+# Before merging, required checks are awaited (default 1200s, override with
+# MERGE_CHECK_TIMEOUT=<seconds>). Pass --no-wait-checks to skip the gate.
 
 COAUTHOR="Co-Authored-By: Claude <noreply@anthropic.com>"
 
@@ -44,6 +48,9 @@ PR_REVIEW_DECISION=""
 LAST_GH_ERR=""
 MERGE_METHOD_FLAG=""  # input flag (squash|merge|rebase|""); narrows ALLOWED_METHODS when set
 KEEP_BRANCH=false     # when true, restore checkout to feature branch after squash merge
+WAIT_CHECKS=true      # when false, skip the required-checks gate
+CHECK_TIMEOUT="${MERGE_CHECK_TIMEOUT:-1200}"
+CHECK_POLL_INTERVAL="${MERGE_CHECK_POLL_INTERVAL:-15}"
 
 # --- Helpers ---
 
@@ -180,6 +187,37 @@ check_pr_state() {
     PR_REVIEW_DECISION=$(echo "$json" | jq -r '.reviewDecision // empty')
     info "PR state: ${PR_MERGE_STATE}, review: ${PR_REVIEW_DECISION}"
   fi
+}
+
+# Count required checks in a gh bucket (pending|fail). Prints 0 when the PR has
+# no required checks or the query fails, so the gate never blocks on gh errors.
+count_required_checks() {
+  local bucket="$1" count
+  count=$(gh pr checks "$PR_NUMBER" --repo "$REPO_SLUG" --required --json bucket \
+    --jq "[.[] | select(.bucket == \"${bucket}\")] | length" 2>/dev/null || echo "")
+  [[ "$count" =~ ^[0-9]+$ ]] || count=0
+  echo "$count"
+}
+
+# Refuse on failing required checks; wait (up to CHECK_TIMEOUT) on pending ones.
+wait_for_checks() {
+  [[ "$WAIT_CHECKS" == true ]] || return 0
+
+  local waited=0 failing pending
+  while true; do
+    failing=$(count_required_checks fail)
+    [[ "$failing" -gt 0 ]] && die 5 "PR #${PR_NUMBER} has ${failing} failing required check(s) — fix them before merging (or pass --no-wait-checks to skip this gate)"
+
+    pending=$(count_required_checks pending)
+    [[ "$pending" -eq 0 ]] && return 0
+
+    if [[ "$waited" -ge "$CHECK_TIMEOUT" ]]; then
+      die 5 "PR #${PR_NUMBER} still has ${pending} pending required check(s) after ${CHECK_TIMEOUT}s — wait for them and re-run /merge"
+    fi
+    info "Waiting on ${pending} pending required check(s) (${waited}s of ${CHECK_TIMEOUT}s)..."
+    sleep "$CHECK_POLL_INTERVAL"
+    waited=$((waited + CHECK_POLL_INTERVAL))
+  done
 }
 
 detect_allowed_methods() {
@@ -334,12 +372,22 @@ fetch_merge_commit() {
     return 0  # no merge commit yet for auto-merge
   fi
 
-  local commit_line
-  commit_line=$(gh pr view "$PR_NUMBER" --repo "$REPO_SLUG" --json mergeCommit \
-    --jq '.mergeCommit | "\(.oid[0:7]) \(.messageHeadline)"' 2>/dev/null || echo "")
-  if [[ -n "$commit_line" ]]; then
-    MERGE_COMMIT="$commit_line"
-  fi
+  # gh's mergeCommit JSON carries only the oid for PRs (messageHeadline comes
+  # back null), so fetch the headline from the commits API.
+  local oid headline
+  oid=$(gh pr view "$PR_NUMBER" --repo "$REPO_SLUG" --json mergeCommit \
+    --jq '.mergeCommit.oid // empty' 2>/dev/null || echo "")
+  [[ -z "$oid" ]] && return 0
+  headline=$(gh api "repos/${REPO_SLUG}/commits/${oid}" \
+    --jq '.commit.message | split("\n")[0]' 2>/dev/null || echo "")
+  MERGE_COMMIT=$(format_merge_commit "$oid" "$headline")
+}
+
+# Format "<short-oid> <headline>"; omit the headline when it is empty or "null".
+format_merge_commit() {
+  local oid="$1" headline="${2:-}"
+  [[ "$headline" == "null" ]] && headline=""
+  echo "${oid:0:7}${headline:+ $headline}"
 }
 
 update_local_master() {
@@ -383,13 +431,20 @@ update_local_master() {
       git -C "$worktree_path" pull "$TARGET" "$DEFAULT_BRANCH" 2>/dev/null || true
     fi
     if [[ "$auto_switch" == true ]]; then
-      info "NOTE: could not auto-switch this worktree to ${DEFAULT_BRANCH} — still on '${BRANCH}' (now divergent)."
-      if [[ -n "$worktree_path" ]]; then
-        info "      ${DEFAULT_BRANCH} is checked out in worktree '${worktree_path}'."
+      # Fall back to a detached HEAD at the new remote tip: it leaves the
+      # divergent feature branch without needing the default branch's name.
+      if git fetch "$TARGET" "$DEFAULT_BRANCH" 2>/dev/null \
+        && git checkout --detach "${TARGET}/${DEFAULT_BRANCH}" 2>/dev/null; then
+        info "Worktree now detached at ${TARGET}/${DEFAULT_BRANCH} (${DEFAULT_BRANCH} is checked out in another worktree; '${BRANCH}' was squashed and is now divergent)."
+        info "      Run 'git checkout -b <new-branch>' before committing new work."
       else
-        info "      Run 'git fetch ${TARGET} ${DEFAULT_BRANCH}' to create a local ref, then"
+        info "NOTE: could not auto-switch this worktree to ${DEFAULT_BRANCH} — still on '${BRANCH}' (now divergent)."
+        if [[ -n "$worktree_path" ]]; then
+          info "      ${DEFAULT_BRANCH} is checked out in worktree '${worktree_path}'."
+        fi
+        info "      Options: 'git checkout --detach ${TARGET}/${DEFAULT_BRANCH}' (leave the branch, keep it as-is),"
+        info "      or 'git reset --hard ${TARGET}/${DEFAULT_BRANCH}' (discards '${BRANCH}' commits, reuses the branch name; only safe after the merge landed)."
       fi
-      info "      'git checkout ${DEFAULT_BRANCH}' or 'git reset --hard ${TARGET}/${DEFAULT_BRANCH}' before continuing."
     fi
   fi
 }
@@ -429,12 +484,13 @@ main() {
   while [[ "${1:-}" == --* ]]; do
     case "$1" in
       --skip-rebase) skip_rebase=true; shift ;;
+      --no-wait-checks) WAIT_CHECKS=false; shift ;;
       --squash)      MERGE_METHOD_FLAG="squash"; shift ;;
       --merge)       MERGE_METHOD_FLAG="merge";  shift ;;
       --rebase)      MERGE_METHOD_FLAG="rebase"; shift ;;
       --method)      MERGE_METHOD_FLAG="${2:?--method requires squash|merge|rebase}"; shift 2 ;;
       --keep-branch) KEEP_BRANCH=true; shift ;;
-      *)             die 1 "Unknown flag: $1 — usage: merge.sh [--skip-rebase] [--method <squash|merge|rebase>] [--squash|--merge|--rebase] [--keep-branch] \"<title>\" \"<body>\"" ;;
+      *)             die 1 "Unknown flag: $1 — usage: merge.sh [--skip-rebase] [--no-wait-checks] [--method <squash|merge|rebase>] [--squash|--merge|--rebase] [--keep-branch] \"<title>\" \"<body>\"" ;;
     esac
   done
 
@@ -478,6 +534,7 @@ ${COAUTHOR}"
     info "Method override: using only ${MERGE_METHOD_FLAG} (skipping probe-based fallback)"
     ALLOWED_METHODS=("$MERGE_METHOD_FLAG")
   fi
+  wait_for_checks
   do_merge "$title" "$body"
   fetch_merge_commit       # must precede update_local_master (uses GitHub API, not local state)
   update_local_master

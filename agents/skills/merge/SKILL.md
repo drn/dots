@@ -77,8 +77,10 @@ Resolve the script path — use the first that exists:
 2. `agents/skills/merge/scripts/merge.sh` (repo-relative, for development/workspaces)
 
 ```
-bash <script-path> [--method <squash|merge|rebase>] [--keep-branch] "<title>" "<body>"
+bash <script-path> [--method <squash|merge|rebase>] [--keep-branch] [--no-wait-checks] "<title>" "<body>"
 ```
+
+The script waits for pending required checks (default 1200s, override with the MERGE_CHECK_TIMEOUT env var in seconds) and refuses to merge when a required check is failing. Pass `--no-wait-checks` only when the user explicitly wants to skip that gate.
 
 #### Choosing a merge method
 
@@ -97,7 +99,7 @@ After a successful **squash** merge, the script auto-switches the current worktr
 - `--method merge` / `--method rebase` — auto-switch is **off** by default. Both methods preserve the original commits, so the feature branch may still be useful for stacked PRs or chained follow-on work.
 - `--keep-branch` — opt out of auto-switch on squash. The worktree stays on the feature branch and the script prints a divergence warning instead. Use this for stacked-PR workflows that squash but still need to keep the branch checked out (rare).
 
-If auto-switch fails (e.g., uncommitted changes in the worktree, or `master` is checked out in another worktree), the script falls back to a loud warning rather than aborting — the merge itself already succeeded.
+If the default branch is checked out in another worktree, the script falls back to `git checkout --detach <remote>/<default>`, leaving this worktree on a detached HEAD at the new tip (create a new branch before committing). If that also fails (e.g., uncommitted changes), it prints a loud warning listing both options — `git checkout --detach <remote>/<default>`, or `git reset --hard <remote>/<default>` to reuse the branch name (discards the branch commits, so only after the merge landed) — rather than aborting, since the merge itself already succeeded.
 
 #### Review-required repos: automatic `--admin` escalation
 
@@ -135,4 +137,5 @@ On a repo where you hold admin, `/merge` lands the PR through the review gate it
   - If the admin error mentions pending/required checks (or the PR still has checks running), tell the user: "PR is blocked by a still-pending required status check, which prevented even the admin merge. Wait for checks to finish, then re-run /merge." Re-running once checks are green typically lands it.
   - If the admin error actually indicates missing permissions (e.g. "must have admin rights", "not authorized"), tell the user: "PR requires an approving review and I lack admin on this repo to bypass it. Ask a reviewer to approve, then re-run /merge."
   - Otherwise, surface the literal admin error to the user verbatim and suggest the matching next step.
+- **Exit 5 (required checks)** — A required check is failing, or still pending after the wait timeout. For failing checks, report which ones (`gh pr checks <number>`) and fix them first. For a timeout, tell the user the checks are still running and to re-run /merge once they finish (or raise MERGE_CHECK_TIMEOUT).
 - **Exit 1** — Report the error from stderr.

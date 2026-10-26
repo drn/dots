@@ -40,7 +40,7 @@ Scan for existing skills in all locations:
 1. `.agents/skills/*/SKILL.md` (already canonical)
 2. `.claude/commands/*.md` (Claude flat commands)
 3. `.claude/skills/*/SKILL.md` (Claude directory skills)
-Also check for a lowercase `claude.md` — Claude Code requires `CLAUDE.md` (uppercase) for discovery. Use `ls -1 | grep '^claude\.md$'` to detect the wrong casing (a plain `test -f` is unreliable on case-insensitive filesystems).
+Also check for a lowercase `claude.md` — Claude Code requires `CLAUDE.md` (uppercase) for discovery. Use `command ls -1 | grep '^claude\.md$'` to detect the wrong casing (a plain `test -f` is unreliable on case-insensitive filesystems).
 
 Classify the repo:
 
@@ -301,4 +301,4 @@ Present a final summary:
 - **CLAUDE.md has significant content**: Merge into AGENTS.md before symlinking. Show the user what was merged.
 - **Mixed state**: Some skills in .agents/skills/, some in .claude/commands/. Migrate only the ones not already canonical.
 - **Skill name collision**: If a skill exists in both .claude/commands/ and .agents/skills/ with different content, warn the user and skip. Do not overwrite canonical skills.
-- **Lowercase `claude.md`**: Claude Code requires uppercase `CLAUDE.md`. If `claude.md` exists, rename it (`git mv` if tracked, `mv` otherwise) before proceeding with Step 7. Use `ls -1 | grep '^claude\.md$'` for detection — `test -f` is unreliable on case-insensitive filesystems (macOS default).
+- **Lowercase `claude.md`**: Claude Code requires uppercase `CLAUDE.md`. If `claude.md` exists, rename it (`git mv` if tracked, `mv` otherwise) before proceeding with Step 7. Use `command ls -1 | grep '^claude\.md$'` for detection — `test -f` is unreliable on case-insensitive filesystems (macOS default).

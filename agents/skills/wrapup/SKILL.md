@@ -16,8 +16,8 @@ End-of-session sweep that detects loose ends and routes to the right follow-up a
 - Unpushed commits vs master: !`git log origin/master..HEAD --oneline 2>/dev/null | head -20`
 - Open PRs (mine): !`gh pr list --author @me --state open 2>/dev/null | head -10`
 - Stash list: !`git stash list 2>/dev/null | head -5`
-- Knowledge base exists: !`ls context/knowledge/index.md 2>/dev/null | head -1`
-- Context directory exists: !`ls context/ 2>/dev/null | head -5`
+- Knowledge base exists: !`command ls context/knowledge/index.md 2>/dev/null | head -1`
+- Context directory exists: !`command ls context/ 2>/dev/null | head -5`
 
 ## Instructions
 

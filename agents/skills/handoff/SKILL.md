@@ -18,7 +18,7 @@ Generate a structured prompt capturing the current conversation context so it ca
 ## Context
 
 - Calling task ID: !`echo $ARGUS_TASK_ID 2>/dev/null | head -1`
-- Argus projects: !`ls -1 ~/.argus/worktrees/ 2>/dev/null | head -50`
+- Argus projects: !`command ls -1 ~/.argus/worktrees/ 2>/dev/null | head -50`
 - Repo root: !`git rev-parse --show-toplevel 2>/dev/null | head -1`
 - Branch: !`git branch --show-current`
 - Base ref: !`git branch -r 2>/dev/null | grep -oE 'origin/(main|master)' | head -1`
@@ -28,7 +28,7 @@ Generate a structured prompt capturing the current conversation context so it ca
 - Changed files vs main: !`git diff --name-only origin/main..HEAD 2>/dev/null | head -30`
 - Changed files vs master: !`git diff --name-only origin/master..HEAD 2>/dev/null | head -30`
 - KB usage restriction in this repo: !`grep -liE 'never use argus-kb|argus-kb.*sandbox|sandboxed away from external systems' CLAUDE.md AGENTS.md 2>/dev/null | head -3`
-- Repo-local context/ directory present: !`ls -d context 2>/dev/null | head -1`
+- Repo-local context/ directory present: !`command ls -d context 2>/dev/null | head -1`
 
 ## Instructions
 
