@@ -127,7 +127,7 @@ The `agents` installer SHALL register a `SessionStart` hook running
 dev-tool binaries resolve by bare name in Claude Code's Bash tool. The hook SHALL
 append `export PATH="<dir>:$PATH"` lines to the file named by `$CLAUDE_ENV_FILE`
 for each of `$GOBIN` (falling back to `$GOPATH/bin`, then `~/go/bin`),
-`~/.cargo/bin`, and `~/.asdf/shims`. The hook SHALL skip directories that do not
+`~/.cargo/bin`, `~/.asdf/shims`, and `~/.local/bin`. The hook SHALL skip directories that do not
 exist, SHALL order entries so `go/bin` is the frontmost PATH entry after the file
 is sourced, SHALL be idempotent across repeated SessionStart fires within a
 session, and SHALL be a no-op when `$CLAUDE_ENV_FILE` is unset. Registration SHALL
@@ -143,6 +143,11 @@ so it coexists with the existing memory hook.
 
 - **WHEN** the hook runs with `$CLAUDE_ENV_FILE` set and `~/go/bin` and `~/.asdf/shims` present but `~/.cargo/bin` absent
 - **THEN** the env file gains `export PATH="…/go/bin:$PATH"` and `export PATH="…/.asdf/shims:$PATH"` lines, no `~/.cargo/bin` line, and after sourcing the file `go/bin` is the frontmost PATH entry
+
+#### Scenario: User bin dir prepended behind go/bin
+
+- **WHEN** the hook runs with `$CLAUDE_ENV_FILE` set and `~/.local/bin` present
+- **THEN** the env file gains an `export PATH="…/.local/bin:$PATH"` line and, after sourcing, `go/bin` is still the frontmost PATH entry
 
 #### Scenario: Idempotent across repeated fires
 

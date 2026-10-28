@@ -11,7 +11,7 @@ _setup_path_home() {
   local home
   home=$(mktemp -d "${TMPDIR:-/tmp}/skill-test-XXXXXX")
   _TMPDIRS+=("$home")
-  mkdir -p "$home/go/bin" "$home/.asdf/shims"
+  mkdir -p "$home/go/bin" "$home/.asdf/shims" "$home/.local/bin"
   # Deliberately omit "$home/.cargo/bin" — the hook should skip missing dirs.
   echo "$home"
 }
@@ -36,7 +36,19 @@ test_prepends_existing_dev_dirs() {
   body=$(cat "$envfile")
   assert_contains "$body" "export PATH=\"$home/go/bin:\$PATH\"" "go/bin should be prepended"
   assert_contains "$body" "export PATH=\"$home/.asdf/shims:\$PATH\"" "asdf shims should be prepended"
+  assert_contains "$body" "export PATH=\"$home/.local/bin:\$PATH\"" "~/.local/bin should be prepended"
   assert_not_contains "$body" "$home/.cargo/bin" "missing cargo dir should be skipped"
+}
+
+test_skips_missing_local_bin() {
+  local home envfile
+  home=$(_setup_path_home)
+  envfile="$home/envfile"
+  rmdir "$home/.local/bin"
+
+  _run_hook "$home" "$envfile"
+
+  assert_not_contains "$(cat "$envfile")" "$home/.local/bin" "missing ~/.local/bin should be skipped"
 }
 
 test_gobin_is_frontmost_after_sourcing() {
