@@ -24,6 +24,7 @@ func Run() {
 	updateBrew()
 	updateClaude()
 	updateDevbox()
+	updatePi()
 	updateSolargraph()
 	reshimAsdf()
 	install.Call("vim")
@@ -90,6 +91,15 @@ func updateDevbox() {
 	}
 	log.Info("Updating Devbox")
 	run.Verbose("devbox version update")
+}
+
+func updatePi() {
+	if err := run.Silent("which pi"); err != nil {
+		log.Info("pi.dev not installed, skipping")
+		return
+	}
+	log.Info("Updating pi.dev")
+	run.Verbose("pi update")
 }
 
 func updateSolargraph() {
