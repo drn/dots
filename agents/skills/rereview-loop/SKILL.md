@@ -14,6 +14,7 @@ Run `/rereview` repeatedly: review → fix the findings → re-review → repeat
   - `max=<N>` - cap the number of review→fix iterations (default 5)
   - `severity=blocking` - only auto-fix BLOCKING findings (default fixes BLOCKING + WARNING)
   - `severity=all` - auto-fix BLOCKING + WARNING + INFO
+  - `push` - after each iteration commit, and push the branch with `git push -u origin HEAD` (opt-in; the same applies if the user explicitly asks mid-run to update the PR between loops)
   - Any combination, space-separated. Example: `/rereview-loop max=3 severity=blocking`
 
 ## Context
@@ -55,6 +56,8 @@ last_iteration_committed = false   (did the previous iteration produce a commit?
 total_pushbacks = 0            (cumulative judgment-call pushbacks across all iterations)
 total_verified_false_positives = 0   (cumulative findings disproven by an actually-executed command, not judgment)
 total_findings_addressed = 0   (cumulative findings touched, for the pushback rate)
+push_each_iteration = false    (override with push)
+accepted_limits = []           (running list of accepted limits and pushed-back findings, with file:line and one-line rationale)
 stashed = false                (set true if Phase 0 stashes unrelated work)
 ```
 
@@ -80,7 +83,7 @@ Announce the run:
 
 ## Phase 1: Run /rereview
 
-Invoke the `/rereview` skill via the Skill tool, passing `rereview_scope` as its argument (empty string if no scope was given). Wait for it to complete and capture the full final report.
+Invoke the `/rereview` skill via the Skill tool, passing `rereview_scope` as its argument (empty string if no scope was given). **Pass the current `accepted_limits` list along** (state it in the invocation so `/rereview` includes it in the reviewer briefing under ACCEPTED LIMITS); without it reviewers re-flag settled items every round. Wait for it to complete and capture the full final report.
 
 `/rereview` will:
 1. Gather all changed files and dependents
@@ -118,6 +121,8 @@ OTHERWISE:
   → Continue to Phase 3 to address findings.
 ```
 
+**Cap semantics.** `iteration` counts completed fix rounds, and Phase 1 reviews before every check. With max=N the loop runs at most N fix rounds and therefore at most N+1 reviews: the cap check fires only after a review, so every fix round is always followed by a review. When the cap fires, that final review's findings are reported but not fixed. State this plainly in Phase 4 (for example: "cap hit after N fix rounds; the final review's M findings were not addressed").
+
 ### Stuck-state detection
 
 After Phase 3 commits the iteration's fixes, the next iteration's Phase 2 must check whether progress was actually made. Use a hard counter, not a paraphrased-text signature:
@@ -133,6 +138,13 @@ IF iteration > 0 AND last_iteration_committed == true AND
         different approach to those specific findings in this iteration.
       - If this is the second consecutive iteration with no progress,
         EXIT with status = STUCK after applying best-effort fixes once more.
+
+    **Second-order findings are progress.** New findings caused by the
+    previous fix (a fix surfaces a follow-on issue at a different file:line
+    or a different aspect of the same code) count as progress even when the
+    B/W/I counts do not fall. Only treat the loop as stuck when the SAME
+    findings recur at the same location after a fix attempt. Note
+    second-order findings in the heartbeat as "new, caused by iter {N} fix".
 
     A finding resolved as a **verified false positive** (Phase 3(b)) counts as
     genuine progress even though no code changed. Note it explicitly as
@@ -175,6 +187,7 @@ For each finding:
      - Why the existing code is correct
      - What evidence convinced you (link to existing test, prior decision, code that shows the invariant)
      - Note this in the iteration summary so the user can sanity-check
+     - Add the finding (file:line, one-line rationale) to `accepted_limits` so later reviewers are told it is settled
 
      **Distinguish two kinds of pushback:**
      - **Verified false positive.** The finding made a mechanically-checkable claim (compiles, a test passes or fails, a command produces some output) and you actually ran that command in this worktree and it contradicts the claim. Record the exact command and its real output in the iteration summary. Increment `total_verified_false_positives`, not `total_pushbacks` -- this is empirical, not a judgment call, and is exempt from the pushback ceiling below.
@@ -188,7 +201,7 @@ For each finding:
 
      Pushing back on a quarter of an independent panel's findings -- in any single iteration or cumulatively -- usually means you're rationalizing rather than reviewing. Verified false positives do not count toward this ceiling because they are proven with a command's real output, not argued.
 
-   - **(c) Defer to user.** The finding requires a product decision, scope expansion, or knowledge you don't have (e.g., "the new SLA isn't documented"). Do NOT silently skip. Surface it in the iteration summary and continue. The loop will likely re-flag it next iteration; that is correct behavior. Record the deferral; a re-flag of an already-deferred item is not a new finding and does not add to `total_findings_addressed`.
+   - **(c) Defer to user.** The finding requires a product decision, scope expansion, or knowledge you don't have (e.g., "the new SLA isn't documented"). Do NOT silently skip. Surface it in the iteration summary and continue. Do not add it to `accepted_limits` (the user has not accepted it), so the loop may re-flag it next iteration; that is correct behavior. Record the deferral; a re-flag of an already-deferred item is not a new finding and does not add to `total_findings_addressed`.
 
 3. **After all findings in this iteration are processed:**
 
@@ -205,7 +218,7 @@ For each finding:
    {bulleted list of finding summaries with file:line, prefixed by [BLOCKING] / [WARNING] / [INFO]}"
    ```
 
-   Set `last_iteration_committed = true` once the commit succeeds. If no findings led to code changes in this iteration (everything was pushed back or deferred), do NOT create an empty commit -- leave `last_iteration_committed = false`.
+   Set `last_iteration_committed = true` once the commit succeeds. If `push_each_iteration` is true, run `git push -u origin HEAD` now (never a bare `git push`). If no findings led to code changes in this iteration (everything was pushed back or deferred), do NOT create an empty commit -- leave `last_iteration_committed = false`.
 
 5. **Heartbeat.** Output the per-iteration summary defined below before looping back.
 
@@ -235,7 +248,7 @@ If there are pushback or deferred items, list them under the heartbeat with file
 - Do not amend prior commits -- each iteration gets its own commit so the audit trail is clear.
 - Do not delete or skip tests to make findings go away. If a test is genuinely wrong, replace it; explain in the commit message.
 - Do not introduce new abstractions, refactors, or "while I'm here" cleanups. The loop fixes findings, nothing else.
-- Do not push to remote. Pushing is the user's call.
+- Do not push to remote unless `push` was passed or the user explicitly asked for a push. Otherwise pushing is the user's call.
 
 ---
 
@@ -265,15 +278,18 @@ When the loop exits, output:
 ## Outstanding items (deferred or pushed back)
 {numbered list, or "None."}
 
+## Accepted limits fed to reviewers
+{the accepted_limits list, or "None."}
+
 ## Recommendation
 {One of:
-  - "Clean — safe to push and merge."
+  - "Clean — safe to push and merge." (if `push` was passed: "Clean — already pushed; safe to merge.")
   - "Warnings remain (ignored per `severity=blocking`). Review the warnings list before merging."
   - "Iteration cap hit with findings still open. Re-run /rereview-loop, raise max=, or address remaining items manually."
   - "Loop is stuck — reviewers re-flagged the same findings after a fix attempt. Manual investigation needed."}
 ```
 
-Do NOT push the branch. Do NOT open or update a PR. The loop's job is to drive findings to zero locally; merging is the user's decision.
+Do NOT push the branch unless `push` was passed or the user asked for it (use `git push -u origin HEAD`). Do NOT open a PR. The loop's job is to drive findings to zero; merging is the user's decision.
 
 ---
 
@@ -295,4 +311,5 @@ Do NOT push the branch. Do NOT open or update a PR. The loop's job is to drive f
 - Each iteration commits independently so a future `git log` shows exactly what the loop changed and why.
 - The B/W/I count comparison in Phase 2 exists to catch the bad-fix → re-flag → bad-fix cycle. A count-based check (instead of paraphrased text matching) is robust against reviewer agents wording the same finding differently across iterations.
 - The 25% pushback ceiling -- both per-iteration and cumulative -- exists because once you start rejecting a quarter of an independent panel's findings, the failure mode is almost always rationalization, not the reviewers being wrong. The cumulative bound prevents systematic 1-of-4 pushbacks from compounding. Each distinct finding counts once so that reviewers re-raising the same settled judgment call cannot trip the ceiling without a new disagreement.
-- This skill does not push or open a PR -- that is the user's call. Pair with `/pr` after a clean exit.
+- This skill does not push (unless `push` is passed or the user asks) or open a PR -- that is the user's call. Pair with `/pr` after a clean exit.
+- The accepted_limits list exists because reviewers are independent and stateless: without it they re-flag settled items every round and the loop never converges.

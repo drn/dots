@@ -80,7 +80,7 @@ In the examples below, !{command} represents the actual syntax (exclamation mark
 
 - Current branch: !{git branch --show-current}
 - Git status: !{git status --short}
-- Project type: !{ls -1 go.mod package.json Cargo.toml 2>/dev/null | head -3}
+- Project type: !{command ls -1 go.mod package.json Cargo.toml 2>/dev/null | head -3}
 ```
 
 #### CRITICAL: No `$()` Command Substitution

@@ -16,8 +16,8 @@ If no arguments are provided, ask the user what to analyze.
 ## Context
 
 - Project root: !`pwd`
-- Existing skills: !`ls agents/skills/ 2>/dev/null | head -40`
-- Custom agents: !`ls agents/custom/ 2>/dev/null | head -20`
+- Existing skills: !`command ls agents/skills/ 2>/dev/null | head -40`
+- Custom agents: !`command ls agents/custom/ 2>/dev/null | head -20`
 - Skill descriptions: !`grep -r "^description:" agents/skills/*/SKILL.md 2>/dev/null | head -40`
 - Agent descriptions: !`grep "^description:" agents/custom/*.md 2>/dev/null | head -20`
 - Project type: !`find . -maxdepth 1 \( -name go.mod -o -name Gemfile -o -name package.json -o -name Cargo.toml -o -name pyproject.toml \) 2>/dev/null | head -3`

@@ -18,7 +18,7 @@ Read a PRD, tech spike, or feature spec and produce a concrete implementation pl
 - Recent commits: !`git log --oneline -10 2>/dev/null | head -10`
 - Prior plans: !`find .context/plans -name "*.md" 2>/dev/null | head -10`
 - Prior spikes: !`find context/spikes -name "*.md" 2>/dev/null | head -10`
-- Phase artifacts: !`ls -t .context/phases/*.md 2>/dev/null | head -10`
+- Phase artifacts: !`command ls -t .context/phases/*.md 2>/dev/null | head -10`
 
 ## Phase Protocol
 

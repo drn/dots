@@ -22,7 +22,7 @@ Run `/improve` at the end of any session where:
 
 - Current repo: !`git rev-parse --show-toplevel 2>/dev/null | head -1`
 - Skills directory: !`find agents/skills -maxdepth 2 -name SKILL.md 2>/dev/null | head -30`
-- Context directory exists: !`ls context/knowledge/index.md 2>/dev/null | head -1`
+- Context directory exists: !`command ls context/knowledge/index.md 2>/dev/null | head -1`
 - Knowledge base index: !`cat context/knowledge/index.md 2>/dev/null | head -30`
 - Context directory structure: !`find context -type f 2>/dev/null | head -20`
 - Voice profile: !`find . -maxdepth 3 -name 'voice-profile.md' -o -name 'VOICE.md' -o -name 'voice.md' 2>/dev/null | head -5`

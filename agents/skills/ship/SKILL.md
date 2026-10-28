@@ -89,6 +89,8 @@ And skip directly to Phase 3.
 
 Work through the review report systematically:
 
+If a fix answers an existing bot or human review thread on the PR, apply the same rule as `/pr` Step 4c: do not post a reply on the user's behalf without confirmation. Draft the replies, show them in one batch, and ask for one explicit yes; if declined, resolve the threads silently and tell the user.
+
 ### 2a: Fix BLOCKING issues
 
 For each blocking issue in the review report:
@@ -161,7 +163,7 @@ Print:
 
 Invoke the `/merge` skill to land the branch into master.
 
-Handle merge script exit codes as documented in the `/merge` skill (conflicts, nothing to merge, review blocked, errors).
+Handle merge script exit codes as documented in the `/merge` skill (conflicts, nothing to merge, review blocked, required checks failing or pending, errors).
 
 **If CI fails on tests unrelated to your PR**, fix them inline as part of `/ship` rather than rebasing or treating the merge as blocked. Pre-existing flakes (timing-sensitive tests, data races on shared mutable state, environment-dependent assertions) are normal during a `/ship` cycle on a project with sparse CI history. Capture each fix as its own commit with a message that names the flake and the cause (e.g., "fix flaky-test sleep timing on slower CI" or "fix data race on shared buffer under -race") so the rationale stays clear in history. Then re-run `/merge`.
 
@@ -177,7 +179,7 @@ DEFAULT_BRANCH=$(git branch -r 2>/dev/null | grep -oE 'origin/(main|master)' | h
 git checkout "$DEFAULT_BRANCH" 2>/dev/null && git pull --ff-only origin "$DEFAULT_BRANCH"
 ```
 
-If the checkout fails (uncommitted changes, no local default-branch ref, another worktree owns it, etc.), **warn but do not abort** — the pipeline is complete; this is hygiene. Print the current branch and a one-line note that follow-up work in this worktree should `git checkout "$DEFAULT_BRANCH"` (or `git reset --hard origin/"$DEFAULT_BRANCH"`) before committing.
+If the checkout fails because another worktree owns the default branch, reuse `/merge`'s fallback: `git fetch origin "$DEFAULT_BRANCH"` then `git checkout --detach origin/"$DEFAULT_BRANCH"`. If it fails for another reason (uncommitted changes, no local default-branch ref), **warn but do not abort** — the pipeline is complete; this is hygiene. Print the current branch and a one-line note that follow-up work in this worktree should `git checkout "$DEFAULT_BRANCH"`, `git checkout --detach origin/"$DEFAULT_BRANCH"`, or (only after the merge landed) `git reset --hard origin/"$DEFAULT_BRANCH"` before committing.
 
 ---
 

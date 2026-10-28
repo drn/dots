@@ -28,7 +28,7 @@ The only escape hatch is `--dry-run` for previewing what dream *would* do.
 
 - Argus KB available: !`command -v argus 2>/dev/null | head -1`
 - Recent changes since last dream run: !`tail -100 ~/.dots/sys/kb-changes/changes.jsonl 2>/dev/null | head -100`
-- Last dream run: !`ls -t ~/.dots/sys/dream-runs 2>/dev/null | head -1`
+- Last dream run: !`command ls -t ~/.dots/sys/dream-runs 2>/dev/null | head -1`
 - Today's date: !`date +%Y-%m-%d`
 
 ## MCP tool naming

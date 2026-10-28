@@ -16,7 +16,7 @@ Re-review all branch changes from scratch with independent competing reviewers. 
 - Current branch: !`git branch --show-current`
 - Base ref: !`git branch -r 2>/dev/null | grep -oE 'origin/(main|master)' | head -1`
 - Git status: !`git status --short`
-- Project type: !`ls go.mod Gemfile package.json Cargo.toml pyproject.toml 2>/dev/null | head -5`
+- Project type: !`command ls go.mod Gemfile package.json Cargo.toml pyproject.toml 2>/dev/null | head -5`
 - Test framework: !`git ls-files 2>/dev/null | grep -E '_test\.|\.test\.|_spec\.' | head -10`
 - Changes vs main: !`git diff --stat origin/main...HEAD 2>/dev/null | head -50`
 - Changes vs master: !`git diff --stat origin/master...HEAD 2>/dev/null | head -50`
@@ -95,20 +95,30 @@ Record lint result: CLEAN, WARNINGS, or ERRORS.
 
 Use `subagent_type="general-purpose"` and `model: "sonnet"` for all reviewers.
 
-Each Task call should use the reviewer briefing template below, with only the reviewer name changed (ALPHA, BRAVO, CHARLIE).
+**Write the shared briefing to one file; do not inline it three times.** Fill in the reviewer briefing template below once (branch, commits, changed files list, test baseline, safe commands, skim paths, accepted limits) and save it to a scratch file outside the worktree, for example `$TMPDIR/rereview-brief-{safe-branch}.md` (where {safe-branch} is the branch name with every `/` replaced by `-`). Each Task prompt is then a short stub: "You are REVIEWER {ALPHA / BRAVO / CHARLIE}. Read your full briefing from {path} and follow it exactly." This cuts prompt size roughly 3x with no loss of quality, and guarantees all three reviewers see identical data. The reviewers read changed and dependent files themselves from the worktree, so the brief lists their paths instead of embedding full contents.
+
+If the caller (for example /rereview-loop) supplied a list of **accepted limits and pushed-back findings**, include it in the briefing under ACCEPTED LIMITS.
+
+### Safe Commands
+
+Detect which commands are safe to run in parallel from the repo's AGENTS.md or CLAUDE.md (look for notes on shared test databases, ports, lockfiles, or required test ordering). Put the result in the briefing's SAFE COMMANDS slot. Example: when several suites share one test database, parallel reviewers may run only package-scoped tests, never the full gate. If the docs say nothing, default to: package-scoped or single-file tests only; the lead runs the full suite in Phase 1.
+
+### Generated Files and Fixtures
+
+For large diffs, list in the briefing which changed paths are generated code, lockfiles, snapshots, or synthetic fixtures (for example, a directory of fixture JSON that makes up most of the diff lines). Reviewers skim those paths for structure and spot-check a sample rather than reading every line.
 
 ### Large Diff Handling
 
 If the diff exceeds 30KB, save it to a temp file instead of passing it inline:
 
 ```bash
-git diff {base}...HEAD > /tmp/review-diff-{branch}.txt
+git diff {base}...HEAD > "$TMPDIR/review-diff-{safe-branch}.txt"   # safe-branch: replace "/" with "-"
 ```
 
-Then replace the `FULL DIFF` section in the briefing with:
+Then replace the `FULL DIFF` section in the briefing with the following. Keep this file outside the worktree too:
 
 ```
-FULL DIFF: Read the diff from /tmp/review-diff-{branch}.txt
+FULL DIFF: Read the diff from {scratch dir}/review-diff-{safe-branch}.txt
 ```
 
 This prevents context window overflow in reviewer agents.
@@ -124,13 +134,24 @@ MANDATE: This review exists to guarantee ZERO REGRESSIONS. Go slow. Analyze ever
 
 CALIBRATION -- READ CAREFULLY:
 - Your DEFAULT verdict is REQUEST CHANGES, not APPROVE. You need overwhelming evidence of correctness to approve.
-- First implementations typically have 3-5 real issues. Finding zero issues is a red flag -- look harder.
-- False positives are acceptable. False negatives are not. Flag anything uncertain.
+- First implementations typically have 3-5 real issues, so look hard before concluding there are none. But if after a genuinely thorough review you find no real defect, APPROVE. Do NOT invent findings to avoid an empty report; manufactured warnings waste the fix loop.
+- Prefer flagging genuine uncertainty over staying silent, and mark it as uncertain. Never pad the report with findings you do not believe.
 - Do NOT downplay risk. "MEDIUM" regression risk is normal and honest. Reserve "LOW" for trivially small changes.
 - Run verification commands before making claims. Check what actually exists, not what you assume.
 - Any claim that code does or does not compile, that a test does or does not pass, or any other mechanically-checkable claim MUST be backed by a command you actually executed in this worktree, with the real output shown in your report. Never infer or reason about this abstractly. Never trust an isolated or minimal repro as a substitute for running the real code -- generic-inference and other language subtleties can make a minimal repro fail where the actual codebase compiles cleanly, or the reverse. If you cannot run the command (no working environment, missing dependencies), say so explicitly and mark the claim UNVERIFIED -- do not state it as fact.
 - When verifying that a type-level change is safe (a prop made optional, a generic signature changed, and similar), also make one deliberately-wrong, unrelated break and confirm the type-checker still flags it in the same run. This rules out type inference silently collapsing to `any` as an explanation for a clean compile. Reviewers run in parallel on ONE shared worktree, so NEVER edit a tracked file for this check -- another reviewer would read or typecheck your break. Put the break in a scratch copy of the code, or in a new untracked file under a scratch directory that the type-checker includes, and delete it afterward. If neither is practical, skip the check and say so in your report; otherwise note that you did it.
 - Do NOT edit, commit, push, stash, or reset anything tracked in the worktree. You are read-only except for scratch files you create and delete.
+
+WORKTREE HYGIENE: Other reviewers are reading this worktree at the same time. NEVER create probe, scratch, or repro files inside the worktree, and never edit tracked files (see the type-check rule above). Put all scratch files, including copies used for deliberate-break checks, in a temp directory outside the worktree (for example under $TMPDIR). Do not run formatters or auto-fixers that rewrite tracked files.
+
+SAFE COMMANDS (detected from the repo docs; run nothing broader in parallel):
+{safe commands slot}
+
+SKIM PATHS (generated files, lockfiles, fixtures: spot-check only):
+{paths or "None"}
+
+ACCEPTED LIMITS (settled in earlier rounds; do not re-flag unless you have new evidence):
+{list or "None"}
 
 BRANCH: {branch name}
 COMMITS:
@@ -139,11 +160,11 @@ COMMITS:
 FULL DIFF:
 {full git diff}
 
-CHANGED FILES (full contents):
-{for each changed file, include filename and full contents}
+CHANGED FILES (read each one in full from the worktree):
+{one path per line}
 
-DEPENDENT FILES (files that reference changed code):
-{for each dependent file, include filename and full contents}
+DEPENDENT FILES (files that reference changed code; read the relevant ones):
+{one path per line}
 
 TEST BASELINE:
 - Test suite result: {PASS / FAIL / N/A}
