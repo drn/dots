@@ -184,9 +184,11 @@ For each finding:
      - **Per-iteration:** if you push back on more than 25% of findings in this iteration, STOP and ask the user before continuing.
      - **Cumulative:** increment `total_pushbacks` and `total_findings_addressed` after each finding is processed. If `total_pushbacks / total_findings_addressed > 0.25` once at least 4 findings have been processed total, STOP and ask the user. Per-iteration framing alone allows systematic 1-of-4 pushbacks to compound to 100% across iterations without ever tripping a single-iteration ceiling.
 
+     **Count each distinct finding once.** Keep a record of every judgment-call pushback and every deferral with its justification. When a later reviewer re-flags the same issue, even reworded, check it against that record: if nothing new was raised, reuse the recorded response and do NOT increment `total_pushbacks` or `total_findings_addressed` again. Only a genuinely new argument or evidence makes it a new finding. This mirrors the verified-false-positive re-flag rule in Phase 2.
+
      Pushing back on a quarter of an independent panel's findings -- in any single iteration or cumulatively -- usually means you're rationalizing rather than reviewing. Verified false positives do not count toward this ceiling because they are proven with a command's real output, not argued.
 
-   - **(c) Defer to user.** The finding requires a product decision, scope expansion, or knowledge you don't have (e.g., "the new SLA isn't documented"). Do NOT silently skip. Surface it in the iteration summary and continue. The loop will likely re-flag it next iteration; that is correct behavior.
+   - **(c) Defer to user.** The finding requires a product decision, scope expansion, or knowledge you don't have (e.g., "the new SLA isn't documented"). Do NOT silently skip. Surface it in the iteration summary and continue. The loop will likely re-flag it next iteration; that is correct behavior. Record the deferral; a re-flag of an already-deferred item is not a new finding and does not add to `total_findings_addressed`.
 
 3. **After all findings in this iteration are processed:**
 
@@ -292,5 +294,5 @@ Do NOT push the branch. Do NOT open or update a PR. The loop's job is to drive f
 
 - Each iteration commits independently so a future `git log` shows exactly what the loop changed and why.
 - The B/W/I count comparison in Phase 2 exists to catch the bad-fix → re-flag → bad-fix cycle. A count-based check (instead of paraphrased text matching) is robust against reviewer agents wording the same finding differently across iterations.
-- The 25% pushback ceiling -- both per-iteration and cumulative -- exists because once you start rejecting a quarter of an independent panel's findings, the failure mode is almost always rationalization, not the reviewers being wrong. The cumulative bound prevents systematic 1-of-4 pushbacks from compounding.
+- The 25% pushback ceiling -- both per-iteration and cumulative -- exists because once you start rejecting a quarter of an independent panel's findings, the failure mode is almost always rationalization, not the reviewers being wrong. The cumulative bound prevents systematic 1-of-4 pushbacks from compounding. Each distinct finding counts once so that reviewers re-raising the same settled judgment call cannot trip the ceiling without a new disagreement.
 - This skill does not push or open a PR -- that is the user's call. Pair with `/pr` after a clean exit.
