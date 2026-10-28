@@ -8,7 +8,9 @@ managers, packages, runtimes, and tools) and pruning stale package and editor
 artifacts.
 
 This spec documents the behavior that ships today.
+
 ## Requirements
+
 ### Requirement: Update Orchestration
 
 `dots update` SHALL update the environment in sequence: pull and reinstall the
@@ -76,4 +78,3 @@ while running and restore it afterward.
 
 - **WHEN** `dots clean` runs
 - **THEN** it runs `brew cleanup -s` and removes uninstalled Neovim plugins
-
