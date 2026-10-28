@@ -35,6 +35,7 @@ cat >/dev/null
 # go-installed binaries bypass the shims.
 gobin="${GOBIN:-${GOPATH:-$HOME/go}/bin}"
 dirs=(
+  "$HOME/.local/bin"   # XDG user bin dir (vendor CLIs)
   "$HOME/.cargo/bin"   # rust (cargo install)
   "$HOME/.asdf/shims"  # asdf-managed runtimes
   "$gobin"             # go install targets (tts, etc.) — frontmost

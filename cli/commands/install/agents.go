@@ -217,8 +217,8 @@ func registerSessionStartMemoryHook() {
 	)
 }
 
-// registerSessionStartPathHook prepends dev-tool bin dirs (go/bin, cargo,
-// asdf shims) onto the Bash tool's PATH via $CLAUDE_ENV_FILE so go-installed
+// registerSessionStartPathHook prepends dev-tool bin dirs (go/bin, ~/.local/bin,
+// cargo, asdf shims) onto the Bash tool's PATH via $CLAUDE_ENV_FILE so go-installed
 // binaries like `tts` resolve by bare name. Claude Code builds the Bash tool
 // PATH from its launch environment (often a daemon) and ignores ~/.zshenv, so
 // this hook is the supported way to restore those dirs.
