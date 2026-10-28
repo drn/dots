@@ -175,7 +175,7 @@ Then use `gh pr checks <number> --repo <owner/repo>` to see the current state of
 - If checks are still running, wait with a background until-loop and continue when its completion notification arrives. Do NOT chain foreground `sleep N; cmd` polls — the harness refuses them. Run this with `run_in_background`:
 
   ```
-  timeout 1800 bash -c 'until ! gh pr checks <number> --repo <owner/repo> | grep -q pending; do sleep 30; done'
+  timeout 1800 bash -c 'until [ "$(gh pr checks <number> --repo <owner/repo> --json bucket --jq "[.[]|select(.bucket==\"pending\")]|length")" = "0" ]; do sleep 30; done'
   ```
 
   Then re-run `gh pr checks` once to read the final state. If the timeout (30 minutes) expires, report to the user.

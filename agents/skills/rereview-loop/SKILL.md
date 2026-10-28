@@ -14,7 +14,7 @@ Run `/rereview` repeatedly: review → fix the findings → re-review → repeat
   - `max=<N>` - cap the number of review→fix iterations (default 5)
   - `severity=blocking` - only auto-fix BLOCKING findings (default fixes BLOCKING + WARNING)
   - `severity=all` - auto-fix BLOCKING + WARNING + INFO
-  - `push` - after each iteration commit, push the branch with `git push -u origin HEAD` (opt-in; the same applies if the user explicitly asks mid-run to update the PR between loops)
+  - `push` - after each iteration commit, and push the branch with `git push -u origin HEAD` (opt-in; the same applies if the user explicitly asks mid-run to update the PR between loops)
   - Any combination, space-separated. Example: `/rereview-loop max=3 severity=blocking`
 
 ## Context
@@ -283,7 +283,7 @@ When the loop exits, output:
 
 ## Recommendation
 {One of:
-  - "Clean — safe to push and merge."
+  - "Clean — safe to push and merge." (if `push` was passed: "Clean — already pushed; safe to merge.")
   - "Warnings remain (ignored per `severity=blocking`). Review the warnings list before merging."
   - "Iteration cap hit with findings still open. Re-run /rereview-loop, raise max=, or address remaining items manually."
   - "Loop is stuck — reviewers re-flagged the same findings after a fix attempt. Manual investigation needed."}

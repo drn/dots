@@ -189,12 +189,17 @@ check_pr_state() {
   fi
 }
 
-# Count required checks in a gh bucket (pending|fail). Prints 0 when the PR has
-# no required checks or the query fails, so the gate never blocks on gh errors.
+# Count required checks in a gh bucket (pending|fail|cancel). Prints 0 when the
+# PR has no required checks. A failed query also prints 0 (the gate fails open
+# rather than blocking merges on gh outages) but warns so the skip is visible.
 count_required_checks() {
   local bucket="$1" count
-  count=$(gh pr checks "$PR_NUMBER" --repo "$REPO_SLUG" --required --json bucket \
-    --jq "[.[] | select(.bucket == \"${bucket}\")] | length" 2>/dev/null || echo "")
+  if ! count=$(gh pr checks "$PR_NUMBER" --repo "$REPO_SLUG" --required --json bucket \
+    --jq "[.[] | select(.bucket == \"${bucket}\")] | length" 2>/dev/null); then
+    # gh exits non-zero with no output when no required checks are configured
+    count=0
+    info "Could not read required checks for PR #${PR_NUMBER} (none configured, or gh error); treating as 0 ${bucket}" >&2
+  fi
   [[ "$count" =~ ^[0-9]+$ ]] || count=0
   echo "$count"
 }
@@ -205,7 +210,7 @@ wait_for_checks() {
 
   local waited=0 failing pending
   while true; do
-    failing=$(count_required_checks fail)
+    failing=$(( $(count_required_checks fail) + $(count_required_checks cancel) ))
     [[ "$failing" -gt 0 ]] && die 5 "PR #${PR_NUMBER} has ${failing} failing required check(s) — fix them before merging (or pass --no-wait-checks to skip this gate)"
 
     pending=$(count_required_checks pending)
@@ -214,7 +219,7 @@ wait_for_checks() {
     if [[ "$waited" -ge "$CHECK_TIMEOUT" ]]; then
       die 5 "PR #${PR_NUMBER} still has ${pending} pending required check(s) after ${CHECK_TIMEOUT}s — wait for them and re-run /merge"
     fi
-    info "Waiting on ${pending} pending required check(s) (${waited}s of ${CHECK_TIMEOUT}s)..."
+    info "Waiting on ${pending} pending required check(s) (~${waited}s of ${CHECK_TIMEOUT}s; gh call time not counted)..."
     sleep "$CHECK_POLL_INTERVAL"
     waited=$((waited + CHECK_POLL_INTERVAL))
   done
@@ -435,7 +440,7 @@ update_local_master() {
       # divergent feature branch without needing the default branch's name.
       if git fetch "$TARGET" "$DEFAULT_BRANCH" 2>/dev/null \
         && git checkout --detach "${TARGET}/${DEFAULT_BRANCH}" 2>/dev/null; then
-        info "Worktree now detached at ${TARGET}/${DEFAULT_BRANCH} (${DEFAULT_BRANCH} is checked out in another worktree; '${BRANCH}' was squashed and is now divergent)."
+        info "Worktree now detached at ${TARGET}/${DEFAULT_BRANCH}${worktree_path:+ (${DEFAULT_BRANCH} is checked out in worktree '${worktree_path}')}; '${BRANCH}' was squashed and is now divergent."
         info "      Run 'git checkout -b <new-branch>' before committing new work."
       else
         info "NOTE: could not auto-switch this worktree to ${DEFAULT_BRANCH} — still on '${BRANCH}' (now divergent)."
@@ -499,7 +504,7 @@ main() {
     *) die 1 "Invalid --method '${MERGE_METHOD_FLAG}' — must be squash, merge, or rebase" ;;
   esac
 
-  local title="${1:?Usage: merge.sh [--skip-rebase] [--method <squash|merge|rebase>] \"<title>\" \"<body>\"}"
+  local title="${1:?Usage: merge.sh [--skip-rebase] [--no-wait-checks] [--keep-branch] [--method <squash|merge|rebase>] \"<title>\" \"<body>\"}"
   local body="${2:-}"
 
   # Append co-author line
