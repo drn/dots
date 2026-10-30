@@ -54,6 +54,7 @@ local bindings = {
     Spotify               = 'space',
     Things3               = "'",
     [ 'Google Calendar' ] = '/',
+    [ 'Google Meet' ]     = '.',
   },
   [{ 'cmd', 'shift'}] = {
     [ 'Superhuman' ] = '/'
