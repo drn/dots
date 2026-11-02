@@ -18,8 +18,10 @@ function browser.openProfileMenu()
   if app == nil then return end
   if app:name() == 'Safari' then return end
   app:activate()
-  -- focus on menubar if auto-hidden
-  hs.eventtap.keyStroke({'fn', 'ctrl'}, 'f2')
+  if not app:findMenuItem({'Profiles'}) then
+    hs.printf('openProfileMenu: no "Profiles" menu found in %s', app:name())
+    return
+  end
   app:selectMenuItem({'Profiles'})
 end
 
