@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>PR Batch Review</title>
+<style>
+/* Template: replace every {{PLACEHOLDER}} and duplicate the PR card block per PR. See references/ARTIFACT.md. */
+:root {
+  --bg:#f6f8fa; --surface:#fff; --fg:#1b2430; --muted:#5b6676; --line:#dde3ea; --accent:#1f6f8b;
+  --ok-bg:#e2f3e8; --ok-fg:#1d6b3a; --warn-bg:#fdf0d5; --warn-fg:#8a5a00; --bad-bg:#fde4e1; --bad-fg:#a3281c;
+  --code-bg:#eef2f6;
+  --font-body:system-ui,-apple-system,"Segoe UI",sans-serif; --font-mono:ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg:#12171d; --surface:#1a2129; --fg:#e6ebf1; --muted:#98a4b3; --line:#2b343f; --accent:#6cc0dc;
+    --ok-bg:#173325; --ok-fg:#7bd9a0; --warn-bg:#3a2c0e; --warn-fg:#f0c25e; --bad-bg:#3d1b18; --bad-fg:#ff9d92;
+    --code-bg:#232c36; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg:#12171d; --surface:#1a2129; --fg:#e6ebf1; --muted:#98a4b3; --line:#2b343f; --accent:#6cc0dc;
+  --ok-bg:#173325; --ok-fg:#7bd9a0; --warn-bg:#3a2c0e; --warn-fg:#f0c25e; --bad-bg:#3d1b18; --bad-fg:#ff9d92;
+  --code-bg:#232c36; color-scheme:dark;
+}
+* { box-sizing:border-box; }
+body { margin:0; background:var(--bg); color:var(--fg); font-family:var(--font-body); font-size:16px; line-height:1.6;
+  padding:40px 16px 72px; }
+main { max-width:820px; margin:0 auto; display:flex; flex-direction:column; gap:28px; }
+h1 { font-size:clamp(1.6rem,4vw,2.2rem); line-height:1.15; margin:0 0 8px; text-wrap:balance; }
+h2 { font-size:1.2rem; margin:0; text-wrap:balance; }
+h3 { font-size:.78rem; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); margin:0 0 8px; font-weight:600; }
+p { margin:0; max-width:68ch; }
+a { color:var(--accent); text-underline-offset:2px; }
+code, .mono { font-family:var(--font-mono); font-size:.85em; background:var(--code-bg); padding:1px 5px; border-radius:4px; overflow-wrap:anywhere; }
+.lede { color:var(--muted); font-size:1.05rem; }
+.meta { font-family:var(--font-mono); font-size:.78rem; color:var(--muted); }
+.pill { display:inline-block; font-size:.75rem; font-weight:600; padding:2px 10px; border-radius:999px; white-space:nowrap; }
+.ok { background:var(--ok-bg); color:var(--ok-fg); } .warn { background:var(--warn-bg); color:var(--warn-fg); } .bad { background:var(--bad-bg); color:var(--bad-fg); }
+.table-wrap { overflow-x:auto; border:1px solid var(--line); border-radius:10px; background:var(--surface); }
+table { border-collapse:collapse; width:100%; min-width:560px; font-size:.92rem; }
+th, td { text-align:left; padding:10px 14px; border-bottom:1px solid var(--line); vertical-align:top; }
+th { font-size:.75rem; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); font-weight:600; }
+tr:last-child td { border-bottom:0; }
+.box { background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:20px; display:flex; flex-direction:column; gap:14px; }
+.box pre { margin:0; font-family:var(--font-mono); font-size:.8rem; line-height:1.7; overflow-x:auto; }
+.pr-title { display:flex; gap:12px; align-items:flex-start; justify-content:space-between; flex-wrap:wrap; }
+.pr-title h2 { min-width:0; flex:1 1 320px; }
+.desc { background:var(--code-bg); border-radius:8px; padding:14px 16px; }
+.cols { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:18px; }
+.cols > div { min-width:0; }
+ul { margin:0; padding:0; list-style:none; display:flex; flex-direction:column; gap:8px; }
+li { max-width:68ch; display:flex; gap:8px; align-items:flex-start; }
+li input { margin-top:6px; flex:none; }
+.tag { font-size:.68rem; font-weight:700; text-transform:uppercase; letter-spacing:.05em; padding:1px 6px; border-radius:4px; margin-right:6px; }
+.tag.blocker { background:var(--bad-bg); color:var(--bad-fg); } .tag.fix { background:var(--warn-bg); color:var(--warn-fg); }
+.tag.nit, .tag.question, .tag.unverified { background:var(--code-bg); color:var(--muted); } .tag.good { background:var(--ok-bg); color:var(--ok-fg); }
+.toolbar { display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+button, select { font:inherit; font-size:.85rem; padding:6px 12px; border-radius:8px; border:1px solid var(--line); background:var(--surface); color:var(--fg); cursor:pointer; }
+button:focus-visible, select:focus-visible, a:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+.copybox { width:100%; min-height:120px; font-family:var(--font-mono); font-size:.8rem; background:var(--code-bg); color:var(--fg); border:1px solid var(--line); border-radius:8px; padding:10px; }
+.note { font-size:.88rem; color:var(--muted); }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>{{BATCH_TITLE}}</h1>
+    <p class="lede">{{LEDE: what the batch is for, date, PR count, open count}}</p>
+    <p class="note"><strong>Merge order:</strong> {{RECOMMENDED_MERGE_ORDER}}</p>
+  </header>
+
+  <div class="toolbar" aria-label="Review controls">
+    <button type="button" id="check-all">Check all</button>
+    <button type="button" id="uncheck-all">Uncheck all</button>
+    <label class="note">Show <select id="sev-filter">
+      <option value="all">all severities</option><option value="blocker">blockers only</option>
+      <option value="fix">blockers and should-fix</option></select></label>
+  </div>
+
+  <section aria-labelledby="sum">
+    <h3 id="sum">At a glance</h3>
+    <div class="table-wrap"><table>
+      <thead><tr><th>PR</th><th>What it does</th><th>Size</th><th>CI</th><th>Verdict</th></tr></thead>
+      <tbody>
+        <!-- one row per PR -->
+        <tr><td><a href="{{PR_URL}}">{{REPO}} #{{N}}</a></td><td>{{ONE_LINE}}</td><td class="mono">+{{ADD}} / -{{DEL}}</td><td>{{CI}}</td><td><span class="pill ok">{{VERDICT_TEXT}}</span></td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <!-- Omit when nothing is stacked -->
+  <section class="box" aria-labelledby="stk">
+    <h3 id="stk">How they fit together</h3>
+<pre>{{STACK_TREE}}</pre>
+  </section>
+
+  <!-- Omit when empty -->
+  <section class="box" aria-labelledby="xpr">
+    <h3 id="xpr">Across the batch</h3>
+    <ul><li>{{CROSS_PR_FINDING}}</li></ul>
+  </section>
+
+  <!-- Duplicate this card per PR, bottom of a stack first -->
+  <article class="box pr" id="pr-{{N}}">
+    <div class="pr-title"><h2>{{PR_TITLE}}</h2><span class="pill ok">{{VERDICT_TEXT}}</span></div>
+    <div class="meta"><a href="{{PR_URL}}">{{REPO}} #{{N}}</a> · +{{ADD}} / -{{DEL}} · {{FILES}} files · base {{BASE}} · review depth: {{DEPTH}}</div>
+    <div class="desc"><h3>What it does</h3><p>{{PLAIN_DESCRIPTION}}</p></div>
+    <div class="cols">
+      <div><h3>Should fix</h3><ul class="findings">
+        <li data-sev="blocker"><input type="checkbox" checked aria-label="Include in review comment"><span><span class="tag blocker">Blocker</span>{{CLAIM}} Failure scenario: {{SCENARIO}} <code>{{FILE}}:{{LINE}}</code></span></li>
+        <li data-sev="fix"><input type="checkbox" checked aria-label="Include in review comment"><span><span class="tag fix">Should fix</span>{{CLAIM}}</span></li>
+      </ul></div>
+      <div><h3>Smaller notes</h3><ul class="findings">
+        <li data-sev="nit"><input type="checkbox" aria-label="Include in review comment"><span><span class="tag nit">Nit</span>{{TEXT}}</span></li>
+        <li data-sev="good"><input type="checkbox" aria-label="Include in review comment"><span><span class="tag good">Good</span>{{TEXT}}</span></li>
+      </ul></div>
+    </div>
+    <div><h3>Questions for the author</h3><ul><li>{{QUESTION}}</li></ul></div>
+    <div class="toolbar">
+      <button type="button" class="copy-btn">Copy selected as review comment</button>
+    </div>
+    <textarea class="copybox" readonly hidden aria-label="Review comment text"></textarea>
+  </article>
+
+  <section class="box" aria-labelledby="dq">
+    <h2 id="dq">Open design questions</h2>
+    <p><strong>{{QUESTION}}</strong> Recommendation: {{RECOMMENDATION_AND_REASON}}</p>
+  </section>
+
+  <p class="note">Source: {{SOURCE_LINK}}. {{REVIEW_DEPTH_AND_UNVERIFIED_NOTE}} The verifier refuted {{N_REFUTED}} findings. Nothing has been posted.</p>
+</main>
+
+<script>
+(function () {
+  var SEV_LABEL = { blocker: "Blockers", fix: "Should fix", nit: "Nits", question: "Questions", good: "Good" };
+  function rows(root) { return Array.prototype.slice.call(root.querySelectorAll("li[data-sev]")); }
+  function setAll(on) { rows(document).forEach(function (li) { li.querySelector("input").checked = on; }); }
+  document.getElementById("check-all").addEventListener("click", function () { setAll(true); });
+  document.getElementById("uncheck-all").addEventListener("click", function () { setAll(false); });
+  document.getElementById("sev-filter").addEventListener("change", function (e) {
+    var v = e.target.value;
+    rows(document).forEach(function (li) {
+      var s = li.getAttribute("data-sev");
+      li.hidden = v === "blocker" ? s !== "blocker" : v === "fix" ? (s !== "blocker" && s !== "fix") : false;
+    });
+  });
+  function build(card) {
+    var title = card.querySelector("h2").textContent;
+    var verdict = card.querySelector(".pill").textContent;
+    var groups = {};
+    rows(card).forEach(function (li) {
+      if (!li.querySelector("input").checked) return;
+      var s = li.getAttribute("data-sev");
+      (groups[s] = groups[s] || []).push("- " + li.querySelector("span").textContent.replace(/\s+/g, " ").trim());
+    });
+    var out = ["Review of: " + title, "Verdict: " + verdict + " (advisory, non-blocking)", ""];
+    ["blocker", "fix", "question", "nit", "good"].forEach(function (s) {
+      if (groups[s]) { out.push("**" + SEV_LABEL[s] + "**"); out = out.concat(groups[s]); out.push(""); }
+    });
+    out.push("_AI-assisted review. Findings marked unverified were not confirmed by running the code._");
+    return out.join("\n");
+  }
+  Array.prototype.slice.call(document.querySelectorAll(".pr")).forEach(function (card) {
+    card.querySelector(".copy-btn").addEventListener("click", function () {
+      var text = build(card), box = card.querySelector(".copybox");
+      box.value = text; box.hidden = false;
+      try { navigator.clipboard.writeText(text).catch(function () { box.select(); }); } catch (err) { box.select(); }
+    });
+  });
+})();
+</script>
+</body>
+</html>
