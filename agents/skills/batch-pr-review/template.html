@@ -68,6 +68,9 @@ figcaption { font-size:.85rem; color:var(--muted); max-width:68ch; }
 svg .node { fill:var(--surface); stroke:currentColor; stroke-width:1.5; }
 svg .node.new, svg .edge.new { stroke:var(--accent); }
 svg .node.removed, svg .edge.removed { stroke-dasharray:5 4; opacity:.7; }
+svg .node.external { stroke-dasharray:2 3; }
+svg text.struck { text-decoration:line-through; }
+svg .edge.new { color:var(--accent); }
 svg .edge { stroke:currentColor; stroke-width:1.5; fill:none; }
 svg text { fill:currentColor; font-family:var(--font-body); font-size:12px; }
 svg text.lbl { font-size:11px; fill:var(--muted); }
@@ -92,8 +95,8 @@ details summary { cursor:pointer; font-size:.85rem; color:var(--muted); }
   </header>
 
   <div class="toolbar" aria-label="Review controls">
-    <button type="button" id="check-all">Check all</button>
-    <button type="button" id="uncheck-all">Uncheck all</button>
+    <button type="button" id="check-all">Check all (every PR)</button>
+    <button type="button" id="uncheck-all">Uncheck all (every PR)</button>
     <label class="note">Show <select id="sev-filter">
       <option value="all">all severities</option><option value="blocker">blockers only</option>
       <option value="fix">blockers and should-fix</option></select></label>
@@ -113,6 +116,7 @@ details summary { cursor:pointer; font-size:.85rem; color:var(--muted); }
   <!-- Dependency graph: omit when there are no dependencies. One node per PR, verdict written in the node, dashed for other repos. -->
   <section class="box" aria-labelledby="stk">
     <h3 id="stk">How they fit together</h3>
+    <!-- Cross-repo PRs use class "external" (dotted). Class "removed" is only for parts a PR deletes, with class "struck" on its label. -->
     <figure>
       <svg viewBox="0 0 640 120" role="img" aria-label="{{CLAIM: PR B is stacked on PR A and must merge after it}}">
         <rect class="node" x="10" y="30" width="170" height="52" rx="8"/>
@@ -123,9 +127,9 @@ details summary { cursor:pointer; font-size:.85rem; color:var(--muted); }
         <rect class="node" x="270" y="30" width="170" height="52" rx="8"/>
         <text x="355" y="53" text-anchor="middle">{{REPO}} #{{B}}</text>
         <text class="lbl" x="355" y="70" text-anchor="middle">{{VERDICT_TEXT}}</text>
-        <line class="edge removed" x1="440" y1="56" x2="530" y2="56" marker-end="url(#arrow)"/>
+        <line class="edge" x1="440" y1="56" x2="530" y2="56" marker-end="url(#arrow)"/>
         <text class="lbl" x="485" y="48" text-anchor="middle">deploy first</text>
-        <rect class="node removed" x="530" y="30" width="100" height="52" rx="8"/>
+        <rect class="node external" x="530" y="30" width="100" height="52" rx="8"/>
         <text x="580" y="53" text-anchor="middle">{{OTHER_REPO}}</text>
         <text class="lbl" x="580" y="70" text-anchor="middle">#{{C}}</text>
       </svg>
@@ -174,7 +178,7 @@ details summary { cursor:pointer; font-size:.85rem; color:var(--muted); }
       </div>
     </div>
     <div class="cols">
-      <div><h3>Should fix</h3><ul class="findings">
+      <div><h3>Should fix</h3><!-- data-sev values: blocker, fix (= should-fix in reviewer JSON), nit, question, good --><ul class="findings">
         <li data-sev="blocker"><input type="checkbox" checked aria-label="Include in review comment"><span><span class="tag blocker">Blocker</span>{{CLAIM}} Failure scenario: {{SCENARIO}} <code>{{FILE}}:{{LINE}}</code></span></li>
         <li data-sev="fix"><input type="checkbox" checked aria-label="Include in review comment"><span><span class="tag fix">Should fix</span>{{CLAIM}}</span></li>
       </ul></div>
@@ -217,7 +221,7 @@ details summary { cursor:pointer; font-size:.85rem; color:var(--muted); }
     var verdict = card.querySelector(".pill").textContent;
     var groups = {};
     rows(card).forEach(function (li) {
-      if (!li.querySelector("input").checked) return;
+      if (li.hidden || !li.querySelector("input").checked) return;
       var s = li.getAttribute("data-sev");
       (groups[s] = groups[s] || []).push("- " + li.querySelector("span").textContent.replace(/\s+/g, " ").trim());
     });

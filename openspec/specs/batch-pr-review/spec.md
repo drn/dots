@@ -1,7 +1,7 @@
 # batch-pr-review Specification
 
 ## Purpose
-TBD - created by archiving change add-batch-pr-review-skill. Update Purpose after archive.
+Review a batch or stack of pull requests as one unit: describe each change, report verified severity-tagged findings with review aids (diagrams, reading order, test confidence), and publish a private artifact, posting reviews only after explicit approval.
 ## Requirements
 ### Requirement: Batch PR Review Skill
 

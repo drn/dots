@@ -41,4 +41,34 @@ test_no_refs() {
   assert_eq "$out" "" "no refs yields empty output"
 }
 
+test_trailing_punctuation_and_slack_links() {
+  local out
+  out="$(printf '(https://github.com/acme/api/pull/12), <https://github.com/acme/web/pull/7|web 7>. and acme/db#3.' | bash "$PARSE")"
+  assert_eq "$out" $'acme/api 12\nacme/web 7\nacme/db 3' "punctuation and slack link forms"
+}
+
+test_rejects_bad_repo() {
+  local rc=0
+  printf '#3' | bash "$PARSE" --repo 'a/b#c' >/dev/null 2>&1 || rc=$?
+  assert_eq "$rc" "2" "repo with sed metacharacters is rejected"
+  rc=0
+  printf '#3' | bash "$PARSE" --repo acme >/dev/null 2>&1 || rc=$?
+  assert_eq "$rc" "2" "slash-less repo is rejected"
+  rc=0
+  printf '#3' | bash "$PARSE" --repo >/dev/null 2>&1 || rc=$?
+  assert_eq "$rc" "2" "missing repo value is rejected"
+}
+
+test_ignores_non_pr_paths() {
+  local out
+  out="$(printf 'https://github.com/acme/api/issues/7 https://github.com/acme/api/pull/12abc path/to/file#12' | bash "$PARSE")"
+  assert_eq "$out" "" "issues, glued suffixes, and file anchors are not PRs"
+}
+
+test_empty_stdin() {
+  local out
+  out="$(printf '' | bash "$PARSE")"
+  assert_eq "$out" "" "empty input yields empty output"
+}
+
 run_tests
