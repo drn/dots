@@ -13,11 +13,16 @@ CI: {summary}
 Diff (this PR only; for stacked PRs this is the delta against the parent):
 {diff}
 
-Do two things, in this order.
+Do three things, in this order.
 
 1. DESCRIBE. In 2 to 4 plain sentences for a non-expert reader, say what this change does and why it exists. Describe behavior, not file names. Do not mix findings into the description. Then list the files or areas that matter most.
 
-2. REVIEW through four separate lenses, one at a time, so one concern does not crowd out another:
+2. MAP. Help a reader review faster:
+   a. flow: if the change alters how a request, event, or data moves between components, give the mechanism as a small graph of at most 8 nodes: the components involved, which are new or changed or removed, and the edges between them with a verb label (writes, calls, invalidates, polls every 30s). Show only parts the change hinges on. Set applies to false when the change has no flow to draw (docs, renames, pure refactors, config) and do not force one. Add a one-sentence claim stating what the graph shows.
+   b. reading_order: the 3 to 5 files a reviewer should read first, each with a short reason, then a skim list of files that can be skimmed (generated, mechanical, fixtures).
+   c. test_confidence: what the tests cover that matters, what they do not, and whether they would fail if the change broke. One of: strong, partial, weak, none, plus two sentences of evidence.
+
+3. REVIEW through four separate lenses, one at a time, so one concern does not crowd out another:
    a. Correctness: wrong logic, edge cases, nil or empty input, error paths, concurrency, data loss, backwards compatibility, migrations.
    b. Security and privacy: authorization and scoping, injection, secrets, personal data exposure, logging of sensitive values, trust boundaries.
    c. Tests: would these tests fail if the code broke? Missing cases for new branches, assertions that prove nothing, mocks hiding the behavior under test.
@@ -38,6 +43,14 @@ Return only JSON:
   "pr": "{owner/repo}#{number}",
   "description": "...",
   "key_areas": ["..."],
+  "flow": {
+    "applies": true,
+    "claim": "one sentence stating what the graph shows",
+    "nodes": [{"id": "a", "label": "...", "status": "unchanged | changed | new | removed"}],
+    "edges": [{"from": "a", "to": "b", "label": "verb", "status": "unchanged | new | removed"}]
+  },
+  "reading_order": {"read_first": [{"file": "...", "why": "..."}], "skim": ["..."]},
+  "test_confidence": {"level": "strong | partial | weak | none", "evidence": "..."},
   "findings": [
     {"severity": "...", "lens": "...", "file": "...", "line": "...", "claim": "...", "scenario": "...", "confidence": "..."}
   ],

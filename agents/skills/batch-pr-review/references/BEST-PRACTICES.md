@@ -76,3 +76,9 @@ Diff-only review cannot see runtime behavior, other repositories, or configurati
 ## 12. Review size
 
 Review quality drops as diffs grow. Flag PRs over about 400 changed lines, split their review across reviewers by directory, and tell the user the PR is likely too large to review well. Treat the 400 line figure as a rule of thumb.
+
+## 13. Review aids: diagrams, reading order, test confidence
+
+Help the human reviewer orient before judging. Put a plain-language summary first, then a diagram only when it shows a mechanism (what moves between which components, what the change adds or removes) that prose would make the reader assemble. Diagrams that are mechanically right but unreadable are worse than none, so keep them small, label every arrow, and state the claim in a caption. Give a reading order (read first, skim, skip generated files) and a test-confidence rating so reviewer attention goes where risk is.
+- Skill rule: reviewer output fields flow, reading_order, and test_confidence; artifact sections in ARTIFACT.md.
+- Sources: team discussion on AI-generated PR diagrams (readable summary at the top, diagrams as support); PR-description diagram practice in the open-source pr skill at https://github.com/mattpocock/skills/blob/main/skills/engineering/pr/SKILL.md; reviewer guidance to understand every line and context (Google, source 2). The rating and file-impact map are this skill design choices.

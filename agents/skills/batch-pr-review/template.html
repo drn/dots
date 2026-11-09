@@ -61,9 +61,29 @@ button, select { font:inherit; font-size:.85rem; padding:6px 12px; border-radius
 button:focus-visible, select:focus-visible, a:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
 .copybox { width:100%; min-height:120px; font-family:var(--font-mono); font-size:.8rem; background:var(--code-bg); color:var(--fg); border:1px solid var(--line); border-radius:8px; padding:10px; }
 .note { font-size:.88rem; color:var(--muted); }
+.defs { position:absolute; }
+figure { margin:0; display:flex; flex-direction:column; gap:8px; }
+figure svg { max-width:100%; height:auto; color:var(--fg); }
+figcaption { font-size:.85rem; color:var(--muted); max-width:68ch; }
+svg .node { fill:var(--surface); stroke:currentColor; stroke-width:1.5; }
+svg .node.new, svg .edge.new { stroke:var(--accent); }
+svg .node.removed, svg .edge.removed { stroke-dasharray:5 4; opacity:.7; }
+svg .edge { stroke:currentColor; stroke-width:1.5; fill:none; }
+svg text { fill:currentColor; font-family:var(--font-body); font-size:12px; }
+svg text.lbl { font-size:11px; fill:var(--muted); }
+svg .accent { fill:var(--accent); }
+.impact { display:flex; flex-direction:column; gap:6px; }
+.impact-row { display:grid; grid-template-columns:minmax(90px,200px) 1fr auto; gap:10px; align-items:center; font-size:.85rem; }
+.impact-row .name { font-family:var(--font-mono); overflow-wrap:anywhere; }
+.bar { height:10px; border-radius:5px; background:var(--muted); opacity:.5; min-width:3px; }
+.bar.fix { background:var(--warn-fg); opacity:1; } .bar.blocker { background:var(--bad-fg); opacity:1; }
+.impact-row.skip { opacity:.6; }
+details summary { cursor:pointer; font-size:.85rem; color:var(--muted); }
 </style>
 </head>
 <body>
+<!-- Shared arrowhead for every diagram on the page; keep it once, outside the figures. -->
+<svg class="defs" width="0" height="0" aria-hidden="true" focusable="false"><defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="currentColor"/></marker></defs></svg>
 <main>
   <header>
     <h1>{{BATCH_TITLE}}</h1>
@@ -90,10 +110,27 @@ button:focus-visible, select:focus-visible, a:focus-visible { outline:2px solid 
     </table></div>
   </section>
 
-  <!-- Omit when nothing is stacked -->
+  <!-- Dependency graph: omit when there are no dependencies. One node per PR, verdict written in the node, dashed for other repos. -->
   <section class="box" aria-labelledby="stk">
     <h3 id="stk">How they fit together</h3>
-<pre>{{STACK_TREE}}</pre>
+    <figure>
+      <svg viewBox="0 0 640 120" role="img" aria-label="{{CLAIM: PR B is stacked on PR A and must merge after it}}">
+        <rect class="node" x="10" y="30" width="170" height="52" rx="8"/>
+        <text x="95" y="53" text-anchor="middle">{{REPO}} #{{A}}</text>
+        <text class="lbl" x="95" y="70" text-anchor="middle">{{VERDICT_TEXT}}</text>
+        <line class="edge" x1="180" y1="56" x2="270" y2="56" marker-end="url(#arrow)"/>
+        <text class="lbl" x="225" y="48" text-anchor="middle">stacked on</text>
+        <rect class="node" x="270" y="30" width="170" height="52" rx="8"/>
+        <text x="355" y="53" text-anchor="middle">{{REPO}} #{{B}}</text>
+        <text class="lbl" x="355" y="70" text-anchor="middle">{{VERDICT_TEXT}}</text>
+        <line class="edge removed" x1="440" y1="56" x2="530" y2="56" marker-end="url(#arrow)"/>
+        <text class="lbl" x="485" y="48" text-anchor="middle">deploy first</text>
+        <rect class="node removed" x="530" y="30" width="100" height="52" rx="8"/>
+        <text x="580" y="53" text-anchor="middle">{{OTHER_REPO}}</text>
+        <text class="lbl" x="580" y="70" text-anchor="middle">#{{C}}</text>
+      </svg>
+      <figcaption>{{CAPTION: merge order and why}}</figcaption>
+    </figure>
   </section>
 
   <!-- Omit when empty -->
@@ -107,6 +144,35 @@ button:focus-visible, select:focus-visible, a:focus-visible { outline:2px solid 
     <div class="pr-title"><h2>{{PR_TITLE}}</h2><span class="pill ok">{{VERDICT_TEXT}}</span></div>
     <div class="meta"><a href="{{PR_URL}}">{{REPO}} #{{N}}</a> · +{{ADD}} / -{{DEL}} · {{FILES}} files · base {{BASE}} · review depth: {{DEPTH}}</div>
     <div class="desc"><h3>What it does</h3><p>{{PLAIN_DESCRIPTION}}</p></div>
+    <!-- Flow figure: include only when flow.applies is true. New edges/nodes use class "new", removed use class "removed"; write the status in the label too. -->
+    <figure>
+      <h3>How it works</h3>
+      <svg viewBox="0 0 640 110" role="img" aria-label="{{FLOW_CLAIM}}">
+        <rect class="node" x="10" y="28" width="150" height="48" rx="8"/><text x="85" y="56" text-anchor="middle">{{NODE_A}}</text>
+        <line class="edge" x1="160" y1="52" x2="245" y2="52" marker-end="url(#arrow)"/><text class="lbl" x="202" y="44" text-anchor="middle">{{VERB}}</text>
+        <rect class="node new" x="245" y="28" width="150" height="48" rx="8"/><text x="320" y="52" text-anchor="middle">{{NODE_B}}</text><text class="lbl accent" x="320" y="68" text-anchor="middle">new</text>
+        <line class="edge new" x1="395" y1="52" x2="480" y2="52" marker-end="url(#arrow)"/><text class="lbl" x="437" y="44" text-anchor="middle">{{VERB}} (new)</text>
+        <rect class="node" x="480" y="28" width="150" height="48" rx="8"/><text x="555" y="56" text-anchor="middle">{{NODE_C}}</text>
+      </svg>
+      <figcaption>{{FLOW_CLAIM}}</figcaption>
+    </figure>
+    <div class="cols">
+      <div><h3>Where to look</h3>
+        <ul><li><span><code>{{READ_FIRST_FILE}}</code> {{WHY}}</span></li></ul>
+        <details><summary>Skim or skip</summary><p class="note">{{SKIM_LIST}}</p></details>
+      </div>
+      <div><h3>Test confidence</h3>
+        <p><span class="pill warn">{{strong | partial | weak | none}}</span></p>
+        <p class="note">{{TEST_EVIDENCE}}</p>
+      </div>
+    </div>
+    <div><h3>File impact</h3>
+      <!-- bar width = lines changed as a percentage of the largest row; class fix or blocker when a finding touches it -->
+      <div class="impact">
+        <div class="impact-row"><span class="name">{{DIR_OR_FILE}}</span><span class="bar blocker" style="width:70%"></span><span class="meta">{{LINES}} lines · {{N}} findings</span></div>
+        <div class="impact-row skip"><span class="name">skippable (generated, lock, fixtures)</span><span class="bar" style="width:20%"></span><span class="meta">{{LINES}} lines</span></div>
+      </div>
+    </div>
     <div class="cols">
       <div><h3>Should fix</h3><ul class="findings">
         <li data-sev="blocker"><input type="checkbox" checked aria-label="Include in review comment"><span><span class="tag blocker">Blocker</span>{{CLAIM}} Failure scenario: {{SCENARIO}} <code>{{FILE}}:{{LINE}}</code></span></li>

@@ -57,6 +57,7 @@ Then:
 - **Skip or flag:** closed or merged PRs are flagged and skipped unless the user insists. Drafts are reviewed but labeled.
 - **CI:** record the check rollup per PR. Failing checks are reported as facts, not re-diagnosed.
 - **Cross-repo links:** scan bodies for linked PRs or tickets in other repos (migrations, data models, clients). Record them as dependencies, and fetch their diffs only when a finding depends on them.
+- **File impact:** collect per-file additions and deletions with gh pr view --json files, for the file-impact map. Mark generated, lock, snapshot, and fixture files so they can be shown as skippable.
 - **Size:** note PRs over about 400 changed lines. Review quality drops on large diffs, so split such a PR into per-directory chunks across reviewers and say so in the report.
 
 ## Step 3: Choose review depth
@@ -67,7 +68,7 @@ Default is diff plus surrounding file context fetched with gh api or git show. C
 
 Spawn read-only reviewer subagents in parallel, one per PR or per tightly related stack group, at most 6 at a time. Build each prompt from references/REVIEWER-PROMPT.md and include: the security policy if present, the PR metadata, the diff (for a stacked PR, the delta against its parent branch only, using gh pr diff of that PR, which already shows only its own commits), the parent PR titles for context, and the required JSON output shape.
 
-Each reviewer works through four separate lenses in order: correctness, security and privacy, tests, design and maintainability. Each finding needs a severity, a file and line, a failure scenario (concrete input or state leading to wrong output), and a confidence. Findings without a failure scenario are downgraded to questions.
+Each reviewer also returns three review aids: a small flow graph of the mechanism the change alters (or applies false when there is nothing to draw), a reading order of the files to open first, and a test-confidence rating. Each reviewer then works through four separate lenses in order: correctness, security and privacy, tests, design and maintainability. Each finding needs a severity, a file and line, a failure scenario (concrete input or state leading to wrong output), and a confidence. Findings without a failure scenario are downgraded to questions.
 
 ## Step 5: Verify findings
 
@@ -86,6 +87,7 @@ Do this yourself, not in a subagent, because it needs every PR in view:
 - Conflicts: PRs touching the same files or functions, so whichever merges second will conflict.
 - Ordering: merge or deploy order dependencies, including cross-repo ones, and what breaks if the order is wrong.
 - Gaps: a behavior that one PR assumes another PR provides, but no PR in the batch does.
+- Dependency graph: nodes are PRs (including linked PRs in other repos), edges are "stacked on", "needs deploy first", or "conflicts with". This feeds the stack graph in the artifact.
 - Open design questions raised in the source thread or PR bodies, answered with a recommendation and the reason.
 
 ## Step 7: Verdicts
@@ -96,8 +98,9 @@ Give each PR exactly one verdict using references/BEST-PRACTICES.md section "Ver
 
 1. Call the Artifact tool with action quickstart and intent other, then load the artifact-design skill before writing the page.
 2. Copy ~/.claude/skills/batch-pr-review/template.html to the scratchpad directory and fill it following references/ARTIFACT.md. Keep it to one self-contained file with light and dark tokens, usable at phone width.
-3. Publish it with a short icon word and a one-sentence description. Artifacts are private by default. Give the user the link and offer sharing only as a choice, never do it unasked.
-4. If the user passed "no artifact", write the same content as a markdown report in the scratchpad instead.
+3. Draw diagrams only where they show a mechanism a cold reader would otherwise assemble from prose. Follow the diagramming rules in references/ARTIFACT.md and the artifact-diagramming skill: hand-authored inline SVG, labeled arrows, one claim per figure with a caption, plain-language summary above every diagram, and no diagram when a sentence says it faster. For a large architecture view that hand-drawn SVG cannot carry, an installed diagramming skill may be used instead, but only one from a trusted source, and its output must still be a self-contained figure. Never install a skill unasked.
+4. Publish it with a short icon word and a one-sentence description. Artifacts are private by default. Give the user the link and offer sharing only as a choice, never do it unasked.
+5. If the user passed "no artifact", write the same content as a markdown report in the scratchpad instead.
 
 ## Step 9: Offer to post (optional)
 
@@ -121,7 +124,8 @@ Finish with a short summary: one line per PR (verdict and the top finding), the 
 
 ## Success criteria
 
-- Every PR in the batch has a plain-language description, a verdict, and severity-tagged findings with file, line, and failure scenario.
+- Every PR in the batch has a plain-language description, a verdict, a reading order, a test-confidence rating, and severity-tagged findings with file, line, and failure scenario.
+- Each PR with a flow-shaped change has a flow figure, and each batch with dependencies has a dependency graph.
 - Stacks are reviewed by delta, with order and dependencies stated.
 - No unverified claim is presented as fact.
 - Nothing was posted or sent without an explicit yes.
