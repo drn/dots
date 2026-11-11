@@ -82,8 +82,8 @@ Dots includes 70 reusable slash-command skills for AI coding agents, following t
 | `/deploy-validate` | Post-deploy health check across CI, rollout, error tracking, and monitoring, correlated against deploy timing to filter pre-existing noise |
 | `/merge` | Merge current branch to master via GitHub PR |
 | `/debug` | Multi-agent competing hypotheses debugging |
-| `/dev` | Multi-agent iterative development with parallel testing and code review |
-| `/orchestrate` | Launch a dynamic Workflow: Fable plans and orchestrates, Sonnet and Opus implement |
+| `/dev` | Iterative development, testing, and review with native agents or single-agent fallback in any harness |
+| `/orchestrate` | Dependency-aware builds with optional native delegation and model tiering; falls back to single-agent execution |
 | `/explore` | Multi-agent parallel research with peer-challenged synthesis |
 | `/ci-investigate` | Investigate flaky CI failures across workflow runs |
 | `/changelog` | Generate changelog from recent commits |
