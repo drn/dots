@@ -80,7 +80,7 @@ Resolve the script path — use the first that exists:
 bash <script-path> [--method <squash|merge|rebase>] [--keep-branch] [--no-wait-checks] "<title>" "<body>"
 ```
 
-The script waits for pending required checks (default 1200s, override with the MERGE_CHECK_TIMEOUT env var in seconds) and refuses to merge when a required check is failing. Pass `--no-wait-checks` only when the user explicitly wants to skip that gate.
+The script fails closed on CI. It waits for pending checks (default 1200s, override with the MERGE_CHECK_TIMEOUT env var in seconds) and refuses to merge when a check is failing. When the repo has GitHub-required checks, those gate. When none are required, every check on the PR gates, except names matching MERGE_IGNORE_CHECKS (case-insensitive regex, default coderabbit). If no checks have registered yet, it polls for up to MERGE_CHECK_GRACE seconds (default 60) before concluding there are none. A gh error while reading checks is retried until the timeout, never read as zero checks. Because the gate runs before the merge tiers, the --admin tier never runs while CI is pending or failing. Pass `--no-wait-checks` only when the user explicitly wants to skip that gate.
 
 #### Choosing a merge method
 
@@ -137,5 +137,5 @@ On a repo where you hold admin, `/merge` lands the PR through the review gate it
   - If the admin error mentions pending/required checks (or the PR still has checks running), tell the user: "PR is blocked by a still-pending required status check, which prevented even the admin merge. Wait for checks to finish, then re-run /merge." Re-running once checks are green typically lands it.
   - If the admin error actually indicates missing permissions (e.g. "must have admin rights", "not authorized"), tell the user: "PR requires an approving review and I lack admin on this repo to bypass it. Ask a reviewer to approve, then re-run /merge."
   - Otherwise, surface the literal admin error to the user verbatim and suggest the matching next step.
-- **Exit 5 (required checks)** — A required check is failing, or still pending after the wait timeout. For failing checks, report which ones (`gh pr checks <number>`) and fix them first. For a timeout, tell the user the checks are still running and to re-run /merge once they finish (or raise MERGE_CHECK_TIMEOUT).
+- **Exit 5 (checks)** — A check is failing, could not be read from gh, or is still pending after the wait timeout. For failing checks, report which ones (`gh pr checks <number>`) and fix them first. For a timeout, tell the user the checks are still running and to re-run /merge once they finish (or raise MERGE_CHECK_TIMEOUT). For an unreadable-checks error, report the gh problem and re-run.
 - **Exit 1** — Report the error from stderr.

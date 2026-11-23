@@ -22,10 +22,12 @@ set -euo pipefail
 #   2 — rebase conflict (needs manual resolution)
 #   3 — no commits to merge
 #   4 — PR blocked (review required / changes requested) and auto-merge unavailable
-#   5 — required checks failing, or still pending after the wait timeout
+#   5 — checks failing, unreadable, or still pending after the wait timeout
 #
-# Before merging, required checks are awaited (default 1200s, override with
-# MERGE_CHECK_TIMEOUT=<seconds>). Pass --no-wait-checks to skip the gate.
+# Before merging, PR checks are awaited (default 1200s, override with
+# MERGE_CHECK_TIMEOUT=<seconds>). Required checks gate when configured; otherwise
+# every check except MERGE_IGNORE_CHECKS matches gates. Pass --no-wait-checks to
+# skip the gate.
 
 COAUTHOR="Co-Authored-By: Claude <noreply@anthropic.com>"
 
@@ -51,6 +53,8 @@ KEEP_BRANCH=false     # when true, restore checkout to feature branch after squa
 WAIT_CHECKS=true      # when false, skip the required-checks gate
 CHECK_TIMEOUT="${MERGE_CHECK_TIMEOUT:-1200}"
 CHECK_POLL_INTERVAL="${MERGE_CHECK_POLL_INTERVAL:-15}"
+CHECK_GRACE="${MERGE_CHECK_GRACE:-60}"                   # seconds to wait for checks to register after PR creation
+CHECK_IGNORE_RE="${MERGE_IGNORE_CHECKS:-coderabbit}"     # case-insensitive regex of non-gating check names (all-checks fallback only)
 
 # --- Helpers ---
 
@@ -189,37 +193,68 @@ check_pr_state() {
   fi
 }
 
-# Count required checks in a gh bucket (pending|fail|cancel). Prints 0 when the
-# PR has no required checks. A failed query also prints 0 (the gate fails open
-# rather than blocking merges on gh outages) but warns so the skip is visible.
-count_required_checks() {
-  local bucket="$1" count
-  if ! count=$(gh pr checks "$PR_NUMBER" --repo "$REPO_SLUG" --required --json bucket \
-    --jq "[.[] | select(.bucket == \"${bucket}\")] | length" 2>/dev/null); then
-    # gh exits non-zero with no output when no required checks are configured
-    count=0
-    info "Could not read required checks for PR #${PR_NUMBER} (none configured, or gh error); treating as 0 ${bucket}" >&2
+# Print "<state> <pending> <failing>" for the PR's checks. State is "required"
+# (GitHub-required checks exist), "all" (none required, so every PR check not
+# matching CHECK_IGNORE_RE counts), "none" (no checks registered yet), or
+# "error" (gh failed; never read as zero checks).
+read_check_counts() {
+  local out="" state=required err_file
+  err_file=$(mktemp)
+  if ! out=$(gh pr checks "$PR_NUMBER" --repo "$REPO_SLUG" --required --json bucket,name 2>"$err_file"); then
+    if grep -qiE 'no required checks' "$err_file"; then
+      out="[]"
+    else
+      rm -f "$err_file"; echo "error 0 0"; return 0
+    fi
   fi
-  [[ "$count" =~ ^[0-9]+$ ]] || count=0
-  echo "$count"
+  if [[ "$(echo "$out" | jq 'length' 2>/dev/null)" == "0" ]]; then
+    state=all
+    if ! out=$(gh pr checks "$PR_NUMBER" --repo "$REPO_SLUG" --json bucket,name 2>"$err_file"); then
+      if grep -qiE 'no checks reported' "$err_file"; then
+        out="[]"
+      else
+        rm -f "$err_file"; echo "error 0 0"; return 0
+      fi
+    fi
+    out=$(echo "$out" | jq -c --arg re "$CHECK_IGNORE_RE" '[.[] | select((.name // "") | test($re; "i") | not)]' 2>/dev/null) || out=""
+  fi
+  rm -f "$err_file"
+  [[ -n "$out" ]] || { echo "error 0 0"; return 0; }
+  [[ "$(echo "$out" | jq 'length')" == "0" ]] && state=none
+  echo "$state $(echo "$out" | jq '[.[] | select(.bucket == "pending")] | length') $(echo "$out" | jq '[.[] | select(.bucket == "fail" or .bucket == "cancel")] | length')"
 }
 
-# Refuse on failing required checks; wait (up to CHECK_TIMEOUT) on pending ones.
+# Fail closed on PR checks: refuse on failing ones, wait (up to CHECK_TIMEOUT)
+# on pending ones, on gh errors, and (up to CHECK_GRACE) on checks that have not
+# registered yet. Runs before do_merge, so the --admin tier never sees red CI.
 wait_for_checks() {
   [[ "$WAIT_CHECKS" == true ]] || return 0
 
-  local waited=0 failing pending
+  local waited=0 state pending failing grace="$CHECK_GRACE"
+  [[ "$grace" -gt "$CHECK_TIMEOUT" ]] && grace="$CHECK_TIMEOUT"
   while true; do
-    failing=$(( $(count_required_checks fail) + $(count_required_checks cancel) ))
-    [[ "$failing" -gt 0 ]] && die 5 "PR #${PR_NUMBER} has ${failing} failing required check(s) — fix them before merging (or pass --no-wait-checks to skip this gate)"
+    read -r state pending failing <<<"$(read_check_counts)"
+    [[ "$failing" -gt 0 ]] && die 5 "PR #${PR_NUMBER} has ${failing} failing check(s) — fix them before merging (or pass --no-wait-checks to skip this gate)"
 
-    pending=$(count_required_checks pending)
-    [[ "$pending" -eq 0 ]] && return 0
-
-    if [[ "$waited" -ge "$CHECK_TIMEOUT" ]]; then
-      die 5 "PR #${PR_NUMBER} still has ${pending} pending required check(s) after ${CHECK_TIMEOUT}s — wait for them and re-run /merge"
-    fi
-    info "Waiting on ${pending} pending required check(s) (~${waited}s of ${CHECK_TIMEOUT}s; gh call time not counted)..."
+    case "$state" in
+      error)
+        if [[ "$waited" -ge "$CHECK_TIMEOUT" ]]; then
+          die 5 "Could not read checks for PR #${PR_NUMBER} after ${CHECK_TIMEOUT}s (gh error) — re-run /merge, or pass --no-wait-checks to skip this gate"
+        fi
+        info "Could not read checks for PR #${PR_NUMBER} (gh error); retrying (~${waited}s of ${CHECK_TIMEOUT}s)..." ;;
+      none)
+        if [[ "$waited" -ge "$grace" ]]; then
+          info "No checks reported for PR #${PR_NUMBER} after ${waited}s; proceeding"
+          return 0
+        fi
+        info "No checks registered yet for PR #${PR_NUMBER} (~${waited}s of ${grace}s grace)..." ;;
+      *)
+        [[ "$pending" -eq 0 ]] && return 0
+        if [[ "$waited" -ge "$CHECK_TIMEOUT" ]]; then
+          die 5 "PR #${PR_NUMBER} still has ${pending} pending check(s) after ${CHECK_TIMEOUT}s — wait for them and re-run /merge"
+        fi
+        info "Waiting on ${pending} pending ${state} check(s) (~${waited}s of ${CHECK_TIMEOUT}s; gh call time not counted)..." ;;
+    esac
     sleep "$CHECK_POLL_INTERVAL"
     waited=$((waited + CHECK_POLL_INTERVAL))
   done
