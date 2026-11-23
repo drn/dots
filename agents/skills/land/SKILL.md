@@ -1,12 +1,12 @@
 ---
-name: ship
-description: "Full ship pipeline: /review + fix + /improve + fix + /merge in one command. Use when ready to ship a branch end-to-end."
+name: land
+description: "Full land pipeline: /review + fix + /improve + fix + /merge in one command. Use when ready to land a branch end-to-end."
 disable-model-invocation: true
 ---
 
-# Ship Pipeline
+# Land Pipeline
 
-Run the full review-fix-improve-fix-merge pipeline to ship the current branch.
+Run the full review-fix-improve-fix-merge pipeline to land the current branch.
 
 ## Arguments
 
@@ -59,13 +59,13 @@ If there are uncommitted changes AND existing commits ahead of master, commit th
 
 If the branch is BEHIND `origin/master` (check `git status` output for "Your branch is behind 'origin/master' by N commits"), fast-forward first or the review will diff against a stale base. With uncommitted changes that overlap incoming files:
 
-1. `git stash push -u -m "ship phase 0"` to set the work aside
+1. `git stash push -u -m "land phase 0"` to set the work aside
 2. `git pull --ff-only` to advance to origin/master
 3. `git stash pop` and resolve any conflicts (the pull may have moved code under your edits)
 4. `make test` (or project equivalent) to confirm the resolved tree is sane
 5. Stage + commit as one feature commit
 
-If `pull --ff-only` fails because the branch has diverged (commits ahead AND behind), check whether the divergence is the **post-squash-merge pattern**: the branch has commits that were already squash-merged into master in a previous `/ship`. Detect this by comparing `git log --oneline origin/master..HEAD` against the most recent merge commit on master — if the local commit subjects match content that's already squash-landed, the resolution is to `git reset --hard origin/master && git cherry-pick <new-commits>` to drop the already-applied originals and keep only the new work. The local commits aren't lost (they remain on the remote feature branch), and a plain `git rebase origin/master` will conflict because the squashed master commit doesn't apply cleanly to the unmodified branch base. Confirm the reset+cherry-pick plan with the user before running it (it's destructive on local refs even though nothing is actually lost). For non-squash-merge divergence (true forking history), still stop and ask — don't auto-rebase.
+If `pull --ff-only` fails because the branch has diverged (commits ahead AND behind), check whether the divergence is the **post-squash-merge pattern**: the branch has commits that were already squash-merged into master in a previous `/land`. Detect this by comparing `git log --oneline origin/master..HEAD` against the most recent merge commit on master — if the local commit subjects match content that's already squash-landed, the resolution is to `git reset --hard origin/master && git cherry-pick <new-commits>` to drop the already-applied originals and keep only the new work. The local commits aren't lost (they remain on the remote feature branch), and a plain `git rebase origin/master` will conflict because the squashed master commit doesn't apply cleanly to the unmodified branch base. Confirm the reset+cherry-pick plan with the user before running it (it's destructive on local refs even though nothing is actually lost). For non-squash-merge divergence (true forking history), still stop and ask — don't auto-rebase.
 
 If the working tree is clean, skip this phase.
 
@@ -130,7 +130,7 @@ Print a summary of what was addressed:
 
 Check if `$ARGUMENTS` contains "skip-improve". If so, skip to Phase 5.
 
-**PIPELINE CONTINUATION RULE: You are mid-pipeline. After the improve analysis completes, you MUST continue to Phase 4 and Phase 5. Do NOT stop, summarize, or wait for user input. The /ship pipeline is not complete until Phase 5 finishes.**
+**PIPELINE CONTINUATION RULE: You are mid-pipeline. After the improve analysis completes, you MUST continue to Phase 4 and Phase 5. Do NOT stop, summarize, or wait for user input. The /land pipeline is not complete until Phase 5 finishes.**
 
 Run the improve analysis inline using these abbreviated steps (do NOT invoke `/improve` as a separate skill):
 
@@ -139,7 +139,7 @@ Run the improve analysis inline using these abbreviated steps (do NOT invoke `/i
 3. Auto-apply all local skill improvements, codebase gap fixes, and agent guidance updates without asking
 4. Commit applied changes with descriptive messages
 5. Print external handoff prompts for the user (if any)
-6. Skip knowledge capture, voice profile, and new skill proposals — these are not needed in the ship pipeline
+6. Skip knowledge capture, voice profile, and new skill proposals — these are not needed in the land pipeline
 
 Print:
 
@@ -165,7 +165,7 @@ Invoke the `/merge` skill to land the branch into master.
 
 Handle merge script exit codes as documented in the `/merge` skill (conflicts, nothing to merge, review blocked, required checks failing or pending, errors).
 
-**If CI fails on tests unrelated to your PR**, fix them inline as part of `/ship` rather than rebasing or treating the merge as blocked. Pre-existing flakes (timing-sensitive tests, data races on shared mutable state, environment-dependent assertions) are normal during a `/ship` cycle on a project with sparse CI history. Capture each fix as its own commit with a message that names the flake and the cause (e.g., "fix flaky-test sleep timing on slower CI" or "fix data race on shared buffer under -race") so the rationale stays clear in history. Then re-run `/merge`.
+**If CI fails on tests unrelated to your PR**, fix them inline as part of `/land` rather than rebasing or treating the merge as blocked. Pre-existing flakes (timing-sensitive tests, data races on shared mutable state, environment-dependent assertions) are normal during a `/land` cycle on a project with sparse CI history. Capture each fix as its own commit with a message that names the flake and the cause (e.g., "fix flaky-test sleep timing on slower CI" or "fix data race on shared buffer under -race") so the rationale stays clear in history. Then re-run `/merge`.
 
 ## Phase 5b: Switch worktree to default branch
 
@@ -185,7 +185,7 @@ If the checkout fails because another worktree owns the default branch, reuse `/
 
 ## Abort Conditions
 
-- **No changes on branch:** Only after Phase 0 completes, if there are still no commits ahead of master and no uncommitted changes, stop immediately: "Nothing to ship — no changes on this branch." Uncommitted changes on their own are NOT an abort condition — Phase 0 commits them.
+- **No changes on branch:** Only after Phase 0 completes, if there are still no commits ahead of master and no uncommitted changes, stop immediately: "Nothing to land — no changes on this branch." Uncommitted changes on their own are NOT an abort condition — Phase 0 commits them.
 - **Tests fail after 3 fix attempts:** Stop and report: "Tests are failing after 3 fix attempts. Manual intervention needed."
 - **Merge blocked by required review:** Report the PR URL and stop: "PR requires review approval before merging."
 
@@ -194,7 +194,7 @@ If the checkout fails because another worktree owns the default branch, reuse `/
 After the pipeline completes (or aborts), print:
 
 ```
-# Ship Summary: {branch name}
+# Land Summary: {branch name}
 
 | Phase | Status | Details |
 |-------|--------|---------|
