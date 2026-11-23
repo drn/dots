@@ -296,10 +296,10 @@ test_wait_for_checks_refuses_failing() {
   _source_merge
   WAIT_CHECKS=true
   PR_NUMBER=1
-  count_required_checks() { [[ "$1" == "fail" ]] && echo 2 || echo 0; }
+  read_check_counts() { echo "required 0 2"; }
   capture wait_for_checks
-  assert_eq "$_CAPTURED_EXIT" "5" "should exit 5 on failing required checks"
-  assert_contains "$_CAPTURED" "failing required check" "should report failing checks"
+  assert_eq "$_CAPTURED_EXIT" "5" "should exit 5 on failing checks"
+  assert_contains "$_CAPTURED" "failing check" "should report failing checks"
 }
 
 test_wait_for_checks_times_out_on_pending() {
@@ -307,19 +307,112 @@ test_wait_for_checks_times_out_on_pending() {
   WAIT_CHECKS=true
   PR_NUMBER=1
   CHECK_TIMEOUT=0
-  count_required_checks() { [[ "$1" == "pending" ]] && echo 1 || echo 0; }
+  read_check_counts() { echo "required 1 0"; }
   capture wait_for_checks
   assert_eq "$_CAPTURED_EXIT" "5" "should exit 5 when checks stay pending"
-  assert_contains "$_CAPTURED" "pending required check" "should report pending checks"
+  assert_contains "$_CAPTURED" "pending check" "should report pending checks"
 }
 
 test_wait_for_checks_passes_when_clear() {
   _source_merge
   WAIT_CHECKS=true
   PR_NUMBER=1
-  count_required_checks() { echo 0; }
+  read_check_counts() { echo "required 0 0"; }
   capture wait_for_checks
   assert_eq "$_CAPTURED_EXIT" "0" "should pass when no checks fail or pend"
+}
+
+test_wait_for_checks_fails_closed_on_gh_error() {
+  _source_merge
+  WAIT_CHECKS=true
+  PR_NUMBER=1
+  CHECK_TIMEOUT=0
+  read_check_counts() { echo "error 0 0"; }
+  capture wait_for_checks
+  assert_eq "$_CAPTURED_EXIT" "5" "should exit 5 when checks cannot be read"
+  assert_contains "$_CAPTURED" "Could not read checks" "should report the gh error"
+}
+
+test_wait_for_checks_proceeds_after_grace_with_no_checks() {
+  _source_merge
+  WAIT_CHECKS=true
+  PR_NUMBER=1
+  CHECK_GRACE=0
+  read_check_counts() { echo "none 0 0"; }
+  capture wait_for_checks
+  assert_eq "$_CAPTURED_EXIT" "0" "should proceed when no checks ever register"
+}
+
+test_wait_for_checks_waits_through_grace_when_no_checks_yet() {
+  _source_merge
+  WAIT_CHECKS=true
+  PR_NUMBER=1
+  CHECK_GRACE=30
+  CHECK_TIMEOUT=30
+  CHECK_POLL_INTERVAL=0
+  local calls
+  calls=$(mktemp)
+  read_check_counts() {
+    echo x >>"$calls"
+    if [[ "$(wc -l <"$calls" | tr -d ' ')" -lt 3 ]]; then echo "none 0 0"; else echo "all 0 0"; fi
+  }
+  capture wait_for_checks
+  assert_eq "$(wc -l <"$calls" | tr -d ' ')" "3" "should keep polling while no checks are registered"
+  assert_eq "$_CAPTURED_EXIT" "0" "should pass once the registered checks are green"
+  rm -f "$calls"
+}
+
+_stub_gh_checks() {
+  # $1 = required-query stdout, $2 = required-query stderr+rc1 flag, $3 = all-query stdout
+  _REQ_OUT="$1"; _REQ_ERR="$2"; _ALL_OUT="$3"
+  gh() {
+    if [[ "$*" == *"--required"* ]]; then
+      if [[ -n "$_REQ_ERR" ]]; then echo "$_REQ_ERR" >&2; return 1; fi
+      echo "$_REQ_OUT"
+    else
+      echo "$_ALL_OUT"
+    fi
+  }
+}
+
+test_read_check_counts_falls_back_to_all_checks() {
+  _source_merge
+  PR_NUMBER=1; REPO_SLUG=o/r
+  _stub_gh_checks "" "no required checks reported on the 'main' branch" \
+    '[{"name":"test","bucket":"pending"},{"name":"lint","bucket":"pass"}]'
+  assert_eq "$(read_check_counts)" "all 1 0" "should count pending PR checks when none are required"
+}
+
+test_read_check_counts_ignores_non_gating_bots() {
+  _source_merge
+  PR_NUMBER=1; REPO_SLUG=o/r
+  _stub_gh_checks "" "no required checks reported on the 'main' branch" \
+    '[{"name":"CodeRabbit","bucket":"fail"},{"name":"test","bucket":"pass"}]'
+  assert_eq "$(read_check_counts)" "all 0 0" "should ignore CodeRabbit in the all-checks fallback"
+}
+
+test_read_check_counts_gh_error_is_not_zero() {
+  _source_merge
+  PR_NUMBER=1; REPO_SLUG=o/r
+  _stub_gh_checks "" "HTTP 502: bad gateway" ""
+  assert_eq "$(read_check_counts)" "error 0 0" "a gh error must not read as zero checks"
+}
+
+test_read_check_counts_no_checks_registered() {
+  _source_merge
+  PR_NUMBER=1; REPO_SLUG=o/r
+  gh() {
+    if [[ "$*" == *"--required"* ]]; then echo "no required checks reported on the 'x' branch" >&2; else echo "no checks reported on the 'x' branch" >&2; fi
+    return 1
+  }
+  assert_eq "$(read_check_counts)" "none 0 0" "should report none when no checks exist yet"
+}
+
+test_read_check_counts_prefers_required() {
+  _source_merge
+  PR_NUMBER=1; REPO_SLUG=o/r
+  _stub_gh_checks '[{"name":"ci","bucket":"fail"}]' "" '[{"name":"other","bucket":"pending"}]'
+  assert_eq "$(read_check_counts)" "required 0 1" "should use required checks when configured"
 }
 
 run_tests
